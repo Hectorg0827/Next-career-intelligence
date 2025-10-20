@@ -59,46 +59,6 @@ class TrainingResource(BaseModel):
     rating: Optional[float] = None
 
 
-# NEW: Skill Insights Models
-class AdjacentSkill(BaseModel):
-    """Skill related to current skill set"""
-    skill: str
-    confidence: float = Field(..., ge=0, le=1)
-    reasoning: str
-    source_skills: List[str] = []
-
-
-class SkillGap(BaseModel):
-    """High-value skill to learn"""
-    skill: str
-    priority: str  # "Critical", "High", "Medium", "Low"
-    learn_difficulty: str  # "Easy", "Moderate", "Hard"
-    market_demand: str
-    estimated_learning_time: str
-    confidence_score: float = 0.0
-    why_important: str = ""
-
-
-class SkillStrength(BaseModel):
-    """Skill profile strength analysis"""
-    overall_score: float = Field(..., ge=0, le=100)
-    category_scores: Dict[str, float] = {}
-    total_skills: int = 0
-    skill_diversity: int = 0
-    interpretation: str = ""
-
-
-class SkillInsights(BaseModel):
-    """Comprehensive skill intelligence"""
-    skill_clusters: Dict[str, List[str]]
-    transferable_to: List[AdjacentSkill]
-    hidden_skills: List[str]
-    skill_gaps_for_growth: List[SkillGap]
-    skill_strength_score: SkillStrength
-    total_skills_identified: int
-    analysis_timestamp: str = ""
-
-
 class AnalysisResponse(BaseModel):
     """Response model for career analysis"""
     analysis_id: str
@@ -109,8 +69,6 @@ class AnalysisResponse(BaseModel):
     transition_pathways: List[TransitionPathway]
     skill_gaps: List[str]
     recommended_training: List[TrainingResource]
-    skill_insights: Optional[SkillInsights] = None  # Feature 1: Skill Intelligence
-    industry_benchmarks: Optional[Dict[str, Any]] = None  # Feature 6: Benchmarking!
     created_at: datetime
     metadata: Optional[Dict[str, Any]] = None
 

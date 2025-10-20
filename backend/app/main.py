@@ -10,8 +10,13 @@ from loguru import logger
 import time
 from contextlib import asynccontextmanager
 
-from app.api import analyze, jobs, users, health
-from app.db.database import engine, Base
+from app.api import analyze, jobs, users, health, coach, interviewer, jobs_marketplace
+try:
+    from app.api import resume_studio
+except ImportError:
+    resume_studio = None
+    logger.warning("Resume Studio module not available")
+# from app.db.database import engine, Base  # REMOVED: Using Supabase instead
 from app.core.config import settings
 
 # Initialize database tables
@@ -21,10 +26,10 @@ async def lifespan(app: FastAPI):
     logger.info("🚀 Starting NEXT Career Intelligence API...")
     logger.info(f"Environment: {settings.ENVIRONMENT}")
     
-    # Create database tables
+    # Database initialization - now using Supabase
     try:
-        Base.metadata.create_all(bind=engine)
-        logger.info("✅ Database tables created/verified")
+        # Supabase handles its own schema, no need to create tables here
+        logger.info("✅ Using Supabase database (tables created manually)")
     except Exception as e:
         logger.error(f"❌ Database initialization failed: {e}")
     
@@ -96,6 +101,15 @@ app.include_router(health.router, prefix="/api", tags=["Health"])
 app.include_router(analyze.router, prefix="/api", tags=["Analysis"])
 app.include_router(jobs.router, prefix="/api", tags=["Jobs"])
 app.include_router(users.router, prefix="/api", tags=["Users"])
+
+# Premium feature routers
+if resume_studio:
+    app.include_router(resume_studio.router, prefix="/api", tags=["Resume Studio - Premium"])
+app.include_router(coach.router, prefix="/api", tags=["Career Coach - Premium"])
+app.include_router(interviewer.router, prefix="/api", tags=["Interviewer AI - Premium"])
+
+# Jobs Marketplace (360° Career Builder)
+app.include_router(jobs_marketplace.router, prefix="/api", tags=["Jobs Marketplace - 360°"])
 
 
 # Root endpoint

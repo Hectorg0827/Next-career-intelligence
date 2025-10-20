@@ -6,7 +6,7 @@ from fastapi import APIRouter
 from datetime import datetime
 from app.models.schemas import HealthResponse
 from app.core.config import settings
-from app.db.database import engine
+from app.db.supabase import get_supabase_client
 
 router = APIRouter()
 
@@ -20,14 +20,19 @@ async def health_check():
     services = {
         "api": "operational",
         "database": "unknown",
-        "openai": "configured" if settings.OPENAI_API_KEY else "not_configured",
+        "gemini": "configured" if settings.GEMINI_API_KEY else "not_configured",
         "onet": "configured" if settings.ONET_API_KEY else "not_configured"
     }
     
-    # Check database connection
+    # Check Supabase database connection
     try:
-        engine.connect()
-        services["database"] = "operational"
+        client = get_supabase_client()
+        if client:
+            # Test connection by checking if we can access a table
+            result = client.table('users').select('count', count='exact').limit(0).execute()
+            services["database"] = "operational"
+        else:
+            services["database"] = "error"
     except Exception:
         services["database"] = "error"
     

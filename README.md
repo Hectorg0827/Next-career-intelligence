@@ -1,54 +1,70 @@
-# NEXT | Adaptive Career Intelligence 🧠
+# NEXT | 360° Career Intelligence Platform 🚀
 
-> An AI-powered career resilience platform that analyzes job displacement risk, career compatibility, and transition pathways using real-time data from O*NET, LinkedIn, Coursera, and OpenAI GPT-5.
+> A complete AI-powered career builder with Resume Studio (SSOT), Career Coach, Interview Prep, and intelligent Jobs Marketplace. Transform your career with world-class AI matching, auto-tailored resumes, and goal-driven job filtering.
 
 [![Build Status](https://github.com/yourusername/next-career-intelligence/workflows/CI/badge.svg)](https://github.com/yourusername/next-career-intelligence/actions)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![API Endpoints](https://img.shields.io/badge/API%20Endpoints-38-blue)](./COMPLETE_SYSTEM_VERIFICATION.md)
+[![Premium Ready](https://img.shields.io/badge/Premium-Ready-gold)](./PREMIUM_SETUP_GUIDE.md)
 
 ---
 
-## 🚀 Features
+## 🌟 What's New (v2.0)
 
-- ✅ **Real-time AI Risk Scoring** - Analyzes job displacement risk using GPT-5 and labor market data
-- ✅ **Career Compatibility Analysis** - Identifies transition pathways to future-proof roles
-- ✅ **Live API Integrations** - No mock data: O*NET, LinkedIn, Coursera, OpenAI
-- ✅ **Skill Gap Detection** - Pinpoints missing skills and recommends training
-- ✅ **Firebase Authentication** - Google & Email sign-in with saved user history
-- ✅ **Interactive Dashboards** - Chart.js visualizations for risk and compatibility metrics
-- ✅ **Auto-Debugging** - Built-in error detection and self-healing suggestions
+**Enhanced Jobs Marketplace with Intelligent Filtering:**
+- 🎯 **Goal-Based Matching** - Jobs aligned with your career goals
+- 🧠 **Skill Match Threshold** - Customizable minimum skill overlap (30-100%)
+- 📍 **Distance Filtering** - Location-based filtering with Haversine formula
+- 🤖 **AI Displacement Risk** - See automation probability (5-95%) for each job
+- 🔍 **Expand Search** - Loosen filters to discover more opportunities
+- ⚡ **Real-Time Scoring** - Multi-objective algorithm (5 weighted components)
 
----
-
-## � NEW: Competitive Advantage Roadmap
-
-**We've analyzed Eightfold.ai and SkyHive** to integrate their best features into NEXT Careers. See our comprehensive implementation guides:
-
-### 📚 Implementation Documents
-
-1. **[IMPLEMENTATION_SUMMARY.md](./IMPLEMENTATION_SUMMARY.md)** - Start here: Overview and next steps
-2. **[IMPLEMENTATION_WEEK_1.md](./IMPLEMENTATION_WEEK_1.md)** - Day-by-day coding guide with examples
-3. **[COMPETITIVE_ADVANTAGE_ROADMAP.md](./COMPETITIVE_ADVANTAGE_ROADMAP.md)** - Full feature analysis
-4. **[STRATEGIC_POSITIONING.md](./STRATEGIC_POSITIONING.md)** - Business strategy and positioning
-5. **[QUICK_REFERENCE.md](./QUICK_REFERENCE.md)** - At-a-glance feature comparison
-6. **[VISUAL_ROADMAP.md](./VISUAL_ROADMAP.md)** - Timelines and visual planning
-
-### 🔥 Key Features We're Adding
-
-| Feature | From | Status | Impact |
-|---------|------|--------|--------|
-| **Skill Inference Engine** | Eightfold | 📅 Week 1 | 🔥 CRITICAL |
-| **Multi-Year Career Pathways** | Both | 📅 Week 1 | 🔥 CRITICAL |
-| **Labour Market Intelligence** | SkyHive | 📅 Week 2-3 | 🔥 HIGH |
-| **Visual Career Maps** | Both | 📅 Week 3 | HIGH |
-| **Explainable AI** | Eightfold | 📅 Week 1 | HIGH |
-| **Benchmarking Dashboard** | SkyHive | 📅 Week 2 | HIGH |
-
-**Our Competitive Edge:**
-> "Enterprise-grade AI career intelligence (worth $50k/year) accessible to everyone at $10/month—with better privacy, design, and empathy."
+👉 **[Read Full Enhancement Guide](./ENHANCED_JOB_FILTERING.md)**
 
 ---
 
-## �🏗️ Architecture
+## 🚀 Core Features
+
+### 🎨 Resume Studio (Single Source of Truth)
+- ✅ **AI-Powered Resume Ingestion** - PDF, DOCX, TXT parsing
+- ✅ **Auto-Tailor for Jobs** - Rewrite resume to match job language
+- ✅ **Cover Letter Generation** - Custom letters for each application
+- ✅ **Provenance Tracking** - Full history of profile changes
+- ✅ **Suggestion Inbox** - Review AI suggestions before applying
+
+### 🧑‍🏫 Career Coach (AI Advisor)
+- ✅ **Conversational Coaching** - Chat with AI career advisor
+- ✅ **SMART Goal Creation** - AI-generated achievable goals
+- ✅ **Goal Progress Tracking** - Automated syncing with profile improvements
+- ✅ **Read-Only Profile Access** - Never modifies profile directly
+- ✅ **Context-Aware Advice** - Uses full career history for guidance
+
+### 🎤 Interviewer AI (Practice)
+- ✅ **STAR Method Questions** - Behavioral interview practice
+- ✅ **Evidence Extraction** - Captures achievements from answers
+- ✅ **Resume Bullet Suggestions** - Converts interview wins to bullets
+- ✅ **Session History** - Track improvement over time
+- ✅ **Role-Specific Questions** - Customized by seniority and role
+
+### 💼 Jobs Marketplace (Premium)
+- ✅ **AI-Matched Recommendations** - Multi-objective scoring algorithm
+- ✅ **Goal-Based Filtering** - Only jobs that advance your goals
+- ✅ **Skill Match Filtering** - Adjustable threshold (30-100%)
+- ✅ **Distance-Based Filtering** - Geographic proximity (km)
+- ✅ **AI Displacement Risk** - Automation probability per job
+- ✅ **Auto-Tailor on Apply** - Instant resume customization
+- ✅ **Application Tracking** - Full lifecycle monitoring
+
+### 🔐 Enterprise Infrastructure
+- ✅ **Firebase JWT Authentication** - Secure token verification
+- ✅ **Stripe Subscriptions** - Premium ($29/mo), Enterprise ($99/mo)
+- ✅ **Redis Caching** - Sub-second response times
+- ✅ **Rate Limiting** - 60 req/min free, 300 req/min premium
+- ✅ **GDPR/CCPA Compliant** - Right to erasure, data export
+
+---
+
+## 🏗️ Architecture
 
 ### Tech Stack
 

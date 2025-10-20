@@ -19,9 +19,18 @@ class Settings(BaseSettings):
     # Database
     DATABASE_URL: str = "postgresql://postgres:postgres@localhost:5432/next_career_db"
     
-    # OpenAI
-    OPENAI_API_KEY: str = ""
-    OPENAI_MODEL: str = "gpt-4"  # Will use gpt-5 when available
+    # Supabase
+    SUPABASE_URL: str = ""
+    SUPABASE_ANON_KEY: str = ""
+    SUPABASE_SERVICE_KEY: str = ""
+    
+    # Google Gemini API (Replaces OpenAI)
+    GEMINI_API_KEY: str = ""
+    
+    # Google Cloud Platform
+    GCP_PROJECT_ID: str = ""
+    GCP_DEPLOYMENT_URL: str = ""
+    GCP_OAUTH_CLIENT_ID: str = ""
     
     # O*NET API
     ONET_API_KEY: str = ""
