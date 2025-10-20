@@ -58,7 +58,7 @@ export default function CoachChatPage() {
 
       const response = await CareerCoachAPI.chat({
         user_id: userId,
-        conversation_id: conversationId,
+        conversation_id: conversationId || undefined,
         message: inputMessage,
         conversation_type: 'general',
       });

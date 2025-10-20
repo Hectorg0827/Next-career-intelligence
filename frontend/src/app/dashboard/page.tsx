@@ -277,23 +277,14 @@ export default function DashboardPage() {
                     {analysisResult.ai_displacement_risk.level} Risk
                   </span>
                   <span className="text-4xl font-bold text-gray-800">
-                    {analysisResult.ai_displacement_risk.score.toFixed(1)}%
+                    {analysisResult.ai_displacement_risk.risk_score.toFixed(1)}%
                   </span>
                 </div>
 
                 <div className="space-y-2 text-gray-700">
                   <p>
-                    <strong>Velocity:</strong> {analysisResult.ai_displacement_risk.velocity}
+                    <strong>Reasoning:</strong> {analysisResult.ai_displacement_risk.reasoning}
                   </p>
-                  <p>
-                    <strong>Augmentation Potential:</strong>{" "}
-                    {analysisResult.ai_displacement_risk.augmentation_potential}
-                  </p>
-                  {analysisResult.ai_displacement_risk.reasoning && (
-                    <p className="mt-4 p-4 bg-blue-50 rounded-lg">
-                      <strong>Why?</strong> {analysisResult.ai_displacement_risk.reasoning}
-                    </p>
-                  )}
                 </div>
               </div>
 
