@@ -368,7 +368,7 @@ export default function DashboardPage() {
                           <div>
                             <strong>Strengths:</strong>
                             <ul className="mt-2 space-y-1">
-                              {benchmarkData.benchmarks.competitive_position.strengths.map((strength, idx) => (
+                              {benchmarkData.benchmarks.competitive_position.strengths.map((strength: string, idx: number) => (
                                 <li key={idx} className="text-green-700 flex items-center gap-2">
                                   <span className="text-green-500">✓</span> {strength}
                                 </li>
@@ -380,7 +380,7 @@ export default function DashboardPage() {
                           <div>
                             <strong>Areas for Improvement:</strong>
                             <ul className="mt-2 space-y-1">
-                              {benchmarkData.benchmarks.competitive_position.areas_for_improvement.map((area, idx) => (
+                              {benchmarkData.benchmarks.competitive_position.areas_for_improvement.map((area: string, idx: number) => (
                                 <li key={idx} className="text-orange-700 flex items-center gap-2">
                                   <span className="text-orange-500">→</span> {area}
                                 </li>
@@ -453,12 +453,13 @@ export default function DashboardPage() {
                   <div className="mb-6">
                     <h3 className="text-xl font-semibold mb-3">💎 Hidden Skills Detected</h3>
                     <div className="flex flex-wrap gap-2">
-                      {analysisResult.skill_insights.hidden_skills.map((skill, idx) => (
+                      {analysisResult.skill_insights.hidden_skills.map((skillObj, idx) => (
                         <span
                           key={idx}
                           className="px-4 py-2 bg-purple-100 text-purple-700 rounded-full font-medium"
+                          title={typeof skillObj === 'object' ? skillObj.why_hidden : ''}
                         >
-                          {skill}
+                          {typeof skillObj === 'string' ? skillObj : skillObj.skill}
                         </span>
                       ))}
                     </div>
@@ -509,7 +510,7 @@ export default function DashboardPage() {
                 </p>
                 
                 <CareerSankeyDiagram 
-                  data={sankeyData}
+                  data={sankeyData as any}
                   currentRole={formData.jobTitle}
                 />
 
@@ -544,27 +545,27 @@ export default function DashboardPage() {
                       
                       <div className="bg-gradient-to-r from-blue-50 to-purple-50 p-6 rounded-xl mb-4">
                         <h4 className="font-bold text-lg text-blue-900 mb-2">
-                          {pathway.primary_path.target_role}
+                          {(pathway.primary_path as any)?.target_role}
                         </h4>
-                        <p className="text-gray-700 mb-4">{pathway.primary_path.milestone_title}</p>
+                        <p className="text-gray-700 mb-4">{(pathway.primary_path as any)?.milestone_title}</p>
                         
                         <div className="grid md:grid-cols-2 gap-4 text-sm">
-                          {pathway.primary_path.skills_to_develop && pathway.primary_path.skills_to_develop.length > 0 && (
+                          {(pathway.primary_path as any)?.skills_to_develop && (pathway.primary_path as any)?.skills_to_develop.length > 0 && (
                             <div>
                               <strong>Skills to Develop:</strong>
                               <ul className="mt-2 space-y-1">
-                                {pathway.primary_path.skills_to_develop.map((skill: string, idx: number) => (
+                                {(pathway.primary_path as any)?.skills_to_develop.map((skill: string, idx: number) => (
                                   <li key={idx} className="text-gray-700">• {skill}</li>
                                 ))}
                               </ul>
                             </div>
                           )}
                           
-                          {pathway.primary_path.certifications && pathway.primary_path.certifications.length > 0 && (
+                          {(pathway.primary_path as any)?.certifications && (pathway.primary_path as any)?.certifications.length > 0 && (
                             <div>
                               <strong>Certifications:</strong>
                               <ul className="mt-2 space-y-1">
-                                {pathway.primary_path.certifications.map((cert: string, idx: number) => (
+                                {(pathway.primary_path as any)?.certifications.map((cert: string, idx: number) => (
                                   <li key={idx} className="text-gray-700">• {cert}</li>
                                 ))}
                               </ul>
@@ -575,22 +576,22 @@ export default function DashboardPage() {
                         <div className="mt-4 pt-4 border-t border-blue-200">
                           <div className="flex justify-between items-center text-sm">
                             <span>
-                              <strong>Salary Range:</strong> {pathway.primary_path.estimated_salary_range}
+                              <strong>Salary Range:</strong> {(pathway.primary_path as any)?.estimated_salary_range}
                             </span>
                             <span>
                               <strong>AI Resilience:</strong>{" "}
                               <span className="text-green-600 font-bold">
-                                {pathway.primary_path.ai_resilience_score}/100
+                                {(pathway.primary_path as any)?.ai_resilience_score}/100
                               </span>
                             </span>
                           </div>
                         </div>
                       </div>
 
-                      {pathway.alternative_path && (
+                      {(pathway as any).alternative_path && (
                         <div className="bg-gray-50 p-4 rounded-lg">
-                          <h5 className="font-semibold mb-2">Alternative: {pathway.alternative_path.target_role}</h5>
-                          <p className="text-sm text-gray-600">{pathway.alternative_path.why_consider}</p>
+                          <h5 className="font-semibold mb-2">Alternative: {(pathway as any).alternative_path.target_role}</h5>
+                          <p className="text-sm text-gray-600">{(pathway as any).alternative_path.why_consider}</p>
                         </div>
                       )}
                     </div>
