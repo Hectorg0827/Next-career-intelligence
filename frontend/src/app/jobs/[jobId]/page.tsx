@@ -25,7 +25,7 @@ export default function JobDetailsPage() {
     try {
       setLoading(true);
       setError(null);
-      const data = await JobsMarketplaceAPI.getJobDetails(jobId);
+      const data = await JobsMarketplaceAPI.getJob(jobId);
       setJob(data);
     } catch (err: any) {
       setError(err.message || 'Failed to load job details');
