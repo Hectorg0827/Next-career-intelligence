@@ -21,7 +21,7 @@ export default function SuggestionsInbox({ userId, suggestions, onSuggestionHand
       await ResumeStudioAPI.applySuggestion({
         user_id: userId,
         suggestion_id: suggestionId,
-        accept,
+        user_confirmed: accept,
       });
 
       onSuggestionHandled?.();

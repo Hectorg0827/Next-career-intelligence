@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Brain, ArrowLeft, Loader2 } from "lucide-react";
+import { Brain, ArrowLeft, Loader2, Sparkles } from "lucide-react";
 import Link from "next/link";
 import { analyzeCareer, generateCareerRoadmap } from "@/lib/api";
 import type { 
@@ -10,6 +10,7 @@ import type {
   SankeyData, 
   IndustryBenchmarks 
 } from "@/lib/types";
+import { NextLogo, NextLoadingSpinner } from "@/components/branding/NextLogo";
 
 // Feature 5 & 6 Components
 import CareerSankeyDiagram from "@/components/VisualCareerMaps/CareerSankeyDiagram";
@@ -103,68 +104,71 @@ export default function DashboardPage() {
   const getRiskLevelColor = (level: string) => {
     switch (level) {
       case "Low":
-        return "text-green-600 bg-green-50";
+        return "text-green-600 bg-green-50 border-green-200";
       case "Medium":
-        return "text-yellow-600 bg-yellow-50";
+        return "text-yellow-600 bg-yellow-50 border-yellow-200";
       case "High":
-        return "text-orange-600 bg-orange-50";
+        return "text-orange-600 bg-orange-50 border-orange-200";
       case "Critical":
-        return "text-red-600 bg-red-50";
+        return "text-red-600 bg-red-50 border-red-200";
       default:
-        return "text-gray-600 bg-gray-50";
+        return "text-next-text-muted bg-next-bg-light border-next-text-muted/20";
     }
   };
 
   return (
-    <main className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
+    <main className="min-h-screen bg-next-bg-light">
       {/* Header */}
-      <header className="container mx-auto px-4 py-6 border-b border-gray-200">
-        <nav className="flex justify-between items-center">
-          <div className="flex items-center gap-4">
-            <Link href="/" className="flex items-center gap-2 hover:opacity-80">
+      <header className="bg-gradient-next border-b border-white/10 shadow-next-md">
+        <div className="container mx-auto px-4 py-6">
+          <nav className="flex justify-between items-center">
+            <Link href="/" className="flex items-center gap-2 text-white/80 hover:text-white transition-colors">
               <ArrowLeft className="w-5 h-5" />
-              <span className="text-sm">Back to Home</span>
+              <span className="text-sm font-body">Back to Home</span>
             </Link>
-          </div>
-          <div className="flex items-center gap-2">
-            <Brain className="w-8 h-8 text-blue-600" />
-            <span className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-              NEXT Dashboard
-            </span>
-          </div>
-        </nav>
+            <div className="flex items-center gap-3">
+              <NextLogo variant="text" size="md" />
+              <span className="text-xl font-heading font-semibold text-white">Dashboard</span>
+            </div>
+          </nav>
+        </div>
       </header>
 
       <div className="container mx-auto px-4 py-8">
         {/* Input Form */}
-        <div className="bg-white rounded-2xl shadow-xl p-8 mb-8">
-          <h1 className="text-3xl font-bold mb-6">Career Analysis & Roadmap</h1>
+        <div className="bg-white rounded-2xl shadow-next-lg p-8 mb-8 border border-next-bg-light">
+          <div className="flex items-center gap-3 mb-6">
+            <div className="w-12 h-12 bg-gradient-next-gold rounded-xl flex items-center justify-center">
+              <Sparkles className="w-6 h-6 text-white" />
+            </div>
+            <h1 className="text-3xl font-heading font-bold text-next-deep-blue">Career Analysis & Roadmap</h1>
+          </div>
           
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="grid md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-heading font-medium text-next-deep-blue mb-2">
                   Job Title *
                 </label>
                 <input
                   type="text"
                   value={formData.jobTitle}
                   onChange={(e) => setFormData({ ...formData, jobTitle: e.target.value })}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-4 py-2 border border-next-text-muted/30 rounded-lg focus:ring-2 focus:ring-next-gold focus:border-next-gold font-body transition-all"
                   placeholder="e.g., Software Engineer"
                   required
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-heading font-medium text-next-deep-blue mb-2">
                   Location *
                 </label>
                 <input
                   type="text"
                   value={formData.location}
                   onChange={(e) => setFormData({ ...formData, location: e.target.value })}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-4 py-2 border border-next-text-muted/30 rounded-lg focus:ring-2 focus:ring-next-gold focus:border-next-gold font-body transition-all"
                   placeholder="e.g., San Francisco, CA"
                   required
                 />
@@ -172,13 +176,13 @@ export default function DashboardPage() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-heading font-medium text-next-deep-blue mb-2">
                 Skills * (comma-separated)
               </label>
               <textarea
                 value={formData.skills}
                 onChange={(e) => setFormData({ ...formData, skills: e.target.value })}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-4 py-2 border border-next-text-muted/30 rounded-lg focus:ring-2 focus:ring-next-gold focus:border-next-gold font-body transition-all"
                 rows={3}
                 placeholder="e.g., Python, JavaScript, Project Management, Communication"
                 required
@@ -187,14 +191,14 @@ export default function DashboardPage() {
 
             <div className="grid md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-heading font-medium text-next-deep-blue mb-2">
                   Years of Experience
                 </label>
                 <input
                   type="number"
                   value={formData.yearsExperience}
                   onChange={(e) => setFormData({ ...formData, yearsExperience: e.target.value })}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-4 py-2 border border-next-text-muted/30 rounded-lg focus:ring-2 focus:ring-next-gold focus:border-next-gold font-body transition-all"
                   placeholder="e.g., 5"
                   min="0"
                   max="50"
@@ -202,13 +206,13 @@ export default function DashboardPage() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-heading font-medium text-next-deep-blue mb-2">
                   Timeline for Career Roadmap
                 </label>
                 <select
                   value={formData.timeline}
                   onChange={(e) => setFormData({ ...formData, timeline: e.target.value })}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-4 py-2 border border-next-text-muted/30 rounded-lg focus:ring-2 focus:ring-next-gold focus:border-next-gold font-body transition-all"
                 >
                   <option value="3 years">3 Years</option>
                   <option value="5 years">5 Years</option>
@@ -218,7 +222,7 @@ export default function DashboardPage() {
             </div>
 
             {error && (
-              <div className="p-4 bg-red-50 border border-red-200 rounded-lg text-red-700">
+              <div className="p-4 bg-red-50 border border-red-200 rounded-lg text-red-700 font-body">
                 {error}
               </div>
             )}
@@ -227,15 +231,18 @@ export default function DashboardPage() {
               <button
                 type="submit"
                 disabled={isLoading}
-                className="flex-1 bg-blue-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-all shadow-lg hover:shadow-xl flex items-center justify-center gap-2"
+                className="flex-1 bg-next-gold hover:bg-next-gold-light text-next-deep-blue px-8 py-3 rounded-lg font-heading font-semibold disabled:bg-next-text-muted disabled:cursor-not-allowed transition-all shadow-next-gold hover:scale-105 transform flex items-center justify-center gap-2"
               >
                 {isLoading ? (
                   <>
                     <Loader2 className="w-5 h-5 animate-spin" />
-                    Analyzing...
+                    Analyzing with NextAI... (40-60s)
                   </>
                 ) : (
-                  "Analyze Career"
+                  <>
+                    <Sparkles className="w-5 h-5" />
+                    Analyze Career
+                  </>
                 )}
               </button>
 
@@ -244,7 +251,7 @@ export default function DashboardPage() {
                   type="button"
                   onClick={handleGenerateRoadmap}
                   disabled={isGeneratingRoadmap}
-                  className="flex-1 bg-purple-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-purple-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-all shadow-lg hover:shadow-xl flex items-center justify-center gap-2"
+                  className="flex-1 bg-gradient-next text-white px-8 py-3 rounded-lg font-heading font-semibold hover:opacity-90 disabled:bg-next-text-muted disabled:cursor-not-allowed transition-all shadow-next-md hover:shadow-next-lg flex items-center justify-center gap-2"
                 >
                   {isGeneratingRoadmap ? (
                     <>
@@ -252,7 +259,10 @@ export default function DashboardPage() {
                       Generating...
                     </>
                   ) : (
-                    "Generate Visual Roadmap"
+                    <>
+                      <Brain className="w-5 h-5" />
+                      Generate Visual Roadmap
+                    </>
                   )}
                 </button>
               )}
@@ -264,34 +274,39 @@ export default function DashboardPage() {
         {analysisResult && (
           <div className="space-y-8">
             {/* AI Displacement Risk */}
-            <div className="bg-white rounded-2xl shadow-xl p-8">
-              <h2 className="text-2xl font-bold mb-6">AI Displacement Risk Analysis</h2>
+            <div className="bg-white rounded-2xl shadow-next-lg p-8 border border-next-bg-light">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="w-10 h-10 bg-gradient-next rounded-lg flex items-center justify-center">
+                  <Brain className="w-6 h-6 text-white" />
+                </div>
+                <h2 className="text-2xl font-heading font-bold text-next-deep-blue">AI Displacement Risk Analysis</h2>
+              </div>
               
               <div className="mb-6">
                 <div className="flex items-center gap-4 mb-4">
                   <span
-                    className={`px-6 py-3 rounded-full font-bold text-lg ${getRiskLevelColor(
+                    className={`px-6 py-3 rounded-full font-heading font-bold text-lg border-2 ${getRiskLevelColor(
                       analysisResult.ai_displacement_risk.level
                     )}`}
                   >
                     {analysisResult.ai_displacement_risk.level} Risk
                   </span>
-                  <span className="text-4xl font-bold text-gray-800">
+                  <span className="text-4xl font-heading font-bold text-next-deep-blue">
                     {analysisResult.ai_displacement_risk.score.toFixed(1)}%
                   </span>
                 </div>
 
-                <div className="space-y-2 text-gray-700">
+                <div className="space-y-2 text-next-text-muted font-body">
                   <p>
-                    <strong>Velocity:</strong> {analysisResult.ai_displacement_risk.velocity}
+                    <strong className="text-next-deep-blue">Velocity:</strong> {analysisResult.ai_displacement_risk.velocity}
                   </p>
                   <p>
-                    <strong>Augmentation Potential:</strong>{" "}
+                    <strong className="text-next-deep-blue">Augmentation Potential:</strong>{" "}
                     {analysisResult.ai_displacement_risk.augmentation_potential}
                   </p>
                   {analysisResult.ai_displacement_risk.reasoning && (
-                    <p className="mt-4 p-4 bg-blue-50 rounded-lg">
-                      <strong>Why?</strong> {analysisResult.ai_displacement_risk.reasoning}
+                    <p className="mt-4 p-4 bg-next-bg-light/50 rounded-lg border border-next-text-muted/20">
+                      <strong className="text-next-deep-blue">Why?</strong> {analysisResult.ai_displacement_risk.reasoning}
                     </p>
                   )}
                 </div>
@@ -300,7 +315,7 @@ export default function DashboardPage() {
               {/* Feature 6: Industry Benchmarks - Risk Comparison */}
               {benchmarkData?.benchmarks?.automation_risk_comparison && (
                 <div className="mt-6">
-                  <h3 className="text-xl font-semibold mb-4">How You Compare</h3>
+                  <h3 className="text-xl font-heading font-semibold text-next-deep-blue mb-4">How You Compare</h3>
                   <RiskComparisonBadge
                     yourScore={benchmarkData.benchmarks.automation_risk_comparison.your_score}
                     industryAverage={benchmarkData.benchmarks.automation_risk_comparison.industry_average}
@@ -314,7 +329,7 @@ export default function DashboardPage() {
 
             {/* Feature 6: Industry Benchmarking Dashboard */}
             {benchmarkData && (
-              <div className="bg-white rounded-2xl shadow-xl p-8">
+              <div className="bg-white rounded-2xl shadow-next-lg p-8">
                 <h2 className="text-2xl font-bold mb-6">📊 Industry Benchmarks</h2>
                 
                 <div className="space-y-8">
@@ -369,7 +384,7 @@ export default function DashboardPage() {
                       <div className="space-y-3">
                         <p className="text-lg">
                           <strong>Ranking:</strong>{" "}
-                          <span className="text-purple-600 font-bold">
+                          <span className="text-next-gold font-bold">
                             {benchmarkData.benchmarks.competitive_position.peer_ranking}
                           </span>
                         </p>
@@ -406,7 +421,7 @@ export default function DashboardPage() {
 
             {/* Skill Insights */}
             {analysisResult.skill_insights && (
-              <div className="bg-white rounded-2xl shadow-xl p-8">
+              <div className="bg-white rounded-2xl shadow-next-lg p-8">
                 <h2 className="text-2xl font-bold mb-6">💡 Skill Intelligence</h2>
                 
                 {/* Skill Strength Score */}
@@ -414,7 +429,7 @@ export default function DashboardPage() {
                   <div className="mb-6 p-6 bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl">
                     <h3 className="text-xl font-semibold mb-3">Overall Skill Strength</h3>
                     <div className="flex items-center gap-4">
-                      <div className="text-5xl font-bold text-blue-600">
+                      <div className="text-5xl font-bold text-next-royal-blue">
                         {analysisResult.skill_insights.skill_strength_score.overall_score.toFixed(1)}
                       </div>
                       <div className="flex-1">
@@ -424,7 +439,7 @@ export default function DashboardPage() {
                             style={{ width: `${analysisResult.skill_insights.skill_strength_score.overall_score}%` }}
                           />
                         </div>
-                        <p className="mt-2 text-gray-700">
+                        <p className="mt-2 text-next-text-muted font-body">
                           {analysisResult.skill_insights.skill_strength_score.interpretation}
                         </p>
                       </div>
@@ -445,7 +460,7 @@ export default function DashboardPage() {
                               {(skill.confidence * 100).toFixed(0)}% match
                             </span>
                           </div>
-                          <p className="text-sm text-gray-700">{skill.reasoning}</p>
+                          <p className="text-sm text-next-text-muted font-body">{skill.reasoning}</p>
                           {skill.source_skills && skill.source_skills.length > 0 && (
                             <p className="text-xs text-gray-500 mt-2">
                               From: {skill.source_skills.join(", ")}
@@ -465,7 +480,7 @@ export default function DashboardPage() {
                       {analysisResult.skill_insights.hidden_skills.map((skill, idx) => (
                         <span
                           key={idx}
-                          className="px-4 py-2 bg-purple-100 text-purple-700 rounded-full font-medium"
+                          className="px-4 py-2 bg-next-gold/10 text-next-gold rounded-full font-medium"
                         >
                           {skill}
                         </span>
@@ -490,13 +505,13 @@ export default function DashboardPage() {
                               gap.priority === "Critical" ? "bg-red-100 text-red-700" :
                               gap.priority === "High" ? "bg-orange-100 text-orange-700" :
                               gap.priority === "Medium" ? "bg-yellow-100 text-yellow-700" :
-                              "bg-blue-100 text-blue-700"
+                              "bg-next-royal-blue/10 text-next-royal-blue"
                             }`}>
                               {gap.priority}
                             </span>
                           </div>
-                          <p className="text-sm text-gray-700 mb-2">{gap.why_important}</p>
-                          <div className="flex gap-4 text-sm text-gray-600">
+                          <p className="text-sm text-next-text-muted font-body mb-2">{gap.why_important}</p>
+                          <div className="flex gap-4 text-sm text-next-text-muted font-body">
                             <span>⏱ {gap.estimated_learning_time}</span>
                             <span>📊 {gap.market_demand}</span>
                             <span>🎯 {gap.learn_difficulty}</span>
@@ -511,9 +526,9 @@ export default function DashboardPage() {
 
             {/* Feature 5: Visual Career Map */}
             {sankeyData && (
-              <div className="bg-white rounded-2xl shadow-xl p-8">
+              <div className="bg-white rounded-2xl shadow-next-lg p-8">
                 <h2 className="text-2xl font-bold mb-6">🗺️ Your Visual Career Map</h2>
-                <p className="text-gray-600 mb-6">
+                <p className="text-next-text-muted font-body mb-6">
                   Interactive visualization of your career pathways. Click on nodes to highlight connections.
                 </p>
                 
@@ -538,7 +553,7 @@ export default function DashboardPage() {
 
             {/* Career Roadmap Details */}
             {roadmapResult && (
-              <div className="bg-white rounded-2xl shadow-xl p-8">
+              <div className="bg-white rounded-2xl shadow-next-lg p-8">
                 <h2 className="text-2xl font-bold mb-6">Career Roadmap Details</h2>
                 
                 {["3_year", "5_year", "10_year"].map((timeframe) => {
@@ -552,10 +567,10 @@ export default function DashboardPage() {
                       </h3>
                       
                       <div className="bg-gradient-to-r from-blue-50 to-purple-50 p-6 rounded-xl mb-4">
-                        <h4 className="font-bold text-lg text-blue-900 mb-2">
+                        <h4 className="font-bold text-lg text-next-deep-blue mb-2">
                           {pathway.primary_path.target_role}
                         </h4>
-                        <p className="text-gray-700 mb-4">{pathway.primary_path.milestone_title}</p>
+                        <p className="text-next-text-muted font-body mb-4">{pathway.primary_path.milestone_title}</p>
                         
                         <div className="grid md:grid-cols-2 gap-4 text-sm">
                           {pathway.primary_path.skills_to_develop && pathway.primary_path.skills_to_develop.length > 0 && (
@@ -563,7 +578,7 @@ export default function DashboardPage() {
                               <strong>Skills to Develop:</strong>
                               <ul className="mt-2 space-y-1">
                                 {pathway.primary_path.skills_to_develop.map((skill: string, idx: number) => (
-                                  <li key={idx} className="text-gray-700">• {skill}</li>
+                                  <li key={idx} className="text-next-text-muted font-body">• {skill}</li>
                                 ))}
                               </ul>
                             </div>
@@ -574,7 +589,7 @@ export default function DashboardPage() {
                               <strong>Certifications:</strong>
                               <ul className="mt-2 space-y-1">
                                 {pathway.primary_path.certifications.map((cert: string, idx: number) => (
-                                  <li key={idx} className="text-gray-700">• {cert}</li>
+                                  <li key={idx} className="text-next-text-muted font-body">• {cert}</li>
                                 ))}
                               </ul>
                             </div>
@@ -596,10 +611,14 @@ export default function DashboardPage() {
                         </div>
                       </div>
 
-                      {pathway.alternative_path && (
+                      {pathway.alternative_paths && pathway.alternative_paths.length > 0 && (
                         <div className="bg-gray-50 p-4 rounded-lg">
-                          <h5 className="font-semibold mb-2">Alternative: {pathway.alternative_path.target_role}</h5>
-                          <p className="text-sm text-gray-600">{pathway.alternative_path.why_consider}</p>
+                          <h5 className="font-semibold mb-2">Alternative Paths:</h5>
+                          <ul className="text-sm text-next-text-muted font-body list-disc list-inside">
+                            {pathway.alternative_paths.map((altPath, idx) => (
+                              <li key={idx}>{altPath}</li>
+                            ))}
+                          </ul>
                         </div>
                       )}
                     </div>
@@ -610,7 +629,7 @@ export default function DashboardPage() {
 
             {/* Transition Pathways */}
             {analysisResult.transition_pathways && analysisResult.transition_pathways.length > 0 && (
-              <div className="bg-white rounded-2xl shadow-xl p-8">
+              <div className="bg-white rounded-2xl shadow-next-lg p-8">
                 <h2 className="text-2xl font-bold mb-6">🎯 Recommended Career Transitions</h2>
                 
                 <div className="grid md:grid-cols-2 gap-6">
@@ -622,7 +641,7 @@ export default function DashboardPage() {
                       <h3 className="text-xl font-bold mb-2">{pathway.role}</h3>
                       <div className="mb-4">
                         <div className="flex justify-between mb-1">
-                          <span className="text-sm text-gray-600">Transition Ease</span>
+                          <span className="text-sm text-next-text-muted font-body">Transition Ease</span>
                           <span className="text-sm font-semibold">{pathway.ease.toFixed(0)}%</span>
                         </div>
                         <div className="w-full bg-gray-200 rounded-full h-2">
@@ -641,7 +660,7 @@ export default function DashboardPage() {
                               {pathway.required_skills.map((skill, skillIdx) => (
                                 <span
                                   key={skillIdx}
-                                  className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-xs"
+                                  className="px-3 py-1 bg-next-royal-blue/10 text-next-royal-blue rounded-full text-xs"
                                 >
                                   {skill}
                                 </span>

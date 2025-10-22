@@ -5,6 +5,10 @@ Application configuration settings
 from pydantic_settings import BaseSettings
 from typing import List
 import os
+from dotenv import load_dotenv
+
+# Load .env file
+load_dotenv()
 
 
 class Settings(BaseSettings):
@@ -33,7 +37,8 @@ class Settings(BaseSettings):
     GCP_OAUTH_CLIENT_ID: str = ""
     
     # O*NET API
-    ONET_API_KEY: str = ""
+    ONET_USERNAME: str = ""
+    ONET_PASSWORD: str = ""
     ONET_BASE_URL: str = "https://services.onetcenter.org/ws"
     
     # Coursera API
@@ -43,6 +48,22 @@ class Settings(BaseSettings):
     # LinkedIn API (optional)
     LINKEDIN_CLIENT_ID: str = ""
     LINKEDIN_CLIENT_SECRET: str = ""
+    
+    # SendGrid Email Service
+    SENDGRID_API_KEY: str = ""
+    SENDGRID_FROM_EMAIL: str = "noreply@nextcareer.ai"
+    SENDGRID_FROM_NAME: str = "NEXT Career Intelligence"
+    
+    # Application URLs
+    APP_URL: str = "http://localhost:3000"
+    API_URL: str = "http://localhost:8000"
+    
+    # Stripe Payment Processing
+    STRIPE_SECRET_KEY: str = ""
+    STRIPE_WEBHOOK_SECRET: str = ""
+    STRIPE_PRICE_ID_PRO_MONTHLY: str = ""
+    STRIPE_PRICE_ID_PRO_YEARLY: str = ""
+    STRIPE_PRICE_ID_ENTERPRISE: str = ""
     
     # Neo4j (optional - Phase 2)
     NEO4J_URI: str = "bolt://localhost:7687"

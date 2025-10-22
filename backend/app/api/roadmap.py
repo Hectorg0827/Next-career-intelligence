@@ -1,34 +1,36 @@
 """
 Career Roadmap API Endpoints
 Generates multi-year career roadmaps with visual Sankey data
+POWERED BY NEXTAI - Advanced Career Intelligence
 """
 
-from fastapi import APIRouter, HTTPException, Depends
-from sqlalchemy.orm import Session
+from fastapi import APIRouter, HTTPException
 from loguru import logger
 from typing import Optional
 
 from app.models.schemas import AnalysisRequest
-from app.services.gemini_analyzer import gemini_analyzer
-from app.db.database import get_db
+from app.services.gemini_analyzer import GeminiAnalyzer
 
-router = APIRouter(prefix="/api", tags=["roadmap"])
+router = APIRouter()
 
 
 @router.post("/roadmap")
 async def generate_career_roadmap(
     request: AnalysisRequest,
-    db: Session = Depends(get_db)
+    user_id: str = None  # TODO: Get from auth token
 ):
     """
     Generate multi-year career roadmap with visual Sankey data
-    Now powered by Google Gemini Pro
+    Powered by NextAI - Advanced Career Intelligence
     """
     try:
-        logger.info(f"Generating Gemini roadmap for {request.job_title}")
+        logger.info(f"🗺️ Generating NextAI roadmap for {request.job_title}")
 
-        # Generate roadmap using Gemini
-        roadmap = await gemini_analyzer.generate_career_roadmap(
+        # Initialize NextAI analyzer
+        nextai = GeminiAnalyzer()
+
+        # Generate roadmap using NextAI
+        roadmap = await nextai.generate_career_roadmap(
             job_title=request.job_title,
             skills=request.skills,
             location=request.location,
@@ -36,9 +38,9 @@ async def generate_career_roadmap(
             timeline=getattr(request, 'timeline', '5 years')
         )
 
-        logger.info(f"Gemini roadmap generated successfully for {request.job_title}")
+        logger.info(f"✅ NextAI roadmap generated successfully for {request.job_title}")
         return {"career_roadmap": roadmap}
 
     except Exception as e:
-        logger.error(f"Roadmap generation error: {e}")
+        logger.error(f"❌ Roadmap generation error: {e}")
         raise HTTPException(status_code=500, detail=str(e))

@@ -1,6 +1,6 @@
 """
-Gemini AI Analyzer - Replacement for OpenAI GPT-4
-Uses Google's Gemini Pro for career intelligence analysis
+NextAI Analyzer - Advanced Career Intelligence
+Powered by state-of-the-art AI for career analysis
 """
 
 import os
@@ -8,17 +8,18 @@ from typing import Dict, List, Optional, Any
 import json
 from loguru import logger
 import google.generativeai as genai
+from fastapi import HTTPException
 
-# Configure Gemini
-GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
-if GEMINI_API_KEY:
-    genai.configure(api_key=GEMINI_API_KEY)
+# Configure AI Engine
+NEXTAI_API_KEY = os.getenv("GEMINI_API_KEY")  # Internal config name
+if NEXTAI_API_KEY:
+    genai.configure(api_key=NEXTAI_API_KEY)
 
 
 class GeminiAnalyzer:
     """
-    Career intelligence analyzer using Google Gemini Pro
-    Replaces OpenAI GPT-4 with Gemini for cost savings and performance
+    NextAI Career Intelligence Analyzer
+    Advanced AI-powered career analysis and insights
     WITH SAFETY SETTINGS
     """
     
@@ -32,7 +33,7 @@ class GeminiAnalyzer:
         }
         
         self.model = genai.GenerativeModel(
-            'gemini-1.5-pro',
+            'gemini-2.5-flash',  # Latest fast model, good for production
             safety_settings=safety_settings
         )
     
@@ -130,32 +131,65 @@ Return ONLY valid JSON matching the requested schema. No markdown, no explanatio
         years_experience: Optional[int] = None
     ) -> Dict[str, Any]:
         """
-        Analyze AI displacement risk using Gemini
+        Analyze AI displacement risk using NextAI intelligence
         """
         try:
-            prompt = f"""
-You are an AI career analyst. Analyze the following job for AI displacement risk:
+            prompt = f"""You are NextAI, an advanced career intelligence system. Analyze this role for AI displacement risk with REAL, specific insights:
 
+**Role Analysis:**
 Job Title: {job_title}
-Skills: {', '.join(skills)}
-Years of Experience: {years_experience or 'Not specified'}
+Key Skills: {', '.join(skills)}
+Experience Level: {years_experience or 'Not specified'} years
 
-Provide a detailed analysis in JSON format with:
-1. score (0-100): Probability of AI displacement
-2. level: "Low" | "Medium" | "High" | "Critical"
-3. velocity: "Slow" | "Moderate" | "Rapid" | "Immediate"
-4. augmentation_potential: Brief description of how AI can augment this role
-5. reasoning: Detailed explanation (2-3 sentences)
+**Required Analysis Framework:**
 
-Consider:
-- Technical vs creative nature of work
-- Human interaction requirements
-- Decision-making complexity
-- Current AI capabilities in this domain
-- Industry automation trends
+1. **Displacement Score (0-100)**: Calculate based on:
+   - Routine vs. creative work ratio
+   - Automation feasibility of core tasks
+   - AI capability maturity in this field
+   - Human judgment requirements
+   - Interpersonal communication needs
 
-Return ONLY valid JSON, no markdown formatting.
-"""
+2. **Risk Level**: 
+   - Critical (80-100): Imminent automation, 1-2 years
+   - High (60-79): Significant disruption, 2-5 years
+   - Medium (40-59): Moderate evolution, 5-10 years
+   - Low (0-39): Minimal impact, 10+ years
+
+3. **Velocity**: Rate of change
+   - Immediate: Already happening
+   - Rapid: 1-3 years
+   - Moderate: 3-7 years
+   - Slow: 7+ years
+
+4. **Specific Insights**: Provide role-specific analysis, not generic statements
+
+Return STRICTLY valid JSON (no markdown, no explanations):
+{{
+    "ai_displacement_risk": {{
+        "score": <float between 0-100>,
+        "level": "<Low|Medium|High|Critical>",
+        "velocity": "<Slow|Moderate|Rapid|Immediate>",
+        "augmentation_potential": "<specific description of how NextAI can augment this role>",
+        "reasoning": "<2-3 sentences with SPECIFIC examples for THIS job, mention actual tasks that are/aren't automatable>"
+    }},
+    "compatibility_score": <float 0-100 representing human-AI collaboration potential>,
+    "human_advantage_factors": [
+        "<specific factor 1 for {job_title}>",
+        "<specific factor 2>",
+        "<specific factor 3>"
+    ],
+    "automation_vulnerable_tasks": [
+        "<task 1 that can be automated>",
+        "<task 2>"
+    ],
+    "automation_resistant_tasks": [
+        "<task 1 requiring human skills>",
+        "<task 2>"
+    ]
+}}
+
+BE SPECIFIC TO THE JOB. Avoid generic phrases. Use concrete examples."""
 
             response = self.model.generate_content(prompt)
             
@@ -163,30 +197,26 @@ Return ONLY valid JSON, no markdown formatting.
             cleaned_text = self._clean_json_response(response.text)
             result = json.loads(cleaned_text)
             
-            logger.info(f"Gemini displacement analysis complete for {job_title}")
+            # Validate that we got real data, not defaults
+            if result.get("ai_displacement_risk", {}).get("score", 50) == 50.0:
+                logger.warning(f"NextAI returned potentially generic score for {job_title}")
+            
+            logger.info(f"✅ NextAI displacement analysis complete for {job_title}: {result.get('ai_displacement_risk', {}).get('score', 'N/A')}%")
             return result
             
         except json.JSONDecodeError as e:
-            logger.error(f"JSON decode error in displacement analysis: {e}")
-            logger.error(f"Response text (first 200 chars): {response.text[:200] if 'response' in locals() else 'No response'}")
-            # Fallback response
-            return {
-                "score": 50.0,
-                "level": "Medium",
-                "velocity": "Moderate",
-                "augmentation_potential": "AI tools can enhance productivity in this role",
-                "reasoning": "Unable to parse AI response. Default risk assessment provided."
-            }
+            logger.error(f"JSON decode error in NextAI analysis: {e}")
+            logger.error(f"Response text: {response.text[:500] if 'response' in locals() else 'No response'}")
+            raise HTTPException(
+                status_code=500,
+                detail=f"NextAI analysis failed: Unable to parse response. Please try again."
+            )
         except Exception as e:
-            logger.error(f"Gemini displacement analysis error: {e}")
-            # Fallback response
-            return {
-                "score": 50.0,
-                "level": "Medium",
-                "velocity": "Moderate",
-                "augmentation_potential": "AI tools can enhance productivity in this role",
-                "reasoning": "Unable to complete full analysis. Default risk assessment provided."
-            }
+            logger.error(f"NextAI displacement analysis error: {e}")
+            raise HTTPException(
+                status_code=500,
+                detail=f"NextAI analysis encountered an error. Please try again."
+            )
 
     async def generate_skill_insights(
         self,

@@ -2,6 +2,157 @@
 @tailwind components;
 @tailwind utilities;
 
+/* NEXT Brand Color System */
+:root {
+  /* Primary Colors */
+  --next-deep-blue: #0B1D45;
+  --next-royal-blue: #1E3C78;
+  --next-gold: #CBA135;
+  
+  /* Background Colors */
+  --next-bg-light: #F4F6F8;
+  --next-bg-dark: #081835;
+  --next-bg-card: #FFFFFF;
+  
+  /* Text Colors */
+  --next-text-primary: #1A202C;
+  --next-text-secondary: #4A5568;
+  --next-text-muted: #B0B6C1;
+  --next-text-light: #FFFFFF;
+  
+  /* Gradient */
+  --next-gradient: linear-gradient(135deg, #1E3C78, #0B1D45);
+  --next-gradient-gold: linear-gradient(135deg, #CBA135, #E5C158);
+  
+  /* Shadows */
+  --next-shadow-sm: 0 2px 4px rgba(11, 29, 69, 0.1);
+  --next-shadow-md: 0 4px 6px rgba(11, 29, 69, 0.15);
+  --next-shadow-lg: 0 10px 15px rgba(11, 29, 69, 0.2);
+  --next-shadow-xl: 0 20px 25px rgba(11, 29, 69, 0.25);
+  --next-shadow-gold: 0 4px 20px rgba(203, 161, 53, 0.3);
+}
+
+/* Loading Animation for X Logo */
+@keyframes pulse-gold {
+  0%, 100% {
+    opacity: 1;
+    filter: drop-shadow(0 0 8px rgba(203, 161, 53, 0.6));
+  }
+  50% {
+    opacity: 0.6;
+    filter: drop-shadow(0 0 20px rgba(203, 161, 53, 0.9));
+  }
+}
+
+@keyframes rotate-slow {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes swoosh-slide {
+  0% {
+    transform: translateX(-100%) translateY(100%);
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(0) translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes spin-slow {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes bounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.next-logo-pulse {
+  animation: pulse-gold 2s ease-in-out infinite;
+}
+
+.next-logo-rotate {
+  animation: rotate-slow 3s linear infinite;
+}
+
+.next-swoosh-slide {
+  animation: swoosh-slide 1.2s ease-out forwards;
+}
+
+.animate-fade-in {
+  animation: fade-in 0.5s ease-out;
+}
+
+.animate-spin-slow {
+  animation: spin-slow 3s linear infinite;
+}
+
+.animate-bounce {
+  animation: bounce 2s ease-in-out infinite;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--next-bg-light);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--next-royal-blue);
+  border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--next-gold);
+}
+
+/* Smooth Transitions */
+* {
+  transition: color 0.2s ease, background-color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+}
+
+/* Gold Glow Effect */
+.gold-glow {
+  box-shadow: 0 0 15px rgba(203, 161, 53, 0.4);
+}
+
+.gold-glow:hover {
+  box-shadow: 0 0 25px rgba(203, 161, 53, 0.6);
+}
+
 :root {
   --foreground-rgb: 0, 0, 0;
   --background-start-rgb: 214, 219, 220;

@@ -20,8 +20,8 @@ async def health_check():
     services = {
         "api": "operational",
         "database": "unknown",
-        "gemini": "configured" if settings.GEMINI_API_KEY else "not_configured",
-        "onet": "configured" if settings.ONET_API_KEY else "not_configured"
+        "nextai": "configured" if settings.GEMINI_API_KEY else "not_configured",
+        "onet": "configured" if (settings.ONET_USERNAME and settings.ONET_PASSWORD) else "not_configured"
     }
     
     # Check Supabase database connection

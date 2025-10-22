@@ -57,12 +57,10 @@ export default function InterviewSetupPage() {
 
       const userId = localStorage.getItem('userId') || 'demo-user';
 
-      const response = await InterviewerAPI.startSession({
+      const response = await InterviewerAPI.startInterview({
         user_id: userId,
-        target_role: role,
-        seniority_level: seniority,
+        role_title: role,
         interview_type: interviewType,
-        num_questions: numQuestions,
       });
 
       // Store session ID and navigate to practice

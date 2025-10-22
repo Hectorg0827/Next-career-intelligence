@@ -27,6 +27,9 @@ python-multipart==0.0.9
 # Environment & Config
 python-dotenv==1.0.1
 
+# Email Service
+sendgrid==6.12.5
+
 # Logging & Monitoring
 loguru==0.7.2
 sentry-sdk==2.1.1

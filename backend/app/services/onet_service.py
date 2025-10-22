@@ -7,6 +7,7 @@ import httpx
 from loguru import logger
 from typing import List, Dict, Any, Optional
 from app.core.config import settings
+import base64
 
 
 class ONetService:
@@ -14,11 +15,19 @@ class ONetService:
     
     def __init__(self):
         self.base_url = settings.ONET_BASE_URL
-        self.api_key = settings.ONET_API_KEY
-        self.headers = {
-            "Authorization": f"Basic {self.api_key}",
-            "Accept": "application/json"
-        }
+        self.username = settings.ONET_USERNAME
+        self.password = settings.ONET_PASSWORD
+        
+        # Create Basic Auth header
+        if self.username and self.password:
+            credentials = f"{self.username}:{self.password}"
+            encoded = base64.b64encode(credentials.encode()).decode()
+            self.headers = {
+                "Authorization": f"Basic {encoded}",
+                "Accept": "application/json"
+            }
+        else:
+            self.headers = {"Accept": "application/json"}
     
     async def search_occupations(self, query: str, limit: int = 10) -> List[Dict[str, Any]]:
         """
@@ -26,8 +35,8 @@ class ONetService:
         Returns job title suggestions for autocomplete
         """
         
-        if not self.api_key:
-            logger.warning("O*NET API key not configured, using mock data")
+        if not self.username or not self.password:
+            logger.warning("O*NET credentials not configured, using mock data")
             return self._get_mock_occupations(query, limit)
         
         try:
@@ -63,8 +72,8 @@ class ONetService:
         Includes skills, tasks, and labor market info
         """
         
-        if not self.api_key:
-            logger.warning("O*NET API key not configured, using mock data")
+        if not self.username or not self.password:
+            logger.warning("O*NET credentials not configured, using mock data")
             return self._get_mock_occupation_data(job_title)
         
         try:

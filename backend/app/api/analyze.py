@@ -1,6 +1,6 @@
 """
 Career analysis endpoint - Core AI analysis functionality
-NOW USING GEMINI API INSTEAD OF OPENAI
+POWERED BY NEXTAI - Advanced Career Intelligence
 """
 
 from fastapi import APIRouter, Depends, HTTPException, status
@@ -9,10 +9,10 @@ import uuid
 from datetime import datetime
 
 from app.models.schemas import AnalysisRequest, AnalysisResponse
-from app.services.gemini_analyzer import GeminiAnalyzer  # CHANGED: Now using Gemini
+from app.services.gemini_analyzer import GeminiAnalyzer
 from app.services.onet_service import ONetService
 from app.services.coursera_service import CourseraService
-from app.db.supabase import SupabaseDB  # CHANGED: Now using Supabase
+from app.db.supabase import SupabaseDB
 
 router = APIRouter()
 
@@ -24,33 +24,33 @@ async def analyze_career(
 ):
     """
     Analyze career AI displacement risk and transition pathways
-    NOW POWERED BY GOOGLE GEMINI PRO 1.5
+    POWERED BY NEXTAI - Advanced Career Intelligence System
     """
     
     analysis_id = str(uuid.uuid4())  # Generate ID at start
     
     try:
-        logger.info(f"🤖 Starting Gemini analysis for job: {request.job_title} (ID: {analysis_id})")
+        logger.info(f"🤖 Starting NextAI analysis for job: {request.job_title} (ID: {analysis_id})")
         
-        # Initialize Gemini analyzer
-        gemini = GeminiAnalyzer()
+        # Initialize NextAI analyzer
+        nextai = GeminiAnalyzer()
         
-        # Get AI displacement risk analysis from Gemini
-        risk_analysis = await gemini.analyze_displacement_risk(
+        # Get AI displacement risk analysis from NextAI
+        risk_analysis = await nextai.analyze_displacement_risk(
             job_title=request.job_title,
             skills=request.skills,
             years_experience=request.years_experience
         )
         
-        # Get skill insights from Gemini
-        skill_insights = await gemini.generate_skill_insights(
+        # Get skill insights from NextAI
+        skill_insights = await nextai.generate_skill_insights(
             job_title=request.job_title,
             skills=request.skills,
             years_experience=request.years_experience
         )
         
-        # Get industry benchmarks from Gemini
-        benchmarks = await gemini.generate_industry_benchmarks(
+        # Get industry benchmarks from NextAI
+        benchmarks = await nextai.generate_industry_benchmarks(
             job_title=request.job_title,
             skills=request.skills,
             location=request.location,
@@ -61,15 +61,11 @@ async def analyze_career(
         analysis_result = {
             "analysis_id": analysis_id,
             "job_title": request.job_title,
-            "ai_displacement_risk": risk_analysis.get("ai_displacement_risk", {
-                "level": "Medium",
-                "score": 50.0,
-                "velocity": "Moderate",
-                "augmentation_potential": "Analysis in progress",
-                "reasoning": "Gemini analysis completed"
-            }),
-            "compatibility_score": risk_analysis.get("compatibility_score", 75.0),
+            "ai_displacement_risk": risk_analysis.get("ai_displacement_risk"),
+            "compatibility_score": risk_analysis.get("compatibility_score"),
             "human_advantage_factors": risk_analysis.get("human_advantage_factors", []),
+            "automation_vulnerable_tasks": risk_analysis.get("automation_vulnerable_tasks", []),
+            "automation_resistant_tasks": risk_analysis.get("automation_resistant_tasks", []),
             "transition_pathways": skill_insights.get("transition_pathways", []),
             "skill_gaps": skill_insights.get("skill_gaps", []),
             "recommended_training": skill_insights.get("recommended_training", []),
@@ -77,7 +73,7 @@ async def analyze_career(
             "metadata": {
                 "location": request.location,
                 "years_experience": request.years_experience,
-                "ai_engine": "gemini-1.5-pro",
+                "ai_engine": "NextAI",
                 "benchmarks": benchmarks
             }
         }
@@ -93,7 +89,7 @@ async def analyze_career(
                 detail="Failed to serialize analysis results. Invalid data format."
             )
         
-        logger.info(f"✅ Gemini analysis completed successfully: {analysis_id}")
+        logger.info(f"✅ NextAI analysis completed successfully: {analysis_id}")
         
         # Save to Supabase if user_id is available
         if user_id:

@@ -17,7 +17,7 @@ export default function SuggestionsPage() {
 
     try {
       const userId = localStorage.getItem('userId') || 'dev_user_123';
-      const response = await SuggestionsAPI.listSuggestions(userId);
+      const response = await SuggestionsAPI.getPendingSuggestions(userId);
       setSuggestions(response.suggestions || []);
     } catch (err: any) {
       console.error('Failed to fetch suggestions:', err);
