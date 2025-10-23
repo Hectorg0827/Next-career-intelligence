@@ -339,8 +339,8 @@ export default function DashboardPage() {
                       <h3 className="text-xl font-semibold mb-4">Skill Demand & Gaps</h3>
                       <ProgressTracker
                         overallScore={benchmarkData.benchmarks.skill_demand.overall_score}
-                        topSkills={benchmarkData.benchmarks.skill_demand.top_skills}
-                        skillGaps={benchmarkData.benchmarks.skill_demand.skill_gaps}
+                        topSkills={benchmarkData.benchmarks.skill_demand.top_skills || []}
+                        skillGaps={benchmarkData.benchmarks.skill_demand.skill_gaps || []}
                       />
                     </div>
                   )}
@@ -457,7 +457,7 @@ export default function DashboardPage() {
                           <div className="flex justify-between items-start mb-2">
                             <span className="font-semibold text-green-800">{skill.skill}</span>
                             <span className="text-sm text-green-600">
-                              {(skill.confidence * 100).toFixed(0)}% match
+                              {skill.confidence ? `${(skill.confidence * 100).toFixed(0)}% match` : ''}
                             </span>
                           </div>
                           <p className="text-sm text-next-text-muted font-body">{skill.reasoning}</p>
@@ -533,7 +533,7 @@ export default function DashboardPage() {
                 </p>
                 
                 <CareerSankeyDiagram 
-                  data={sankeyData}
+                  data={sankeyData as any}
                   currentRole={formData.jobTitle}
                 />
 

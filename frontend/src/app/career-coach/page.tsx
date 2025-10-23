@@ -7,8 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { useAuth } from '@/lib/auth-context';
-import { coachChat, getCoachConversations } from '@/lib/api';
-import apiClient from '@/lib/api';
+import { coachChat, getCoachConversations, deleteCoachConversation } from '@/lib/api';
 import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
 
@@ -202,7 +201,7 @@ export default function CareerCoachPage() {
     
     try {
       // Call API to delete
-      await apiClient.deleteCoachConversation(id);
+      await deleteCoachConversation(id);
       
       // Remove from local state
       setConversations(conversations.filter((c) => c.id !== id));
