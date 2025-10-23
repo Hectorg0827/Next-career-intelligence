@@ -53,6 +53,40 @@ async def create_user(user_data: UserCreate, db: Session = Depends(get_db)):
         )
 
 
+@router.get("/users/subscription", response_model=dict)
+async def get_user_subscription(
+    firebase_uid: str,
+    db: Session = Depends(get_db)
+):
+    """
+    Get user's subscription status and limits
+    """
+    try:
+        user = db.query(User).filter(User.firebase_uid == firebase_uid).first()
+        
+        if not user:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="User not found"
+            )
+        
+        return {
+            "subscription_status": user.subscription_status or "free",
+            "free_reports_used": user.free_reports_used or 0,
+            "stripe_customer_id": user.stripe_customer_id,
+            "last_free_analysis_at": user.last_free_analysis_at
+        }
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Failed to fetch subscription: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Failed to fetch subscription status"
+        )
+
+
 @router.get("/users/{user_id}/history", response_model=List[AnalysisHistoryItem])
 async def get_user_history(
     user_id: str,

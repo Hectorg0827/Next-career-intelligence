@@ -4,15 +4,18 @@ POWERED BY NEXTAI - Advanced Career Intelligence
 """
 
 from fastapi import APIRouter, Depends, HTTPException, status
+from sqlalchemy.orm import Session
 from loguru import logger
 import uuid
 from datetime import datetime
 
 from app.models.schemas import AnalysisRequest, AnalysisResponse
+from app.models.database import User
 from app.services.gemini_analyzer import GeminiAnalyzer
 from app.services.onet_service import ONetService
 from app.services.coursera_service import CourseraService
 from app.db.supabase import SupabaseDB
+from app.db.database import get_db
 
 router = APIRouter()
 
@@ -20,17 +23,49 @@ router = APIRouter()
 @router.post("/analyze", response_model=AnalysisResponse, status_code=status.HTTP_201_CREATED)
 async def analyze_career(
     request: AnalysisRequest,
-    user_id: str = None  # TODO: Get from auth token
+    firebase_uid: str = None,  # Optional for demo/testing
+    db: Session = Depends(get_db)
 ):
     """
     Analyze career AI displacement risk and transition pathways
     POWERED BY NEXTAI - Advanced Career Intelligence System
+    
+    SUBSCRIPTION GATING:
+    - Free users: 1 analysis total
+    - Pro users: Unlimited analyses
     """
     
     analysis_id = str(uuid.uuid4())  # Generate ID at start
     
     try:
+        # Fetch user and check subscription (skip if no firebase_uid for demo)
+        user = None
+        if firebase_uid:
+            user = db.query(User).filter(User.firebase_uid == firebase_uid).first()
+            
+            if not user:
+                raise HTTPException(
+                    status_code=status.HTTP_404_NOT_FOUND,
+                    detail="User not found"
+                )
+        
+        # Check subscription limits (only if user is logged in)
+        subscription_status = 'free'
+        free_reports_used = 0
+        
+        if user:
+            subscription_status = user.subscription_status or 'free'
+            free_reports_used = user.free_reports_used or 0
+            
+            if subscription_status == 'free' and free_reports_used >= 1:
+                raise HTTPException(
+                    status_code=status.HTTP_402_PAYMENT_REQUIRED,
+                    detail="Free analysis limit reached. Upgrade to Pro for unlimited analyses."
+                )
+        
+        user_email = user.email if user else "demo"
         logger.info(f"🤖 Starting NextAI analysis for job: {request.job_title} (ID: {analysis_id})")
+        logger.info(f"User: {user_email} | Tier: {subscription_status} | Reports used: {free_reports_used}")
         
         # Initialize NextAI analyzer
         nextai = GeminiAnalyzer()
@@ -91,16 +126,25 @@ async def analyze_career(
         
         logger.info(f"✅ NextAI analysis completed successfully: {analysis_id}")
         
-        # Save to Supabase if user_id is available
-        if user_id:
+        # Update user's free report counter if on free tier (only if user exists)
+        if user and subscription_status == 'free':
+            user.free_reports_used = free_reports_used + 1
+            user.last_free_analysis_at = datetime.utcnow()
+            db.commit()
+            logger.info(f"Updated free report counter: {user.free_reports_used}/1")
+        
+        # Save to Supabase if user exists
+        if user:
             try:
-                await SupabaseDB.save_analysis(user_id, analysis_result)
+                await SupabaseDB.save_analysis(str(user.id), analysis_result)
                 logger.info(f"💾 Analysis saved to Supabase: {analysis_id}")
             except Exception as e:
                 logger.warning(f"Failed to save analysis to Supabase: {e}")
         
         return AnalysisResponse(**analysis_result)
         
+    except HTTPException:
+        raise
     except Exception as e:
         error_msg = str(e).replace("{", "{{").replace("}", "}}")
         logger.error(f"Analysis failed for job {request.job_title}: {error_msg}", exc_info=True)

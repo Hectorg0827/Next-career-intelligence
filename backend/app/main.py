@@ -10,7 +10,7 @@ from loguru import logger
 import time
 from contextlib import asynccontextmanager
 
-from app.api import analyze, jobs, users, health, coach, interviewer, jobs_marketplace, subscriptions, roadmap, auth, onboarding
+from app.api import analyze, jobs, users, health, coach, interviewer, jobs_marketplace, subscriptions, roadmap, auth, onboarding, payments
 try:
     from app.api import resume_studio
 except ImportError:
@@ -104,6 +104,7 @@ app.include_router(analyze.router, prefix="/api", tags=["Analysis"])
 app.include_router(roadmap.router, prefix="/api", tags=["Career Roadmap"])
 app.include_router(jobs.router, prefix="/api", tags=["Jobs"])
 app.include_router(users.router, prefix="/api", tags=["Users"])
+app.include_router(payments.router, prefix="/api", tags=["Payments"])
 
 # Premium feature routers
 if resume_studio:

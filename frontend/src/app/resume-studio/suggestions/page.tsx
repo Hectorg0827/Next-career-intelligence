@@ -38,22 +38,22 @@ export default function SuggestionsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
-      <div className="max-w-6xl mx-auto px-4">
+    <div className="min-h-screen py-8 bg-gray-50">
+      <div className="max-w-6xl px-4 mx-auto">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Suggestions Inbox</h1>
+          <h1 className="mb-2 text-3xl font-bold text-gray-900">Suggestions Inbox</h1>
           <p className="text-gray-600">
             Review AI-generated suggestions from Career Coach and Interviewer AI
           </p>
         </div>
 
         {/* Info Banner */}
-        <div className="bg-purple-50 border border-purple-200 rounded-lg p-4 mb-8">
+        <div className="p-4 mb-8 border border-purple-200 rounded-lg bg-purple-50">
           <div className="flex items-start gap-3">
             <span className="text-2xl">💡</span>
             <div>
-              <h3 className="font-semibold text-purple-900 mb-1">How Suggestions Work</h3>
+              <h3 className="mb-1 font-semibold text-purple-900">How Suggestions Work</h3>
               <p className="text-sm text-purple-800">
                 As you use <strong>Career Coach</strong> and <strong>Interviewer AI</strong>, they
                 analyze your conversations and practice sessions to suggest improvements to your
@@ -66,19 +66,19 @@ export default function SuggestionsPage() {
 
         {/* Loading State */}
         {loading && (
-          <div className="text-center py-12">
-            <div className="inline-block animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-purple-600 mb-4"></div>
+          <div className="py-12 text-center">
+            <div className="inline-block w-12 h-12 mb-4 border-t-2 border-b-2 border-purple-600 rounded-full animate-spin"></div>
             <p className="text-gray-600">Loading suggestions...</p>
           </div>
         )}
 
         {/* Error State */}
         {error && (
-          <div className="bg-red-50 border border-red-200 rounded-lg p-6 text-center">
-            <p className="text-red-800 font-medium">❌ {error}</p>
+          <div className="p-6 text-center border border-red-200 rounded-lg bg-red-50">
+            <p className="font-medium text-red-800">❌ {error}</p>
             <button
               onClick={fetchSuggestions}
-              className="mt-4 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700"
+              className="px-4 py-2 mt-4 text-white bg-red-600 rounded-lg hover:bg-red-700"
             >
               Try Again
             </button>

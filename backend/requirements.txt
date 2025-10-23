@@ -30,6 +30,9 @@ python-dotenv==1.0.1
 # Email Service
 sendgrid==6.12.5
 
+# Payment Processing
+stripe==11.1.0
+
 # Logging & Monitoring
 loguru==0.7.2
 sentry-sdk==2.1.1
@@ -65,9 +68,6 @@ slowapi==0.1.9
 # Premium Features Dependencies
 # Firebase Admin SDK (Authentication)
 firebase-admin==6.5.0
-
-# Stripe (Subscription Management)
-stripe==8.0.0
 
 # File Parsing
 PyPDF2==3.0.1

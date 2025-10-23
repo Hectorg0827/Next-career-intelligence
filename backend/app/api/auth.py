@@ -379,6 +379,75 @@ async def verify_email(request: EmailVerificationRequest, background_tasks: Back
         )
 
 
+@router.post("/resend-verification", response_model=AuthResponse)
+async def resend_verification(request: EmailVerificationRequest, background_tasks: BackgroundTasks):
+    """
+    Resend verification email with new code
+    
+    Steps:
+    1. Find user by email
+    2. Check if already verified
+    3. Generate new verification code
+    4. Store new code
+    5. Send verification email
+    """
+    try:
+        logger.info(f"📧 Resending verification code to: {request.email}")
+        
+        db_client = get_db_client()
+        
+        # Find user by email
+        user = await db_client.get_user_by_email(request.email)
+        if not user:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="User not found"
+            )
+        
+        # Check if already verified
+        if user.get('email_verified', False):
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Email is already verified"
+            )
+        
+        # Generate new 6-digit verification code
+        verification_code = ''.join([str(secrets.randbelow(10)) for _ in range(6)])
+        
+        # Store verification code with 15 min expiration
+        await db_client.create_verification_code(
+            user_id=user['id'],
+            code=verification_code,
+            expires_at=datetime.utcnow() + timedelta(minutes=15)
+        )
+        
+        # Send verification email in background
+        email_service = get_email_service()
+        background_tasks.add_task(
+            email_service.send_verification_email,
+            request.email,
+            user['full_name'],
+            verification_code
+        )
+        
+        logger.info(f"✅ Verification code resent to: {request.email}")
+        
+        return AuthResponse(
+            success=True,
+            message="Verification code resent successfully. Check your email.",
+            token=None
+        )
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"❌ Resend verification error: {str(e)}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Failed to resend verification code"
+        )
+
+
 @router.post("/request-password-reset", response_model=AuthResponse)
 async def request_password_reset(request: PasswordResetRequest, background_tasks: BackgroundTasks):
     """

@@ -1,11 +1,13 @@
 'use client';
 
-import { useState } from 'react';
-import { Check, X, ArrowRight, Zap, CreditCard, AlertCircle } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { Check, X, ArrowRight, Zap, CreditCard, AlertCircle, Loader2, ExternalLink } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { apiClient } from '@/lib/api';
+import { auth } from '@/lib/firebase';
 
 interface Plan {
   id: string;
@@ -24,18 +26,59 @@ interface Subscription {
   startDate: string;
   nextBillingDate: string;
   price: number;
+  period?: 'monthly' | 'yearly'; // Added period field
 }
 
 export default function SubscriptionPage() {
-  const [currentSubscription, setCurrentSubscription] = useState<Subscription>({
-    planId: 'pro',
-    status: 'active',
-    startDate: '2025-09-20',
-    nextBillingDate: '2025-11-20',
-    price: 29.99,
-  });
+  const [currentSubscription, setCurrentSubscription] = useState<Subscription | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [portalLoading, setPortalLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const [billingCycle, setBillingCycle] = useState<'monthly' | 'yearly'>('monthly');
+
+  // Fetch real subscription data
+  useEffect(() => {
+    const fetchSubscription = async () => {
+      try {
+        const user = auth.currentUser;
+        if (!user) {
+          setLoading(false);
+          return;
+        }
+
+        const data = await apiClient.getSubscriptionStatus(user.uid);
+        setCurrentSubscription(data);
+      } catch (err: any) {
+        console.error('Failed to fetch subscription:', err);
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchSubscription();
+  }, []);
+
+  // Open Stripe Customer Portal
+  const handleManageSubscription = async () => {
+    try {
+      setPortalLoading(true);
+      const user = auth.currentUser;
+      if (!user) {
+        throw new Error('Please sign in to manage your subscription');
+      }
+
+      const { url } = await apiClient.createPortalSession(
+        user.uid,
+        window.location.href
+      );
+      window.location.href = url;
+    } catch (err: any) {
+      setError(err.message);
+      setPortalLoading(false);
+    }
+  };
 
   const plans: Plan[] = [
     {
@@ -55,7 +98,7 @@ export default function SubscriptionPage() {
         excluded: ['Advanced analytics', 'Priority support', 'Unlimited interviews', 'API access'],
       },
       cta: 'Your Current Plan',
-      highlighted: currentSubscription.planId === 'free',
+      highlighted: currentSubscription?.planId === 'free',
     },
     {
       id: 'pro',
@@ -66,18 +109,17 @@ export default function SubscriptionPage() {
       features: {
         included: [
           'Unlimited career analyses',
-          'Advanced job search with AI matching',
-          'Unlimited interview practice',
-          '24/7 career coach access',
-          'Monthly skill assessment',
+          'AI Career Coach (unlimited)',
+          'Advanced job marketplace',
+          'Interview AI with voice',
+          'Resume optimization',
+          'Skills gap analysis',
           'Priority email support',
-          'Resume optimization tool',
-          'Salary negotiation guide',
         ],
-        excluded: ['Phone support', 'Custom training plans'],
+        excluded: ['Team features', 'Custom integrations'],
       },
-      cta: currentSubscription.planId === 'pro' ? 'Current Plan' : 'Upgrade',
-      highlighted: currentSubscription.planId === 'pro',
+      cta: currentSubscription?.planId === 'pro' ? 'Current Plan' : 'Upgrade',
+      highlighted: currentSubscription?.planId === 'pro',
     },
     {
       id: 'enterprise',
@@ -100,7 +142,7 @@ export default function SubscriptionPage() {
         excluded: [],
       },
       cta: 'Contact Sales',
-      highlighted: currentSubscription.planId === 'enterprise',
+      highlighted: currentSubscription?.planId === 'enterprise',
     },
   ];
 
@@ -112,23 +154,33 @@ export default function SubscriptionPage() {
         <p className="text-xl text-slate-400">Choose the perfect plan for your career journey</p>
       </div>
 
+      {/* Loading State */}
+      {loading && (
+        <div className="flex justify-center items-center py-12">
+          <Loader2 className="w-8 h-8 animate-spin text-blue-500" />
+          <span className="ml-3 text-slate-400">Loading subscription details...</span>
+        </div>
+      )}
+
       {/* Current Subscription */}
-      {currentSubscription.status === 'active' && (
+      {!loading && currentSubscription && currentSubscription.status === 'active' && (
         <Card className="bg-gradient-to-r from-blue-600/20 to-purple-600/20 border-blue-500/30 mb-12">
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
                 <div className="flex items-center gap-2 mb-2">
                   <Check className="w-5 h-5 text-green-400" />
-                  <p className="text-white font-semibold">Active Subscription</p>
+                  <p className="text-white font-semibold">Active Subscription - Pro Plan</p>
                 </div>
                 <p className="text-slate-300">
-                  Your Pro plan renews on {new Date(currentSubscription.nextBillingDate).toLocaleDateString()}
+                  Your plan renews on {currentSubscription.nextBillingDate 
+                    ? new Date(currentSubscription.nextBillingDate).toLocaleDateString()
+                    : 'N/A'}
                 </p>
               </div>
               <div className="text-right">
-                <p className="text-3xl font-bold text-white">${currentSubscription.price}</p>
-                <p className="text-slate-400 text-sm">per month</p>
+                <p className="text-3xl font-bold text-white">${currentSubscription.price || 29}</p>
+                <p className="text-slate-400 text-sm">per {currentSubscription.period || 'month'}</p>
               </div>
             </div>
           </CardContent>
@@ -188,15 +240,15 @@ export default function SubscriptionPage() {
                     ? 'bg-blue-600 hover:bg-blue-700 text-white'
                     : 'bg-slate-700 hover:bg-slate-600 text-white'
                 }`}
-                disabled={currentSubscription.planId === plan.id}
+                disabled={currentSubscription?.planId === plan.id}
               >
                 {plan.cta}
-                {plan.id !== currentSubscription.planId && <ArrowRight className="w-4 h-4 ml-2" />}
+                {plan.id !== currentSubscription?.planId && <ArrowRight className="w-4 h-4 ml-2" />}
               </Button>
 
               {/* Features */}
               <div className="space-y-3">
-                <p className="text-sm font-semibold text-slate-300 mb-3">What's included:</p>
+                <p className="text-sm font-semibold text-slate-300 mb-3">What&apos;s included:</p>
                 {plan.features.included.map((feature) => (
                   <div key={feature} className="flex items-start gap-3">
                     <Check className="w-5 h-5 text-green-400 flex-shrink-0 mt-0.5" />
@@ -258,7 +310,7 @@ export default function SubscriptionPage() {
               <CardTitle className="text-lg">Do you offer refunds?</CardTitle>
             </CardHeader>
             <CardContent className="text-slate-300">
-              We offer a 14-day money-back guarantee. If you're not satisfied, we'll refund your payment.
+              We offer a 14-day money-back guarantee. If you&apos;re not satisfied, we&apos;ll refund your payment.
             </CardContent>
           </Card>
         </div>
@@ -274,25 +326,58 @@ export default function SubscriptionPage() {
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
+            {error && (
+              <div className="p-3 bg-red-500/20 border border-red-500/30 rounded-lg text-red-200 text-sm">
+                {error}
+              </div>
+            )}
+
             <div>
-              <p className="text-slate-400 text-sm mb-1">Payment Method</p>
-              <p className="text-white">Visa ending in 4242</p>
-              <Button variant="link" className="text-blue-400 p-0 h-auto">
-                Update Payment Method
+              <p className="text-slate-400 text-sm mb-3">
+                Manage your subscription, update payment methods, and view invoices in the Stripe Customer Portal
+              </p>
+              <Button 
+                onClick={handleManageSubscription}
+                disabled={portalLoading || !currentSubscription}
+                className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
+              >
+                {portalLoading ? (
+                  <>
+                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                    Opening Portal...
+                  </>
+                ) : (
+                  <>
+                    <ExternalLink className="w-4 h-4 mr-2" />
+                    Manage Subscription in Stripe
+                  </>
+                )}
               </Button>
             </div>
 
-            <div className="pt-4 border-t border-slate-700">
-              <p className="text-slate-400 text-sm mb-2">Actions</p>
-              <div className="space-y-2">
-                <Button variant="outline" className="w-full justify-start">
-                  Download Invoice
-                </Button>
-                <Button variant="outline" className="w-full justify-start">
-                  Cancel Subscription
-                </Button>
+            {currentSubscription && (
+              <div className="pt-4 border-t border-slate-700">
+                <p className="text-slate-400 text-sm mb-2">In the portal you can:</p>
+                <ul className="space-y-1 text-slate-300 text-sm">
+                  <li className="flex items-center gap-2">
+                    <Check className="w-4 h-4 text-green-400" />
+                    Update payment method
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <Check className="w-4 h-4 text-green-400" />
+                    View and download invoices
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <Check className="w-4 h-4 text-green-400" />
+                    Cancel or reactivate subscription
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <Check className="w-4 h-4 text-green-400" />
+                    Update billing information
+                  </li>
+                </ul>
               </div>
-            </div>
+            )}
           </CardContent>
         </Card>
       </div>

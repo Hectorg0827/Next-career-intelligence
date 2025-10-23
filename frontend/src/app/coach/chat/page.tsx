@@ -1,7 +1,11 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import { CareerCoachAPI } from '@/lib/api/premiumAPI';
+import { useAuth } from '@/hooks/useAuth';
+import { useSubscription } from '@/hooks/useSubscription';
+import { useRouter, useSearchParams } from 'next/navigation';
+import Link from 'next/link';
+import { Lock, Sparkles, MessageSquare } from 'lucide-react';
 
 interface Message {
   id: string;
@@ -12,6 +16,11 @@ interface Message {
 }
 
 export default function CoachChatPage() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const { user, loading: authLoading } = useAuth();
+  const { isPro, canUseCoach, loading: subLoading } = useSubscription();
+  
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputMessage, setInputMessage] = useState('');
   const [loading, setLoading] = useState(false);
@@ -19,16 +28,113 @@ export default function CoachChatPage() {
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    // Add welcome message
-    setMessages([
-      {
+    // Check authentication and subscription
+    if (!authLoading && !subLoading) {
+      if (!user) {
+        router.push('/auth/login');
+        return;
+      }
+      if (!canUseCoach) {
+        router.push('/pricing');
+        return;
+      }
+      
+      // Check if loading existing conversation
+      const conversationIdParam = searchParams?.get('conversation_id');
+      if (conversationIdParam) {
+        loadConversation(conversationIdParam);
+      } else if (!conversationId) {
+        startConversation();
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [authLoading, subLoading, user, canUseCoach]);
+
+  const startConversation = async () => {
+    if (!user) return;
+    
+    setLoading(true);
+    try {
+      const token = localStorage.getItem('authToken');
+      if (!token) throw new Error('No auth token');
+      
+      const response = await fetch('http://localhost:8000/api/coach/conversations/start', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          firebase_uid: user.uid,
+          career_context: {}
+        })
+      });
+
+      if (!response.ok) throw new Error('Failed to start conversation');
+
+      const data = await response.json();
+      setConversationId(data.conversation_id);
+      setMessages([{
+        id: '1',
+        role: 'assistant',
+        content: data.message,
+        timestamp: new Date(data.timestamp),
+      }]);
+    } catch (error: any) {
+      console.error('Error starting conversation:', error);
+      setMessages([{
         id: '1',
         role: 'assistant',
         content: "Hi! I'm your AI Career Coach. I'm here to help you with career advice, goal setting, and professional development. What would you like to discuss today?",
         timestamp: new Date(),
-      },
-    ]);
-  }, []);
+      }]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const loadConversation = async (convId: string) => {
+    if (!user) return;
+    
+    setLoading(true);
+    try {
+      const token = localStorage.getItem('authToken');
+      if (!token) throw new Error('No auth token');
+      
+      const response = await fetch(
+        `http://localhost:8000/api/coach/conversations/${convId}?firebase_uid=${user.uid}`,
+        {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          }
+        }
+      );
+
+      if (!response.ok) throw new Error('Failed to load conversation');
+
+      const data = await response.json();
+      setConversationId(convId);
+      
+      // Convert messages to Message format
+      const conversationMessages: Message[] = data.messages.map((msg: any) => ({
+        id: msg.id,
+        role: msg.role,
+        content: msg.content,
+        timestamp: new Date(msg.created_at),
+        suggestions: msg.suggestions
+      }));
+      
+      setMessages(conversationMessages);
+    } catch (error: any) {
+      console.error('Error loading conversation:', error);
+      // Start new conversation if loading fails
+      startConversation();
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
     scrollToBottom();
@@ -40,7 +146,7 @@ export default function CoachChatPage() {
 
   const handleSendMessage = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!inputMessage.trim() || loading) return;
+    if (!inputMessage.trim() || loading || !user || !conversationId) return;
 
     const userMessage: Message = {
       id: Date.now().toString(),
@@ -50,29 +156,36 @@ export default function CoachChatPage() {
     };
 
     setMessages((prev) => [...prev, userMessage]);
+    const messageToSend = inputMessage;
     setInputMessage('');
     setLoading(true);
 
     try {
-      const userId = localStorage.getItem('userId') || 'demo-user';
+      const token = localStorage.getItem('authToken');
+      if (!token) throw new Error('No auth token');
 
-      const response = await CareerCoachAPI.chat({
-        user_id: userId,
-        conversation_id: conversationId || undefined,
-        message: inputMessage,
-        conversation_type: 'general',
+      const response = await fetch('http://localhost:8000/api/coach/conversations/message', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          firebase_uid: user.uid,
+          conversation_id: conversationId,
+          message: messageToSend
+        })
       });
 
-      if (!conversationId && response.conversation_id) {
-        setConversationId(response.conversation_id);
-      }
+      if (!response.ok) throw new Error('Failed to send message');
+
+      const data = await response.json();
 
       const assistantMessage: Message = {
         id: (Date.now() + 1).toString(),
         role: 'assistant',
-        content: response.response || response.message,
-        timestamp: new Date(),
-        suggestions: response.profile_updates || response.suggestions,
+        content: data.message,
+        timestamp: new Date(data.timestamp),
       };
 
       setMessages((prev) => [...prev, assistantMessage]);
@@ -100,6 +213,39 @@ export default function CoachChatPage() {
     setInputMessage(prompt);
   };
 
+  // Show loading state while checking auth
+  if (authLoading || subLoading) {
+    return (
+      <div className="h-screen flex items-center justify-center bg-gray-50">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Show upgrade prompt if not Pro
+  if (!canUseCoach) {
+    return (
+      <div className="h-screen flex items-center justify-center bg-gray-50 p-4">
+        <div className="bg-white rounded-2xl shadow-xl p-8 max-w-md text-center">
+          <Sparkles className="w-16 h-16 text-purple-600 mx-auto mb-4" />
+          <h1 className="text-2xl font-bold text-gray-900 mb-2">Upgrade to Pro</h1>
+          <p className="text-gray-600 mb-6">
+            The AI Career Coach is a premium feature. Upgrade to Pro for unlimited access.
+          </p>
+          <button
+            onClick={() => router.push('/pricing')}
+            className="bg-purple-600 text-white px-6 py-3 rounded-lg hover:bg-purple-700 transition-colors w-full"
+          >
+            Upgrade to Pro
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="h-screen flex flex-col bg-gray-50">
       {/* Header */}
@@ -116,12 +262,25 @@ export default function CoachChatPage() {
               <p className="text-sm text-gray-600">Online • Ready to help</p>
             </div>
           </div>
-          <a
-            href="/coach/goals"
-            className="px-4 py-2 border border-purple-600 text-purple-600 rounded-lg font-medium hover:bg-purple-50 transition-colors"
-          >
-            View Goals
-          </a>
+          <div className="flex items-center gap-3">
+            <Link
+              href="/coach/conversations"
+              className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg font-medium hover:bg-gray-50 transition-colors flex items-center gap-2"
+            >
+              <MessageSquare className="w-4 h-4" />
+              Conversations
+            </Link>
+            <button
+              onClick={() => {
+                setConversationId(undefined);
+                setMessages([]);
+                setInputMessage('');
+              }}
+              className="px-4 py-2 bg-purple-600 text-white rounded-lg font-medium hover:bg-purple-700 transition-colors"
+            >
+              New Chat
+            </button>
+          </div>
         </div>
       </div>
 
