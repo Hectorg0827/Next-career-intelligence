@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Lock, Eye, EyeOff, CheckCircle, AlertCircle, Loader2, ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
-import { apiClient } from '@/lib/api';
+import { api } from '@/lib/api';
 
 export default function ResetPasswordPage() {
   const router = useRouter();
@@ -49,7 +49,7 @@ export default function ResetPasswordPage() {
     setLoading(true);
 
     try {
-      await apiClient.resetPassword({
+      await api.auth.resetPassword({
         email,
         reset_code: code,
         new_password: newPassword

@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Mail, CheckCircle, AlertCircle, Loader2, ArrowRight, RefreshCw } from 'lucide-react';
 import Link from 'next/link';
-import { apiClient } from '@/lib/api';
+import { api } from '@/lib/api';
 
 export default function VerifyEmailPage() {
   const router = useRouter();
@@ -48,7 +48,7 @@ export default function VerifyEmailPage() {
     setLoading(true);
 
     try {
-      const response = await apiClient.verifyEmail({
+      const response = await api.auth.verifyEmail({
         email,
         verification_code: verificationCode
       });
@@ -81,7 +81,7 @@ export default function VerifyEmailPage() {
     setResendLoading(true);
 
     try {
-      await apiClient.resendVerification({ email: email! });
+      await api.auth.resendVerification({ email: email! });
       
       setResendMessage('Verification code resent! Check your email.');
       setCountdown(60);
