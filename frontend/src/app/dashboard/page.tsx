@@ -615,7 +615,7 @@ export default function DashboardPage() {
                         <div className="bg-gray-50 p-4 rounded-lg">
                           <h5 className="font-semibold mb-2">Alternative Paths:</h5>
                           <ul className="text-sm text-next-text-muted font-body list-disc list-inside">
-                            {pathway.alternative_paths.map((altPath, idx) => (
+                            {pathway.alternative_paths.map((altPath: any, idx: number) => (
                               <li key={idx}>{altPath}</li>
                             ))}
                           </ul>
