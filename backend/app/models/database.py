@@ -97,10 +97,92 @@ class CoachMessage(Base):
     
     # Metadata
     suggestions = Column(JSONB, nullable=True)  # Quick reply suggestions
-    metadata = Column(JSONB, nullable=True)  # Additional context
+    message_metadata = Column(JSONB, nullable=True)  # Additional context
     
     # Timestamps
     created_at = Column(DateTime, default=datetime.utcnow, nullable=False, index=True)
     
     # Relationships
     conversation = relationship("Conversation", back_populates="messages")
+
+
+# ============================================================================
+# Job Marketplace Models
+# ============================================================================
+
+class Job(Base):
+    """Job listing model"""
+    __tablename__ = "jobs"
+
+    id = Column(String(50), primary_key=True)
+    title = Column(String(255), nullable=False, index=True)
+    company = Column(String(255), nullable=False, index=True)
+    description = Column(Text, nullable=True)
+    location = Column(String(255), nullable=True)
+    remote_type = Column(String(50), nullable=True)  # 'remote', 'hybrid', 'on_site'
+    salary_min = Column(Float, nullable=True)
+    salary_max = Column(Float, nullable=True)
+    salary_currency = Column(String(10), default="USD")
+    required_skills = Column(JSON, nullable=True)
+    experience_level = Column(String(50), nullable=True)  # 'entry', 'mid', 'senior'
+    job_type = Column(String(50), nullable=True)  # 'full_time', 'part_time', 'contract'
+    company_logo_url = Column(String(500), nullable=True)
+    job_url = Column(String(500), nullable=True)
+    source = Column(String(50), nullable=False, index=True)  # 'github', 'onet', 'manual'
+    external_id = Column(String(255), nullable=True)
+    is_active = Column(String(10), default="active")
+    created_at = Column(DateTime, default=datetime.utcnow)
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+
+class JobApplication(Base):
+    """Job application tracking model"""
+    __tablename__ = "job_applications"
+
+    id = Column(String(50), primary_key=True)
+    user_id = Column(String(255), nullable=False, index=True)  # Firebase UID
+    job_id = Column(String(50), ForeignKey("jobs.id", ondelete="CASCADE"), nullable=False, index=True)
+    status = Column(String(50), default="applied", index=True)  # applied, rejected, interview, offered
+    match_score = Column(Float, nullable=True)  # 0-100
+    skill_gaps = Column(JSON, nullable=True)
+    recommended_prep = Column(Text, nullable=True)
+    interview_date = Column(DateTime, nullable=True)
+    interview_notes = Column(Text, nullable=True)
+    offer_salary = Column(Float, nullable=True)
+    offer_status = Column(String(50), nullable=True)  # 'pending', 'accepted', 'declined'
+    rejection_reason = Column(Text, nullable=True)
+    applied_at = Column(DateTime, default=datetime.utcnow)
+    created_at = Column(DateTime, default=datetime.utcnow)
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+
+class SavedJob(Base):
+    """User's saved/bookmarked jobs model"""
+    __tablename__ = "saved_jobs"
+
+    id = Column(String(50), primary_key=True)
+    user_id = Column(String(255), nullable=False, index=True)  # Firebase UID
+    job_id = Column(String(50), ForeignKey("jobs.id", ondelete="CASCADE"), nullable=False, index=True)
+    saved_at = Column(DateTime, default=datetime.utcnow)
+    notes = Column(Text, nullable=True)  # User's personal notes
+
+
+class JobAlertPreferences(Base):
+    """User's job alert preferences and search filters"""
+    __tablename__ = "job_alert_preferences"
+
+    id = Column(String(50), primary_key=True)
+    user_id = Column(String(255), nullable=False, unique=True, index=True)  # Firebase UID
+    job_title_keywords = Column(JSON, nullable=True)
+    locations = Column(JSON, nullable=True)
+    remote_types = Column(JSON, nullable=True)  # 'remote', 'hybrid', 'on_site'
+    min_salary = Column(Float, nullable=True)
+    max_salary = Column(Float, nullable=True)
+    experience_levels = Column(JSON, nullable=True)
+    required_skills = Column(JSON, nullable=True)
+    excluded_keywords = Column(JSON, nullable=True)
+    min_match_score = Column(Float, default=0.5)  # Minimum match % to alert
+    email_alerts_enabled = Column(String(10), default="true")
+    alert_frequency = Column(String(50), default="daily")  # 'instant', 'daily', 'weekly'
+    created_at = Column(DateTime, default=datetime.utcnow)
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)

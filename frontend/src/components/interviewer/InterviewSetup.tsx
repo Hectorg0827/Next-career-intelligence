@@ -204,7 +204,7 @@ export function InterviewSetupComponent({ onStart, isLoading }: InterviewSetupPr
         disabled={
           !setup.jobRole.trim() || setup.topics.length === 0 || isLoading
         }
-        className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white py-6 text-lg"
+        className="w-full bg-gradient-to-r from-blue-600 to-gold-primary hover:from-blue-700 hover:to-gold-accent text-white py-6 text-lg"
       >
         {isLoading ? 'Starting Interview...' : 'Start Interview'}
       </Button>

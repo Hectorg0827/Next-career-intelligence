@@ -204,7 +204,7 @@ export default function ProfileView({ profile, onEdit, editable = true }: Profil
         >
           <div className="space-y-4">
             {profile_data.projects.map((project, idx) => (
-              <div key={idx} className="border-l-4 border-purple-600 pl-4">
+              <div key={idx} className="border-l-4 border-gold-primary pl-4">
                 <div className="flex justify-between items-start">
                   <h4 className="text-lg font-semibold text-gray-900">{project.name}</h4>
                   {project.url && (
@@ -218,7 +218,7 @@ export default function ProfileView({ profile, onEdit, editable = true }: Profil
                 {project.tech_stack && project.tech_stack.length > 0 && (
                   <div className="mt-2 flex flex-wrap gap-2">
                     {project.tech_stack.map((tech, tIdx) => (
-                      <span key={tIdx} className="px-2 py-1 bg-purple-100 text-purple-800 text-xs rounded">
+                      <span key={tIdx} className="px-2 py-1 bg-silver-light text-purple-800 text-xs rounded">
                         {tech}
                       </span>
                     ))}

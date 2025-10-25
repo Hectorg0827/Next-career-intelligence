@@ -46,7 +46,7 @@ export function InterviewFeedback({
               <p className="text-slate-400 mb-2">Overall Score</p>
               <p className="text-5xl font-bold text-white">{overallScore}%</p>
             </div>
-            <div className="w-32 h-32 rounded-full bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center">
+            <div className="w-32 h-32 rounded-full bg-gradient-to-br from-blue-500 to-royal-blue flex items-center justify-center">
               <span className={`text-4xl font-bold ${getScoreColor(overallScore)}`}>
                 {overallScore}
               </span>

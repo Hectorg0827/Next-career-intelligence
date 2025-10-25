@@ -109,7 +109,7 @@ export default function PricingPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-900 via-purple-900 to-blue-900 py-12 px-4">
+    <div className="min-h-screen bg-gradient-to-br from-royal-navy via-royal-navy to-blue-900 py-12 px-4">
       <div className="max-w-7xl mx-auto">
         {/* Error Message */}
         {error && (
@@ -122,7 +122,7 @@ export default function PricingPage() {
         <div className="text-center mb-12">
           <h1 className="text-5xl md:text-6xl font-bold text-white mb-4">
             Choose Your Path to
-            <span className="block bg-gradient-to-r from-yellow-400 via-pink-400 to-purple-400 bg-clip-text text-transparent">
+            <span className="block bg-gradient-to-r from-yellow-400 via-gold-hover to-gold-hover bg-clip-text text-transparent">
               Career Success
             </span>
           </h1>
@@ -136,7 +136,7 @@ export default function PricingPage() {
               onClick={() => setBillingCycle('monthly')}
               className={`px-6 py-2 rounded-full font-medium transition-all ${
                 billingCycle === 'monthly'
-                  ? 'bg-white text-purple-900'
+                  ? 'bg-white text-royal-navy'
                   : 'text-white hover:text-white/80'
               }`}
             >
@@ -146,7 +146,7 @@ export default function PricingPage() {
               onClick={() => setBillingCycle('yearly')}
               className={`px-6 py-2 rounded-full font-medium transition-all ${
                 billingCycle === 'yearly'
-                  ? 'bg-white text-purple-900'
+                  ? 'bg-white text-royal-navy'
                   : 'text-white hover:text-white/80'
               }`}
             >
@@ -172,7 +172,7 @@ export default function PricingPage() {
                 {/* Popular Badge */}
                 {plan.badge && (
                   <div className="absolute -top-4 left-1/2 -translate-x-1/2">
-                    <div className="bg-gradient-to-r from-yellow-400 to-orange-500 text-purple-900 px-4 py-1 rounded-full text-sm font-bold">
+                    <div className="bg-gradient-to-r from-yellow-400 to-orange-500 text-royal-navy px-4 py-1 rounded-full text-sm font-bold">
                       {plan.badge}
                     </div>
                   </div>
@@ -218,7 +218,7 @@ export default function PricingPage() {
                   disabled={loading === plan.name}
                   className={`w-full py-4 rounded-xl font-semibold transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed ${
                     plan.popular
-                      ? 'bg-gradient-to-r from-yellow-400 to-orange-500 text-purple-900 hover:shadow-xl hover:shadow-yellow-400/30'
+                      ? 'bg-gradient-to-r from-yellow-400 to-orange-500 text-royal-navy hover:shadow-xl hover:shadow-yellow-400/30'
                       : 'bg-white/10 text-white hover:bg-white/20 border border-white/20'
                   }`}
                 >

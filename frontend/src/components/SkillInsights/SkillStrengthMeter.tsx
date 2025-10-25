@@ -125,11 +125,11 @@ const SkillStrengthMeter: React.FC<SkillStrengthMeterProps> = ({ skillStrength }
             </motion.div>
 
             <motion.div 
-              className="p-4 rounded-xl bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-900/30 dark:to-purple-800/30 border border-purple-200 dark:border-purple-700"
+              className="p-4 rounded-xl bg-gradient-to-br from-silver-soft to-silver-light dark:from-royal-navy/30 dark:to-purple-800/30 border border-silver-soft dark:border-gold-accent"
               whileHover={{ scale: 1.05 }}
               transition={{ type: 'spring', stiffness: 300 }}
             >
-              <div className="text-3xl font-bold text-purple-600 dark:text-purple-400">
+              <div className="text-3xl font-bold text-gold-primary dark:text-gold-hover">
                 {Math.round(skillStrength.skill_diversity * 100)}%
               </div>
               <div className="text-sm text-gray-700 dark:text-gray-300 font-medium mt-1">

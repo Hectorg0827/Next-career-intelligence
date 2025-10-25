@@ -10,7 +10,7 @@ from loguru import logger
 import time
 from contextlib import asynccontextmanager
 
-from app.api import analyze, jobs, users, health, coach, interviewer, jobs_marketplace, subscriptions, roadmap, auth, onboarding, payments
+from app.api import analyze, jobs, users, health, coach, interviewer, jobs_marketplace, subscriptions, roadmap, auth, onboarding, marketplace, resume_studio
 try:
     from app.api import resume_studio
 except ImportError:
@@ -104,7 +104,7 @@ app.include_router(analyze.router, prefix="/api", tags=["Analysis"])
 app.include_router(roadmap.router, prefix="/api", tags=["Career Roadmap"])
 app.include_router(jobs.router, prefix="/api", tags=["Jobs"])
 app.include_router(users.router, prefix="/api", tags=["Users"])
-app.include_router(payments.router, prefix="/api", tags=["Payments"])
+app.include_router(resume_studio.router, prefix="/api", tags=["Resume Studio"])
 
 # Premium feature routers
 if resume_studio:
@@ -115,6 +115,9 @@ app.include_router(subscriptions.router, prefix="/api", tags=["Subscription Mana
 
 # Jobs Marketplace (360° Career Builder)
 app.include_router(jobs_marketplace.router, prefix="/api", tags=["Jobs Marketplace - 360°"])
+
+# Jobs Marketplace v2 (New Endpoints)
+app.include_router(marketplace.router, tags=["Job Marketplace - Search & Apply"])
 
 
 # Root endpoint

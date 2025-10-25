@@ -1,12 +1,14 @@
 """AI Career Coach API - ChatGPT-style Conversational Chatbot"""
 
 from fastapi import APIRouter, HTTPException, Depends, status
+from fastapi.responses import StreamingResponse
 from sqlalchemy.orm import Session
 from typing import Optional, Dict
 from datetime import datetime
 from loguru import logger
 from pydantic import BaseModel
 import uuid
+import json
 
 from app.db.database import get_db
 from app.models.database import User, Conversation, CoachMessage

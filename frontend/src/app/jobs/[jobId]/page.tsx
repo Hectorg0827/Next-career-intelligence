@@ -274,13 +274,13 @@ export default function JobDetailsPage() {
 
             {/* Goal Relevance */}
             {matchJob.relevant_goals && matchJob.relevant_goals.length > 0 && (
-              <div className="mt-6 p-4 bg-purple-50 rounded-lg">
+              <div className="mt-6 p-4 bg-silver-soft rounded-lg">
                 <h3 className="font-semibold text-gray-900 mb-2">Helps You Achieve</h3>
                 <ul className="space-y-2">
                   {matchJob.relevant_goals.map((goal) => (
                     <li key={goal.goal_id} className="text-purple-800">
                       <div className="font-medium">{goal.goal_title}</div>
-                      <div className="text-sm text-purple-600">
+                      <div className="text-sm text-gold-primary">
                         Matches: {goal.overlap_keywords.join(', ')}
                       </div>
                     </li>

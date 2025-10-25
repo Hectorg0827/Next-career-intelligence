@@ -109,8 +109,8 @@ export default function ResetPasswordPage() {
           {/* Header */}
           <div className="text-center mb-8">
             <div className="flex justify-center mb-4">
-              <div className="w-16 h-16 bg-purple-500/20 rounded-full flex items-center justify-center">
-                <Lock className="w-8 h-8 text-purple-400" />
+              <div className="w-16 h-16 bg-royal-blue/20 rounded-full flex items-center justify-center">
+                <Lock className="w-8 h-8 text-gold-hover" />
               </div>
             </div>
             <h1 className="text-3xl font-bold text-white mb-2">Reset Password</h1>
@@ -138,7 +138,7 @@ export default function ResetPasswordPage() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                className="w-full px-4 py-3 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                className="w-full px-4 py-3 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-royal-blue"
                 placeholder="Enter your email"
               />
             </div>
@@ -153,7 +153,7 @@ export default function ResetPasswordPage() {
                 onChange={handleCodeChange}
                 required
                 maxLength={6}
-                className="w-full px-4 py-3 bg-slate-700 border border-slate-600 rounded-lg text-white text-center text-2xl tracking-widest font-mono placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                className="w-full px-4 py-3 bg-slate-700 border border-slate-600 rounded-lg text-white text-center text-2xl tracking-widest font-mono placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-royal-blue"
                 placeholder="000000"
               />
               <p className="text-slate-400 text-xs mt-1">
@@ -172,7 +172,7 @@ export default function ResetPasswordPage() {
                   onChange={(e) => setNewPassword(e.target.value)}
                   required
                   minLength={6}
-                  className="w-full px-4 py-3 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                  className="w-full px-4 py-3 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-royal-blue"
                   placeholder="Enter new password"
                 />
                 <button
@@ -203,7 +203,7 @@ export default function ResetPasswordPage() {
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   required
                   minLength={6}
-                  className="w-full px-4 py-3 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                  className="w-full px-4 py-3 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-royal-blue"
                   placeholder="Confirm new password"
                 />
                 <button
@@ -223,7 +223,7 @@ export default function ResetPasswordPage() {
             <button
               type="submit"
               disabled={loading || !email || !code || !newPassword || !confirmPassword}
-              className="w-full flex items-center justify-center gap-2 px-6 py-3 bg-purple-600 hover:bg-purple-700 text-white font-semibold rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full flex items-center justify-center gap-2 px-6 py-3 bg-gold-primary hover:bg-gold-accent text-white font-semibold rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {loading ? (
                 <>
@@ -255,7 +255,7 @@ export default function ResetPasswordPage() {
         <div className="mt-6 text-center">
           <p className="text-slate-400 text-sm">
             Didn&apos;t receive a code?{' '}
-            <Link href="/auth/forgot-password" className="text-purple-400 hover:text-purple-300">
+            <Link href="/auth/forgot-password" className="text-gold-hover hover:text-purple-300">
               Resend code
             </Link>
           </p>

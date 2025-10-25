@@ -9,7 +9,7 @@ import Link from 'next/link';
 const STATUS_CONFIG = {
   submitted: { label: 'Submitted', color: 'bg-blue-100 text-blue-800', icon: '📤' },
   screening: { label: 'Screening', color: 'bg-yellow-100 text-yellow-800', icon: '📋' },
-  interview: { label: 'Interview', color: 'bg-purple-100 text-purple-800', icon: '🎤' },
+  interview: { label: 'Interview', color: 'bg-silver-light text-purple-800', icon: '🎤' },
   offer: { label: 'Offer', color: 'bg-green-100 text-green-800', icon: '🎉' },
   rejected: { label: 'Rejected', color: 'bg-red-100 text-red-800', icon: '❌' },
   accepted: { label: 'Accepted', color: 'bg-green-100 text-green-800', icon: '✅' },
@@ -97,7 +97,7 @@ export default function ApplicationsPage() {
           <StatCard label="Total" value={stats.total} color="bg-gray-100 text-gray-800" />
           <StatCard label="Submitted" value={stats.submitted} color="bg-blue-100 text-blue-800" />
           <StatCard label="Screening" value={stats.screening} color="bg-yellow-100 text-yellow-800" />
-          <StatCard label="Interview" value={stats.interview} color="bg-purple-100 text-purple-800" />
+          <StatCard label="Interview" value={stats.interview} color="bg-silver-light text-purple-800" />
           <StatCard label="Offers" value={stats.offer} color="bg-green-100 text-green-800" />
           <StatCard label="Rejected" value={stats.rejected} color="bg-red-100 text-red-800" />
         </div>

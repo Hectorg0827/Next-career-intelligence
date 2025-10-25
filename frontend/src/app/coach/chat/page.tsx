@@ -218,7 +218,7 @@ export default function CoachChatPage() {
     return (
       <div className="h-screen flex items-center justify-center bg-gray-50">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600 mx-auto mb-4"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gold-primary mx-auto mb-4"></div>
           <p className="text-gray-600">Loading...</p>
         </div>
       </div>
@@ -230,14 +230,14 @@ export default function CoachChatPage() {
     return (
       <div className="h-screen flex items-center justify-center bg-gray-50 p-4">
         <div className="bg-white rounded-2xl shadow-xl p-8 max-w-md text-center">
-          <Sparkles className="w-16 h-16 text-purple-600 mx-auto mb-4" />
+          <Sparkles className="w-16 h-16 text-gold-primary mx-auto mb-4" />
           <h1 className="text-2xl font-bold text-gray-900 mb-2">Upgrade to Pro</h1>
           <p className="text-gray-600 mb-6">
             The AI Career Coach is a premium feature. Upgrade to Pro for unlimited access.
           </p>
           <button
             onClick={() => router.push('/pricing')}
-            className="bg-purple-600 text-white px-6 py-3 rounded-lg hover:bg-purple-700 transition-colors w-full"
+            className="bg-gold-primary text-white px-6 py-3 rounded-lg hover:bg-gold-accent transition-colors w-full"
           >
             Upgrade to Pro
           </button>
@@ -252,8 +252,8 @@ export default function CoachChatPage() {
       <div className="bg-white border-b border-gray-200 px-6 py-4">
         <div className="max-w-5xl mx-auto flex items-center justify-between">
           <div className="flex items-center">
-            <div className="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center mr-3">
-              <svg className="h-6 w-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="w-10 h-10 bg-silver-light rounded-full flex items-center justify-center mr-3">
+              <svg className="h-6 w-6 text-gold-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
               </svg>
             </div>
@@ -276,7 +276,7 @@ export default function CoachChatPage() {
                 setMessages([]);
                 setInputMessage('');
               }}
-              className="px-4 py-2 bg-purple-600 text-white rounded-lg font-medium hover:bg-purple-700 transition-colors"
+              className="px-4 py-2 bg-gold-primary text-white rounded-lg font-medium hover:bg-gold-accent transition-colors"
             >
               New Chat
             </button>
@@ -292,16 +292,16 @@ export default function CoachChatPage() {
           ))}
           {loading && (
             <div className="flex items-start">
-              <div className="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center mr-3 flex-shrink-0">
-                <svg className="h-6 w-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="w-10 h-10 bg-silver-light rounded-full flex items-center justify-center mr-3 flex-shrink-0">
+                <svg className="h-6 w-6 text-gold-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
                 </svg>
               </div>
               <div className="bg-white rounded-2xl rounded-tl-none px-6 py-4 shadow-sm">
                 <div className="flex space-x-2">
-                  <div className="w-2 h-2 bg-purple-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
-                  <div className="w-2 h-2 bg-purple-400 rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></div>
-                  <div className="w-2 h-2 bg-purple-400 rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></div>
+                  <div className="w-2 h-2 bg-gold-hover rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
+                  <div className="w-2 h-2 bg-gold-hover rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></div>
+                  <div className="w-2 h-2 bg-gold-hover rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></div>
                 </div>
               </div>
             </div>
@@ -320,7 +320,7 @@ export default function CoachChatPage() {
                 <button
                   key={idx}
                   onClick={() => handleQuickPrompt(prompt)}
-                  className="px-4 py-2 bg-purple-50 text-purple-700 rounded-full text-sm font-medium hover:bg-purple-100 transition-colors"
+                  className="px-4 py-2 bg-silver-soft text-gold-accent rounded-full text-sm font-medium hover:bg-silver-light transition-colors"
                 >
                   {prompt}
                 </button>
@@ -340,12 +340,12 @@ export default function CoachChatPage() {
               onChange={(e) => setInputMessage(e.target.value)}
               placeholder="Ask me anything about your career..."
               disabled={loading}
-              className="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent disabled:bg-gray-100 disabled:cursor-not-allowed"
+              className="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-royal-blue focus:border-transparent disabled:bg-gray-100 disabled:cursor-not-allowed"
             />
             <button
               type="submit"
               disabled={loading || !inputMessage.trim()}
-              className="px-6 py-3 bg-purple-600 text-white rounded-lg font-medium hover:bg-purple-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors flex items-center"
+              className="px-6 py-3 bg-gold-primary text-white rounded-lg font-medium hover:bg-gold-accent disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors flex items-center"
             >
               {loading ? (
                 <>
@@ -374,8 +374,8 @@ function MessageBubble({ message }: { message: Message }) {
   return (
     <div className={`flex items-start ${isUser ? 'justify-end' : 'justify-start'}`}>
       {!isUser && (
-        <div className="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center mr-3 flex-shrink-0">
-          <svg className="h-6 w-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <div className="w-10 h-10 bg-silver-light rounded-full flex items-center justify-center mr-3 flex-shrink-0">
+          <svg className="h-6 w-6 text-gold-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
           </svg>
         </div>
@@ -384,7 +384,7 @@ function MessageBubble({ message }: { message: Message }) {
         <div
           className={`rounded-2xl px-6 py-4 ${
             isUser
-              ? 'bg-purple-600 text-white rounded-tr-none'
+              ? 'bg-gold-primary text-white rounded-tr-none'
               : 'bg-white text-gray-900 rounded-tl-none shadow-sm'
           }`}
         >

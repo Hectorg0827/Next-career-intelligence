@@ -31,7 +31,7 @@ const PathwayVisualization: React.FC<PathwayVisualizationProps> = ({
     if (year === 0) return { bg: 'bg-gray-500', ring: 'ring-gray-300' };
     if (year <= 3) return { bg: 'bg-green-500', ring: 'ring-green-300' };
     if (year <= 5) return { bg: 'bg-blue-500', ring: 'ring-blue-300' };
-    return { bg: 'bg-purple-500', ring: 'ring-purple-300' };
+    return { bg: 'bg-royal-blue', ring: 'ring-purple-300' };
   };
 
   const isNodeActive = (year: number) => {
@@ -48,7 +48,7 @@ const PathwayVisualization: React.FC<PathwayVisualizationProps> = ({
 
       <div className="relative">
         {/* Timeline Line */}
-        <div className="absolute top-12 left-0 right-0 h-1 bg-gradient-to-r from-gray-300 via-blue-300 to-purple-300 dark:from-gray-600 dark:via-blue-600 dark:to-purple-600" />
+        <div className="absolute top-12 left-0 right-0 h-1 bg-gradient-to-r from-gray-300 via-blue-300 to-purple-300 dark:from-gray-600 dark:via-blue-600 dark:to-gold-primary" />
 
         {/* Nodes */}
         <div className="relative flex justify-between items-start">

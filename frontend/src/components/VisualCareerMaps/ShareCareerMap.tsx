@@ -43,7 +43,7 @@ export default function ShareCareerMap({ careerData }: ShareCareerMapProps) {
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl border border-blue-200 p-4"
+      className="bg-gradient-to-r from-blue-50 to-silver-soft rounded-xl border border-blue-200 p-4"
     >
       <h4 className="text-sm font-bold text-gray-900 mb-3 flex items-center gap-2">
         <span>📤</span>

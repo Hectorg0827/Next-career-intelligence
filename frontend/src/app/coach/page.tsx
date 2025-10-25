@@ -4,7 +4,7 @@ import Link from 'next/link';
 
 export default function CoachLandingPage() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 to-blue-50 py-12">
+    <div className="min-h-screen bg-gradient-to-br from-silver-soft to-blue-50 py-12">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="text-center mb-12">
@@ -20,9 +20,9 @@ export default function CoachLandingPage() {
         <div className="grid md:grid-cols-2 gap-6 mb-12">
           {/* Chat Card */}
           <Link href="/coach/chat">
-            <div className="bg-white rounded-xl shadow-lg p-8 hover:shadow-xl transition-shadow cursor-pointer border-2 border-transparent hover:border-purple-500">
-              <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mb-6">
-                <svg className="h-8 w-8 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="bg-white rounded-xl shadow-lg p-8 hover:shadow-xl transition-shadow cursor-pointer border-2 border-transparent hover:border-royal-blue">
+              <div className="w-16 h-16 bg-silver-light rounded-full flex items-center justify-center mb-6">
+                <svg className="h-8 w-8 text-gold-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
                 </svg>
               </div>
@@ -30,7 +30,7 @@ export default function CoachLandingPage() {
               <p className="text-gray-600 mb-4">
                 Have a conversation with your AI career coach. Get personalized advice on career moves, skill development, and job search strategies.
               </p>
-              <div className="flex items-center text-purple-600 font-medium">
+              <div className="flex items-center text-gold-primary font-medium">
                 Start Chatting
                 <svg className="ml-2 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
@@ -66,8 +66,8 @@ export default function CoachLandingPage() {
           <h2 className="text-2xl font-bold text-gray-900 mb-6 text-center">How It Works</h2>
           <div className="grid md:grid-cols-3 gap-8">
             <div className="text-center">
-              <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="text-xl font-bold text-purple-600">1</span>
+              <div className="w-12 h-12 bg-silver-light rounded-full flex items-center justify-center mx-auto mb-4">
+                <span className="text-xl font-bold text-gold-primary">1</span>
               </div>
               <h3 className="font-semibold text-gray-900 mb-2">Share Your Situation</h3>
               <p className="text-gray-600 text-sm">
@@ -75,8 +75,8 @@ export default function CoachLandingPage() {
               </p>
             </div>
             <div className="text-center">
-              <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="text-xl font-bold text-purple-600">2</span>
+              <div className="w-12 h-12 bg-silver-light rounded-full flex items-center justify-center mx-auto mb-4">
+                <span className="text-xl font-bold text-gold-primary">2</span>
               </div>
               <h3 className="font-semibold text-gray-900 mb-2">Get Personalized Advice</h3>
               <p className="text-gray-600 text-sm">
@@ -84,8 +84,8 @@ export default function CoachLandingPage() {
               </p>
             </div>
             <div className="text-center">
-              <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="text-xl font-bold text-purple-600">3</span>
+              <div className="w-12 h-12 bg-silver-light rounded-full flex items-center justify-center mx-auto mb-4">
+                <span className="text-xl font-bold text-gold-primary">3</span>
               </div>
               <h3 className="font-semibold text-gray-900 mb-2">Take Action</h3>
               <p className="text-gray-600 text-sm">

@@ -287,7 +287,7 @@ function STARComponent({ label, value, color, icon }: { label: string; value: st
   const colorClasses = {
     green: 'bg-green-100 text-green-600 border-green-200',
     blue: 'bg-blue-100 text-blue-600 border-blue-200',
-    purple: 'bg-purple-100 text-purple-600 border-purple-200',
+    purple: 'bg-silver-light text-gold-primary border-silver-soft',
     orange: 'bg-orange-100 text-orange-600 border-orange-200',
   };
 

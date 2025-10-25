@@ -92,7 +92,7 @@ const SkillInsightsPanel: React.FC<SkillInsightsPanelProps> = ({
         className="mb-8 text-center"
         variants={itemVariants}
       >
-        <h2 className="text-4xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent mb-2">
+        <h2 className="text-4xl font-bold bg-gradient-to-r from-blue-600 via-gold-primary to-gold-accent bg-clip-text text-transparent mb-2">
           Your Skill Intelligence
         </h2>
         <p className="text-gray-600 dark:text-gray-400 text-lg">
@@ -128,7 +128,7 @@ const SkillInsightsPanel: React.FC<SkillInsightsPanelProps> = ({
 
       {/* Beautiful footer with encouragement */}
       <motion.div 
-        className="mt-12 p-6 rounded-2xl bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 border border-blue-200 dark:border-blue-700"
+        className="mt-12 p-6 rounded-2xl bg-gradient-to-r from-blue-50 to-silver-soft dark:from-blue-900/20 dark:to-royal-navy/20 border border-blue-200 dark:border-blue-700"
         variants={itemVariants}
       >
         <div className="flex items-start space-x-4">

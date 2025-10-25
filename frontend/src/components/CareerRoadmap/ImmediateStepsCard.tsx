@@ -18,7 +18,7 @@ const ImmediateStepsCard: React.FC<ImmediateStepsCardProps> = ({ steps }) => {
   const phases = [
     { key: 'month_1_3', label: 'Months 1-3', icon: '🏃', color: 'from-green-500 to-emerald-600', actions: steps.month_1_3 },
     { key: 'month_4_6', label: 'Months 4-6', icon: '🚴', color: 'from-blue-500 to-cyan-600', actions: steps.month_4_6 },
-    { key: 'month_7_12', label: 'Months 7-12', icon: '🚀', color: 'from-purple-500 to-pink-600', actions: steps.month_7_12 }
+    { key: 'month_7_12', label: 'Months 7-12', icon: '🚀', color: 'from-royal-blue to-gold-accent', actions: steps.month_7_12 }
   ];
 
   return (

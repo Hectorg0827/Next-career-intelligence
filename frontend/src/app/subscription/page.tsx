@@ -164,7 +164,7 @@ export default function SubscriptionPage() {
 
       {/* Current Subscription */}
       {!loading && currentSubscription && currentSubscription.status === 'active' && (
-        <Card className="bg-gradient-to-r from-blue-600/20 to-purple-600/20 border-blue-500/30 mb-12">
+        <Card className="bg-gradient-to-r from-blue-600/20 to-gold-primary/20 border-blue-500/30 mb-12">
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
@@ -339,7 +339,7 @@ export default function SubscriptionPage() {
               <Button 
                 onClick={handleManageSubscription}
                 disabled={portalLoading || !currentSubscription}
-                className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
+                className="w-full bg-gradient-to-r from-blue-600 to-gold-primary hover:from-blue-700 hover:to-gold-accent"
               >
                 {portalLoading ? (
                   <>

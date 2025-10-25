@@ -149,8 +149,8 @@ export default function JobsLandingPage() {
         </div>
 
         {/* Info Box */}
-        <div className="mt-16 bg-purple-50 border border-purple-200 rounded-lg p-8">
-          <h3 className="text-xl font-semibold text-purple-900 mb-4">
+        <div className="mt-16 bg-silver-soft border border-silver-soft rounded-lg p-8">
+          <h3 className="text-xl font-semibold text-royal-navy mb-4">
             🚀 How It Works
           </h3>
           <div className="grid md:grid-cols-3 gap-6">

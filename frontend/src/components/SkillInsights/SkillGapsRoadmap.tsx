@@ -182,7 +182,7 @@ const SkillGapsRoadmap: React.FC<SkillGapsRoadmapProps> = ({ skillGaps }) => {
                       <span className="px-2 py-1 rounded-lg text-xs font-semibold text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700">
                         ⏱️ {gap.estimated_learning_time}
                       </span>
-                      <span className="px-2 py-1 rounded-lg text-xs font-semibold text-purple-700 dark:text-purple-300 bg-purple-100 dark:bg-purple-900/30">
+                      <span className="px-2 py-1 rounded-lg text-xs font-semibold text-gold-accent dark:text-purple-300 bg-silver-light dark:bg-royal-navy/30">
                         📊 {gap.market_demand} Demand
                       </span>
                     </div>
@@ -229,7 +229,7 @@ const SkillGapsRoadmap: React.FC<SkillGapsRoadmapProps> = ({ skillGaps }) => {
       </div>
 
       {/* Action CTA */}
-      <div className="mt-6 p-5 rounded-xl bg-gradient-to-r from-green-50 via-blue-50 to-purple-50 dark:from-green-900/20 dark:via-blue-900/20 dark:to-purple-900/20 border-2 border-green-300 dark:border-green-700">
+      <div className="mt-6 p-5 rounded-xl bg-gradient-to-r from-green-50 via-blue-50 to-silver-soft dark:from-green-900/20 dark:via-blue-900/20 dark:to-royal-navy/20 border-2 border-green-300 dark:border-green-700">
         <div className="flex items-start space-x-4">
           <span className="text-3xl flex-shrink-0">🎓</span>
           <div className="flex-1">
@@ -241,7 +241,7 @@ const SkillGapsRoadmap: React.FC<SkillGapsRoadmapProps> = ({ skillGaps }) => {
               skills. These will have the biggest impact on your career opportunities. Check out personalized 
               training recommendations below!
             </p>
-            <button className="px-4 py-2 rounded-lg bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold hover:shadow-lg transition-all hover:scale-105">
+            <button className="px-4 py-2 rounded-lg bg-gradient-to-r from-blue-600 to-gold-primary text-white font-semibold hover:shadow-lg transition-all hover:scale-105">
               View Training Courses →
             </button>
           </div>

@@ -41,9 +41,9 @@ export default function ProgressTracker({
 
   const getScoreGradient = (score: number) => {
     if (score >= 80) return 'from-green-500 to-emerald-600';
-    if (score >= 60) return 'from-blue-500 to-indigo-600';
+    if (score >= 60) return 'from-blue-500 to-royal-blue';
     if (score >= 40) return 'from-yellow-500 to-orange-600';
-    return 'from-red-500 to-pink-600';
+    return 'from-red-500 to-gold-accent';
   };
 
   const getImportanceColor = (importance: string) => {
@@ -57,7 +57,7 @@ export default function ProgressTracker({
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.2 }}
-      className="bg-gradient-to-br from-white to-purple-50 rounded-2xl border-2 border-purple-200 p-6 shadow-lg"
+      className="bg-gradient-to-br from-white to-silver-soft rounded-2xl border-2 border-silver-soft p-6 shadow-lg"
     >
       {/* Header with overall score */}
       <div className="flex items-center justify-between mb-6">
@@ -190,9 +190,9 @@ export default function ProgressTracker({
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 1 }}
-        className="mt-6 bg-gradient-to-r from-purple-100 to-pink-100 border border-purple-300 rounded-xl p-4"
+        className="mt-6 bg-gradient-to-r from-silver-light to-pink-100 border border-purple-300 rounded-xl p-4"
       >
-        <p className="text-sm text-purple-900">
+        <p className="text-sm text-royal-navy">
           <strong>💡 Action Item:</strong> Focus on the high-importance gaps first. 
           These skills are in demand and will significantly boost your market value!
         </p>

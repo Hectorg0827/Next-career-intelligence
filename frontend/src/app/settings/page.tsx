@@ -274,7 +274,7 @@ export default function SettingsPage() {
         {/* Password & Security */}
         <div className="bg-slate-800 border border-slate-700 rounded-xl p-6 mb-6">
           <div className="flex items-center gap-3 mb-6">
-            <Lock className="w-6 h-6 text-purple-400" />
+            <Lock className="w-6 h-6 text-gold-hover" />
             <h2 className="text-2xl font-bold text-white">Password & Security</h2>
           </div>
 
@@ -285,7 +285,7 @@ export default function SettingsPage() {
                 type="password"
                 value={passwordData.currentPassword}
                 onChange={(e) => setPasswordData({ ...passwordData, currentPassword: e.target.value })}
-                className="w-full px-4 py-3 bg-slate-700 border border-slate-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
+                className="w-full px-4 py-3 bg-slate-700 border border-slate-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-royal-blue"
                 placeholder="Enter current password"
               />
             </div>
@@ -296,7 +296,7 @@ export default function SettingsPage() {
                 type="password"
                 value={passwordData.newPassword}
                 onChange={(e) => setPasswordData({ ...passwordData, newPassword: e.target.value })}
-                className="w-full px-4 py-3 bg-slate-700 border border-slate-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
+                className="w-full px-4 py-3 bg-slate-700 border border-slate-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-royal-blue"
                 placeholder="Enter new password"
               />
             </div>
@@ -307,7 +307,7 @@ export default function SettingsPage() {
                 type="password"
                 value={passwordData.confirmPassword}
                 onChange={(e) => setPasswordData({ ...passwordData, confirmPassword: e.target.value })}
-                className="w-full px-4 py-3 bg-slate-700 border border-slate-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
+                className="w-full px-4 py-3 bg-slate-700 border border-slate-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-royal-blue"
                 placeholder="Confirm new password"
               />
             </div>
@@ -315,7 +315,7 @@ export default function SettingsPage() {
             <button
               type="submit"
               disabled={loading || !passwordData.currentPassword || !passwordData.newPassword}
-              className="flex items-center gap-2 px-6 py-3 bg-purple-600 hover:bg-purple-700 text-white font-semibold rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="flex items-center gap-2 px-6 py-3 bg-gold-primary hover:bg-gold-accent text-white font-semibold rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {loading ? (
                 <>

@@ -62,7 +62,7 @@ const TransferableSkillsCard: React.FC<TransferableSkillsCardProps> = ({
                 onClick={() => setSelectedSkill(isSelected ? null : skill)}
                 className={`w-full text-left p-4 rounded-xl border-2 transition-all hover:shadow-lg ${
                   isSelected 
-                    ? `${colors.border} bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20` 
+                    ? `${colors.border} bg-gradient-to-r from-blue-50 to-silver-soft dark:from-blue-900/20 dark:to-royal-navy/20` 
                     : 'border-gray-200 dark:border-gray-700 hover:border-blue-300 dark:hover:border-blue-600'
                 }`}
               >

@@ -61,7 +61,7 @@ export default function GoalsPage() {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600 mx-auto mb-4"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gold-primary mx-auto mb-4"></div>
           <p className="text-gray-600">Loading your goals...</p>
         </div>
       </div>
@@ -87,7 +87,7 @@ export default function GoalsPage() {
               </Link>
               <button
                 onClick={() => setShowCreateModal(true)}
-                className="px-4 py-2 bg-purple-600 text-white rounded-lg font-medium hover:bg-purple-700 transition-colors flex items-center"
+                className="px-4 py-2 bg-gold-primary text-white rounded-lg font-medium hover:bg-gold-accent transition-colors flex items-center"
               >
                 <svg className="h-5 w-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
@@ -114,7 +114,7 @@ export default function GoalsPage() {
           </div>
           <div className="bg-white rounded-lg shadow-md p-6">
             <div className="text-sm text-gray-600 mb-1">Avg Progress</div>
-            <div className="text-3xl font-bold text-purple-600">{Math.round(stats.avgProgress)}%</div>
+            <div className="text-3xl font-bold text-gold-primary">{Math.round(stats.avgProgress)}%</div>
           </div>
         </div>
 
@@ -125,7 +125,7 @@ export default function GoalsPage() {
               onClick={() => setFilterStatus('all')}
               className={`px-6 py-3 font-medium border-b-2 transition-colors ${
                 filterStatus === 'all'
-                  ? 'border-purple-600 text-purple-600'
+                  ? 'border-gold-primary text-gold-primary'
                   : 'border-transparent text-gray-600 hover:text-gray-900'
               }`}
             >
@@ -135,7 +135,7 @@ export default function GoalsPage() {
               onClick={() => setFilterStatus('active')}
               className={`px-6 py-3 font-medium border-b-2 transition-colors ${
                 filterStatus === 'active'
-                  ? 'border-purple-600 text-purple-600'
+                  ? 'border-gold-primary text-gold-primary'
                   : 'border-transparent text-gray-600 hover:text-gray-900'
               }`}
             >
@@ -145,7 +145,7 @@ export default function GoalsPage() {
               onClick={() => setFilterStatus('completed')}
               className={`px-6 py-3 font-medium border-b-2 transition-colors ${
                 filterStatus === 'completed'
-                  ? 'border-purple-600 text-purple-600'
+                  ? 'border-gold-primary text-gold-primary'
                   : 'border-transparent text-gray-600 hover:text-gray-900'
               }`}
             >
@@ -182,7 +182,7 @@ export default function GoalsPage() {
             </p>
             <button
               onClick={() => setShowCreateModal(true)}
-              className="inline-flex items-center px-6 py-3 bg-purple-600 text-white rounded-lg font-medium hover:bg-purple-700"
+              className="inline-flex items-center px-6 py-3 bg-gold-primary text-white rounded-lg font-medium hover:bg-gold-accent"
             >
               <svg className="h-5 w-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
@@ -296,7 +296,7 @@ function GoalCard({ goal, onUpdate }: { goal: Goal; onUpdate: () => void }) {
           </button>
           <Link
             href="/coach/chat"
-            className="px-4 py-2 border border-purple-600 text-purple-600 rounded-lg font-medium hover:bg-purple-50 transition-colors"
+            className="px-4 py-2 border border-gold-primary text-gold-primary rounded-lg font-medium hover:bg-silver-soft transition-colors"
           >
             Discuss with Coach
           </Link>
@@ -349,7 +349,7 @@ function CreateGoalModal({ onClose, onCreated }: { onClose: () => void; onCreate
           </button>
           <Link
             href="/coach/chat"
-            className="flex-1 text-center px-4 py-2 bg-purple-600 text-white rounded-lg font-medium hover:bg-purple-700 transition-colors"
+            className="flex-1 text-center px-4 py-2 bg-gold-primary text-white rounded-lg font-medium hover:bg-gold-accent transition-colors"
           >
             Go to Coach
           </Link>

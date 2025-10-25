@@ -80,7 +80,7 @@ export default function BenchmarkChart({
             { label: '25th', value: p25, color: 'bg-gray-300' },
             { label: '50th', value: p50, color: 'bg-blue-400' },
             { label: '75th', value: p75, color: 'bg-green-400' },
-            { label: '90th', value: p90, color: 'bg-purple-400' }
+            { label: '90th', value: p90, color: 'bg-gold-hover' }
           ].map((item, index) => {
             const height = getPosition(item.value);
             return (

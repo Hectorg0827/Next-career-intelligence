@@ -50,7 +50,7 @@ const ExplanationPanel: React.FC<ExplanationPanelProps> = ({
       <motion.div
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
-        className={`rounded-xl bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 border-2 border-blue-200 dark:border-blue-700 ${sizeClasses[size]}`}
+        className={`rounded-xl bg-gradient-to-r from-blue-50 to-silver-soft dark:from-blue-900/20 dark:to-royal-navy/20 border-2 border-blue-200 dark:border-blue-700 ${sizeClasses[size]}`}
       >
         <div className="flex items-start space-x-3">
           <span className="text-2xl flex-shrink-0">{icon}</span>
@@ -73,7 +73,7 @@ const ExplanationPanel: React.FC<ExplanationPanelProps> = ({
       <div>
         <motion.button
           onClick={() => setIsExpanded(!isExpanded)}
-          className={`rounded-lg font-semibold bg-gradient-to-r from-blue-500 to-purple-600 text-white hover:shadow-lg transition-all flex items-center space-x-2 ${buttonSizeClasses[size]}`}
+          className={`rounded-lg font-semibold bg-gradient-to-r from-blue-500 to-gold-primary text-white hover:shadow-lg transition-all flex items-center space-x-2 ${buttonSizeClasses[size]}`}
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
         >
@@ -90,7 +90,7 @@ const ExplanationPanel: React.FC<ExplanationPanelProps> = ({
               transition={{ duration: 0.3 }}
               className="overflow-hidden"
             >
-              <div className={`rounded-xl bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 border-2 border-blue-200 dark:border-blue-700 ${sizeClasses[size]}`}>
+              <div className={`rounded-xl bg-gradient-to-r from-blue-50 to-silver-soft dark:from-blue-900/20 dark:to-royal-navy/20 border-2 border-blue-200 dark:border-blue-700 ${sizeClasses[size]}`}>
                 <div className="flex items-start space-x-3">
                   <svg className="w-6 h-6 text-blue-600 dark:text-blue-400 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -125,7 +125,7 @@ const ExplanationPanel: React.FC<ExplanationPanelProps> = ({
     <div className="rounded-xl border-2 border-blue-200 dark:border-blue-700 overflow-hidden">
       <button
         onClick={() => setIsExpanded(!isExpanded)}
-        className="w-full p-4 flex items-center justify-between bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 hover:from-blue-100 hover:to-purple-100 dark:hover:from-blue-800/30 dark:hover:to-purple-800/30 transition-colors"
+        className="w-full p-4 flex items-center justify-between bg-gradient-to-r from-blue-50 to-silver-soft dark:from-blue-900/20 dark:to-royal-navy/20 hover:from-blue-100 hover:to-silver-light dark:hover:from-blue-800/30 dark:hover:to-purple-800/30 transition-colors"
       >
         <div className="flex items-center space-x-3">
           <span className="text-2xl">{icon}</span>

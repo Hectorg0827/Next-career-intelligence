@@ -379,7 +379,7 @@ export default function DashboardPage() {
 
                   {/* Competitive Position */}
                   {benchmarkData.benchmarks?.competitive_position && (
-                    <div className="mt-6 p-6 bg-gradient-to-r from-purple-50 to-blue-50 rounded-xl">
+                    <div className="mt-6 p-6 bg-gradient-to-r from-silver-soft to-blue-50 rounded-xl">
                       <h3 className="text-xl font-semibold mb-4">Your Competitive Position</h3>
                       <div className="space-y-3">
                         <p className="text-lg">
@@ -426,7 +426,7 @@ export default function DashboardPage() {
                 
                 {/* Skill Strength Score */}
                 {analysisResult.skill_insights.skill_strength_score && (
-                  <div className="mb-6 p-6 bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl">
+                  <div className="mb-6 p-6 bg-gradient-to-r from-blue-50 to-silver-soft rounded-xl">
                     <h3 className="text-xl font-semibold mb-3">Overall Skill Strength</h3>
                     <div className="flex items-center gap-4">
                       <div className="text-5xl font-bold text-next-royal-blue">
@@ -435,7 +435,7 @@ export default function DashboardPage() {
                       <div className="flex-1">
                         <div className="w-full bg-gray-200 rounded-full h-4">
                           <div
-                            className="bg-gradient-to-r from-blue-500 to-purple-500 h-4 rounded-full transition-all duration-500"
+                            className="bg-gradient-to-r from-blue-500 to-royal-blue h-4 rounded-full transition-all duration-500"
                             style={{ width: `${analysisResult.skill_insights.skill_strength_score.overall_score}%` }}
                           />
                         </div>
@@ -566,7 +566,7 @@ export default function DashboardPage() {
                         {timeframe.replace("_", "-")} Path
                       </h3>
                       
-                      <div className="bg-gradient-to-r from-blue-50 to-purple-50 p-6 rounded-xl mb-4">
+                      <div className="bg-gradient-to-r from-blue-50 to-silver-soft p-6 rounded-xl mb-4">
                         <h4 className="font-bold text-lg text-next-deep-blue mb-2">
                           {pathway.primary_path.target_role}
                         </h4>

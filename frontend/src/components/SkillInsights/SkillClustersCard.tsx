@@ -31,10 +31,10 @@ const SkillClustersCard: React.FC<SkillClustersCardProps> = ({ skillClusters }) 
       badge: 'bg-green-500 text-white'
     },
     'Soft Skills': {
-      bg: 'bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-900/30 dark:to-purple-800/30',
-      border: 'border-purple-300 dark:border-purple-600',
-      text: 'text-purple-700 dark:text-purple-300',
-      badge: 'bg-purple-500 text-white'
+      bg: 'bg-gradient-to-br from-silver-soft to-silver-light dark:from-royal-navy/30 dark:to-purple-800/30',
+      border: 'border-purple-300 dark:border-gold-primary',
+      text: 'text-gold-accent dark:text-purple-300',
+      badge: 'bg-royal-blue text-white'
     },
     'Domain Expertise': {
       bg: 'bg-gradient-to-br from-orange-50 to-orange-100 dark:from-orange-900/30 dark:to-orange-800/30',

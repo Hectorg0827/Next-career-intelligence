@@ -7,7 +7,7 @@ export default function CheckoutCancelPage() {
   const router = useRouter();
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-900 via-purple-900 to-blue-900 flex items-center justify-center px-4">
+    <div className="min-h-screen bg-gradient-to-br from-royal-navy via-royal-navy to-blue-900 flex items-center justify-center px-4">
       <div className="max-w-2xl w-full text-center">
         {/* Cancel Icon */}
         <div className="relative mb-8">
@@ -40,7 +40,7 @@ export default function CheckoutCancelPage() {
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
           <button
             onClick={() => router.push('/pricing')}
-            className="px-8 py-4 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-semibold rounded-xl transition-all shadow-lg hover:shadow-xl flex items-center justify-center gap-2"
+            className="px-8 py-4 bg-gradient-to-r from-gold-primary to-gold-accent hover:from-gold-accent hover:to-pink-700 text-white font-semibold rounded-xl transition-all shadow-lg hover:shadow-xl flex items-center justify-center gap-2"
           >
             <RefreshCcw className="w-5 h-5" />
             Try Again
@@ -57,7 +57,7 @@ export default function CheckoutCancelPage() {
 
         {/* Support */}
         <p className="text-white/50 text-sm mt-8">
-          Questions? Contact us at <a href="mailto:support@nextcareer.ai" className="text-purple-400 hover:text-purple-300">support@nextcareer.ai</a>
+          Questions? Contact us at <a href="mailto:support@nextcareer.ai" className="text-gold-hover hover:text-purple-300">support@nextcareer.ai</a>
         </p>
       </div>
     </div>

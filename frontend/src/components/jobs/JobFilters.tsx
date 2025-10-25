@@ -233,18 +233,18 @@ export default function JobFilters({ filters, onChange, userGoals = [] }: JobFil
 
           {/* Goals Alignment */}
           {userGoals.length > 0 && (
-            <div className="p-3 bg-purple-50 border border-purple-200 rounded-lg">
-              <div className="text-sm font-medium text-purple-900 mb-2">
+            <div className="p-3 bg-silver-soft border border-silver-soft rounded-lg">
+              <div className="text-sm font-medium text-royal-navy mb-2">
                 🎯 Your Active Goals ({userGoals.length})
               </div>
               <div className="space-y-1">
                 {userGoals.map((goal) => (
-                  <div key={goal.id} className="text-sm text-purple-700">
+                  <div key={goal.id} className="text-sm text-gold-accent">
                     • {goal.title}
                   </div>
                 ))}
               </div>
-              <p className="text-xs text-purple-600 mt-2">
+              <p className="text-xs text-gold-primary mt-2">
                 Jobs are automatically scored based on goal alignment
               </p>
             </div>

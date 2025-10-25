@@ -192,7 +192,7 @@ const PathwayCard: React.FC<PathwayCardProps> = ({
                     transition={{ delay: index * 0.05 }}
                     className="flex items-start space-x-2 text-gray-700 dark:text-gray-300"
                   >
-                    <span className="text-purple-600 dark:text-purple-400 mt-0.5">▸</span>
+                    <span className="text-gold-primary dark:text-gold-hover mt-0.5">▸</span>
                     <span className="text-sm">{project}</span>
                   </motion.li>
                 ))}
@@ -216,9 +216,9 @@ const PathwayCard: React.FC<PathwayCardProps> = ({
                     initial={{ opacity: 0, scale: 0.9 }}
                     animate={{ opacity: 1, scale: 1 }}
                     transition={{ delay: index * 0.05 }}
-                    className="p-3 rounded-lg bg-purple-50 dark:bg-purple-900/20 border border-purple-200 dark:border-purple-700"
+                    className="p-3 rounded-lg bg-silver-soft dark:bg-royal-navy/20 border border-silver-soft dark:border-gold-accent"
                   >
-                    <div className="text-sm font-medium text-purple-900 dark:text-purple-100">
+                    <div className="text-sm font-medium text-royal-navy dark:text-silver-light">
                       {metric}
                     </div>
                   </motion.div>

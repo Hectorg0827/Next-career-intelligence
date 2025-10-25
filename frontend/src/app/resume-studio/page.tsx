@@ -5,11 +5,11 @@ import Link from 'next/link';
 
 export default function ResumeStudioLanding() {
   return (
-    <div className="min-h-screen bg-gradient-to-b from-purple-50 to-white">
+    <div className="min-h-screen bg-gradient-to-b from-silver-soft to-white">
       {/* Hero Section */}
       <div className="max-w-7xl mx-auto px-4 py-16">
         <div className="text-center mb-16">
-          <div className="inline-block px-4 py-2 bg-purple-100 text-purple-800 rounded-full text-sm font-semibold mb-4">
+          <div className="inline-block px-4 py-2 bg-silver-light text-purple-800 rounded-full text-sm font-semibold mb-4">
             📄 Single Source of Truth (SSOT)
           </div>
           <h1 className="text-5xl font-bold text-gray-900 mb-4">
@@ -24,13 +24,13 @@ export default function ResumeStudioLanding() {
         {/* Feature Cards */}
         <div className="grid md:grid-cols-3 gap-6 mb-12">
           <Link href="/resume-studio/upload">
-            <div className="bg-white p-6 rounded-lg shadow-md border-2 border-purple-200 hover:border-purple-400 transition-all cursor-pointer transform hover:scale-105">
+            <div className="bg-white p-6 rounded-lg shadow-md border-2 border-silver-soft hover:border-gold-hover transition-all cursor-pointer transform hover:scale-105">
               <div className="text-4xl mb-3">📤</div>
               <h3 className="text-lg font-semibold text-gray-900 mb-2">Upload Resume</h3>
               <p className="text-sm text-gray-600 mb-4">
                 Upload PDF, DOCX, or TXT. AI will parse and create your profile.
               </p>
-              <div className="text-purple-600 font-medium">Upload Now →</div>
+              <div className="text-gold-primary font-medium">Upload Now →</div>
             </div>
           </Link>
 
@@ -88,8 +88,8 @@ export default function ResumeStudioLanding() {
         </div>
 
         {/* SSOT Explanation */}
-        <div className="bg-purple-50 border border-purple-200 rounded-lg p-8">
-          <h2 className="text-2xl font-bold text-purple-900 mb-4">
+        <div className="bg-silver-soft border border-silver-soft rounded-lg p-8">
+          <h2 className="text-2xl font-bold text-royal-navy mb-4">
             📄 What is Single Source of Truth (SSOT)?
           </h2>
           <div className="space-y-4 text-gray-700">
@@ -122,14 +122,14 @@ export default function ResumeStudioLanding() {
 
         {/* Quick Actions */}
         <div className="mt-12 grid md:grid-cols-2 gap-6">
-          <div className="bg-gradient-to-br from-purple-600 to-purple-700 text-white p-8 rounded-lg">
+          <div className="bg-gradient-to-br from-gold-primary to-gold-accent text-white p-8 rounded-lg">
             <h3 className="text-2xl font-bold mb-2">New User?</h3>
-            <p className="text-purple-100 mb-6">
+            <p className="text-silver-light mb-6">
               Start by uploading your resume. We'll create your profile in seconds.
             </p>
             <Link
               href="/resume-studio/upload"
-              className="inline-block px-6 py-3 bg-white text-purple-700 rounded-lg hover:bg-purple-50 transition-colors font-semibold"
+              className="inline-block px-6 py-3 bg-white text-gold-accent rounded-lg hover:bg-silver-soft transition-colors font-semibold"
             >
               Upload Resume
             </Link>

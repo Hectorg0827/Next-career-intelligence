@@ -42,9 +42,9 @@ export default function TrendIndicator({
 
   const getReadinessColor = () => {
     if (readinessScore >= 80) return 'from-green-500 to-emerald-600';
-    if (readinessScore >= 60) return 'from-blue-500 to-indigo-600';
+    if (readinessScore >= 60) return 'from-blue-500 to-royal-blue';
     if (readinessScore >= 40) return 'from-yellow-500 to-orange-600';
-    return 'from-red-500 to-pink-600';
+    return 'from-red-500 to-gold-accent';
   };
 
   return (
@@ -52,7 +52,7 @@ export default function TrendIndicator({
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.3 }}
-      className="bg-gradient-to-br from-white to-indigo-50 rounded-2xl border-2 border-indigo-200 p-6 shadow-lg"
+      className="bg-gradient-to-br from-white to-silver-light rounded-2xl border-2 border-silver-soft p-6 shadow-lg"
     >
       {/* Header */}
       <h3 className="text-xl font-bold text-gray-900 mb-1 flex items-center gap-2">
@@ -115,7 +115,7 @@ export default function TrendIndicator({
           className="bg-white rounded-xl p-4 border border-gray-200"
         >
           <p className="text-xs text-gray-600 mb-2">⏱️ Next Level</p>
-          <p className="text-2xl font-bold text-purple-600">{typicalYearsToNextLevel}y</p>
+          <p className="text-2xl font-bold text-gold-primary">{typicalYearsToNextLevel}y</p>
           <p className={`text-xs font-semibold mt-1 ${getPaceColor()}`}>
             Your pace: {careerPace}
           </p>
@@ -134,7 +134,7 @@ export default function TrendIndicator({
               initial={{ opacity: 0, scale: 0 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: 0.8 + index * 0.1 }}
-              className="px-3 py-2 bg-gradient-to-r from-indigo-100 to-purple-100 border border-indigo-300 text-indigo-800 text-sm font-medium rounded-lg"
+              className="px-3 py-2 bg-gradient-to-r from-silver-light to-silver-light border border-silver-soft text-royal-blue-deep text-sm font-medium rounded-lg"
             >
               {industry}
             </motion.span>
@@ -143,12 +143,12 @@ export default function TrendIndicator({
       </div>
 
       {/* Promotion readiness */}
-      <div className="bg-gradient-to-r from-purple-50 to-pink-50 rounded-xl p-4 border border-purple-200">
+      <div className="bg-gradient-to-r from-silver-soft to-silver-soft rounded-xl p-4 border border-silver-soft">
         <div className="flex items-center justify-between mb-3">
-          <h4 className="text-sm font-bold text-purple-900">
+          <h4 className="text-sm font-bold text-royal-navy">
             🚀 Promotion Readiness
           </h4>
-          <span className="text-2xl font-bold text-purple-600">
+          <span className="text-2xl font-bold text-gold-primary">
             {readinessScore}%
           </span>
         </div>
@@ -163,7 +163,7 @@ export default function TrendIndicator({
           />
         </div>
         
-        <p className="text-xs text-purple-700">
+        <p className="text-xs text-gold-accent">
           {readinessScore >= 80 && '🎉 You\'re ready for the next level!'}
           {readinessScore >= 60 && readinessScore < 80 && '💪 Almost there - keep building skills'}
           {readinessScore >= 40 && readinessScore < 60 && '📚 Focus on closing key gaps'}

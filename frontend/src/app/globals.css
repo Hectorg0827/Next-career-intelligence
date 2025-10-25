@@ -2,34 +2,57 @@
 @tailwind components;
 @tailwind utilities;
 
-/* NEXT Brand Color System */
+/* NEXT Royal Prestige Color System - Official Brand Palette */
 :root {
-  /* Primary Colors */
+  /* === PRIMARY BRAND COLORS === */
+  --royal-blue: #1150A3;              /* Deep royal blue - main background */
+  --royal-blue-deep: #103D86;         /* Logo "X" accent */
+  --royal-blue-dark: #0B2C6B;         /* Gradient endpoint */
+  --royal-navy: #0A1F5A;              /* CTA button text */
+  
+  /* === METALLIC ACCENTS === */
+  --gold-primary: #E5B73B;            /* Main gold - warmth & luxury */
+  --gold-accent: #D49F25;             /* Gold streak & outline */
+  --gold-hover: #F5D264;              /* Interactive gold state */
+  
+  --silver-light: #E6E6E6;            /* Logo silver gradient start */
+  --silver-dark: #A7A7A7;             /* Logo silver gradient end */
+  --silver-soft: #D9D9D9;             /* Borders & separators */
+  
+  /* === SUPPORTING COLORS === */
+  --charcoal: #121212;                /* Footer & overlays */
+  --steel-blue: #1E3F73;              /* Subtle background sections */
+  
+  /* === TEXT HIERARCHY === */
+  --text-primary: #FFFFFF;            /* High contrast - body text */
+  --text-secondary: #D9D9D9;          /* Taglines & secondary text */
+  --text-muted: #A7A7A7;              /* Captions & metadata */
+  --text-on-gold: #0A1F5A;            /* Text on gold backgrounds */
+  
+  /* === BACKGROUND SYSTEM === */
+  --bg-primary: linear-gradient(135deg, #1150A3, #0B2C6B);
+  --bg-card: #FFFFFF;                 /* Card backgrounds */
+  --bg-overlay: rgba(11, 44, 107, 0.95);
+  --bg-footer: #121212;
+  
+  /* === GRADIENT DEFINITIONS === */
+  --gradient-royal: linear-gradient(135deg, #1150A3, #0B2C6B);
+  --gradient-gold: linear-gradient(135deg, #E5B73B, #D49F25);
+  --gradient-silver: linear-gradient(135deg, #E6E6E6, #A7A7A7);
+  --gradient-gold-hover: linear-gradient(135deg, #E5B73B, #F5D264);
+  
+  /* === SHADOWS === */
+  --shadow-sm: 0 2px 4px rgba(17, 80, 163, 0.1);
+  --shadow-md: 0 4px 6px rgba(17, 80, 163, 0.15);
+  --shadow-lg: 0 10px 15px rgba(17, 80, 163, 0.2);
+  --shadow-xl: 0 20px 25px rgba(17, 80, 163, 0.25);
+  --shadow-gold: 0 4px 20px rgba(229, 183, 59, 0.4);
+  
+  /* === LEGACY COLORS (for backward compatibility) === */
   --next-deep-blue: #0B1D45;
   --next-royal-blue: #1E3C78;
   --next-gold: #CBA135;
-  
-  /* Background Colors */
-  --next-bg-light: #F4F6F8;
-  --next-bg-dark: #081835;
-  --next-bg-card: #FFFFFF;
-  
-  /* Text Colors */
-  --next-text-primary: #1A202C;
-  --next-text-secondary: #4A5568;
-  --next-text-muted: #B0B6C1;
-  --next-text-light: #FFFFFF;
-  
-  /* Gradient */
   --next-gradient: linear-gradient(135deg, #1E3C78, #0B1D45);
-  --next-gradient-gold: linear-gradient(135deg, #CBA135, #E5C158);
-  
-  /* Shadows */
-  --next-shadow-sm: 0 2px 4px rgba(11, 29, 69, 0.1);
-  --next-shadow-md: 0 4px 6px rgba(11, 29, 69, 0.15);
-  --next-shadow-lg: 0 10px 15px rgba(11, 29, 69, 0.2);
-  --next-shadow-xl: 0 20px 25px rgba(11, 29, 69, 0.25);
-  --next-shadow-gold: 0 4px 20px rgba(203, 161, 53, 0.3);
 }
 
 /* Loading Animation for X Logo */

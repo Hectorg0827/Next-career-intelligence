@@ -49,11 +49,11 @@ export default function SuggestionsPage() {
         </div>
 
         {/* Info Banner */}
-        <div className="p-4 mb-8 border border-purple-200 rounded-lg bg-purple-50">
+        <div className="p-4 mb-8 border border-silver-soft rounded-lg bg-silver-soft">
           <div className="flex items-start gap-3">
             <span className="text-2xl">💡</span>
             <div>
-              <h3 className="mb-1 font-semibold text-purple-900">How Suggestions Work</h3>
+              <h3 className="mb-1 font-semibold text-royal-navy">How Suggestions Work</h3>
               <p className="text-sm text-purple-800">
                 As you use <strong>Career Coach</strong> and <strong>Interviewer AI</strong>, they
                 analyze your conversations and practice sessions to suggest improvements to your
@@ -67,7 +67,7 @@ export default function SuggestionsPage() {
         {/* Loading State */}
         {loading && (
           <div className="py-12 text-center">
-            <div className="inline-block w-12 h-12 mb-4 border-t-2 border-b-2 border-purple-600 rounded-full animate-spin"></div>
+            <div className="inline-block w-12 h-12 mb-4 border-t-2 border-b-2 border-gold-primary rounded-full animate-spin"></div>
             <p className="text-gray-600">Loading suggestions...</p>
           </div>
         )}

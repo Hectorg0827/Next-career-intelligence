@@ -118,7 +118,7 @@ export default function JobCard({ job, onApply, showDetails = false }: JobCardPr
         </div>
         <div className="text-center">
           <div className="text-xs text-gray-500">Goals</div>
-          <div className="text-lg font-semibold text-purple-600">
+          <div className="text-lg font-semibold text-gold-primary">
             {job.relevant_goals.length > 0 ? `🎯 ${job.relevant_goals.length}` : '—'}
           </div>
         </div>
@@ -173,20 +173,20 @@ export default function JobCard({ job, onApply, showDetails = false }: JobCardPr
 
       {/* Goal Relevance */}
       {job.relevant_goals.length > 0 && (
-        <div className="mb-4 p-3 bg-purple-50 border border-purple-200 rounded-lg">
-          <div className="text-sm font-medium text-purple-900 mb-2">💡 Helps You Achieve:</div>
+        <div className="mb-4 p-3 bg-silver-soft border border-silver-soft rounded-lg">
+          <div className="text-sm font-medium text-royal-navy mb-2">💡 Helps You Achieve:</div>
           {job.relevant_goals.slice(0, 2).map((goalInfo, idx) => (
             <div key={idx} className="text-sm text-purple-800 mb-1">
               🎯 <span className="font-medium">&quot;{goalInfo.goal_title}&quot;</span>
               {goalInfo.overlap_keywords.length > 0 && (
-                <span className="text-xs text-purple-600 ml-2">
+                <span className="text-xs text-gold-primary ml-2">
                   ({goalInfo.overlap_keywords.slice(0, 3).join(', ')})
                 </span>
               )}
             </div>
           ))}
           {job.relevant_goals.length > 2 && (
-            <div className="text-xs text-purple-600 mt-1">
+            <div className="text-xs text-gold-primary mt-1">
               +{job.relevant_goals.length - 2} more goals
             </div>
           )}

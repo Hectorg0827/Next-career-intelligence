@@ -95,18 +95,18 @@ const CareerRoadmapTimeline: React.FC<CareerRoadmapTimelineProps> = ({
     },
     '5_year': {
       label: '5 Years',
-      color: 'from-blue-500 to-indigo-600',
-      bgColor: 'from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20',
+      color: 'from-blue-500 to-royal-blue',
+      bgColor: 'from-blue-50 to-silver-light dark:from-blue-900/20 dark:to-royal-navy/20',
       borderColor: 'border-blue-300 dark:border-blue-600',
       textColor: 'text-blue-700 dark:text-blue-300',
       icon: '🚀'
     },
     '10_year': {
       label: '10 Years',
-      color: 'from-purple-500 to-pink-600',
-      bgColor: 'from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20',
-      borderColor: 'border-purple-300 dark:border-purple-600',
-      textColor: 'text-purple-700 dark:text-purple-300',
+      color: 'from-royal-blue to-gold-accent',
+      bgColor: 'from-silver-soft to-silver-soft dark:from-royal-navy/20 dark:to-pink-900/20',
+      borderColor: 'border-purple-300 dark:border-gold-primary',
+      textColor: 'text-gold-accent dark:text-purple-300',
       icon: '👑'
     }
   };
@@ -122,7 +122,7 @@ const CareerRoadmapTimeline: React.FC<CareerRoadmapTimelineProps> = ({
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
       >
-        <h2 className="text-4xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent mb-2">
+        <h2 className="text-4xl font-bold bg-gradient-to-r from-blue-600 via-gold-primary to-gold-accent bg-clip-text text-transparent mb-2">
           Your Career Roadmap
         </h2>
         <p className="text-gray-600 dark:text-gray-400 text-lg">
@@ -283,7 +283,7 @@ const CareerRoadmapTimeline: React.FC<CareerRoadmapTimelineProps> = ({
 
       {/* Encouragement footer */}
       <motion.div
-        className="p-6 rounded-2xl bg-gradient-to-r from-blue-50 via-purple-50 to-pink-50 dark:from-blue-900/20 dark:via-purple-900/20 dark:to-pink-900/20 border border-blue-200 dark:border-blue-700"
+        className="p-6 rounded-2xl bg-gradient-to-r from-blue-50 via-silver-soft to-silver-soft dark:from-blue-900/20 dark:via-royal-navy/20 dark:to-pink-900/20 border border-blue-200 dark:border-blue-700"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.8 }}

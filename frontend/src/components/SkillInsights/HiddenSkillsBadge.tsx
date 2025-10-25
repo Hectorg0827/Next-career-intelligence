@@ -15,27 +15,27 @@ const HiddenSkillsBadge: React.FC<HiddenSkillsBadgeProps> = ({ hiddenSkills }) =
   }
 
   return (
-    <div className="bg-gradient-to-br from-purple-50 via-pink-50 to-orange-50 dark:from-purple-900/20 dark:via-pink-900/20 dark:to-orange-900/20 rounded-3xl shadow-xl p-6 border-2 border-purple-200 dark:border-purple-700">
+    <div className="bg-gradient-to-br from-silver-soft via-silver-soft to-orange-50 dark:from-royal-navy/20 dark:via-pink-900/20 dark:to-orange-900/20 rounded-3xl shadow-xl p-6 border-2 border-silver-soft dark:border-gold-accent">
       <div className="flex items-start justify-between mb-4">
         <div className="flex-1">
           <div className="flex items-center space-x-2 mb-2">
             <span className="text-3xl">💎</span>
-            <h3 className="text-2xl font-bold bg-gradient-to-r from-purple-600 via-pink-600 to-orange-600 bg-clip-text text-transparent">
+            <h3 className="text-2xl font-bold bg-gradient-to-r from-gold-primary via-gold-accent to-orange-600 bg-clip-text text-transparent">
               Hidden Skills Revealed
             </h3>
           </div>
           <p className="text-gray-700 dark:text-gray-300 leading-relaxed">
-            Our AI detected <span className="font-bold text-purple-600 dark:text-purple-400">{hiddenSkills.length} implicit skills</span> from your experience that you might not have listed!
+            Our AI detected <span className="font-bold text-gold-primary dark:text-gold-hover">{hiddenSkills.length} implicit skills</span> from your experience that you might not have listed!
           </p>
         </div>
       </div>
 
       <button
         onClick={() => setIsExpanded(!isExpanded)}
-        className="w-full mb-4 p-4 rounded-xl bg-white dark:bg-gray-800 border-2 border-purple-300 dark:border-purple-600 hover:shadow-lg transition-all group"
+        className="w-full mb-4 p-4 rounded-xl bg-white dark:bg-gray-800 border-2 border-purple-300 dark:border-gold-primary hover:shadow-lg transition-all group"
       >
         <div className="flex items-center justify-between">
-          <span className="text-lg font-semibold text-gray-900 dark:text-white group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors">
+          <span className="text-lg font-semibold text-gray-900 dark:text-white group-hover:text-gold-primary dark:group-hover:text-gold-hover transition-colors">
             {isExpanded ? 'Hide' : 'Reveal'} Your Hidden Skills
           </span>
           <motion.div
@@ -43,7 +43,7 @@ const HiddenSkillsBadge: React.FC<HiddenSkillsBadgeProps> = ({ hiddenSkills }) =
             transition={{ duration: 0.3 }}
           >
             <svg 
-              className="w-6 h-6 text-purple-600 dark:text-purple-400" 
+              className="w-6 h-6 text-gold-primary dark:text-gold-hover" 
               fill="none" 
               stroke="currentColor" 
               viewBox="0 0 24 24"
@@ -81,16 +81,16 @@ const HiddenSkillsBadge: React.FC<HiddenSkillsBadgeProps> = ({ hiddenSkills }) =
                   }}
                   className="group"
                 >
-                  <div className="p-4 rounded-xl bg-white dark:bg-gray-800 border-2 border-purple-200 dark:border-purple-700 hover:border-purple-400 dark:hover:border-purple-500 hover:shadow-md transition-all cursor-default">
+                  <div className="p-4 rounded-xl bg-white dark:bg-gray-800 border-2 border-silver-soft dark:border-gold-accent hover:border-gold-hover dark:hover:border-royal-blue hover:shadow-md transition-all cursor-default">
                     <div className="flex items-center space-x-3">
                       <motion.span
-                        className="flex-shrink-0 w-8 h-8 rounded-full bg-gradient-to-br from-purple-500 to-pink-600 flex items-center justify-center text-white font-bold text-sm"
+                        className="flex-shrink-0 w-8 h-8 rounded-full bg-gradient-to-br from-royal-blue to-gold-accent flex items-center justify-center text-white font-bold text-sm"
                         whileHover={{ scale: 1.2, rotate: 360 }}
                         transition={{ type: 'spring', stiffness: 300 }}
                       >
                         {index + 1}
                       </motion.span>
-                      <span className="text-base font-medium text-gray-900 dark:text-white group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors">
+                      <span className="text-base font-medium text-gray-900 dark:text-white group-hover:text-gold-primary dark:group-hover:text-gold-hover transition-colors">
                         {skill}
                       </span>
                     </div>
@@ -99,10 +99,10 @@ const HiddenSkillsBadge: React.FC<HiddenSkillsBadgeProps> = ({ hiddenSkills }) =
               ))}
             </div>
 
-            <div className="mt-6 p-4 rounded-xl bg-gradient-to-r from-purple-100 to-pink-100 dark:from-purple-900/30 dark:to-pink-900/30 border border-purple-200 dark:border-purple-700">
+            <div className="mt-6 p-4 rounded-xl bg-gradient-to-r from-silver-light to-pink-100 dark:from-royal-navy/30 dark:to-pink-900/30 border border-silver-soft dark:border-gold-accent">
               <div className="flex items-start space-x-3">
                 <svg 
-                  className="w-5 h-5 text-purple-600 dark:text-purple-400 flex-shrink-0 mt-0.5" 
+                  className="w-5 h-5 text-gold-primary dark:text-gold-hover flex-shrink-0 mt-0.5" 
                   fill="none" 
                   stroke="currentColor" 
                   viewBox="0 0 24 24"
@@ -115,7 +115,7 @@ const HiddenSkillsBadge: React.FC<HiddenSkillsBadgeProps> = ({ hiddenSkills }) =
                   />
                 </svg>
                 <div>
-                  <h4 className="font-semibold text-purple-900 dark:text-purple-200 mb-1">
+                  <h4 className="font-semibold text-royal-navy dark:text-silver-soft mb-1">
                     Update Your Resume
                   </h4>
                   <p className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed">

@@ -134,37 +134,13 @@ Return ONLY valid JSON matching the requested schema. No markdown, no explanatio
         Analyze AI displacement risk using NextAI intelligence
         """
         try:
-            prompt = f"""You are NextAI, an advanced career intelligence system. Analyze this role for AI displacement risk with REAL, specific insights:
+            prompt = f"""Analyze AI automation risk for {job_title} ({years_experience or 0}y exp) with skills: {', '.join(skills[:8])}.
 
-**Role Analysis:**
-Job Title: {job_title}
-Key Skills: {', '.join(skills)}
-Experience Level: {years_experience or 'Not specified'} years
+Score 0-100 based on: routine work %, AI maturity, human judgment needs.
+Risk: Critical(80-100/1-2y), High(60-79/2-5y), Medium(40-59/5-10y), Low(0-39/10+y)
+Velocity: Immediate/Rapid(1-3y)/Moderate(3-7y)/Slow(7+y)
 
-**Required Analysis Framework:**
-
-1. **Displacement Score (0-100)**: Calculate based on:
-   - Routine vs. creative work ratio
-   - Automation feasibility of core tasks
-   - AI capability maturity in this field
-   - Human judgment requirements
-   - Interpersonal communication needs
-
-2. **Risk Level**: 
-   - Critical (80-100): Imminent automation, 1-2 years
-   - High (60-79): Significant disruption, 2-5 years
-   - Medium (40-59): Moderate evolution, 5-10 years
-   - Low (0-39): Minimal impact, 10+ years
-
-3. **Velocity**: Rate of change
-   - Immediate: Already happening
-   - Rapid: 1-3 years
-   - Moderate: 3-7 years
-   - Slow: 7+ years
-
-4. **Specific Insights**: Provide role-specific analysis, not generic statements
-
-Return STRICTLY valid JSON (no markdown, no explanations):
+Return valid JSON only:
 {{
     "ai_displacement_risk": {{
         "score": <float between 0-100>,
@@ -228,42 +204,15 @@ BE SPECIFIC TO THE JOB. Avoid generic phrases. Use concrete examples."""
         Generate comprehensive skill insights using Gemini
         """
         try:
-            prompt = f"""
-You are an AI career intelligence expert. Analyze these skills for career development:
+            prompt = f"""Skill analysis for {job_title} ({years_experience or 0}y): {', '.join(skills[:8])}
 
-Job Title: {job_title}
-Current Skills: {', '.join(skills)}
-Experience: {years_experience or 'Not specified'} years
-
-Provide skill intelligence in JSON format:
+JSON output:
 {{
-    "transferable_to": [
-        {{
-            "skill": "skill name",
-            "confidence": 0.85,
-            "reasoning": "why this transfers",
-            "source_skills": ["origin skill 1", "origin skill 2"]
-        }}
-    ],
-    "hidden_skills": ["implicit skill 1", "implicit skill 2"],
-    "skill_gaps_for_growth": [
-        {{
-            "skill": "needed skill",
-            "priority": "Critical" | "High" | "Medium" | "Low",
-            "why_important": "explanation",
-            "estimated_learning_time": "2-3 months",
-            "market_demand": "High" | "Medium" | "Low",
-            "learn_difficulty": "Easy" | "Moderate" | "Challenging"
-        }}
-    ],
-    "skill_strength_score": {{
-        "overall_score": 75.5,
-        "interpretation": "brief assessment"
-    }}
-}}
-
-Return ONLY valid JSON.
-"""
+    "transferable_to": [{{"skill":"name","confidence":0.85,"reasoning":"why","source_skills":["s1","s2"]}}],
+    "hidden_skills": ["implicit skill 1"],
+    "skill_gaps_for_growth": [{{"skill":"needed","priority":"High","why_important":"reason","estimated_learning_time":"2-3mo","market_demand":"High","learn_difficulty":"Moderate"}}],
+    "skill_strength_score": {{"overall_score":75,"interpretation":"brief"}}
+}}"""
 
             response = self.model.generate_content(prompt)
             
@@ -386,63 +335,19 @@ Return ONLY valid JSON.
         Generate industry benchmarking data using Gemini
         """
         try:
-            prompt = f"""
-You are a market intelligence analyst. Generate industry benchmarks:
+            prompt = f"""Benchmarks for {job_title} in {location} ({years_experience or 0}y): {', '.join(skills[:5])}
 
-Role: {job_title}
-Skills: {', '.join(skills)}
-Location: {location}
-Experience: {years_experience or 0} years
-
-Provide comprehensive benchmarks in JSON format:
+JSON:
 {{
-    "automation_risk_comparison": {{
-        "your_score": 45.5,
-        "industry_average": 52.0,
-        "percentile": 65,
-        "comparison_text": "Your risk is 6.5 points below industry average",
-        "trend": "improving"
-    }},
-    "skill_demand": {{
-        "overall_score": 78.5,
-        "top_skills": [
-            {{"name": "Python", "demand": 95, "growth": "+15%"}},
-            {{"name": "AI/ML", "demand": 92, "growth": "+25%"}}
-        ],
-        "skill_gaps": [
-            {{"name": "Cloud Architecture", "importance": 85}}
-        ]
-    }},
-    "salary_benchmark": {{
-        "your_estimated_range": "$90k-$130k",
-        "industry_median": 110000,
-        "percentile_25": 85000,
-        "percentile_50": 110000,
-        "percentile_75": 140000,
-        "percentile_90": 175000,
-        "your_position": "Above median"
-    }},
-    "career_progression": {{
-        "pace": "Moderate",
-        "typical_years_to_next_level": 3,
-        "your_readiness_score": 75
-    }},
-    "market_trends": {{
-        "role_growth": "+18% annually",
-        "hiring_difficulty": "High",
-        "remote_availability": "85%",
-        "top_hiring_industries": ["Tech", "Finance", "Healthcare"]
-    }},
-    "competitive_position": {{
-        "peer_ranking": "Top 30%",
-        "strengths": ["Technical expertise", "Industry experience"],
-        "areas_for_improvement": ["Leadership skills", "Cloud certifications"]
-    }}
+    "automation_risk_comparison": {{"your_score":45,"industry_average":52,"percentile":65,"comparison_text":"6.5pts below avg","trend":"improving"}},
+    "skill_demand": {{"overall_score":78,"top_skills":[{{"name":"Skill1","demand":95,"growth":"+15%"}}],"skill_gaps":[{{"name":"Gap1","importance":85}}]}},
+    "salary_benchmark": {{"your_estimated_range":"$90k-$130k","industry_median":110000,"percentile_25":85000,"percentile_50":110000,"percentile_75":140000,"percentile_90":175000,"your_position":"Above median"}},
+    "career_progression": {{"pace":"Moderate","typical_years_to_next_level":3,"your_readiness_score":75}},
+    "market_trends": {{"role_growth":"+18% annually","hiring_difficulty":"High","remote_availability":"85%","top_hiring_industries":["Tech","Finance"]}},
+    "competitive_position": {{"peer_ranking":"Top 30%","strengths":["Strength1"],"areas_for_improvement":["Area1"]}}
 }}
 
-Base estimates on {location} market data and current trends.
-Return ONLY valid JSON.
-"""
+Use {location} market data."""
 
             response = self.model.generate_content(prompt)
             

@@ -2,7 +2,8 @@
 
 import { useEffect, useState } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
-import { Loader2, TrendingUp, AlertCircle, CheckCircle2, ArrowRight } from 'lucide-react';
+import { Loader2, TrendingUp, AlertCircle, CheckCircle2, ArrowRight, DollarSign } from 'lucide-react';
+import { analyzeCareer } from '@/lib/api';
 
 export default function AnalyzePage() {
   const searchParams = useSearchParams();
@@ -12,6 +13,7 @@ export default function AnalyzePage() {
   const [isAnalyzing, setIsAnalyzing] = useState(true);
   const [analysis, setAnalysis] = useState<any>(null);
   const [error, setError] = useState<string | null>(null);
+  const [loadingMessage, setLoadingMessage] = useState('Initializing AI analysis...');
 
   useEffect(() => {
     if (!jobTitle) {
@@ -19,35 +21,51 @@ export default function AnalyzePage() {
       return;
     }
 
-    // Simulate analysis - in production, this would call your backend API
+    // Real API call to backend with Gemini AI
     const performAnalysis = async () => {
       try {
         setIsAnalyzing(true);
+        setError(null);
         
-        // Simulate API call delay (reduced for better UX)
-        await new Promise(resolve => setTimeout(resolve, 500));
+        // Show progress messages
+        setTimeout(() => setLoadingMessage('Analyzing job market trends...'), 3000);
+        setTimeout(() => setLoadingMessage('Calculating automation risk...'), 10000);
+        setTimeout(() => setLoadingMessage('Fetching salary benchmarks...'), 20000);
+        setTimeout(() => setLoadingMessage('Generating AI insights...'), 40000);
+        setTimeout(() => setLoadingMessage('Almost done, finalizing report...'), 80000);
         
-        // Mock analysis data
-        setAnalysis({
-          jobTitle,
-          riskScore: 65,
-          riskLevel: 'Medium',
-          aiImpact: 'Moderate automation risk in next 5 years',
-          topSkills: [
-            'Machine Learning',
-            'Cloud Architecture',
-            'System Design',
-            'Leadership & Communication'
-          ],
-          recommendations: [
-            'Learn AI/ML fundamentals',
-            'Develop cloud-native skills',
-            'Build leadership capabilities',
-            'Stay updated with emerging tech'
-          ]
+        // Call the real backend API
+        const result = await analyzeCareer({
+          job_title: jobTitle,
+          skills: ['Communication', 'Problem Solving', 'Teamwork'], // Default skills for demo
+          years_experience: 5, // Default experience
+          location: 'United States'
         });
-      } catch (err) {
-        setError('Failed to analyze. Please try again.');
+        
+        console.log('Backend analysis result:', result);
+        
+        // Transform backend response to match UI expectations
+        const salaryData = result.metadata?.benchmarks?.salary_benchmark;
+        setAnalysis({
+          jobTitle: result.job_title,
+          riskScore: result.ai_displacement_risk?.score || 50,
+          riskLevel: result.ai_displacement_risk?.level || 'Medium',
+          aiImpact: result.ai_displacement_risk?.reasoning || 'Analysis completed',
+          averageSalary: salaryData?.industry_median 
+            ? `$${Math.round(salaryData.industry_median / 1000)}k`
+            : 'N/A',
+          salaryRange: salaryData
+            ? `$${Math.round(salaryData.percentile_25 / 1000)}k - $${Math.round(salaryData.percentile_90 / 1000)}k`
+            : 'N/A',
+          topSkills: result.metadata?.benchmarks?.skill_demand?.top_skills?.map((s: any) => s.name) || [],
+          recommendations: result.human_advantage_factors || [],
+          analysisId: result.analysis_id,
+          compatibilityScore: result.compatibility_score,
+          augmentationPotential: result.ai_displacement_risk?.augmentation_potential
+        });
+      } catch (err: any) {
+        console.error('Analysis error:', err);
+        setError(err.response?.data?.detail || 'Failed to analyze. Please try again.');
       } finally {
         setIsAnalyzing(false);
       }
@@ -62,11 +80,15 @@ export default function AnalyzePage() {
 
   if (isAnalyzing) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-indigo-900 via-purple-900 to-blue-900 flex items-center justify-center">
-        <div className="text-center">
-          <Loader2 className="w-16 h-16 text-white animate-spin mx-auto mb-4" />
-          <h2 className="text-2xl text-white font-semibold mb-2">Analyzing Your Career</h2>
-          <p className="text-white/70">Processing {jobTitle} with AI...</p>
+      <div className="min-h-screen bg-gradient-to-br from-royal-navy via-royal-navy to-blue-900 flex items-center justify-center">
+        <div className="text-center max-w-md px-6">
+          <Loader2 className="w-16 h-16 text-gold-primary animate-spin mx-auto mb-4" />
+          <h2 className="text-2xl text-white font-semibold mb-2">Analyzing Your Career with AI</h2>
+          <p className="text-white/70 mb-4">Processing {jobTitle}...</p>
+          <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4 mt-6">
+            <p className="text-gold-primary text-sm font-medium">{loadingMessage}</p>
+            <p className="text-white/50 text-xs mt-2">This comprehensive analysis takes 1-2 minutes</p>
+          </div>
         </div>
       </div>
     );
@@ -74,14 +96,14 @@ export default function AnalyzePage() {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-indigo-900 via-purple-900 to-blue-900 flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-br from-royal-navy via-royal-navy to-blue-900 flex items-center justify-center">
         <div className="text-center max-w-md mx-auto px-4">
           <AlertCircle className="w-16 h-16 text-red-400 mx-auto mb-4" />
           <h2 className="text-2xl text-white font-semibold mb-2">Analysis Failed</h2>
           <p className="text-white/70 mb-6">{error}</p>
           <button
             onClick={() => router.push('/')}
-            className="px-6 py-3 bg-white text-purple-900 rounded-lg font-semibold hover:bg-white/90 transition-colors"
+            className="px-6 py-3 bg-white text-royal-navy rounded-lg font-semibold hover:bg-white/90 transition-colors"
           >
             Try Again
           </button>
@@ -97,7 +119,7 @@ export default function AnalyzePage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-900 via-purple-900 to-blue-900 py-12 px-4">
+    <div className="min-h-screen bg-gradient-to-br from-royal-navy via-royal-navy to-blue-900 py-12 px-4">
       <div className="max-w-4xl mx-auto">
         {/* Header */}
         <div className="text-center mb-12">
@@ -124,6 +146,29 @@ export default function AnalyzePage() {
           </div>
         </div>
 
+        {/* Salary Information */}
+        {analysis.averageSalary && analysis.averageSalary !== 'N/A' && (
+          <div className="bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-8 mb-8">
+            <div className="text-center">
+              <div className="flex items-center justify-center gap-2 mb-4">
+                <DollarSign className="w-6 h-6 text-gold-primary" />
+                <h2 className="text-2xl font-bold text-white">Average Salary</h2>
+              </div>
+              <div className="text-5xl font-bold text-gold-primary mb-2">
+                ${typeof analysis.averageSalary === 'number' 
+                  ? analysis.averageSalary.toLocaleString() 
+                  : analysis.averageSalary}
+              </div>
+              {analysis.salaryRange && analysis.salaryRange !== 'N/A' && (
+                <p className="text-white/70 text-lg">
+                  Typical Range: {analysis.salaryRange}
+                </p>
+              )}
+              <p className="text-white/60 text-sm mt-2">Based on industry data</p>
+            </div>
+          </div>
+        )}
+
         {/* Skills to Learn */}
         <div className="bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-8 mb-8">
           <h2 className="text-2xl font-bold text-white mb-6 flex items-center gap-2">
@@ -146,7 +191,7 @@ export default function AnalyzePage() {
           <div className="space-y-4">
             {analysis.recommendations.map((rec: string, index: number) => (
               <div key={index} className="flex items-start gap-3 bg-white/5 rounded-lg p-4">
-                <div className="w-8 h-8 bg-purple-500/30 rounded-full flex items-center justify-center flex-shrink-0">
+                <div className="w-8 h-8 bg-royal-blue/30 rounded-full flex items-center justify-center flex-shrink-0">
                   <span className="text-white font-semibold">{index + 1}</span>
                 </div>
                 <p className="text-white/90">{rec}</p>
@@ -159,7 +204,7 @@ export default function AnalyzePage() {
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
           <button
             onClick={() => router.push('/coach/chat')}
-            className="px-8 py-4 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-semibold rounded-xl transition-all flex items-center justify-center gap-2 shadow-lg hover:shadow-xl"
+            className="px-8 py-4 bg-gradient-to-r from-gold-primary to-gold-accent hover:from-gold-accent hover:to-pink-700 text-white font-semibold rounded-xl transition-all flex items-center justify-center gap-2 shadow-lg hover:shadow-xl"
           >
             Get Personalized Coaching
             <ArrowRight className="w-5 h-5" />

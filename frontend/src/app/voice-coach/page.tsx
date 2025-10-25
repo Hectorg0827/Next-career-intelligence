@@ -378,7 +378,7 @@ export default function VoiceCoachPage() {
 
         {/* Info Banner for New Users */}
         {messages.length === 0 && (
-          <div className="bg-gradient-to-r from-blue-50 to-purple-50 border border-blue-200 rounded-lg p-4 mb-4">
+          <div className="bg-gradient-to-r from-blue-50 to-silver-soft border border-blue-200 rounded-lg p-4 mb-4">
             <div className="flex items-start gap-3">
               <div className="flex-shrink-0 w-10 h-10 bg-next-royal-blue rounded-full flex items-center justify-center">
                 <Bot className="w-6 h-6 text-white" />
@@ -425,7 +425,7 @@ export default function VoiceCoachPage() {
                 </button>
                 <button
                   onClick={() => setInputMessage("What skills should I learn?")}
-                  className="px-4 py-2 bg-purple-100 text-purple-700 rounded-lg hover:bg-purple-200 text-sm"
+                  className="px-4 py-2 bg-silver-light text-gold-accent rounded-lg hover:bg-silver-soft text-sm"
                 >
                   Skill recommendations
                 </button>
@@ -445,7 +445,7 @@ export default function VoiceCoachPage() {
                   className={`flex gap-3 ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
                 >
                   {message.role === 'assistant' && (
-                    <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-500 rounded-full flex items-center justify-center flex-shrink-0">
+                    <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-royal-blue rounded-full flex items-center justify-center flex-shrink-0">
                       <Bot className="w-5 h-5 text-white" />
                     </div>
                   )}
@@ -496,7 +496,7 @@ export default function VoiceCoachPage() {
               {/* Loading indicator */}
               {isLoading && (
                 <div className="flex gap-3">
-                  <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-500 rounded-full flex items-center justify-center">
+                  <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-royal-blue rounded-full flex items-center justify-center">
                     <Bot className="w-5 h-5 text-white" />
                   </div>
                   <div className="bg-next-bg-light p-4 rounded-lg">

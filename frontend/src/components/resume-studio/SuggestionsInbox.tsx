@@ -41,13 +41,13 @@ export default function SuggestionsInbox({ userId, suggestions, onSuggestionHand
   const getSuggestionStyle = (type: SuggestionType) => {
     const styles: Record<SuggestionType, { icon: string; color: string; bg: string }> = {
       add_experience_bullet: { icon: '💼', color: 'text-blue-800', bg: 'bg-blue-50' },
-      update_experience_bullet: { icon: '✏️', color: 'text-purple-800', bg: 'bg-purple-50' },
+      update_experience_bullet: { icon: '✏️', color: 'text-purple-800', bg: 'bg-silver-soft' },
       add_skill: { icon: '🧠', color: 'text-green-800', bg: 'bg-green-50' },
       add_project: { icon: '🚀', color: 'text-orange-800', bg: 'bg-orange-50' },
-      update_summary: { icon: '📝', color: 'text-indigo-800', bg: 'bg-indigo-50' },
+      update_summary: { icon: '📝', color: 'text-royal-blue-deep', bg: 'bg-silver-light' },
       add_achievement: { icon: '🏆', color: 'text-yellow-800', bg: 'bg-yellow-50' },
       add_certification: { icon: '📜', color: 'text-red-800', bg: 'bg-red-50' },
-      improve_wording: { icon: '✨', color: 'text-pink-800', bg: 'bg-pink-50' },
+      improve_wording: { icon: '✨', color: 'text-pink-800', bg: 'bg-silver-soft' },
     };
     return styles[type] || { icon: '📌', color: 'text-gray-800', bg: 'bg-gray-50' };
   };
@@ -63,7 +63,7 @@ export default function SuggestionsInbox({ userId, suggestions, onSuggestionHand
   // Get source badge color
   const getSourceBadge = (source: string) => {
     const badges: Record<string, { label: string; color: string }> = {
-      coach: { label: '🧑‍🏫 Coach', color: 'bg-purple-100 text-purple-800' },
+      coach: { label: '🧑‍🏫 Coach', color: 'bg-silver-light text-purple-800' },
       interviewer: { label: '🎤 Interviewer', color: 'bg-blue-100 text-blue-800' },
       auto: { label: '🤖 Auto', color: 'bg-gray-100 text-gray-800' },
     };

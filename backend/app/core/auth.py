@@ -64,12 +64,15 @@ async def get_current_user(
     """
     # Development mode - allow bypass if Firebase not configured
     if _firebase_app is None:
-        logger.warning("⚠️ Auth bypass - Firebase not configured")
+        logger.warning("⚠️ Auth bypass - Firebase not configured (ENTERPRISE MODE)")
         return {
-            "user_id": "dev_user_123",
-            "email": "dev@example.com",
+            "user_id": "enterprise_test_user",
+            "email": "enterprise@next-career.com",
+            "name": "Enterprise Test User",
             "email_verified": True,
-            "dev_mode": True
+            "dev_mode": True,
+            "subscription_tier": "enterprise",
+            "subscription_status": "active"
         }
 
     if not credentials:
@@ -198,6 +201,12 @@ async def require_enterprise(
     """
     Require enterprise subscription
     """
+    # Development mode bypass
+    if current_user.get("dev_mode"):
+        logger.warning("⚠️ Enterprise check bypass - dev mode")
+        current_user["subscription_tier"] = "enterprise"
+        return current_user
+    
     current_user = await require_premium(current_user)
 
     if current_user.get("subscription_tier") != "enterprise":

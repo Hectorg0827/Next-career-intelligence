@@ -77,8 +77,8 @@ export default function CareerSankeyDiagram({ data, currentRole }: CareerSankeyD
   const getCategoryColor = (category: string) => {
     if (category === 'current') return 'from-gray-600 to-gray-700';
     if (category.includes('3-year')) return 'from-green-500 to-emerald-600';
-    if (category.includes('5-year')) return 'from-blue-500 to-indigo-600';
-    if (category.includes('10-year')) return 'from-purple-500 to-pink-600';
+    if (category.includes('5-year')) return 'from-blue-500 to-royal-blue';
+    if (category.includes('10-year')) return 'from-royal-blue to-gold-accent';
     return 'from-gray-400 to-gray-500';
   };
 
@@ -109,11 +109,11 @@ export default function CareerSankeyDiagram({ data, currentRole }: CareerSankeyD
             <span>3 Years</span>
           </div>
           <div className="flex items-center gap-2">
-            <div className="w-3 h-3 rounded-full bg-gradient-to-r from-blue-500 to-indigo-600"></div>
+            <div className="w-3 h-3 rounded-full bg-gradient-to-r from-blue-500 to-royal-blue"></div>
             <span>5 Years</span>
           </div>
           <div className="flex items-center gap-2">
-            <div className="w-3 h-3 rounded-full bg-gradient-to-r from-purple-500 to-pink-600"></div>
+            <div className="w-3 h-3 rounded-full bg-gradient-to-r from-royal-blue to-gold-accent"></div>
             <span>10 Years</span>
           </div>
         </div>
@@ -309,9 +309,9 @@ export default function CareerSankeyDiagram({ data, currentRole }: CareerSankeyD
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
-            className="bg-gradient-to-r from-purple-50 to-pink-50 border-2 border-purple-200 rounded-xl p-6"
+            className="bg-gradient-to-r from-silver-soft to-silver-soft border-2 border-silver-soft rounded-xl p-6"
           >
-            <h4 className="text-lg font-bold text-purple-900 mb-3">
+            <h4 className="text-lg font-bold text-royal-navy mb-3">
               {data.nodes.find(n => n.id === selectedNode)?.name}
             </h4>
             
@@ -322,11 +322,11 @@ export default function CareerSankeyDiagram({ data, currentRole }: CareerSankeyD
                 {data.links
                   .filter(l => l.target === selectedNode)
                   .map((link, i) => (
-                    <div key={i} className="flex items-center gap-2 text-sm text-purple-700">
+                    <div key={i} className="flex items-center gap-2 text-sm text-gold-accent">
                       <span className="px-2 py-1 bg-white rounded-lg font-medium">
                         {link.skill}
                       </span>
-                      <span className="text-xs text-purple-600">
+                      <span className="text-xs text-gold-primary">
                         ({link.value}% confidence)
                       </span>
                     </div>
@@ -341,12 +341,12 @@ export default function CareerSankeyDiagram({ data, currentRole }: CareerSankeyD
                 {data.links
                   .filter(l => l.source === selectedNode)
                   .map((link, i) => (
-                    <div key={i} className="flex items-center gap-2 text-sm text-purple-700">
+                    <div key={i} className="flex items-center gap-2 text-sm text-gold-accent">
                       <span>→</span>
                       <span className="font-medium">
                         {data.nodes.find(n => n.id === link.target)?.name}
                       </span>
-                      <span className="text-xs text-purple-600">
+                      <span className="text-xs text-gold-primary">
                         via {link.skill}
                       </span>
                     </div>
