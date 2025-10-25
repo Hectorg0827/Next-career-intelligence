@@ -4,6 +4,8 @@ import { useEffect, useState } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { Loader2, TrendingUp, AlertCircle, CheckCircle2, ArrowRight, DollarSign } from 'lucide-react';
 import { analyzeCareer } from '@/lib/api';
+import InstantSnapshot from '@/components/InstantSnapshot';
+import MicroWin from '@/components/MicroWins';
 
 export default function AnalyzePage() {
   const searchParams = useSearchParams();
@@ -11,6 +13,8 @@ export default function AnalyzePage() {
   const jobTitle = searchParams.get('job') || '';
   
   const [isAnalyzing, setIsAnalyzing] = useState(true);
+  const [showInstantSnapshot, setShowInstantSnapshot] = useState(true);
+  const [showMicroWin, setShowMicroWin] = useState(false);
   const [analysis, setAnalysis] = useState<any>(null);
   const [error, setError] = useState<string | null>(null);
   const [loadingMessage, setLoadingMessage] = useState('Initializing AI analysis...');
@@ -63,6 +67,9 @@ export default function AnalyzePage() {
           compatibilityScore: result.compatibility_score,
           augmentationPotential: result.ai_displacement_risk?.augmentation_potential
         });
+        
+        // Show micro-win notification
+        setShowMicroWin(true);
       } catch (err: any) {
         console.error('Analysis error:', err);
         setError(err.response?.data?.detail || 'Failed to analyze. Please try again.');
@@ -80,15 +87,20 @@ export default function AnalyzePage() {
 
   if (isAnalyzing) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-royal-navy via-royal-navy to-blue-900 flex items-center justify-center">
-        <div className="text-center max-w-md px-6">
-          <Loader2 className="w-16 h-16 text-gold-primary animate-spin mx-auto mb-4" />
-          <h2 className="text-2xl text-white font-semibold mb-2">Analyzing Your Career with AI</h2>
-          <p className="text-white/70 mb-4">Processing {jobTitle}...</p>
-          <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4 mt-6">
-            <p className="text-gold-primary text-sm font-medium">{loadingMessage}</p>
-            <p className="text-white/50 text-xs mt-2">This comprehensive analysis takes 1-2 minutes</p>
+      <div className="min-h-screen bg-gradient-to-br from-royal-navy via-royal-navy to-blue-900 py-12 px-4">
+        <div className="max-w-4xl mx-auto">
+          {/* Header */}
+          <div className="text-center mb-8">
+            <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
+              Analyzing Your Career
+            </h1>
+            <p className="text-xl text-white/80">
+              for <span className="font-semibold text-gold-primary">{jobTitle}</span>
+            </p>
           </div>
+
+          {/* Instant Snapshot Component - Shows immediately */}
+          {showInstantSnapshot && <InstantSnapshot jobTitle={jobTitle} />}
         </div>
       </div>
     );
@@ -120,6 +132,13 @@ export default function AnalyzePage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-royal-navy via-royal-navy to-blue-900 py-12 px-4">
+      {/* Micro-Win Notification */}
+      <MicroWin 
+        show={showMicroWin} 
+        message="Analysis Complete! Your career insights are ready." 
+        xp={50} 
+      />
+      
       <div className="max-w-4xl mx-auto">
         {/* Header */}
         <div className="text-center mb-12">
