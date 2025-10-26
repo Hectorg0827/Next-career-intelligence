@@ -111,7 +111,7 @@ export default function Home() {
 
           {/* NEXT Logo */}
           <div className="mb-8">
-            <Logo size="lg" linkTo={null} className="mx-auto" />
+            <Logo size="lg" linkTo={undefined} className="mx-auto" />
           </div>
 
           <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/10 backdrop-blur-sm border border-gold-primary/30 rounded-full mb-8">
@@ -127,7 +127,7 @@ export default function Home() {
           </h1>
 
           <p className="text-xl md:text-2xl text-white/80 mb-12 max-w-2xl mx-auto">
-            Get a free AI-powered analysis of your career's automation risk and discover skills that future-proof your career
+            Get a free AI-powered analysis of your career&apos;s automation risk and discover skills that future-proof your career
           </p>
 
           <form onSubmit={handleAnalyze} className="max-w-2xl mx-auto mb-8">

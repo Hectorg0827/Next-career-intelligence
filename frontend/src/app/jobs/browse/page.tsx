@@ -6,22 +6,7 @@ import { useAuth } from '@/lib/firebase';
 import { jobsApi } from '@/lib/api';
 import JobCard from '@/components/jobs/JobCard';
 import SearchFilter from '@/components/jobs/SearchFilter';
-
-interface Job {
-  id: string;
-  title: string;
-  company: string;
-  location: string;
-  remote_type: string;
-  salary_min: number | null;
-  salary_max: number | null;
-  required_skills: string[];
-  experience_level: string;
-  job_type: string;
-  description: string;
-  match_score?: number;
-  created_at: string;
-}
+import { Job, JobMatch } from '@/types/jobs';
 
 interface PaginatedResponse {
   total: number;
@@ -30,8 +15,30 @@ interface PaginatedResponse {
   results: Job[];
 }
 
+// Convert Job to JobMatch with default values
+const convertToJobMatch = (job: Job): JobMatch => ({
+  ...job,
+  match_score: 0,
+  ai_displacement_risk: 0,
+  goal_relevance_score: 0,
+  relevant_goals: [],
+  match_details: {
+    overall_score: 0,
+    skill_fit_score: 0,
+    trajectory_fit_score: 0,
+    value_match_score: 0,
+    logistics_fit_score: 0,
+    growth_potential_score: 0,
+    penalties: 0,
+    match_highlights: [],
+    skill_gaps: [],
+    displacement_risk_improvement: 0,
+    why_matched: 'Browse all available jobs'
+  }
+});
+
 export default function BrowseJobsPage() {
-  const { user, isLoading } = useAuth();
+  const { user, loading: authLoading } = useAuth();
   const [jobs, setJobs] = useState<Job[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -52,7 +59,7 @@ export default function BrowseJobsPage() {
 
   // Fetch jobs
   useEffect(() => {
-    if (!user || isLoading) return;
+    if (!user || authLoading) return;
 
     const fetchJobs = async () => {
       try {
@@ -83,9 +90,9 @@ export default function BrowseJobsPage() {
     };
 
     fetchJobs();
-  }, [user, isLoading, filters]);
+  }, [user, authLoading, filters]);
 
-  if (isLoading || !user) {
+  if (authLoading || !user) {
     return (
       <div className="min-h-screen bg-white flex items-center justify-center">
         <div className="text-center">
@@ -153,7 +160,10 @@ export default function BrowseJobsPage() {
             ) : jobs.length > 0 ? (
               <div className="space-y-4">
                 {jobs.map((job) => (
-                  <JobCard key={job.id} job={job} />
+                  <JobCard 
+                    key={job.id} 
+                    job={convertToJobMatch(job)} 
+                  />
                 ))}
               </div>
             ) : (

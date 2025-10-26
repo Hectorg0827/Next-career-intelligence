@@ -27,13 +27,13 @@ interface SavedJob {
 }
 
 export default function SavedJobsPage() {
-  const { user, isLoading } = useAuth();
+  const { user, loading: authLoading } = useAuth();
   const [savedJobs, setSavedJobs] = useState<SavedJob[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!user || isLoading) return;
+    if (!user || authLoading) return;
 
     const fetchSavedJobs = async () => {
       try {
@@ -49,7 +49,7 @@ export default function SavedJobsPage() {
     };
 
     fetchSavedJobs();
-  }, [user, isLoading]);
+  }, [user, authLoading]);
 
   const handleRemoveSaved = async (savedId: string) => {
     try {
@@ -60,7 +60,7 @@ export default function SavedJobsPage() {
     }
   };
 
-  if (isLoading || !user) {
+  if (authLoading || !user) {
     return (
       <div className="min-h-screen bg-white flex items-center justify-center">
         <div className="text-center">
@@ -79,7 +79,7 @@ export default function SavedJobsPage() {
           <div className="flex items-center justify-between">
             <div>
               <h1 className="text-3xl font-bold text-gray-900">Saved Jobs</h1>
-              <p className="text-gray-600 text-sm mt-1">Jobs you've bookmarked for later</p>
+              <p className="text-gray-600 text-sm mt-1">Jobs you&apos;ve bookmarked for later</p>
             </div>
             <Link
               href="/jobs/browse"

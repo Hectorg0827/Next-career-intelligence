@@ -49,6 +49,7 @@ export default function CareerCoachPage() {
     if (user) {
       loadConversations();
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
 
   const loadConversations = async () => {
