@@ -17,6 +17,11 @@ from app.services.agents.risk_agent import RiskAgent
 from app.services.agents.match_agent import MatchAgent
 from app.services.agents.gap_agent import GapAgent
 from app.services.agents.sentiment_agent import SentimentAgent
+from app.services.agents.trajectory_agent import TrajectoryAgent
+from app.services.agents.market_intel_agent import MarketIntelAgent
+from app.services.agents.early_warning_agent import EarlyWarningAgent
+from app.services.agents.negotiation_agent import NegotiationAgent
+from app.services.agents.peer_benchmarking_agent import PeerBenchmarkingAgent
 
 
 class CareerOrchestrator:
@@ -25,24 +30,39 @@ class CareerOrchestrator:
     
     Mission: Protect the user's career, grow it, and guide it forever.
     
-    Coordinates:
+    Coordinates Core Agents:
     - Profile Agent (memory/identity)
     - Risk Agent (survival/stability)
     - Match Agent (fit/compatibility)
     - Gap Agent (growth/training)
     - Sentiment Agent (motivation/emotion)
     
+    Enhanced Intelligence Agents:
+    - Trajectory Agent (career forecasting)
+    - Market Intel Agent (real-time market data)
+    - Early Warning Agent (threat detection)
+    - Negotiation Agent (offer analysis)
+    - Peer Benchmarking Agent (comparative analytics)
+    
     Returns standardized OrchestratorOutput for every analysis.
     """
     
     def __init__(self):
+        # Core agents
         self.profile_agent = ProfileAgent()
         self.risk_agent = RiskAgent()
         self.match_agent = MatchAgent()
         self.gap_agent = GapAgent()
         self.sentiment_agent = SentimentAgent()
         
-        logger.info("Career Orchestrator initialized with multi-agent system")
+        # Enhanced intelligence agents
+        self.trajectory_agent = TrajectoryAgent()
+        self.market_intel_agent = MarketIntelAgent()
+        self.early_warning_agent = EarlyWarningAgent()
+        self.negotiation_agent = NegotiationAgent()
+        self.peer_benchmarking_agent = PeerBenchmarkingAgent()
+        
+        logger.info("Career Orchestrator initialized with 10-agent intelligence system")
     
     async def analyze_job_match(
         self,

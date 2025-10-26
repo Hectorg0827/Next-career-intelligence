@@ -10,7 +10,7 @@ from loguru import logger
 import time
 from contextlib import asynccontextmanager
 
-from app.api import analyze, jobs, users, health, coach, interviewer, jobs_marketplace, subscriptions, roadmap, auth, onboarding, marketplace, resume_studio, match
+from app.api import analyze, jobs, users, health, coach, interviewer, jobs_marketplace, subscriptions, roadmap, auth, onboarding, marketplace, resume_studio, match, intelligence
 try:
     from app.api import resume_studio
 except ImportError:
@@ -114,6 +114,9 @@ app.include_router(onboarding.router, tags=["Onboarding"])
 
 # NEW: Multi-Agent Career Intelligence System
 app.include_router(match.router, prefix="/api", tags=["Career Intelligence - Multi-Agent System"])
+
+# ENHANCED: Advanced Intelligence Features (Predictive, Market, Benchmarking)
+app.include_router(intelligence.router, tags=["Enhanced Intelligence - Predictive & Market Analytics"])
 
 app.include_router(analyze.router, prefix="/api", tags=["Analysis"])
 app.include_router(roadmap.router, prefix="/api", tags=["Career Roadmap"])
