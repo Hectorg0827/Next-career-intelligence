@@ -40,6 +40,7 @@ sentry-sdk==2.1.1
 # Data validation & processing
 email-validator==2.1.1
 phonenumbers==8.13.35
+numpy==1.26.4
 
 # Testing
 pytest==8.2.0

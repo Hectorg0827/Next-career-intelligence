@@ -10,7 +10,7 @@ from loguru import logger
 import time
 from contextlib import asynccontextmanager
 
-from app.api import analyze, jobs, users, health, coach, interviewer, jobs_marketplace, subscriptions, roadmap, auth, onboarding, marketplace, resume_studio
+from app.api import analyze, jobs, users, health, coach, interviewer, jobs_marketplace, subscriptions, roadmap, auth, onboarding, marketplace, resume_studio, match
 try:
     from app.api import resume_studio
 except ImportError:
@@ -48,14 +48,25 @@ app = FastAPI(
     lifespan=lifespan
 )
 
-# CORS middleware
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=settings.ALLOWED_ORIGINS,
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+# CORS middleware - Allow all origins in production for Cloud Run
+# In production, frontend domain will be different, so we allow all origins
+if settings.ENVIRONMENT == "production":
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=["*"],  # Allow all origins in production
+        allow_credentials=True,
+        allow_methods=["*"],
+        allow_headers=["*"],
+    )
+else:
+    # Development - only allow localhost
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=settings.ALLOWED_ORIGINS,
+        allow_credentials=True,
+        allow_methods=["*"],
+        allow_headers=["*"],
+    )
 
 
 # Request logging middleware
@@ -100,6 +111,10 @@ async def global_exception_handler(request: Request, exc: Exception):
 app.include_router(health.router, prefix="/api", tags=["Health"])
 app.include_router(auth.router, tags=["Authentication"])
 app.include_router(onboarding.router, tags=["Onboarding"])
+
+# NEW: Multi-Agent Career Intelligence System
+app.include_router(match.router, prefix="/api", tags=["Career Intelligence - Multi-Agent System"])
+
 app.include_router(analyze.router, prefix="/api", tags=["Analysis"])
 app.include_router(roadmap.router, prefix="/api", tags=["Career Roadmap"])
 app.include_router(jobs.router, prefix="/api", tags=["Jobs"])
