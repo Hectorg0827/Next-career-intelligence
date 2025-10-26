@@ -81,6 +81,7 @@ class Settings(BaseSettings):
         "http://localhost:3001",
         "https://your-production-domain.com"
     ]
+    CORS_ALLOW_ALL_ORIGINS: bool = False  # Set to True in production if needed
     
     # Logging
     LOG_LEVEL: str = "INFO"

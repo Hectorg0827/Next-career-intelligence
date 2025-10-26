@@ -17,8 +17,11 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy application code
 COPY . .
 
-# Expose port (Cloud Run sets PORT env var dynamically)
-EXPOSE 8000
+# Make startup script executable
+RUN chmod +x start-server.sh
 
-# Run the application with dynamic port
-CMD uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8000}
+# Cloud Run dynamically assigns PORT
+ENV PORT=8080
+
+# Run the application using startup script
+CMD ["./start-server.sh"]

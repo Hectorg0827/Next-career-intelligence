@@ -21,14 +21,12 @@ echo ""
 GEMINI_API_KEY="9c6779342f509f9f39e21adf9e3ec54d4ac5df70"
 SERVICE_NAME="next-backend"
 REGION="us-central1"
-PROJECT_ID=$(gcloud config get-value project 2>/dev/null)
+PROJECT_ID="next-475619"  # Your actual GCP project ID
 
 if [ -z "$PROJECT_ID" ]; then
-    echo "⚠️  No project configured. Please run:"
-    echo "   gcloud config set project YOUR_PROJECT_ID"
-    echo ""
-    read -p "Enter your Google Cloud Project ID: " PROJECT_ID
-    gcloud config set project $PROJECT_ID
+    echo "⚠️  Using project: ${PROJECT_ID}"
+else
+    echo "✓ Project ID confirmed: ${PROJECT_ID}"
 fi
 
 echo "📋 Deployment Configuration:"
