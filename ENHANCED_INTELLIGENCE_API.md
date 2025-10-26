@@ -422,10 +422,12 @@ All endpoints return standard error responses:
 
 ## Rate Limiting
 
-- Free tier: 10 requests per hour
-- Pro tier: 100 requests per hour  
-- Elite tier: 500 requests per hour
+- Free tier: 20 requests per day
+- Pro tier: 300 requests per hour (sufficient for active job searches)
+- Elite tier: 1000 requests per hour
 - Enterprise: Unlimited
+
+**Note:** Rate limits are per user, not per endpoint. Bulk operations count as single requests.
 
 ---
 
@@ -451,10 +453,25 @@ The Enhanced Intelligence system uses 10 specialized AI agents:
 
 ## Best Practices
 
-1. **Caching**: Results are cached for 24 hours for market data, 1 week for forecasts
-2. **Polling**: Don't poll frequently - data updates daily
+1. **Caching**: 
+   - Market data: Cached for 6 hours (invalidated on major market events)
+   - Career forecasts: Cached for 1 week (invalidated on profile changes)
+   - Risk scans: Cached for 24 hours (invalidated on new threat detection)
+   - Salary data: Cached for 24 hours
+   
+   **Cache Invalidation Triggers:**
+   - User profile updates (skills, experience, goals)
+   - Major market disruptions in user's industry
+   - Significant role/location changes
+   - Manual refresh requests (Pro/Elite)
+
+2. **Polling**: Don't poll frequently - data updates occur:
+   - Market data: Every 6 hours
+   - Risk scans: Daily at midnight UTC
+   - Forecasts: Weekly on Sundays
+   
 3. **Error Handling**: Always check `success` field in responses
-4. **Profile Completeness**: More complete profiles yield better predictions
+4. **Profile Completeness**: More complete profiles yield better predictions (aim for 80%+ completeness)
 
 ---
 
