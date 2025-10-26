@@ -17,6 +17,11 @@ from app.services.agents.risk_agent import RiskAgent
 from app.services.agents.match_agent import MatchAgent
 from app.services.agents.gap_agent import GapAgent
 from app.services.agents.sentiment_agent import SentimentAgent
+from app.services.agents.trajectory_agent import TrajectoryAgent
+from app.services.agents.market_intel_agent import MarketIntelAgent
+from app.services.agents.early_warning_agent import EarlyWarningAgent
+from app.services.agents.negotiation_agent import NegotiationAgent
+from app.services.agents.peer_benchmarking_agent import PeerBenchmarkingAgent
 
 
 class CareerOrchestrator:
@@ -25,24 +30,45 @@ class CareerOrchestrator:
     
     Mission: Protect the user's career, grow it, and guide it forever.
     
-    Coordinates:
+    3-Layer Architecture:
+    
+    Layer 1 - Core Analysis:
     - Profile Agent (memory/identity)
     - Risk Agent (survival/stability)
     - Match Agent (fit/compatibility)
     - Gap Agent (growth/training)
     - Sentiment Agent (motivation/emotion)
     
+    Layer 2 - Predictive Intelligence:
+    - Trajectory Agent (career path forecasting)
+    - Market Intel Agent (live labor market data)
+    
+    Layer 3 - Proactive Protection:
+    - Early Warning Agent (threat detection)
+    - Negotiation Agent (offer optimization)
+    - Peer Benchmarking Agent (community intelligence)
+    
     Returns standardized OrchestratorOutput for every analysis.
     """
     
     def __init__(self):
+        # Layer 1
         self.profile_agent = ProfileAgent()
         self.risk_agent = RiskAgent()
         self.match_agent = MatchAgent()
         self.gap_agent = GapAgent()
         self.sentiment_agent = SentimentAgent()
         
-        logger.info("Career Orchestrator initialized with multi-agent system")
+        # Layer 2
+        self.trajectory_agent = TrajectoryAgent()
+        self.market_intel_agent = MarketIntelAgent()
+        
+        # Layer 3
+        self.early_warning_agent = EarlyWarningAgent()
+        self.negotiation_agent = NegotiationAgent()
+        self.peer_benchmarking_agent = PeerBenchmarkingAgent()
+        
+        logger.info("Career Orchestrator initialized with 9-agent system (3 layers)")
     
     async def analyze_job_match(
         self,

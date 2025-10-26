@@ -52,7 +52,8 @@ export default function ResetPasswordPage() {
       await apiClient.resetPassword({
         email,
         reset_code: code,
-        new_password: newPassword
+        new_password: newPassword,
+        confirm_password: confirmPassword
       });
 
       setSuccess(true);

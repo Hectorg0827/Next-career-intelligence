@@ -35,7 +35,7 @@ export function InterviewSessionRecorder({
       recognition.onresult = (event: any) => {
         let interim_transcript = '';
         for (let i = event.resultIndex; i < event.results.length; i++) {
-          const transcript = event.results[i][0].transcript;
+          const { transcript } = event.results[i][0];
           if (event.results[i].isFinal) {
             setTranscript((prev) => prev + transcript + ' ');
           } else {

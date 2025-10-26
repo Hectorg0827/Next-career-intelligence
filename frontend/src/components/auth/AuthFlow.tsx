@@ -1,8 +1,10 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { Mail, Lock, User, ArrowRight, Eye, EyeOff, CheckCircle, AlertCircle } from 'lucide-react';
+import { apiClient } from '@/lib/api';
 
 type AuthStep = 'welcome' | 'signup' | 'login' | 'verify-email' | 'reset-password';
 
@@ -21,11 +23,14 @@ interface LoginFormData {
 }
 
 export const AuthFlow = () => {
+  const router = useRouter();
   const [step, setStep] = useState<AuthStep>('welcome');
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+  const [verificationCode, setVerificationCode] = useState('');
+  const [userEmail, setUserEmail] = useState('');
 
   const [signupData, setSignupData] = useState<SignupFormData>({
     email: '',

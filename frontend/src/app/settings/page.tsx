@@ -43,7 +43,7 @@ export default function SettingsPage() {
   const [deleteConfirmText, setDeleteConfirmText] = useState('');
 
   useEffect(() => {
-    const currentUser = auth.currentUser;
+    const { currentUser } = auth;
     if (!currentUser) {
       router.push('/auth/login');
       return;

@@ -252,7 +252,7 @@ export default function InterviewSetupPage() {
                   <li>Use the STAR method to structure your answers</li>
                   <li>Include specific, quantifiable results</li>
                   <li>Be honest - this helps generate accurate resume bullets</li>
-                  <li>Take your time - there's no time limit</li>
+                  <li>Take your time - there&apos;s no time limit</li>
                 </ul>
               </div>
             </div>

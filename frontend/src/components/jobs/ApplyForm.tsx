@@ -45,7 +45,7 @@ export default function ApplyForm({ jobId, onSuccess }: ApplyFormProps) {
       <div className="text-center space-y-3">
         <div className="text-4xl">✅</div>
         <p className="text-gray-900 font-semibold">Application Submitted!</p>
-        <p className="text-sm text-gray-600">We'll track this application for you.</p>
+        <p className="text-sm text-gray-600">We&apos;ll track this application for you.</p>
       </div>
     );
   }
