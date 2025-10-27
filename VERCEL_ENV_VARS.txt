@@ -1,0 +1,29 @@
+# Copy these EXACT variable names and values into Vercel
+# Add them one by one in the Environment Variables section
+
+# ===== BACKEND =====
+NEXT_PUBLIC_API_URL=https://next-backend-jxs4smo7nq-uc.a.run.app
+
+# ===== SUPABASE =====
+NEXT_PUBLIC_SUPABASE_URL=https://whxbxjpymksgvixudnjh.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndoeGJ4anB5bWtzZ3ZpeHVkbmpoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA4NjAzNDksImV4cCI6MjA3NjQzNjM0OX0.8ykQi5mPIe48aA8E3J82acqqPlhEtS7VICduXOui0zc
+
+# ===== FIREBASE (7 variables) =====
+NEXT_PUBLIC_FIREBASE_API_KEY=AIzaSyDIQ68KTtgSu0716r1X9p8XGGHJivdXY4Q
+NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=next-fc055.firebaseapp.com
+NEXT_PUBLIC_FIREBASE_PROJECT_ID=next-fc055
+NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=next-fc055.firebasestorage.app
+NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=438736067565
+NEXT_PUBLIC_FIREBASE_APP_ID=1:438736067565:web:5ec706d253893954a0e5e4
+NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID=G-HQLTL9GQ5Y
+
+# ===== GOOGLE OAUTH =====
+NEXT_PUBLIC_GOOGLE_CLIENT_ID=795538981829-0c05b330697k523h6aehtabvbik8d9oe.apps.googleusercontent.com
+
+# ===== STRIPE =====
+NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_live_51SKRgLHwn1oJmJZkyS2T6xTbuwl538mqRESS38j0diGssBPAdX5gap5aHpepFh6XrUW9ZbqMqFqd4dRX9UQP18ft000CV1p0et
+NEXT_PUBLIC_STRIPE_PRICE_ID_PRO_MONTHLY=price_1SKSMXHwn1oJmJZkJMa3Q7TK
+NEXT_PUBLIC_STRIPE_PRICE_ID_PRO_YEARLY=price_1SLPqlHwn1oJmJZk5c0nzldM
+
+# TOTAL: 13 environment variables
+# Just copy the NAME and VALUE for each one into Vercel's form
