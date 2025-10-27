@@ -189,11 +189,11 @@ export default function Home() {
             Join thousands of professionals taking control of their careers
           </p>
           <div className="flex items-center justify-center gap-4 flex-wrap">
-            <a href="#" className="text-white/60 hover:text-white text-sm transition-colors">How It Works</a>
+            <button onClick={() => router.push('/how-it-works')} className="text-white/60 hover:text-white text-sm transition-colors cursor-pointer">How It Works</button>
             <span className="text-white/30">•</span>
-            <a href="#" className="text-white/60 hover:text-white text-sm transition-colors">Success Stories</a>
+            <button onClick={() => router.push('/success-stories')} className="text-white/60 hover:text-white text-sm transition-colors cursor-pointer">Success Stories</button>
             <span className="text-white/30">•</span>
-            <a href="/dashboard" className="text-white/60 hover:text-white text-sm transition-colors">Sign In</a>
+            <button onClick={() => router.push('/login')} className="text-white/60 hover:text-white text-sm transition-colors cursor-pointer">Sign In</button>
           </div>
         </div>
       </div>

@@ -2,14 +2,17 @@
 
 import { useEffect, useState } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
-import { Loader2, TrendingUp, AlertCircle, CheckCircle2, ArrowRight, DollarSign } from 'lucide-react';
-import { analyzeCareer } from '@/lib/api';
+import { Loader2, TrendingUp, AlertCircle, CheckCircle2, ArrowRight, DollarSign, Sparkles } from 'lucide-react';
+import { intelligenceApi } from '@/lib/api';
+import { useAuth } from '@/lib/firebase';
 import InstantSnapshot from '@/components/InstantSnapshot';
 import MicroWin from '@/components/MicroWins';
+import { RiskCard, CompatibilityCard, SkillGapsCard, NextStepsCard, CoachQuestionsCard } from '@/components/analysis/AnalysisCards';
 
 export default function AnalyzePage() {
   const searchParams = useSearchParams();
   const router = useRouter();
+  const { user } = useAuth();
   const jobTitle = searchParams.get('job') || '';
   
   const [isAnalyzing, setIsAnalyzing] = useState(true);
@@ -17,7 +20,7 @@ export default function AnalyzePage() {
   const [showMicroWin, setShowMicroWin] = useState(false);
   const [analysis, setAnalysis] = useState<any>(null);
   const [error, setError] = useState<string | null>(null);
-  const [loadingMessage, setLoadingMessage] = useState('Initializing AI analysis...');
+  const [loadingMessage, setLoadingMessage] = useState('🚀 Activating Multi-Agent Intelligence System...');
 
   useEffect(() => {
     if (!jobTitle) {
@@ -25,61 +28,56 @@ export default function AnalyzePage() {
       return;
     }
 
-    // Real API call to backend with Gemini AI
+    if (!user) {
+      router.push('/login');
+      return;
+    }
+
+    // Real API call to backend with FULL MULTI-AGENT ORCHESTRATOR
     const performAnalysis = async () => {
       try {
         setIsAnalyzing(true);
         setError(null);
         
-        // Show progress messages
-        setTimeout(() => setLoadingMessage('Analyzing job market trends...'), 3000);
-        setTimeout(() => setLoadingMessage('Calculating automation risk...'), 10000);
-        setTimeout(() => setLoadingMessage('Fetching salary benchmarks...'), 20000);
-        setTimeout(() => setLoadingMessage('Generating AI insights...'), 40000);
-        setTimeout(() => setLoadingMessage('Almost done, finalizing report...'), 80000);
+        // Show progress messages for multi-agent system
+        setTimeout(() => setLoadingMessage('🤖 Deploying 9 specialized AI agents...'), 2000);
+        setTimeout(() => setLoadingMessage('🧠 Profile Agent analyzing your background...'), 5000);
+        setTimeout(() => setLoadingMessage('⚠️ Risk Agent evaluating AI displacement...'), 8000);
+        setTimeout(() => setLoadingMessage('🎯 Match Agent calculating compatibility...'), 11000);
+        setTimeout(() => setLoadingMessage('📊 Gap Agent identifying skill requirements...'), 14000);
+        setTimeout(() => setLoadingMessage('💬 Sentiment Agent analyzing industry trends...'), 17000);
+        setTimeout(() => setLoadingMessage('🔮 Trajectory Agent forecasting career paths...'), 20000);
+        setTimeout(() => setLoadingMessage('📈 Market Intel Agent gathering insights...'), 23000);
+        setTimeout(() => setLoadingMessage('🚨 Early Warning Agent checking risks...'), 26000);
+        setTimeout(() => setLoadingMessage('✨ Orchestrator synthesizing insights...'), 29000);
         
-        // Call the real backend API
-        const result = await analyzeCareer({
-          job_title: jobTitle,
-          skills: ['Communication', 'Problem Solving', 'Teamwork'], // Default skills for demo
-          years_experience: 5, // Default experience
-          location: 'United States'
+        // Call the MULTI-AGENT ORCHESTRATOR API
+        const result = await intelligenceApi.analyzeMatch({
+          user_id: user.uid,
+          job_details: {
+            title: jobTitle,
+            description: 'Job analysis request from analyze page',
+            required_skills: [],
+            location: 'United States'
+          }
         });
         
-        console.log('Backend analysis result:', result);
+        console.log('🎯 Orchestrator analysis result:', result);
         
-        // Transform backend response to match UI expectations
-        const salaryData = result.metadata?.benchmarks?.salary_benchmark;
-        setAnalysis({
-          jobTitle: result.job_title,
-          riskScore: result.ai_displacement_risk?.score || 50,
-          riskLevel: result.ai_displacement_risk?.level || 'Medium',
-          aiImpact: result.ai_displacement_risk?.reasoning || 'Analysis completed',
-          averageSalary: salaryData?.industry_median 
-            ? `$${Math.round(salaryData.industry_median / 1000)}k`
-            : 'N/A',
-          salaryRange: salaryData
-            ? `$${Math.round(salaryData.percentile_25 / 1000)}k - $${Math.round(salaryData.percentile_90 / 1000)}k`
-            : 'N/A',
-          topSkills: result.metadata?.benchmarks?.skill_demand?.top_skills?.map((s: any) => s.name) || [],
-          recommendations: result.human_advantage_factors || [],
-          analysisId: result.analysis_id,
-          compatibilityScore: result.compatibility_score,
-          augmentationPotential: result.ai_displacement_risk?.augmentation_potential
-        });
+        setAnalysis(result);
         
         // Show micro-win notification
         setShowMicroWin(true);
       } catch (err: any) {
-        console.error('Analysis error:', err);
-        setError(err.response?.data?.detail || 'Failed to analyze. Please try again.');
+        console.error('❌ Multi-agent analysis error:', err);
+        setError(err.response?.data?.detail || 'Multi-agent analysis failed. Please try again.');
       } finally {
         setIsAnalyzing(false);
       }
     };
 
     performAnalysis();
-  }, [jobTitle, router]);
+  }, [jobTitle, user, router]);
 
   if (!jobTitle) {
     return null;
@@ -142,81 +140,36 @@ export default function AnalyzePage() {
       <div className="max-w-4xl mx-auto">
         {/* Header */}
         <div className="text-center mb-12">
-          <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
-            Career Analysis Report
-          </h1>
+          <div className="flex items-center justify-center mb-4">
+            <Sparkles className="w-10 h-10 text-gold-primary mr-3 animate-pulse" />
+            <h1 className="text-4xl md:text-5xl font-bold text-white">
+              Multi-Agent Analysis Report
+            </h1>
+          </div>
           <p className="text-xl text-white/80">
-            for <span className="font-semibold">{jobTitle}</span>
+            for <span className="font-semibold text-gold-primary">{jobTitle}</span>
           </p>
+          <p className="text-sm text-white/60 mt-2">Powered by 9 AI agents working in harmony</p>
         </div>
 
-        {/* Risk Score Card */}
-        <div className="bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-8 mb-8">
-          <div className="text-center">
-            <h2 className="text-white/80 text-lg mb-4">AI Automation Risk Score</h2>
-            <div className={`text-7xl font-bold mb-4 ${getRiskColor(analysis.riskScore)}`}>
-              {analysis.riskScore}%
+        {/* Multi-Agent Analysis Cards */}
+        <div className="grid md:grid-cols-2 gap-6 mb-8">
+          <RiskCard risk={analysis?.risk} />
+          <CompatibilityCard 
+            score={analysis?.compatibility?.score || 0} 
+            highlights={analysis?.compatibility?.highlights || []} 
+          />
+          <div className="md:col-span-2">
+            <SkillGapsCard gaps={analysis?.gaps || []} />
+          </div>
+          <div className="md:col-span-2">
+            <NextStepsCard steps={analysis?.next_steps || []} />
+          </div>
+          {analysis?.coach_questions && analysis.coach_questions.length > 0 && (
+            <div className="md:col-span-2">
+              <CoachQuestionsCard questions={analysis.coach_questions} />
             </div>
-            <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/10 rounded-full">
-              <AlertCircle className="w-5 h-5 text-yellow-400" />
-              <span className="text-white font-medium">{analysis.riskLevel} Risk</span>
-            </div>
-            <p className="text-white/70 mt-4">{analysis.aiImpact}</p>
-          </div>
-        </div>
-
-        {/* Salary Information */}
-        {analysis.averageSalary && analysis.averageSalary !== 'N/A' && (
-          <div className="bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-8 mb-8">
-            <div className="text-center">
-              <div className="flex items-center justify-center gap-2 mb-4">
-                <DollarSign className="w-6 h-6 text-gold-primary" />
-                <h2 className="text-2xl font-bold text-white">Average Salary</h2>
-              </div>
-              <div className="text-5xl font-bold text-gold-primary mb-2">
-                ${typeof analysis.averageSalary === 'number' 
-                  ? analysis.averageSalary.toLocaleString() 
-                  : analysis.averageSalary}
-              </div>
-              {analysis.salaryRange && analysis.salaryRange !== 'N/A' && (
-                <p className="text-white/70 text-lg">
-                  Typical Range: {analysis.salaryRange}
-                </p>
-              )}
-              <p className="text-white/60 text-sm mt-2">Based on industry data</p>
-            </div>
-          </div>
-        )}
-
-        {/* Skills to Learn */}
-        <div className="bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-8 mb-8">
-          <h2 className="text-2xl font-bold text-white mb-6 flex items-center gap-2">
-            <TrendingUp className="w-6 h-6" />
-            Top Skills to Future-Proof Your Career
-          </h2>
-          <div className="grid md:grid-cols-2 gap-4">
-            {analysis.topSkills.map((skill: string, index: number) => (
-              <div key={index} className="flex items-center gap-3 bg-white/5 rounded-lg p-4">
-                <CheckCircle2 className="w-5 h-5 text-green-400 flex-shrink-0" />
-                <span className="text-white">{skill}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Recommendations */}
-        <div className="bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-8 mb-8">
-          <h2 className="text-2xl font-bold text-white mb-6">Recommended Next Steps</h2>
-          <div className="space-y-4">
-            {analysis.recommendations.map((rec: string, index: number) => (
-              <div key={index} className="flex items-start gap-3 bg-white/5 rounded-lg p-4">
-                <div className="w-8 h-8 bg-royal-blue/30 rounded-full flex items-center justify-center flex-shrink-0">
-                  <span className="text-white font-semibold">{index + 1}</span>
-                </div>
-                <p className="text-white/90">{rec}</p>
-              </div>
-            ))}
-          </div>
+          )}
         </div>
 
         {/* CTA Buttons */}

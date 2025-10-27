@@ -17,6 +17,7 @@ export default function Navigation() {
 
   const navLinks = [
     { href: '/dashboard', label: 'Dashboard' },
+    { href: '/career-radar', label: '🎯 Career Radar' },
     { href: '/analyze', label: 'Analyze' },
     { href: '/coach', label: 'AI Coach' },
     { href: '/interviewer', label: 'Interview Prep' },
