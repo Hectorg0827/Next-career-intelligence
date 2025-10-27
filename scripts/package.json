@@ -1,0 +1,13 @@
+{
+  "name": "firebase-scripts",
+  "version": "1.0.0",
+  "description": "Scripts for Firebase user management",
+  "main": "create-firebase-users.js",
+  "scripts": {
+    "create-users": "node create-firebase-users.js",
+    "delete-users": "node delete-firebase-users.js"
+  },
+  "dependencies": {
+    "firebase-admin": "^12.7.0"
+  }
+}

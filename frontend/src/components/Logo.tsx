@@ -17,7 +17,7 @@ const sizeMap = {
 export default function Logo({ size = 'md', className = '', linkTo = '/' }: LogoProps) {
   const logo = (
     <img 
-      src="/X logo Next1.png" 
+      src="/images/Next Logo.png" 
       alt="NEXT - Career Intelligence" 
       className={`${sizeMap[size]} w-auto ${className}`}
     />
