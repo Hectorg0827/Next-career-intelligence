@@ -132,7 +132,7 @@ export default function RiskComparisonBadge({
           {getPercentileMessage()}
         </p>
         <p className="text-xs text-blue-700">
-          You're in the {percentile}th percentile - {comparisonText}
+          You&apos;re in the {percentile}th percentile - {comparisonText}
         </p>
       </div>
 

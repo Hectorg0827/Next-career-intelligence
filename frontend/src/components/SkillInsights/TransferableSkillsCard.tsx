@@ -159,7 +159,7 @@ const TransferableSkillsCard: React.FC<TransferableSkillsCardProps> = ({
               Quick Win Strategy
             </h4>
             <p className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed">
-              Focus on skills with 80%+ confidence first—these are your "low-hanging fruit." 
+              Focus on skills with 80%+ confidence first—these are your &quot;low-hanging fruit.&quot; 
               You already have the foundation to master them quickly!
             </p>
           </div>
