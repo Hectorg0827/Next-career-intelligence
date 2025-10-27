@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import Navigation from "@/components/Navigation";
 import { Providers } from "@/components/Providers";
+import { Analytics } from "@vercel/analytics/react";
 
 export const metadata: Metadata = {
   title: "NEXT | Adaptive Career Intelligence",
@@ -21,6 +22,7 @@ export default function RootLayout({
           <Navigation />
           {children}
         </Providers>
+        <Analytics />
       </body>
     </html>
   );

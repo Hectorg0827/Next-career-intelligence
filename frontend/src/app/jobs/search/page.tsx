@@ -45,7 +45,7 @@ export default function JobSearchPage() {
       if (remoteOnly) params.remote_only = true;
       if (minSalary) params.min_salary = parseInt(minSalary);
 
-      const data = await JobsMarketplaceAPI.search(params);
+      const data = await JobsMarketplaceAPI.searchJobs(params);
       setJobs(data.jobs || []);
       setTotal(data.total || 0);
     } catch (err: any) {
