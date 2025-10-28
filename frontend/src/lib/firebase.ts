@@ -20,6 +20,7 @@ import {
   verifyPasswordResetCode,
   sendEmailVerification,
   applyActionCode,
+  updateProfile,
   User
 } from 'firebase/auth';
 import { useState, useEffect } from 'react';

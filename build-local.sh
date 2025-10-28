@@ -2,6 +2,9 @@
 # Local Build Verification Script for Next Career Intelligence
 # This script verifies that the frontend builds successfully before deploying
 
+# Add Node.js to PATH
+export PATH="/usr/local/opt/node@20/bin:$PATH"
+
 set -e  # Exit on error
 
 echo "========================================="
