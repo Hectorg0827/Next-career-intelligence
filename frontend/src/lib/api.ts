@@ -214,6 +214,11 @@ class APIClient {
     return response.data;
   }
 
+  async submitInterviewResponse(sessionId: string, response: any): Promise<any> {
+    const res = await this.client.post(`/interviewer/sessions/${sessionId}/responses`, response);
+    return res.data;
+  }
+
   // ============================================
   // Authentication (delegates to Firebase)
   // ============================================
