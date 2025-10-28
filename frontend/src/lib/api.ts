@@ -259,6 +259,7 @@ class APIClient {
     const response = await this.client.post('/subscriptions/portal');
     return response.data;
   }
+}
 
 const apiClient = new APIClient();
 
