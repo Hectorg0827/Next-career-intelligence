@@ -318,5 +318,6 @@ export const coachChat = apiClient.coachChat.bind(apiClient);
 // Backward compatibility exports
 export const analyzeCareer = apiClient.analyzeCareer.bind(apiClient);
 export const generateCareerRoadmap = apiClient.generateCareerPaths.bind(apiClient); // Map to existing method
-export const apiClient = apiClient;
+// Export the apiClient instance as a named export (do not re-declare)
+export { apiClient };
 
