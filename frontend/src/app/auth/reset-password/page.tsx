@@ -4,11 +4,12 @@ import { useState, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Lock, Eye, EyeOff, CheckCircle, AlertCircle, Loader2, ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
-import { apiClient } from '@/lib/api';
+import { useAuth } from '@/lib/auth-context';
 
 export default function ResetPasswordPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const { confirmPasswordReset } = useAuth();
   const [email, setEmail] = useState('');
   const [code, setCode] = useState('');
   const [newPassword, setNewPassword] = useState('');
@@ -49,13 +50,7 @@ export default function ResetPasswordPage() {
     setLoading(true);
 
     try {
-      await apiClient.resetPassword({
-        email,
-        reset_code: code,
-        new_password: newPassword,
-        confirm_password: confirmPassword
-      });
-
+      await confirmPasswordReset(code, newPassword);
       setSuccess(true);
 
       // Redirect to login after 2 seconds

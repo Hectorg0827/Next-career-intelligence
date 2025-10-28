@@ -16,7 +16,10 @@ import {
   signOut as firebaseSignOut,
   onAuthStateChanged,
   sendPasswordResetEmail,
-  updateProfile,
+  confirmPasswordReset,
+  verifyPasswordResetCode,
+  sendEmailVerification,
+  applyActionCode,
   User
 } from 'firebase/auth';
 import { useState, useEffect } from 'react';
@@ -130,6 +133,59 @@ export const resetPassword = async (email: string) => {
     await sendPasswordResetEmail(auth, email);
   } catch (error) {
     console.error('Password reset error:', error);
+    throw error;
+  }
+};
+
+/**
+ * Confirm password reset with code and new password
+ */
+export const confirmPasswordResetWithCode = async (code: string, newPassword: string) => {
+  try {
+    await confirmPasswordReset(auth, code, newPassword);
+  } catch (error) {
+    console.error('Confirm password reset error:', error);
+    throw error;
+  }
+};
+
+/**
+ * Verify password reset code
+ */
+export const verifyPasswordResetCodeFunc = async (code: string) => {
+  try {
+    const email = await verifyPasswordResetCode(auth, code);
+    return email;
+  } catch (error) {
+    console.error('Verify password reset code error:', error);
+    throw error;
+  }
+};
+
+/**
+ * Send email verification
+ */
+export const sendEmailVerificationFunc = async () => {
+  try {
+    if (auth.currentUser) {
+      await sendEmailVerification(auth.currentUser);
+    } else {
+      throw new Error('No user signed in');
+    }
+  } catch (error) {
+    console.error('Send email verification error:', error);
+    throw error;
+  }
+};
+
+/**
+ * Apply action code (for email verification)
+ */
+export const applyActionCodeFunc = async (code: string) => {
+  try {
+    await applyActionCode(auth, code);
+  } catch (error) {
+    console.error('Apply action code error:', error);
     throw error;
   }
 };

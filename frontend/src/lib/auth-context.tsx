@@ -13,6 +13,10 @@ import {
   signUpWithEmail, 
   signOut,
   resetPassword,
+  confirmPasswordResetWithCode,
+  verifyPasswordResetCodeFunc,
+  sendEmailVerificationFunc,
+  applyActionCodeFunc,
   onAuthChange,
   getCurrentToken
 } from './firebase';
@@ -25,6 +29,10 @@ interface AuthContextType {
   signUp: (email: string, password: string, displayName?: string) => Promise<User | undefined>;
   signOut: () => Promise<void>;
   resetPassword: (email: string) => Promise<void>;
+  confirmPasswordReset: (code: string, newPassword: string) => Promise<void>;
+  verifyPasswordResetCode: (code: string) => Promise<string>;
+  sendEmailVerification: () => Promise<void>;
+  applyActionCode: (code: string) => Promise<void>;
   getToken: () => Promise<string | null>;
 }
 
@@ -99,6 +107,42 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
+  const handleConfirmPasswordReset = async (code: string, newPassword: string) => {
+    try {
+      await confirmPasswordResetWithCode(code, newPassword);
+    } catch (error) {
+      console.error('Confirm password reset error:', error);
+      throw error;
+    }
+  };
+
+  const handleVerifyPasswordResetCode = async (code: string) => {
+    try {
+      return await verifyPasswordResetCodeFunc(code);
+    } catch (error) {
+      console.error('Verify password reset code error:', error);
+      throw error;
+    }
+  };
+
+  const handleSendEmailVerification = async () => {
+    try {
+      await sendEmailVerificationFunc();
+    } catch (error) {
+      console.error('Send email verification error:', error);
+      throw error;
+    }
+  };
+
+  const handleApplyActionCode = async (code: string) => {
+    try {
+      await applyActionCodeFunc(code);
+    } catch (error) {
+      console.error('Apply action code error:', error);
+      throw error;
+    }
+  };
+
   const getToken = async () => {
     return await getCurrentToken();
   };
@@ -111,6 +155,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     signUp: handleSignUp,
     signOut: handleSignOut,
     resetPassword: handleResetPassword,
+    confirmPasswordReset: handleConfirmPasswordReset,
+    verifyPasswordResetCode: handleVerifyPasswordResetCode,
+    sendEmailVerification: handleSendEmailVerification,
+    applyActionCode: handleApplyActionCode,
     getToken,
   };
 

@@ -52,14 +52,10 @@ export default function AnalyzePage() {
         setTimeout(() => setLoadingMessage('✨ Orchestrator synthesizing insights...'), 29000);
         
         // Call the MULTI-AGENT ORCHESTRATOR API
-        const result = await intelligenceApi.analyzeMatch({
-          user_id: user.uid,
-          job_details: {
-            title: jobTitle,
-            description: 'Job analysis request from analyze page',
-            required_skills: [],
-            location: 'United States'
-          }
+        const result = await intelligenceApi.analyzeCareer({
+          job_title: jobTitle,
+          skills: [],
+          location: 'United States'
         });
         
         console.log('🎯 Orchestrator analysis result:', result);

@@ -4,11 +4,12 @@ import { useState, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Mail, CheckCircle, AlertCircle, Loader2, ArrowRight, RefreshCw } from 'lucide-react';
 import Link from 'next/link';
-import { apiClient } from '@/lib/api';
+import { useAuth } from '@/lib/auth-context';
 
 export default function VerifyEmailPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const { applyActionCode, sendEmailVerification } = useAuth();
   const email = searchParams.get('email');
 
   const [verificationCode, setVerificationCode] = useState('');
@@ -48,10 +49,7 @@ export default function VerifyEmailPage() {
     setLoading(true);
 
     try {
-      const response = await apiClient.verifyEmail({
-        email,
-        verification_code: verificationCode
-      });
+      await applyActionCode(verificationCode);
 
       setSuccess(true);
 
@@ -61,13 +59,7 @@ export default function VerifyEmailPage() {
       }, 2000);
     } catch (err: any) {
       console.error('Verification error:', err);
-      if (err.response?.status === 400) {
-        setError('Invalid or expired verification code. Please try again or request a new code.');
-      } else if (err.response?.status === 404) {
-        setError('User not found. Please sign up again.');
-      } else {
-        setError(err.response?.data?.detail || 'Verification failed. Please try again.');
-      }
+      setError('Invalid or expired verification code. Please try again or request a new code.');
     } finally {
       setLoading(false);
     }
@@ -81,9 +73,9 @@ export default function VerifyEmailPage() {
     setResendLoading(true);
 
     try {
-      await apiClient.resendVerification({ email: email! });
+      await sendEmailVerification();
       
-      setResendMessage('Verification code resent! Check your email.');
+      setResendMessage('Verification email resent! Check your email.');
       setCountdown(60);
       setCanResend(false);
     } catch (err: any) {
