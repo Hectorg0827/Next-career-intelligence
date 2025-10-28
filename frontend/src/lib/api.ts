@@ -310,6 +310,13 @@ export const userApi = {
     updateUserProfile: apiClient.updateUserProfile.bind(apiClient),
 };
 
+export const subscriptionApi = {
+  getSubscriptionStatus: apiClient.getSubscriptionStatus.bind(apiClient),
+  createSubscription: apiClient.createSubscription.bind(apiClient),
+  cancelSubscription: apiClient.cancelSubscription.bind(apiClient),
+  createPortalSession: apiClient.createPortalSession.bind(apiClient),
+};
+
 // Default export for general use
 export default apiClient;
 // For backward compatibility with previous imports
