@@ -214,16 +214,51 @@ class APIClient {
     return response.data;
   }
 
-  async submitInterviewResponse(sessionId: string, questionId: string, audio: Blob): Promise<SessionFeedback> {
-    const formData = new FormData();
-    formData.append('audio', audio);
-    formData.append('question_id', questionId);
-    const response = await this.client.post(`/interviewer/sessions/${sessionId}/respond`, formData, {
-      headers: { 'Content-Type': 'multipart/form-data' },
-    });
+  // ============================================
+  // Authentication (delegates to Firebase)
+  // ============================================
+  async requestPasswordReset(data: { email: string }): Promise<any> {
+    // This should be handled by Firebase, but for API compatibility
+    throw new Error('Use Firebase resetPassword instead');
+  }
+
+  async resetPassword(data: { email: string; reset_code: string; new_password: string; confirm_password: string }): Promise<any> {
+    // This should be handled by Firebase, but for API compatibility
+    throw new Error('Use Firebase confirmPasswordReset instead');
+  }
+
+  async verifyEmail(data: { email: string; verification_code: string }): Promise<any> {
+    // This should be handled by Firebase, but for API compatibility
+    throw new Error('Use Firebase email verification instead');
+  }
+
+  async resendVerificationCode(data: { email: string }): Promise<any> {
+    // This should be handled by Firebase, but for API compatibility
+    throw new Error('Use Firebase sendEmailVerification instead');
+  }
+
+  // ============================================
+  // Subscription Management
+  // ============================================
+  async getSubscriptionStatus(userId: string): Promise<any> {
+    const response = await this.client.get(`/subscriptions/status/${userId}`);
     return response.data;
   }
-}
+
+  async createSubscription(data: any): Promise<any> {
+    const response = await this.client.post('/subscriptions', data);
+    return response.data;
+  }
+
+  async cancelSubscription(subscriptionId: string): Promise<any> {
+    const response = await this.client.delete(`/subscriptions/${subscriptionId}`);
+    return response.data;
+  }
+
+  async createPortalSession(): Promise<any> {
+    const response = await this.client.post('/subscriptions/portal');
+    return response.data;
+  }
 
 const apiClient = new APIClient();
 
@@ -279,4 +314,9 @@ export default apiClient;
 // For backward compatibility with previous imports
 export const getCoachConversations = apiClient.getCoachConversations.bind(apiClient);
 export const coachChat = apiClient.coachChat.bind(apiClient);
+
+// Backward compatibility exports
+export const analyzeCareer = apiClient.analyzeCareer.bind(apiClient);
+export const generateCareerRoadmap = apiClient.generateCareerPaths.bind(apiClient); // Map to existing method
+export const apiClient = apiClient;
 
