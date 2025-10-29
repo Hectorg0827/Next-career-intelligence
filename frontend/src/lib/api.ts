@@ -75,6 +75,10 @@ class APIClient {
     return response.data;
   }
 
+  async deleteUser(firebaseUid: string): Promise<void> {
+    await this.client.delete(`/users/${firebaseUid}`);
+  }
+
   // ============================================
   // Career Intelligence & Analysis
   // ============================================
@@ -313,6 +317,7 @@ export const userApi = {
     submitOnboarding: apiClient.submitOnboarding.bind(apiClient),
     getUserProfile: apiClient.getUserProfile.bind(apiClient),
     updateUserProfile: apiClient.updateUserProfile.bind(apiClient),
+    deleteUser: apiClient.deleteUser.bind(apiClient),
 };
 
 export const subscriptionApi = {

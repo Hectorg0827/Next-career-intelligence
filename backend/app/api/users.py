@@ -156,3 +156,44 @@ async def get_analysis(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Failed to fetch analysis"
         )
+
+
+@router.delete("/users/{firebase_uid}", status_code=status.HTTP_204_NO_CONTENT)
+async def delete_user(
+    firebase_uid: str,
+    db: Session = Depends(get_db)
+):
+    """
+    Delete a user and all associated data (analyses, history, etc.)
+    """
+    
+    try:
+        # Find the user
+        user = db.query(User).filter(User.firebase_uid == firebase_uid).first()
+        
+        if not user:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="User not found"
+            )
+        
+        # Delete all associated analyses
+        db.query(Analysis).filter(Analysis.user_id == user.id).delete()
+        
+        # Delete the user
+        db.delete(user)
+        db.commit()
+        
+        logger.info(f"User deleted: {user.email} (Firebase UID: {firebase_uid})")
+        
+        return None
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Failed to delete user: {e}")
+        db.rollback()
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Failed to delete user"
+        )

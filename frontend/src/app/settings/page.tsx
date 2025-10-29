@@ -8,6 +8,7 @@ import {
 } from 'lucide-react';
 import { auth } from '@/lib/firebase';
 import { updateProfile, updateEmail, updatePassword, deleteUser } from 'firebase/auth';
+import { userApi } from '@/lib/api';
 
 export default function SettingsPage() {
   const router = useRouter();
@@ -168,6 +169,15 @@ export default function SettingsPage() {
     try {
       if (!user) throw new Error('No user logged in');
 
+      // First delete from backend database
+      try {
+        await userApi.deleteUser(user.uid);
+      } catch (dbErr) {
+        console.error('Failed to delete from database:', dbErr);
+        // Continue anyway to delete from Firebase
+      }
+
+      // Then delete from Firebase
       await deleteUser(user);
       router.push('/');
     } catch (err: any) {
