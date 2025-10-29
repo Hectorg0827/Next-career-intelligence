@@ -79,7 +79,7 @@ class APIClient {
   // Career Intelligence & Analysis
   // ============================================
   async analyzeCareer(data: { job_title: string; skills: string[]; location: string; }): Promise<AnalysisResult> {
-    const response = await this.client.post('/analyze/career', data);
+    const response = await this.client.post('/analyze', data);
     return response.data;
   }
 
@@ -89,7 +89,7 @@ class APIClient {
   }
 
   async generateCareerPaths(data: CareerPathRequest): Promise<CareerPath[]> {
-    const response = await this.client.post('/analyze/career-paths', data);
+    const response = await this.client.post('/analyze', data);
     return response.data;
   }
 
