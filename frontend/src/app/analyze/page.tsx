@@ -2,12 +2,29 @@
 
 import { useEffect, useState } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
-import { Loader2, TrendingUp, AlertCircle, CheckCircle2, ArrowRight, DollarSign, Sparkles } from 'lucide-react';
+import { AlertCircle, ArrowRight, Sparkles } from 'lucide-react';
 import { intelligenceApi } from '@/lib/api';
 import { useAuth } from '@/lib/firebase';
 import InstantSnapshot from '@/components/InstantSnapshot';
 import MicroWin from '@/components/MicroWins';
+import SocialShare from '@/components/SocialShare';
 import { RiskCard, CompatibilityCard, SkillGapsCard, NextStepsCard, CoachQuestionsCard } from '@/components/analysis/AnalysisCards';
+
+interface AnalysisResult {
+  risk?: {
+    score: number;
+    level: string;
+  };
+  compatibility?: {
+    score: number;
+    highlights: string[];
+  };
+  gaps?: string[];
+  next_steps?: string[];
+  coach_questions?: string[];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  [key: string]: any; // Allow additional properties from API
+}
 
 export default function AnalyzePage() {
   const searchParams = useSearchParams();
@@ -16,11 +33,11 @@ export default function AnalyzePage() {
   const jobTitle = searchParams.get('job') || '';
   
   const [isAnalyzing, setIsAnalyzing] = useState(true);
-  const [showInstantSnapshot, setShowInstantSnapshot] = useState(true);
+  const [showInstantSnapshot] = useState(true);
   const [showMicroWin, setShowMicroWin] = useState(false);
-  const [analysis, setAnalysis] = useState<any>(null);
+  const [analysis, setAnalysis] = useState<AnalysisResult | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [loadingMessage, setLoadingMessage] = useState('🚀 Activating Multi-Agent Intelligence System...');
+  const [, setLoadingMessage] = useState('🚀 Activating Multi-Agent Intelligence System...');
 
   useEffect(() => {
     if (!jobTitle) {
@@ -64,9 +81,10 @@ export default function AnalyzePage() {
         
         // Show micro-win notification
         setShowMicroWin(true);
-      } catch (err: any) {
+      } catch (err) {
         console.error('❌ Multi-agent analysis error:', err);
-        setError(err.response?.data?.detail || 'Multi-agent analysis failed. Please try again.');
+        const errorMessage = (err as { response?: { data?: { detail?: string } } })?.response?.data?.detail || 'Multi-agent analysis failed. Please try again.';
+        setError(errorMessage);
       } finally {
         setIsAnalyzing(false);
       }
@@ -118,12 +136,6 @@ export default function AnalyzePage() {
     );
   }
 
-  const getRiskColor = (score: number) => {
-    if (score < 40) return 'text-green-400';
-    if (score < 70) return 'text-yellow-400';
-    return 'text-red-400';
-  };
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-royal-navy via-royal-navy to-blue-900 py-12 px-4">
       {/* Micro-Win Notification */}
@@ -166,6 +178,23 @@ export default function AnalyzePage() {
               <CoachQuestionsCard questions={analysis.coach_questions} />
             </div>
           )}
+        </div>
+
+        {/* Social Share Section */}
+        <div className="mb-8 bg-gradient-to-r from-gold-primary/10 to-gold-accent/10 backdrop-blur-sm border border-gold-primary/20 rounded-2xl p-6">
+          <div className="text-center mb-4">
+            <h3 className="text-2xl font-bold text-white mb-2">🎉 Share Your Career Insights!</h3>
+            <p className="text-white/70">
+              Help your network discover career resilience. Share your results and earn free premium features!
+            </p>
+          </div>
+          <div className="flex justify-center">
+            <SocialShare
+              jobTitle={jobTitle}
+              riskScore={analysis?.risk?.score || 0}
+              riskLevel={analysis?.risk?.level || 'Unknown'}
+            />
+          </div>
         </div>
 
         {/* CTA Buttons */}
