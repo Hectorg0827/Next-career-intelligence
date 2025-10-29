@@ -11,8 +11,8 @@ export default function VerifyEmailPage() {
   const searchParams = useSearchParams();
   const { applyActionCode, sendEmailVerification } = useAuth();
   const email = searchParams.get('email');
+  const oobCode = searchParams.get('oobCode'); // Get code from URL
 
-  const [verificationCode, setVerificationCode] = useState('');
   const [loading, setLoading] = useState(false);
   const [resendLoading, setResendLoading] = useState(false);
   const [error, setError] = useState('');
@@ -20,6 +20,13 @@ export default function VerifyEmailPage() {
   const [resendMessage, setResendMessage] = useState('');
   const [countdown, setCountdown] = useState(60);
   const [canResend, setCanResend] = useState(false);
+
+  // Auto-verify if oobCode is present in URL
+  useEffect(() => {
+    if (oobCode && !success && !loading) {
+      handleAutoVerify(oobCode);
+    }
+  }, [oobCode]);
 
   // Countdown timer for resend
   useEffect(() => {
@@ -31,26 +38,12 @@ export default function VerifyEmailPage() {
     }
   }, [countdown]);
 
-  const handleVerify = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleAutoVerify = async (code: string) => {
     setError('');
-    setResendMessage('');
-
-    if (!verificationCode || verificationCode.length !== 6) {
-      setError('Please enter a valid 6-digit code');
-      return;
-    }
-
-    if (!email) {
-      setError('Email address is missing. Please sign up again.');
-      return;
-    }
-
     setLoading(true);
 
     try {
-      await applyActionCode(verificationCode);
-
+      await applyActionCode(code);
       setSuccess(true);
 
       // Redirect to dashboard after 2 seconds
@@ -59,7 +52,7 @@ export default function VerifyEmailPage() {
       }, 2000);
     } catch (err: any) {
       console.error('Verification error:', err);
-      setError('Invalid or expired verification code. Please try again or request a new code.');
+      setError('Invalid or expired verification link. Please request a new verification email.');
     } finally {
       setLoading(false);
     }
