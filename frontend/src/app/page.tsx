@@ -4,6 +4,9 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { ArrowRight, Sparkles, TrendingUp, Shield, Brain, LogOut, User, Crown, Zap } from 'lucide-react';
 import Logo from '@/components/Logo';
+import HowItWorksSection from '@/components/HowItWorksSection';
+import TestimonialsCarousel from '@/components/TestimonialsCarousel';
+import StatsSection from '@/components/StatsSection';
 
 export default function Home() {
   const router = useRouter();
@@ -166,22 +169,6 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="max-w-3xl mx-auto bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-8">
-            <div className="grid md:grid-cols-3 gap-8 text-center">
-              <div>
-                <div className="text-4xl font-bold text-white mb-2">10k+</div>
-                <div className="text-white/60">Careers Analyzed</div>
-              </div>
-              <div>
-                <div className="text-4xl font-bold text-white mb-2">87%</div>
-                <div className="text-white/60">Found Skills to Learn</div>
-              </div>
-              <div>
-                <div className="text-4xl font-bold text-white mb-2">4.9/5</div>
-                <div className="text-white/60">User Rating</div>
-              </div>
-            </div>
-          </div>
         </div>
 
         <div className="mt-16 text-center">
@@ -189,14 +176,67 @@ export default function Home() {
             Join thousands of professionals taking control of their careers
           </p>
           <div className="flex items-center justify-center gap-4 flex-wrap">
-            <button onClick={() => router.push('/how-it-works')} className="text-white/60 hover:text-white text-sm transition-colors cursor-pointer">How It Works</button>
+            <button 
+              onClick={() => {
+                const section = document.getElementById('how-it-works');
+                section?.scrollIntoView({ behavior: 'smooth' });
+              }} 
+              className="text-white/60 hover:text-white text-sm transition-colors cursor-pointer"
+            >
+              How It Works
+            </button>
             <span className="text-white/30">•</span>
-            <button onClick={() => router.push('/success-stories')} className="text-white/60 hover:text-white text-sm transition-colors cursor-pointer">Success Stories</button>
-            <span className="text-white/30">•</span>
-            <button onClick={() => router.push('/login')} className="text-white/60 hover:text-white text-sm transition-colors cursor-pointer">Sign In</button>
+            <button 
+              onClick={() => router.push('/login')} 
+              className="text-white/60 hover:text-white text-sm transition-colors cursor-pointer"
+            >
+              Sign In
+            </button>
           </div>
         </div>
       </div>
+
+      {/* How It Works Section */}
+      <HowItWorksSection />
+
+      {/* Stats Section */}
+      <StatsSection />
+
+      {/* Testimonials Section */}
+      <TestimonialsCarousel />
+
+      {/* Final CTA Section */}
+      <section className="py-24 px-4">
+        <div className="max-w-4xl mx-auto text-center">
+          <div className="bg-gradient-to-br from-gold-primary/20 to-gold-accent/20 backdrop-blur-md border border-gold-primary/30 rounded-3xl p-12 relative overflow-hidden">
+            {/* Background Glow */}
+            <div className="absolute inset-0 bg-gradient-to-br from-gold-primary/10 to-transparent opacity-50"></div>
+            
+            <div className="relative z-10">
+              <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
+                Ready to Future-Proof Your Career?
+              </h2>
+              <p className="text-xl text-white/80 mb-8 max-w-2xl mx-auto">
+                Get your free AI-powered career analysis now. No credit card required.
+              </p>
+              <button
+                onClick={() => {
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                  setTimeout(() => {
+                    const input = document.querySelector('input[type="text"]') as HTMLInputElement;
+                    input?.focus();
+                  }, 500);
+                }}
+                className="px-8 py-4 bg-gradient-to-r from-gold-primary to-gold-accent hover:from-gold-accent hover:to-gold-hover text-royal-navy font-semibold rounded-xl transition-all shadow-lg hover:shadow-xl inline-flex items-center gap-2 group"
+              >
+                <Sparkles className="w-5 h-5" />
+                <span>Start Your Free Analysis</span>
+                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
     </div>
   );
 }
