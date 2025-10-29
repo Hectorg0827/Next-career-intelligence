@@ -10,7 +10,7 @@ from loguru import logger
 import time
 from contextlib import asynccontextmanager
 
-from app.api import analyze, jobs, users, health, coach, interviewer, jobs_marketplace, subscriptions, roadmap, auth, onboarding, marketplace, resume_studio, match
+from app.api import analyze, jobs, users, health, coach, interviewer, jobs_marketplace, subscriptions, roadmap, auth, onboarding, marketplace, resume_studio, match, elite_auth
 try:
     from app.api import resume_studio
 except ImportError:
@@ -110,6 +110,7 @@ async def global_exception_handler(request: Request, exc: Exception):
 # Include routers
 app.include_router(health.router, prefix="/api", tags=["Health"])
 app.include_router(auth.router, tags=["Authentication"])
+app.include_router(elite_auth.router, prefix="/api", tags=["Elite Authentication"])
 app.include_router(onboarding.router, tags=["Onboarding"])
 
 # NEW: Multi-Agent Career Intelligence System
