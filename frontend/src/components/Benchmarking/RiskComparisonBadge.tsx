@@ -53,7 +53,7 @@ export default function RiskComparisonBadge({
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="bg-gradient-to-br from-white to-blue-50 rounded-2xl border-2 border-blue-200 p-6 shadow-lg"
+      className="p-6 border-2 border-blue-200 shadow-lg bg-gradient-to-br from-white to-blue-50 rounded-2xl"
     >
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
@@ -69,7 +69,7 @@ export default function RiskComparisonBadge({
       <div className="grid grid-cols-2 gap-6 mb-6">
         {/* Your score */}
         <div className="text-center">
-          <p className="text-sm text-gray-600 mb-2">Your Risk Score</p>
+          <p className="mb-2 text-sm text-gray-600">Your Risk Score</p>
           <motion.div
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
@@ -82,7 +82,7 @@ export default function RiskComparisonBadge({
 
         {/* Industry average */}
         <div className="text-center">
-          <p className="text-sm text-gray-600 mb-2">Industry Average</p>
+          <p className="mb-2 text-sm text-gray-600">Industry Average</p>
           <motion.div
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
@@ -96,11 +96,11 @@ export default function RiskComparisonBadge({
 
       {/* Comparison bar */}
       <div className="mb-6">
-        <div className="flex items-center justify-between text-xs text-gray-600 mb-2">
+        <div className="flex items-center justify-between mb-2 text-xs text-gray-600">
           <span>Lower Risk</span>
           <span>Higher Risk</span>
         </div>
-        <div className="relative h-8 bg-gradient-to-r from-green-200 via-yellow-200 to-red-200 rounded-full overflow-hidden">
+        <div className="relative h-8 overflow-hidden rounded-full bg-gradient-to-r from-green-200 via-yellow-200 to-red-200">
           {/* Industry average marker */}
           <div
             className="absolute top-0 bottom-0 w-1 bg-gray-600 opacity-50"
@@ -120,15 +120,15 @@ export default function RiskComparisonBadge({
         </div>
         <div className="flex items-center justify-center mt-2">
           <span className="text-xs text-gray-500">
-            <span className="inline-block w-3 h-3 bg-gray-600 opacity-50 mr-1"></span>
+            <span className="inline-block w-3 h-3 mr-1 bg-gray-600 opacity-50"></span>
             Industry Average ({industryAverage}%)
           </span>
         </div>
       </div>
 
       {/* Percentile info */}
-      <div className="bg-blue-100 border border-blue-300 rounded-xl p-4 mb-4">
-        <p className="text-sm font-semibold text-blue-900 mb-1">
+      <div className="p-4 mb-4 bg-blue-100 border border-blue-300 rounded-xl">
+        <p className="mb-1 text-sm font-semibold text-blue-900">
           {getPercentileMessage()}
         </p>
         <p className="text-xs text-blue-700">

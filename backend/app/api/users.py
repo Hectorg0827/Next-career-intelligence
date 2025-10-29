@@ -197,3 +197,66 @@ async def delete_user(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Failed to delete user"
         )
+
+
+@router.post("/users/{firebase_uid}/set-role", response_model=UserResponse)
+async def set_user_role(
+    firebase_uid: str,
+    role: str,
+    subscription_status: str = None,
+    db: Session = Depends(get_db)
+):
+    """
+    Set user role and subscription status (for admin/testing purposes)
+    Roles: 'user', 'elite', 'admin'
+    Subscription: 'free', 'pro', 'elite'
+    """
+    
+    try:
+        # Validate role
+        valid_roles = ['user', 'elite', 'admin']
+        if role not in valid_roles:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail=f"Invalid role. Must be one of: {', '.join(valid_roles)}"
+            )
+        
+        # Validate subscription status if provided
+        if subscription_status:
+            valid_subscriptions = ['free', 'pro', 'elite']
+            if subscription_status not in valid_subscriptions:
+                raise HTTPException(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    detail=f"Invalid subscription. Must be one of: {', '.join(valid_subscriptions)}"
+                )
+        
+        # Find the user
+        user = db.query(User).filter(User.firebase_uid == firebase_uid).first()
+        
+        if not user:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="User not found"
+            )
+        
+        # Update role and subscription
+        user.role = role
+        if subscription_status:
+            user.subscription_status = subscription_status
+        
+        db.commit()
+        db.refresh(user)
+        
+        logger.info(f"User role updated: {user.email} -> role={role}, subscription={user.subscription_status}")
+        
+        return user
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Failed to set user role: {e}")
+        db.rollback()
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Failed to set user role"
+        )

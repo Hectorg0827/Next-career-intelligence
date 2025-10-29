@@ -24,6 +24,11 @@ class User(Base):
     email = Column(String(255), unique=True, nullable=False, index=True)
     firebase_uid = Column(String(255), unique=True, nullable=False, index=True)
     name = Column(String(255), nullable=True)
+    role = Column(String(50), default="user", nullable=False)  # 'user', 'elite', 'admin'
+    subscription_status = Column(String(50), default="free")  # 'free', 'pro', 'elite'
+    free_reports_used = Column(Float, default=0)
+    stripe_customer_id = Column(String(255), nullable=True)
+    last_free_analysis_at = Column(DateTime, nullable=True)
     created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
     
