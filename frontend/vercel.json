@@ -2,7 +2,7 @@
   "rewrites": [
     {
       "source": "/api/:path*",
-      "destination": "https://next-backend-jxs4smo7nq-uc.a.run.app/api/:path*"
+      "destination": "https://next-backend-795538981829.us-central1.run.app/api/:path*"
     }
   ],
   "headers": [
@@ -20,54 +20,4 @@
       ]
     }
   ]
-}
-    "NEXT_PUBLIC_API_URL": {
-      "description": "Backend API URL from Google Cloud Run",
-      "value": "https://next-backend-jxs4smo7nq-uc.a.run.app"
-    },
-    "NEXT_PUBLIC_SUPABASE_URL": {
-      "description": "Supabase project URL",
-      "value": "https://whxbxjpymksgvixudnjh.supabase.co"
-    },
-    "NEXT_PUBLIC_SUPABASE_ANON_KEY": {
-      "description": "Supabase anonymous key",
-      "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndoeGJ4anB5bWtzZ3ZpeHVkbmpoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA4NjAzNDksImV4cCI6MjA3NjQzNjM0OX0.8ykQi5mPIe48aA8E3J82acqqPlhEtS7VICduXOui0zc"
-    },
-    "NEXT_PUBLIC_FIREBASE_API_KEY": {
-      "description": "Firebase API key",
-      "value": "AIzaSyDIQ68KTtgSu0716r1X9p8XGGHJivdXY4Q"
-    },
-    "NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN": {
-      "description": "Firebase auth domain",
-      "value": "next-fc055.firebaseapp.com"
-    },
-    "NEXT_PUBLIC_FIREBASE_PROJECT_ID": {
-      "description": "Firebase project ID",
-      "value": "next-fc055"
-    },
-    "NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET": {
-      "description": "Firebase storage bucket",
-      "value": "next-fc055.firebasestorage.app"
-    },
-    "NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID": {
-      "description": "Firebase messaging sender ID",
-      "value": "438736067565"
-    },
-    "NEXT_PUBLIC_FIREBASE_APP_ID": {
-      "description": "Firebase app ID",
-      "value": "1:438736067565:web:5ec706d253893954a0e5e4"
-    },
-    "NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID": {
-      "description": "Firebase measurement ID",
-      "value": "G-HQLTL9GQ5Y"
-    },
-    "NEXT_PUBLIC_GOOGLE_CLIENT_ID": {
-      "description": "Google OAuth client ID",
-      "value": "795538981829-0c05b330697k523h6aehtabvbik8d9oe.apps.googleusercontent.com"
-    },
-    "NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY": {
-      "description": "Stripe publishable key",
-      "value": "pk_live_51SKRgLHwn1oJmJZkyS2T6xTbuwl538mqRESS38j0diGssBPAdX5gap5aHpepFh6XrUW9ZbqMqFqd4dRX9UQP18ft000CV1p0et"
-    }
-  }
 }
