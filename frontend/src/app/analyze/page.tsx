@@ -8,6 +8,8 @@ import { useAuth } from '@/lib/firebase';
 import EnhancedLoadingExperience from '@/components/EnhancedLoadingExperience';
 import MicroWin from '@/components/MicroWins';
 import SocialShare from '@/components/SocialShare';
+import PremiumContentOverlay from '@/components/PremiumContentOverlay';
+import SignupModal from '@/components/SignupModal';
 import { RiskCard, CompatibilityCard, SkillGapsCard, NextStepsCard, CoachQuestionsCard } from '@/components/analysis/AnalysisCards';
 
 interface AnalysisResult {
@@ -36,6 +38,16 @@ export default function AnalyzePage() {
   const [showMicroWin, setShowMicroWin] = useState(false);
   const [analysis, setAnalysis] = useState<AnalysisResult | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [showSignupModal, setShowSignupModal] = useState(false);
+  
+  // Check if user has premium access (for now, check if they're logged in)
+  const [hasPremiumAccess] = useState(() => {
+    if (typeof window !== 'undefined') {
+      const subscriptionTier = localStorage.getItem('subscriptionTier');
+      return subscriptionTier === 'premium' || subscriptionTier === 'enterprise';
+    }
+    return false;
+  });
 
   useEffect(() => {
     if (!jobTitle) {
@@ -43,10 +55,11 @@ export default function AnalyzePage() {
       return;
     }
 
-    if (!user) {
-      router.push('/login');
-      return;
-    }
+    // Allow analysis without login for free preview
+    // if (!user) {
+    //   router.push('/login');
+    //   return;
+    // }
 
     // Real API call to backend with FULL MULTI-AGENT ORCHESTRATOR
     const performAnalysis = async () => {
@@ -117,6 +130,14 @@ export default function AnalyzePage() {
       <div className="max-w-4xl mx-auto">
         {/* Header */}
         <div className="text-center mb-12">
+          {/* Free Preview Badge */}
+          {!hasPremiumAccess && (
+            <div className="inline-flex items-center gap-2 px-4 py-2 bg-gold-primary/20 border border-gold-primary/40 rounded-full mb-6 animate-pulse-slow">
+              <Sparkles className="w-4 h-4 text-gold-primary" />
+              <span className="text-gold-primary text-sm font-semibold">Free Preview - Sign up to see full analysis</span>
+            </div>
+          )}
+          
           <div className="flex items-center justify-center mb-4">
             <Sparkles className="w-10 h-10 text-gold-primary mr-3 animate-pulse" />
             <h1 className="text-4xl md:text-5xl font-bold text-white">
@@ -131,20 +152,63 @@ export default function AnalyzePage() {
 
         {/* Multi-Agent Analysis Cards */}
         <div className="grid md:grid-cols-2 gap-6 mb-8">
+          {/* Free Preview: Risk Card (always visible) */}
           <RiskCard risk={analysis?.risk} />
-          <CompatibilityCard 
-            score={analysis?.compatibility?.score || 0} 
-            highlights={analysis?.compatibility?.highlights || []} 
-          />
-          <div className="md:col-span-2">
-            <SkillGapsCard gaps={analysis?.gaps || []} />
+          
+          {/* Gated: Compatibility Card */}
+          <div className="relative">
+            <div className={!hasPremiumAccess ? 'blur-sm pointer-events-none' : ''}>
+              <CompatibilityCard 
+                score={analysis?.compatibility?.score || 0} 
+                highlights={analysis?.compatibility?.highlights || []} 
+              />
+            </div>
+            {!hasPremiumAccess && (
+              <PremiumContentOverlay 
+                onUnlock={() => setShowSignupModal(true)} 
+                feature="Compatibility Analysis"
+              />
+            )}
           </div>
-          <div className="md:col-span-2">
-            <NextStepsCard steps={analysis?.next_steps || []} />
+          
+          {/* Gated: Skill Gaps Card */}
+          <div className="md:col-span-2 relative">
+            <div className={!hasPremiumAccess ? 'blur-sm pointer-events-none' : ''}>
+              <SkillGapsCard gaps={analysis?.gaps || []} />
+            </div>
+            {!hasPremiumAccess && (
+              <PremiumContentOverlay 
+                onUnlock={() => setShowSignupModal(true)} 
+                feature="Skill Gap Analysis"
+              />
+            )}
           </div>
+          
+          {/* Gated: Next Steps Card */}
+          <div className="md:col-span-2 relative">
+            <div className={!hasPremiumAccess ? 'blur-sm pointer-events-none' : ''}>
+              <NextStepsCard steps={analysis?.next_steps || []} />
+            </div>
+            {!hasPremiumAccess && (
+              <PremiumContentOverlay 
+                onUnlock={() => setShowSignupModal(true)} 
+                feature="Career Roadmap"
+              />
+            )}
+          </div>
+          
+          {/* Gated: Coach Questions Card */}
           {analysis?.coach_questions && analysis.coach_questions.length > 0 && (
-            <div className="md:col-span-2">
-              <CoachQuestionsCard questions={analysis.coach_questions} />
+            <div className="md:col-span-2 relative">
+              <div className={!hasPremiumAccess ? 'blur-sm pointer-events-none' : ''}>
+                <CoachQuestionsCard questions={analysis.coach_questions} />
+              </div>
+              {!hasPremiumAccess && (
+                <PremiumContentOverlay 
+                  onUnlock={() => setShowSignupModal(true)} 
+                  feature="AI Coach Questions"
+                />
+              )}
             </div>
           )}
         </div>
@@ -168,13 +232,23 @@ export default function AnalyzePage() {
 
         {/* CTA Buttons */}
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
-          <button
-            onClick={() => router.push('/coach/chat')}
-            className="px-8 py-4 bg-gradient-to-r from-gold-primary to-gold-accent hover:from-gold-accent hover:to-pink-700 text-white font-semibold rounded-xl transition-all flex items-center justify-center gap-2 shadow-lg hover:shadow-xl"
-          >
-            Get Personalized Coaching
-            <ArrowRight className="w-5 h-5" />
-          </button>
+          {hasPremiumAccess ? (
+            <button
+              onClick={() => router.push('/coach/chat')}
+              className="px-8 py-4 bg-gradient-to-r from-gold-primary to-gold-accent hover:from-gold-accent hover:to-pink-700 text-white font-semibold rounded-xl transition-all flex items-center justify-center gap-2 shadow-lg hover:shadow-xl"
+            >
+              Get Personalized Coaching
+              <ArrowRight className="w-5 h-5" />
+            </button>
+          ) : (
+            <button
+              onClick={() => setShowSignupModal(true)}
+              className="px-8 py-4 bg-gradient-to-r from-gold-primary to-gold-accent hover:from-gold-accent hover:to-gold-hover text-royal-navy font-semibold rounded-xl transition-all flex items-center justify-center gap-2 shadow-lg hover:shadow-xl"
+            >
+              Unlock Full Analysis - Free
+              <ArrowRight className="w-5 h-5" />
+            </button>
+          )}
           <button
             onClick={() => router.push('/')}
             className="px-8 py-4 bg-white/10 hover:bg-white/20 text-white font-semibold rounded-xl transition-all border border-white/20"
@@ -183,6 +257,14 @@ export default function AnalyzePage() {
           </button>
         </div>
       </div>
+
+      {/* Signup Modal */}
+      <SignupModal
+        isOpen={showSignupModal}
+        onClose={() => setShowSignupModal(false)}
+        jobTitle={jobTitle}
+        analysisData={analysis}
+      />
     </div>
   );
 }
