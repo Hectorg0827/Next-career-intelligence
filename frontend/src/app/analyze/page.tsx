@@ -5,7 +5,7 @@ import { useSearchParams, useRouter } from 'next/navigation';
 import { AlertCircle, ArrowRight, Sparkles } from 'lucide-react';
 import { intelligenceApi } from '@/lib/api';
 import { useAuth } from '@/lib/firebase';
-import InstantSnapshot from '@/components/InstantSnapshot';
+import EnhancedLoadingExperience from '@/components/EnhancedLoadingExperience';
 import MicroWin from '@/components/MicroWins';
 import SocialShare from '@/components/SocialShare';
 import { RiskCard, CompatibilityCard, SkillGapsCard, NextStepsCard, CoachQuestionsCard } from '@/components/analysis/AnalysisCards';
@@ -33,11 +33,9 @@ export default function AnalyzePage() {
   const jobTitle = searchParams.get('job') || '';
   
   const [isAnalyzing, setIsAnalyzing] = useState(true);
-  const [showInstantSnapshot] = useState(true);
   const [showMicroWin, setShowMicroWin] = useState(false);
   const [analysis, setAnalysis] = useState<AnalysisResult | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [, setLoadingMessage] = useState('🚀 Activating Multi-Agent Intelligence System...');
 
   useEffect(() => {
     if (!jobTitle) {
@@ -55,18 +53,6 @@ export default function AnalyzePage() {
       try {
         setIsAnalyzing(true);
         setError(null);
-        
-        // Show progress messages for multi-agent system
-        setTimeout(() => setLoadingMessage('🤖 Deploying 9 specialized AI agents...'), 2000);
-        setTimeout(() => setLoadingMessage('🧠 Profile Agent analyzing your background...'), 5000);
-        setTimeout(() => setLoadingMessage('⚠️ Risk Agent evaluating AI displacement...'), 8000);
-        setTimeout(() => setLoadingMessage('🎯 Match Agent calculating compatibility...'), 11000);
-        setTimeout(() => setLoadingMessage('📊 Gap Agent identifying skill requirements...'), 14000);
-        setTimeout(() => setLoadingMessage('💬 Sentiment Agent analyzing industry trends...'), 17000);
-        setTimeout(() => setLoadingMessage('🔮 Trajectory Agent forecasting career paths...'), 20000);
-        setTimeout(() => setLoadingMessage('📈 Market Intel Agent gathering insights...'), 23000);
-        setTimeout(() => setLoadingMessage('🚨 Early Warning Agent checking risks...'), 26000);
-        setTimeout(() => setLoadingMessage('✨ Orchestrator synthesizing insights...'), 29000);
         
         // Call the MULTI-AGENT ORCHESTRATOR API
         const result = await intelligenceApi.analyzeCareer({
@@ -98,24 +84,7 @@ export default function AnalyzePage() {
   }
 
   if (isAnalyzing) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-royal-navy via-royal-navy to-blue-900 py-12 px-4">
-        <div className="max-w-4xl mx-auto">
-          {/* Header */}
-          <div className="text-center mb-8">
-            <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
-              Analyzing Your Career
-            </h1>
-            <p className="text-xl text-white/80">
-              for <span className="font-semibold text-gold-primary">{jobTitle}</span>
-            </p>
-          </div>
-
-          {/* Instant Snapshot Component - Shows immediately */}
-          {showInstantSnapshot && <InstantSnapshot jobTitle={jobTitle} />}
-        </div>
-      </div>
-    );
+    return <EnhancedLoadingExperience jobTitle={jobTitle} />;
   }
 
   if (error) {
