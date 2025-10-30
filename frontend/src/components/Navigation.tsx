@@ -1,100 +1,198 @@
 'use client';
 
-import Link from 'next/link';
-import { usePathname } from 'next/navigation';
-import Logo from './Logo';
-import { Menu, X } from 'lucide-react';
 import { useState } from 'react';
+import Link from 'next/link';
+import { useRouter, usePathname } from 'next/navigation';
+import { Menu, X, User, LogOut, Crown, Briefcase, MessageSquare, Target, Home } from 'lucide-react';
+import Logo from './Logo';
+import { useAuth } from '@/lib/firebase';
+
+interface NavItem {
+  name: string;
+  href: string;
+  icon: React.ComponentType<{ className?: string }>;
+  isPremium?: boolean;
+}
+
+const navItems: NavItem[] = [
+  { name: 'Home', href: '/', icon: Home },
+  { name: 'Dashboard', href: '/dashboard', icon: Target, isPremium: true },
+  { name: 'Jobs', href: '/jobs', icon: Briefcase, isPremium: true },
+  { name: 'Career Coach', href: '/coach/chat', icon: MessageSquare, isPremium: true },
+];
 
 export default function Navigation() {
+  const router = useRouter();
   const pathname = usePathname();
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const { user } = useAuth();
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
-  // Don't show navigation on landing page
-  if (pathname === '/') {
-    return null;
-  }
+  const userEmail = typeof window !== 'undefined' ? localStorage.getItem('userEmail') : null;
+  const subscriptionTier = typeof window !== 'undefined' ? localStorage.getItem('subscriptionTier') : null;
+  const isSubscriber = subscriptionTier === 'premium' || subscriptionTier === 'enterprise';
 
-  const navLinks = [
-    { href: '/dashboard', label: 'Dashboard' },
-    { href: '/career-radar', label: '🎯 Career Radar' },
-    { href: '/analyze', label: 'Analyze' },
-    { href: '/coach', label: 'AI Coach' },
-    { href: '/interviewer', label: 'Interview Prep' },
-    { href: '/resume-studio', label: 'Resume Studio' },
-    { href: '/marketplace', label: 'Jobs' },
-  ];
+  const handleLogout = () => {
+    localStorage.removeItem('userEmail');
+    localStorage.removeItem('subscriptionTier');
+    localStorage.removeItem('authToken');
+    setIsMobileMenuOpen(false);
+    router.push('/');
+    router.refresh();
+  };
+
+  const handleNavClick = (href: string) => {
+    setIsMobileMenuOpen(false);
+    router.push(href);
+  };
 
   return (
-    <nav className="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-gray-200 shadow-sm">
+    <nav className="bg-gradient-to-r from-royal-navy via-royal-blue-deep to-royal-navy border-b border-white/10 sticky top-0 z-50 backdrop-blur-md bg-opacity-95">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
+        <div className="flex justify-between items-center h-16">
           {/* Logo */}
           <div className="flex-shrink-0">
-            <Logo size="sm" linkTo="/dashboard" />
+            <Logo size="sm" linkTo="/" />
           </div>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-6">
-            {navLinks.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                className={`text-sm font-medium transition-colors ${
-                  pathname.startsWith(link.href)
-                    ? 'text-royal-blue border-b-2 border-gold-primary'
-                    : 'text-gray-600 hover:text-royal-blue'
-                }`}
-              >
-                {link.label}
-              </Link>
-            ))}
-            
-            <Link
-              href="/settings"
-              className="text-sm font-medium text-gray-600 hover:text-royal-blue transition-colors"
-            >
-              Settings
-            </Link>
+          <div className="hidden md:flex items-center space-x-1">
+            {navItems.map((item) => {
+              const isActive = pathname === item.href;
+              const Icon = item.icon;
+              
+              return (
+                <Link
+                  key={item.name}
+                  href={item.href}
+                  className={`px-4 py-2 rounded-lg font-medium transition-all flex items-center gap-2 group relative ${
+                    isActive
+                      ? 'bg-white/10 text-white'
+                      : 'text-white/70 hover:text-white hover:bg-white/5'
+                  }`}
+                >
+                  <Icon className="w-4 h-4" />
+                  <span>{item.name}</span>
+                  {item.isPremium && !isSubscriber && (
+                    <Crown className="w-3 h-3 text-gold-primary" />
+                  )}
+                </Link>
+              );
+            })}
           </div>
 
-          {/* Mobile menu button */}
+          {/* Desktop User Menu */}
+          <div className="hidden md:flex items-center gap-3">
+            {user || userEmail ? (
+              <>
+                {/* User Info */}
+                <div className="flex items-center gap-2 px-4 py-2 bg-white/10 backdrop-blur-md rounded-full border border-white/20">
+                  <User className="w-4 h-4 text-gold-primary" />
+                  <span className="text-white text-sm font-medium max-w-[150px] truncate">
+                    {userEmail || user?.email}
+                  </span>
+                  {isSubscriber && <Crown className="w-4 h-4 text-gold-primary" />}
+                </div>
+                
+                {/* Logout Button */}
+                <button
+                  onClick={handleLogout}
+                  className="flex items-center gap-2 px-4 py-2 bg-white/10 hover:bg-white/20 backdrop-blur-md rounded-full border border-white/20 transition-all group"
+                >
+                  <LogOut className="w-4 h-4 text-white/70 group-hover:text-white" />
+                  <span className="text-white/70 group-hover:text-white text-sm font-medium">Logout</span>
+                </button>
+              </>
+            ) : (
+              <Link
+                href="/login"
+                className="flex items-center gap-2 px-6 py-2.5 bg-gradient-to-r from-gold-primary to-gold-accent hover:from-gold-accent hover:to-gold-hover text-royal-navy font-semibold rounded-xl transition-all shadow-lg hover:shadow-xl"
+              >
+                <User className="w-4 h-4" />
+                <span>Sign In</span>
+              </Link>
+            )}
+          </div>
+
+          {/* Mobile Menu Button */}
           <div className="md:hidden">
             <button
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="text-gray-600 hover:text-royal-blue"
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              className="p-2 rounded-lg text-white/70 hover:text-white hover:bg-white/10 transition-all"
+              aria-label="Toggle menu"
             >
-              {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+              {isMobileMenuOpen ? (
+                <X className="w-6 h-6" />
+              ) : (
+                <Menu className="w-6 h-6" />
+              )}
             </button>
           </div>
         </div>
       </div>
 
-      {/* Mobile Navigation */}
-      {mobileMenuOpen && (
-        <div className="md:hidden bg-white border-t border-gray-200">
-          <div className="px-2 pt-2 pb-3 space-y-1">
-            {navLinks.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                onClick={() => setMobileMenuOpen(false)}
-                className={`block px-3 py-2 rounded-md text-base font-medium ${
-                  pathname.startsWith(link.href)
-                    ? 'bg-royal-blue/10 text-royal-blue'
-                    : 'text-gray-600 hover:bg-gray-50 hover:text-royal-blue'
-                }`}
+      {/* Mobile Menu */}
+      {isMobileMenuOpen && (
+        <div className="md:hidden border-t border-white/10 bg-royal-navy/95 backdrop-blur-md animate-fade-in">
+          <div className="px-4 py-4 space-y-2">
+            {/* Navigation Items */}
+            {navItems.map((item) => {
+              const isActive = pathname === item.href;
+              const Icon = item.icon;
+              
+              return (
+                <button
+                  key={item.name}
+                  onClick={() => handleNavClick(item.href)}
+                  className={`w-full px-4 py-3 rounded-lg font-medium transition-all flex items-center gap-3 ${
+                    isActive
+                      ? 'bg-white/10 text-white'
+                      : 'text-white/70 hover:text-white hover:bg-white/5'
+                  }`}
+                >
+                  <Icon className="w-5 h-5" />
+                  <span className="flex-1 text-left">{item.name}</span>
+                  {item.isPremium && !isSubscriber && (
+                    <Crown className="w-4 h-4 text-gold-primary" />
+                  )}
+                </button>
+              );
+            })}
+
+            {/* Divider */}
+            <div className="h-px bg-white/10 my-4"></div>
+
+            {/* User Section */}
+            {user || userEmail ? (
+              <>
+                <div className="px-4 py-2 bg-white/5 rounded-lg border border-white/10">
+                  <div className="flex items-center gap-2 mb-1">
+                    <User className="w-4 h-4 text-gold-primary" />
+                    <span className="text-white text-sm font-medium truncate">
+                      {userEmail || user?.email}
+                    </span>
+                    {isSubscriber && <Crown className="w-4 h-4 text-gold-primary" />}
+                  </div>
+                  {isSubscriber && (
+                    <p className="text-xs text-white/60 ml-6">Premium Member</p>
+                  )}
+                </div>
+                <button
+                  onClick={handleLogout}
+                  className="w-full px-4 py-3 bg-white/10 hover:bg-white/20 text-white font-medium rounded-lg transition-all flex items-center gap-3"
+                >
+                  <LogOut className="w-5 h-5" />
+                  <span>Logout</span>
+                </button>
+              </>
+            ) : (
+              <button
+                onClick={() => handleNavClick('/login')}
+                className="w-full px-4 py-3 bg-gradient-to-r from-gold-primary to-gold-accent text-royal-navy font-semibold rounded-lg transition-all flex items-center justify-center gap-2 shadow-lg"
               >
-                {link.label}
-              </Link>
-            ))}
-            <Link
-              href="/settings"
-              onClick={() => setMobileMenuOpen(false)}
-              className="block px-3 py-2 rounded-md text-base font-medium text-gray-600 hover:bg-gray-50 hover:text-royal-blue"
-            >
-              Settings
-            </Link>
+                <User className="w-5 h-5" />
+                <span>Sign In</span>
+              </button>
+            )}
           </div>
         </div>
       )}
