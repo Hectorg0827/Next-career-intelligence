@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { ArrowRight, Sparkles, TrendingUp, Shield, Brain, LogOut, User, Crown, Zap } from 'lucide-react';
@@ -8,6 +8,7 @@ import Logo from '@/components/Logo';
 import HowItWorksSection from '@/components/HowItWorksSection';
 import TestimonialsCarousel from '@/components/TestimonialsCarousel';
 import StatsSection from '@/components/StatsSection';
+import { useAuth } from '@/contexts/AuthContext';
 import {
   staggerContainerVariants,
   staggerItemVariants,
@@ -18,20 +19,9 @@ import {
 
 export default function Home() {
   const router = useRouter();
+  const { user, isAuthenticated, hasPremiumAccess, logout, isLoading } = useAuth();
   const [jobTitle, setJobTitle] = useState('');
   const [isAnalyzing, setIsAnalyzing] = useState(false);
-  const [isSubscriber, setIsSubscriber] = useState(false);
-  const [userEmail, setUserEmail] = useState<string | null>(null);
-
-  // Check if user is logged in (subscriber)
-  useEffect(() => {
-    const email = localStorage.getItem('userEmail');
-    const subscriptionTier = localStorage.getItem('subscriptionTier');
-    if (email) {
-      setUserEmail(email);
-      setIsSubscriber(subscriptionTier === 'premium' || subscriptionTier === 'enterprise');
-    }
-  }, []);
 
   const handleAnalyze = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -41,13 +31,12 @@ export default function Home() {
     router.push(`/analyze?job=${encodeURIComponent(jobTitle)}`);
   };
 
-  const handleLogout = () => {
-    localStorage.removeItem('userEmail');
-    localStorage.removeItem('subscriptionTier');
-    localStorage.removeItem('authToken');
-    setUserEmail(null);
-    setIsSubscriber(false);
-    router.refresh();
+  const handleLogout = async () => {
+    try {
+      await logout();
+    } catch (error) {
+      console.error('Logout failed:', error);
+    }
   };
 
   const handleSubscriberAccess = () => {
@@ -67,16 +56,16 @@ export default function Home() {
 
       {/* Top Right - Login/Logout */}
       <nav className="absolute top-6 right-6 z-20 flex items-center gap-4" aria-label="User account navigation">
-        {userEmail ? (
+        {!isLoading && isAuthenticated && user ? (
           <>
             <div 
               className="flex items-center gap-2 px-4 py-2 bg-white/10 backdrop-blur-md rounded-full border border-white/20"
               role="status"
-              aria-label={`Logged in as ${userEmail}${isSubscriber ? ', Premium subscriber' : ''}`}
+              aria-label={`Logged in as ${user.email}${hasPremiumAccess ? ', Premium subscriber' : ''}`}
             >
               <User className="w-4 h-4 text-gold-primary" aria-hidden="true" />
-              <span className="text-white text-sm font-medium">{userEmail}</span>
-              {isSubscriber && <Crown className="w-4 h-4 text-gold-primary" aria-label="Premium subscriber" />}
+              <span className="text-white text-sm font-medium">{user.email}</span>
+              {hasPremiumAccess && <Crown className="w-4 h-4 text-gold-primary" aria-label="Premium subscriber" />}
             </div>
             <button
               onClick={handleLogout}
@@ -87,7 +76,7 @@ export default function Home() {
               <span className="text-white/70 group-hover:text-white text-sm font-medium">Logout</span>
             </button>
           </>
-        ) : (
+        ) : !isLoading ? (
           <button
             onClick={() => router.push('/login')}
             className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-gold-primary to-gold-accent hover:from-gold-accent hover:to-gold-hover text-royal-navy font-semibold rounded-xl transition-all shadow-lg hover:shadow-xl"
@@ -96,7 +85,7 @@ export default function Home() {
             <User className="w-5 h-5" aria-hidden="true" />
             <span>Sign In</span>
           </button>
-        )}
+        ) : null}
       </nav>
 
       {/* Animated Background */}
@@ -116,7 +105,7 @@ export default function Home() {
           aria-label="Hero section"
         >
           {/* Subscriber Quick Access Section */}
-          {isSubscriber && (
+          {!isLoading && hasPremiumAccess && (
             <motion.div 
               className="mb-8"
               variants={fadeInUpVariants}
@@ -131,7 +120,7 @@ export default function Home() {
                       <Crown className="w-6 h-6 text-gold-primary" />
                     </motion.div>
                     <div className="text-left">
-                      <h3 className="text-white font-semibold text-lg">Welcome back, Subscriber!</h3>
+                      <h3 className="text-white font-semibold text-lg">Welcome back, {user?.name || 'Subscriber'}!</h3>
                       <p className="text-white/70 text-sm">Access your premium features</p>
                     </div>
                   </div>

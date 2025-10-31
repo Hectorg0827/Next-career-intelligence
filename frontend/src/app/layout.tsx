@@ -3,6 +3,8 @@ import "./globals.css";
 import Navigation from "@/components/Navigation";
 import { Providers } from "@/components/Providers";
 import { Analytics } from "@vercel/analytics/react";
+import { AuthProvider } from "@/contexts/AuthContext";
+import ErrorBoundary from "@/components/ErrorBoundary";
 
 export const metadata: Metadata = {
   title: "NEXT | Adaptive Career Intelligence",
@@ -18,10 +20,14 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="font-sans">
-        <Providers>
-          <Navigation />
-          {children}
-        </Providers>
+        <ErrorBoundary>
+          <Providers>
+            <AuthProvider>
+              <Navigation />
+              {children}
+            </AuthProvider>
+          </Providers>
+        </ErrorBoundary>
         <Analytics />
       </body>
     </html>
