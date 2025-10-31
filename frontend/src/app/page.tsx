@@ -2,11 +2,19 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { motion } from 'framer-motion';
 import { ArrowRight, Sparkles, TrendingUp, Shield, Brain, LogOut, User, Crown, Zap } from 'lucide-react';
 import Logo from '@/components/Logo';
 import HowItWorksSection from '@/components/HowItWorksSection';
 import TestimonialsCarousel from '@/components/TestimonialsCarousel';
 import StatsSection from '@/components/StatsSection';
+import {
+  staggerContainerVariants,
+  staggerItemVariants,
+  buttonVariants,
+  fadeInUpVariants,
+  scaleInVariants,
+} from '@/lib/animations';
 
 export default function Home() {
   const router = useRouter();
@@ -84,116 +92,172 @@ export default function Home() {
       </div>
 
       <div className="relative z-10 flex flex-col items-center justify-center min-h-screen px-4 py-12">
-        <div className="max-w-4xl w-full text-center">
+        <motion.div 
+          className="max-w-4xl w-full text-center"
+          variants={staggerContainerVariants}
+          initial="initial"
+          animate="animate"
+        >
           {/* Subscriber Quick Access Section */}
           {isSubscriber && (
-            <div className="mb-8 animate-fade-in">
+            <motion.div 
+              className="mb-8"
+              variants={fadeInUpVariants}
+            >
               <div className="bg-gradient-to-r from-gold-primary/20 to-gold-accent/20 backdrop-blur-md border border-gold-primary/30 rounded-2xl p-6 shadow-2xl">
                 <div className="flex items-center justify-between flex-wrap gap-4">
                   <div className="flex items-center gap-3">
-                    <div className="p-3 bg-gold-primary/20 rounded-full">
+                    <motion.div 
+                      className="p-3 bg-gold-primary/20 rounded-full"
+                      whileHover={{ rotate: [0, -10, 10, -10, 0], transition: { duration: 0.5 } }}
+                    >
                       <Crown className="w-6 h-6 text-gold-primary" />
-                    </div>
+                    </motion.div>
                     <div className="text-left">
                       <h3 className="text-white font-semibold text-lg">Welcome back, Subscriber!</h3>
                       <p className="text-white/70 text-sm">Access your premium features</p>
                     </div>
                   </div>
-                  <button
+                  <motion.button
                     onClick={handleSubscriberAccess}
                     className="px-6 py-3 bg-gradient-to-r from-gold-primary to-gold-accent hover:from-gold-accent hover:to-gold-hover text-royal-navy font-semibold rounded-xl transition-all flex items-center gap-2 shadow-lg hover:shadow-xl"
+                    variants={buttonVariants}
+                    whileHover="hover"
+                    whileTap="tap"
                   >
                     <Zap className="w-5 h-5" />
                     Go to Dashboard
                     <ArrowRight className="w-5 h-5" />
-                  </button>
+                  </motion.button>
                 </div>
               </div>
-            </div>
+            </motion.div>
           )}
 
           {/* NEXT Logo */}
-          <div className="mb-8">
+          <motion.div 
+            className="mb-8"
+            variants={scaleInVariants}
+          >
             <Logo size="lg" linkTo={undefined} className="mx-auto" />
-          </div>
+          </motion.div>
 
-          <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/10 backdrop-blur-sm border border-gold-primary/30 rounded-full mb-8">
+          <motion.div 
+            className="inline-flex items-center gap-2 px-4 py-2 bg-white/10 backdrop-blur-sm border border-gold-primary/30 rounded-full mb-8"
+            variants={staggerItemVariants}
+          >
             <Sparkles className="w-4 h-4 text-gold-primary" />
             <span className="text-white/90 text-sm font-medium">Powered by AI</span>
-          </div>
+          </motion.div>
 
-          <h1 className="text-5xl md:text-7xl font-bold text-white mb-6 leading-tight">
+          <motion.h1 
+            className="text-5xl md:text-7xl font-bold text-white mb-6 leading-tight"
+            variants={staggerItemVariants}
+          >
             Is Your Job
             <span className="block bg-gradient-to-r from-gold-primary via-gold-hover to-gold-accent bg-clip-text text-transparent">
               AI-Proof?
             </span>
-          </h1>
+          </motion.h1>
 
-          <p className="text-xl md:text-2xl text-white/80 mb-12 max-w-2xl mx-auto">
+          <motion.p 
+            className="text-xl md:text-2xl text-white/80 mb-12 max-w-2xl mx-auto"
+            variants={staggerItemVariants}
+          >
             Get a free AI-powered analysis of your career&apos;s automation risk and discover skills that future-proof your career
-          </p>
+          </motion.p>
 
-          <form onSubmit={handleAnalyze} className="max-w-2xl mx-auto mb-8">
+          <motion.form 
+            onSubmit={handleAnalyze} 
+            className="max-w-2xl mx-auto mb-8"
+            variants={staggerItemVariants}
+          >
             <div className="flex flex-col sm:flex-row gap-4 bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-3 shadow-2xl">
-              <input
+              <motion.input
                 type="text"
                 value={jobTitle}
                 onChange={(e) => setJobTitle(e.target.value)}
                 placeholder="Enter your job title (e.g., Software Engineer)"
                 className="flex-1 px-6 py-4 bg-white/90 border-0 rounded-xl text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-gold-primary text-lg"
                 disabled={isAnalyzing}
+                whileFocus={{ scale: 1.01 }}
+                transition={{ duration: 0.2 }}
               />
-              <button
+              <motion.button
                 type="submit"
                 disabled={!jobTitle.trim() || isAnalyzing}
                 className="px-8 py-4 bg-gradient-to-r from-gold-primary to-gold-accent hover:from-gold-accent hover:to-gold-hover text-royal-navy font-semibold rounded-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 whitespace-nowrap shadow-lg hover:shadow-xl"
+                variants={buttonVariants}
+                whileHover="hover"
+                whileTap="tap"
               >
                 {isAnalyzing ? 'Analyzing...' : 'Analyze Free'}
                 {!isAnalyzing && <ArrowRight className="w-5 h-5" />}
-              </button>
+              </motion.button>
             </div>
-          </form>
+          </motion.form>
 
-          <div className="flex flex-wrap items-center justify-center gap-8 text-white/60 text-sm mb-16">
-            <div className="flex items-center gap-2">
+          <motion.div 
+            className="flex flex-wrap items-center justify-center gap-8 text-white/60 text-sm mb-16"
+            variants={staggerItemVariants}
+          >
+            <motion.div 
+              className="flex items-center gap-2"
+              whileHover={{ scale: 1.05, color: 'rgba(255, 255, 255, 0.9)' }}
+            >
               <Shield className="w-4 h-4" />
               <span>100% Free Analysis</span>
-            </div>
-            <div className="flex items-center gap-2">
+            </motion.div>
+            <motion.div 
+              className="flex items-center gap-2"
+              whileHover={{ scale: 1.05, color: 'rgba(255, 255, 255, 0.9)' }}
+            >
               <Brain className="w-4 h-4" />
               <span>AI-Powered Insights</span>
-            </div>
-            <div className="flex items-center gap-2">
+            </motion.div>
+            <motion.div 
+              className="flex items-center gap-2"
+              whileHover={{ scale: 1.05, color: 'rgba(255, 255, 255, 0.9)' }}
+            >
               <TrendingUp className="w-4 h-4" />
               <span>Personalized Roadmap</span>
-            </div>
-          </div>
+            </motion.div>
+          </motion.div>
 
-        </div>
+        </motion.div>
 
-        <div className="mt-16 text-center">
+        <motion.div 
+          className="mt-16 text-center"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.8, duration: 0.5 }}
+        >
           <p className="text-white/50 text-sm mb-4">
             Join thousands of professionals taking control of their careers
           </p>
           <div className="flex items-center justify-center gap-4 flex-wrap">
-            <button 
+            <motion.button 
               onClick={() => {
                 const section = document.getElementById('how-it-works');
                 section?.scrollIntoView({ behavior: 'smooth' });
               }} 
               className="text-white/60 hover:text-white text-sm transition-colors cursor-pointer"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
             >
               How It Works
-            </button>
+            </motion.button>
             <span className="text-white/30">•</span>
-            <button 
+            <motion.button 
               onClick={() => router.push('/login')} 
               className="text-white/60 hover:text-white text-sm transition-colors cursor-pointer"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
             >
               Sign In
-            </button>
+            </motion.button>
           </div>
-        </div>
+        </motion.div>
       </div>
 
       {/* How It Works Section */}
@@ -208,18 +272,40 @@ export default function Home() {
       {/* Final CTA Section */}
       <section className="py-24 px-4">
         <div className="max-w-4xl mx-auto text-center">
-          <div className="bg-gradient-to-br from-gold-primary/20 to-gold-accent/20 backdrop-blur-md border border-gold-primary/30 rounded-3xl p-12 relative overflow-hidden">
+          <motion.div 
+            className="bg-gradient-to-br from-gold-primary/20 to-gold-accent/20 backdrop-blur-md border border-gold-primary/30 rounded-3xl p-12 relative overflow-hidden"
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-100px" }}
+            transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+            whileHover={{ 
+              boxShadow: "0 0 50px rgba(229, 183, 59, 0.3)",
+              transition: { duration: 0.3 }
+            }}
+          >
             {/* Background Glow */}
             <div className="absolute inset-0 bg-gradient-to-br from-gold-primary/10 to-transparent opacity-50"></div>
             
             <div className="relative z-10">
-              <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
+              <motion.h2 
+                className="text-3xl md:text-4xl font-bold text-white mb-4"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.2, duration: 0.5 }}
+              >
                 Ready to Future-Proof Your Career?
-              </h2>
-              <p className="text-xl text-white/80 mb-8 max-w-2xl mx-auto">
+              </motion.h2>
+              <motion.p 
+                className="text-xl text-white/80 mb-8 max-w-2xl mx-auto"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.3, duration: 0.5 }}
+              >
                 Get your free AI-powered career analysis now. No credit card required.
-              </p>
-              <button
+              </motion.p>
+              <motion.button
                 onClick={() => {
                   window.scrollTo({ top: 0, behavior: 'smooth' });
                   setTimeout(() => {
@@ -228,13 +314,31 @@ export default function Home() {
                   }, 500);
                 }}
                 className="px-8 py-4 bg-gradient-to-r from-gold-primary to-gold-accent hover:from-gold-accent hover:to-gold-hover text-royal-navy font-semibold rounded-xl transition-all shadow-lg hover:shadow-xl inline-flex items-center gap-2 group"
+                initial={{ opacity: 0, scale: 0.9 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.4, duration: 0.5 }}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.98 }}
               >
-                <Sparkles className="w-5 h-5" />
+                <motion.div
+                  animate={{ 
+                    rotate: [0, 10, -10, 10, 0],
+                    scale: [1, 1.1, 1, 1.1, 1]
+                  }}
+                  transition={{ 
+                    duration: 2,
+                    repeat: Infinity,
+                    repeatDelay: 1
+                  }}
+                >
+                  <Sparkles className="w-5 h-5" />
+                </motion.div>
                 <span>Start Your Free Analysis</span>
                 <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-              </button>
+              </motion.button>
             </div>
-          </div>
+          </motion.div>
         </div>
       </section>
     </div>
