@@ -56,20 +56,34 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-royal-blue via-royal-blue-deep to-royal-navy relative overflow-hidden">
+      {/* Skip to main content link for keyboard navigation */}
+      <a 
+        href="#main-content" 
+        className="skip-to-main"
+        aria-label="Skip to main content"
+      >
+        Skip to main content
+      </a>
+
       {/* Top Right - Login/Logout */}
-      <div className="absolute top-6 right-6 z-20 flex items-center gap-4">
+      <nav className="absolute top-6 right-6 z-20 flex items-center gap-4" aria-label="User account navigation">
         {userEmail ? (
           <>
-            <div className="flex items-center gap-2 px-4 py-2 bg-white/10 backdrop-blur-md rounded-full border border-white/20">
-              <User className="w-4 h-4 text-gold-primary" />
+            <div 
+              className="flex items-center gap-2 px-4 py-2 bg-white/10 backdrop-blur-md rounded-full border border-white/20"
+              role="status"
+              aria-label={`Logged in as ${userEmail}${isSubscriber ? ', Premium subscriber' : ''}`}
+            >
+              <User className="w-4 h-4 text-gold-primary" aria-hidden="true" />
               <span className="text-white text-sm font-medium">{userEmail}</span>
-              {isSubscriber && <Crown className="w-4 h-4 text-gold-primary" />}
+              {isSubscriber && <Crown className="w-4 h-4 text-gold-primary" aria-label="Premium subscriber" />}
             </div>
             <button
               onClick={handleLogout}
               className="flex items-center gap-2 px-4 py-2 bg-white/10 hover:bg-white/20 backdrop-blur-md rounded-full border border-white/20 transition-all group"
+              aria-label="Log out of your account"
             >
-              <LogOut className="w-4 h-4 text-white/70 group-hover:text-white" />
+              <LogOut className="w-4 h-4 text-white/70 group-hover:text-white" aria-hidden="true" />
               <span className="text-white/70 group-hover:text-white text-sm font-medium">Logout</span>
             </button>
           </>
@@ -77,12 +91,13 @@ export default function Home() {
           <button
             onClick={() => router.push('/login')}
             className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-gold-primary to-gold-accent hover:from-gold-accent hover:to-gold-hover text-royal-navy font-semibold rounded-xl transition-all shadow-lg hover:shadow-xl"
+            aria-label="Sign in to your account"
           >
-            <User className="w-5 h-5" />
+            <User className="w-5 h-5" aria-hidden="true" />
             <span>Sign In</span>
           </button>
         )}
-      </div>
+      </nav>
 
       {/* Animated Background */}
       <div className="absolute inset-0 overflow-hidden opacity-20">
@@ -91,12 +106,14 @@ export default function Home() {
         <div className="absolute top-1/2 left-1/2 w-64 h-64 bg-supporting-steel-blue rounded-full blur-3xl animate-pulse"></div>
       </div>
 
-      <div className="relative z-10 flex flex-col items-center justify-center min-h-screen px-4 py-12">
+      <main id="main-content" className="relative z-10 flex flex-col items-center justify-center min-h-screen px-4 py-12">
         <motion.div 
           className="max-w-4xl w-full text-center"
           variants={staggerContainerVariants}
           initial="initial"
           animate="animate"
+          role="region"
+          aria-label="Hero section"
         >
           {/* Subscriber Quick Access Section */}
           {isSubscriber && (
@@ -145,8 +162,10 @@ export default function Home() {
           <motion.div 
             className="inline-flex items-center gap-2 px-4 py-2 bg-white/10 backdrop-blur-sm border border-gold-primary/30 rounded-full mb-8"
             variants={staggerItemVariants}
+            role="status"
+            aria-label="AI-powered analysis available"
           >
-            <Sparkles className="w-4 h-4 text-gold-primary" />
+            <Sparkles className="w-4 h-4 text-gold-primary" aria-hidden="true" />
             <span className="text-white/90 text-sm font-medium">Powered by AI</span>
           </motion.div>
 
@@ -171,6 +190,8 @@ export default function Home() {
             onSubmit={handleAnalyze} 
             className="max-w-2xl mx-auto mb-8"
             variants={staggerItemVariants}
+            role="search"
+            aria-label="Career analysis search"
           >
             <div className="flex flex-col sm:flex-row gap-4 bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-3 shadow-2xl">
               <motion.input
@@ -182,6 +203,12 @@ export default function Home() {
                 disabled={isAnalyzing}
                 whileFocus={{ scale: 1.01 }}
                 transition={{ duration: 0.2 }}
+                aria-label="Job title input"
+                aria-required="true"
+                aria-invalid={!jobTitle.trim() && "true"}
+                id="job-title-input"
+                name="jobTitle"
+                autoComplete="organization-title"
               />
               <motion.button
                 type="submit"
@@ -190,9 +217,11 @@ export default function Home() {
                 variants={buttonVariants}
                 whileHover="hover"
                 whileTap="tap"
+                aria-label={isAnalyzing ? 'Analyzing your career' : 'Start free career analysis'}
+                aria-disabled={!jobTitle.trim() || isAnalyzing}
               >
                 {isAnalyzing ? 'Analyzing...' : 'Analyze Free'}
-                {!isAnalyzing && <ArrowRight className="w-5 h-5" />}
+                {!isAnalyzing && <ArrowRight className="w-5 h-5" aria-hidden="true" />}
               </motion.button>
             </div>
           </motion.form>
@@ -200,37 +229,43 @@ export default function Home() {
           <motion.div 
             className="flex flex-wrap items-center justify-center gap-8 text-white/60 text-sm mb-16"
             variants={staggerItemVariants}
+            role="list"
+            aria-label="Key features"
           >
             <motion.div 
               className="flex items-center gap-2"
               whileHover={{ scale: 1.05, color: 'rgba(255, 255, 255, 0.9)' }}
+              role="listitem"
             >
-              <Shield className="w-4 h-4" />
+              <Shield className="w-4 h-4" aria-hidden="true" />
               <span>100% Free Analysis</span>
             </motion.div>
             <motion.div 
               className="flex items-center gap-2"
               whileHover={{ scale: 1.05, color: 'rgba(255, 255, 255, 0.9)' }}
+              role="listitem"
             >
-              <Brain className="w-4 h-4" />
+              <Brain className="w-4 h-4" aria-hidden="true" />
               <span>AI-Powered Insights</span>
             </motion.div>
             <motion.div 
               className="flex items-center gap-2"
               whileHover={{ scale: 1.05, color: 'rgba(255, 255, 255, 0.9)' }}
+              role="listitem"
             >
-              <TrendingUp className="w-4 h-4" />
+              <TrendingUp className="w-4 h-4" aria-hidden="true" />
               <span>Personalized Roadmap</span>
             </motion.div>
           </motion.div>
 
         </motion.div>
 
-        <motion.div 
+        <motion.nav 
           className="mt-16 text-center"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.8, duration: 0.5 }}
+          aria-label="Secondary navigation"
         >
           <p className="text-white/50 text-sm mb-4">
             Join thousands of professionals taking control of their careers
@@ -244,21 +279,23 @@ export default function Home() {
               className="text-white/60 hover:text-white text-sm transition-colors cursor-pointer"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
+              aria-label="Scroll to How It Works section"
             >
               How It Works
             </motion.button>
-            <span className="text-white/30">•</span>
+            <span className="text-white/30" aria-hidden="true">•</span>
             <motion.button 
               onClick={() => router.push('/login')} 
               className="text-white/60 hover:text-white text-sm transition-colors cursor-pointer"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
+              aria-label="Navigate to sign in page"
             >
               Sign In
             </motion.button>
           </div>
-        </motion.div>
-      </div>
+        </motion.nav>
+      </main>
 
       {/* How It Works Section */}
       <HowItWorksSection />

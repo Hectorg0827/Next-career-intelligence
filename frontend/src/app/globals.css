@@ -148,6 +148,142 @@ html {
   animation: bounce 2s ease-in-out infinite;
 }
 
+/* ========================================
+   ACCESSIBILITY ENHANCEMENTS
+   WCAG AA Compliant Focus States & Navigation
+   ======================================== */
+
+/* High-visibility focus rings for interactive elements */
+*:focus-visible {
+  outline: 3px solid var(--gold-primary);
+  outline-offset: 3px;
+  transition: outline 0.2s ease;
+}
+
+/* Button focus states */
+button:focus-visible,
+a:focus-visible {
+  outline: 3px solid var(--gold-primary);
+  outline-offset: 3px;
+  box-shadow: 0 0 0 3px rgba(229, 183, 59, 0.3);
+}
+
+/* Input focus states */
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+  outline: 3px solid var(--royal-blue);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 3px rgba(17, 80, 163, 0.3);
+}
+
+/* Card and interactive region focus */
+[tabindex]:focus-visible {
+  outline: 2px solid var(--gold-primary);
+  outline-offset: 4px;
+}
+
+/* Skip to main content link (hidden until focused) */
+.skip-to-main {
+  position: absolute;
+  top: -100px;
+  left: 0;
+  background: var(--gold-primary);
+  color: var(--royal-navy);
+  padding: 1rem 2rem;
+  font-weight: 600;
+  z-index: 100;
+  transition: top 0.3s ease;
+}
+
+.skip-to-main:focus {
+  top: 0;
+}
+
+/* Keyboard navigation indicator */
+.keyboard-focus-visible {
+  box-shadow: 0 0 0 3px rgba(229, 183, 59, 0.5);
+  outline: 2px solid var(--gold-primary);
+  outline-offset: 3px;
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  *:focus-visible {
+    outline-width: 4px;
+    outline-color: #FFFF00;
+  }
+  
+  button,
+  a {
+    border: 2px solid currentColor;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Screen reader only content */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+.sr-only-focusable:focus {
+  position: static;
+  width: auto;
+  height: auto;
+  padding: inherit;
+  margin: inherit;
+  overflow: visible;
+  clip: auto;
+  white-space: normal;
+}
+
+/* Touch target sizing (minimum 44x44px) */
+@media (pointer: coarse) {
+  button,
+  a,
+  input[type="checkbox"],
+  input[type="radio"] {
+    min-height: 44px;
+    min-width: 44px;
+  }
+}
+
+/* Color contrast utilities */
+.text-contrast-high {
+  color: #FFFFFF;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+.bg-contrast-high {
+  background-color: #000000;
+  color: #FFFFFF;
+}
+
+/* Focus within states for containers */
+.focus-within-ring:focus-within {
+  box-shadow: 0 0 0 3px rgba(229, 183, 59, 0.3);
+  border-color: var(--gold-primary);
+}
+
 /* Custom Scrollbar */
 ::-webkit-scrollbar {
   width: 10px;

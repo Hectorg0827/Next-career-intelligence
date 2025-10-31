@@ -57,6 +57,15 @@ module.exports = {
         'next-lg': '0 10px 15px rgba(11, 29, 69, 0.2)',
         'next-xl': '0 20px 25px rgba(11, 29, 69, 0.25)',
         'next-gold': '0 4px 20px rgba(203, 161, 53, 0.3)',
+        // Accessibility Focus Rings
+        'focus-royal': '0 0 0 3px rgba(17, 80, 163, 0.5)',
+        'focus-gold': '0 0 0 3px rgba(229, 183, 59, 0.5)',
+      },
+      outlineWidth: {
+        3: '3px',
+      },
+      outlineOffset: {
+        3: '3px',
       },
       fontFamily: {
         'heading': ['Poppins', 'sans-serif'],
