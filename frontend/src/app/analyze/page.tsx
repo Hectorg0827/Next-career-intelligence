@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { AlertCircle, ArrowRight, Sparkles } from 'lucide-react';
 import { intelligenceApi } from '@/lib/api';
-import { useAuth } from '@/lib/firebase';
+import { useAuth } from '@/contexts/AuthContext';
 import EnhancedLoadingExperience from '@/components/EnhancedLoadingExperience';
 import MicroWin from '@/components/MicroWins';
 import SocialShare from '@/components/SocialShare';
@@ -31,7 +31,7 @@ interface AnalysisResult {
 export default function AnalyzePage() {
   const searchParams = useSearchParams();
   const router = useRouter();
-  const { user } = useAuth();
+  const { user, hasPremiumAccess } = useAuth();
   const jobTitle = searchParams.get('job') || '';
   
   const [isAnalyzing, setIsAnalyzing] = useState(true);
@@ -39,15 +39,6 @@ export default function AnalyzePage() {
   const [analysis, setAnalysis] = useState<AnalysisResult | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [showSignupModal, setShowSignupModal] = useState(false);
-  
-  // Check if user has premium access (for now, check if they're logged in)
-  const [hasPremiumAccess] = useState(() => {
-    if (typeof window !== 'undefined') {
-      const subscriptionTier = localStorage.getItem('subscriptionTier');
-      return subscriptionTier === 'premium' || subscriptionTier === 'enterprise';
-    }
-    return false;
-  });
 
   useEffect(() => {
     if (!jobTitle) {

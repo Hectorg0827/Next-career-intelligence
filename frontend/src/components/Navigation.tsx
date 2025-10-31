@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { useRouter, usePathname } from 'next/navigation';
 import { Menu, X, User, LogOut, Crown, Briefcase, MessageSquare, Target, Home } from 'lucide-react';
 import Logo from './Logo';
-import { useAuth } from '@/lib/firebase';
+import { useAuth } from '@/contexts/AuthContext';
 
 interface NavItem {
   name: string;
@@ -24,20 +24,17 @@ const navItems: NavItem[] = [
 export default function Navigation() {
   const router = useRouter();
   const pathname = usePathname();
-  const { user } = useAuth();
+  const { user, isAuthenticated, hasPremiumAccess, logout } = useAuth();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
-  const userEmail = typeof window !== 'undefined' ? localStorage.getItem('userEmail') : null;
-  const subscriptionTier = typeof window !== 'undefined' ? localStorage.getItem('subscriptionTier') : null;
-  const isSubscriber = subscriptionTier === 'premium' || subscriptionTier === 'enterprise';
-
-  const handleLogout = () => {
-    localStorage.removeItem('userEmail');
-    localStorage.removeItem('subscriptionTier');
-    localStorage.removeItem('authToken');
-    setIsMobileMenuOpen(false);
-    router.push('/');
-    router.refresh();
+  const handleLogout = async () => {
+    try {
+      await logout();
+      setIsMobileMenuOpen(false);
+      router.push('/');
+    } catch (error) {
+      console.error('Logout failed:', error);
+    }
   };
 
   const handleNavClick = (href: string) => {
@@ -72,7 +69,7 @@ export default function Navigation() {
                 >
                   <Icon className="w-4 h-4" />
                   <span>{item.name}</span>
-                  {item.isPremium && !isSubscriber && (
+                  {item.isPremium && !hasPremiumAccess && (
                     <Crown className="w-3 h-3 text-gold-primary" />
                   )}
                 </Link>
@@ -82,21 +79,22 @@ export default function Navigation() {
 
           {/* Desktop User Menu */}
           <div className="hidden md:flex items-center gap-3">
-            {user || userEmail ? (
+            {isAuthenticated && user ? (
               <>
                 {/* User Info */}
                 <div className="flex items-center gap-2 px-4 py-2 bg-white/10 backdrop-blur-md rounded-full border border-white/20">
                   <User className="w-4 h-4 text-gold-primary" />
                   <span className="text-white text-sm font-medium max-w-[150px] truncate">
-                    {userEmail || user?.email}
+                    {user.name || user.email}
                   </span>
-                  {isSubscriber && <Crown className="w-4 h-4 text-gold-primary" />}
+                  {hasPremiumAccess && <Crown className="w-4 h-4 text-gold-primary" />}
                 </div>
                 
                 {/* Logout Button */}
                 <button
                   onClick={handleLogout}
                   className="flex items-center gap-2 px-4 py-2 bg-white/10 hover:bg-white/20 backdrop-blur-md rounded-full border border-white/20 transition-all group"
+                  aria-label="Log out"
                 >
                   <LogOut className="w-4 h-4 text-white/70 group-hover:text-white" />
                   <span className="text-white/70 group-hover:text-white text-sm font-medium">Logout</span>
@@ -151,7 +149,7 @@ export default function Navigation() {
                 >
                   <Icon className="w-5 h-5" />
                   <span className="flex-1 text-left">{item.name}</span>
-                  {item.isPremium && !isSubscriber && (
+                  {item.isPremium && !hasPremiumAccess && (
                     <Crown className="w-4 h-4 text-gold-primary" />
                   )}
                 </button>
@@ -162,23 +160,24 @@ export default function Navigation() {
             <div className="h-px bg-white/10 my-4"></div>
 
             {/* User Section */}
-            {user || userEmail ? (
+            {isAuthenticated && user ? (
               <>
                 <div className="px-4 py-2 bg-white/5 rounded-lg border border-white/10">
                   <div className="flex items-center gap-2 mb-1">
                     <User className="w-4 h-4 text-gold-primary" />
                     <span className="text-white text-sm font-medium truncate">
-                      {userEmail || user?.email}
+                      {user.name || user.email}
                     </span>
-                    {isSubscriber && <Crown className="w-4 h-4 text-gold-primary" />}
+                    {hasPremiumAccess && <Crown className="w-4 h-4 text-gold-primary" />}
                   </div>
-                  {isSubscriber && (
+                  {hasPremiumAccess && (
                     <p className="text-xs text-white/60 ml-6">Premium Member</p>
                   )}
                 </div>
                 <button
                   onClick={handleLogout}
                   className="w-full px-4 py-3 bg-white/10 hover:bg-white/20 text-white font-medium rounded-lg transition-all flex items-center gap-3"
+                  aria-label="Log out"
                 >
                   <LogOut className="w-5 h-5" />
                   <span>Logout</span>
