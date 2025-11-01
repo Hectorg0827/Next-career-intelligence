@@ -26,7 +26,8 @@ class AIMatchingService:
         """Initialize Gemini client"""
         if settings.GEMINI_API_KEY:
             genai.configure(api_key=settings.GEMINI_API_KEY)
-            self.model = genai.GenerativeModel("gemini-pro")
+            model_name = getattr(settings, 'GEMINI_MODEL', 'gemini-1.5-flash')
+            self.model = genai.GenerativeModel(model_name)
         else:
             logger.warning("GEMINI_API_KEY not set - using fallback matching")
             self.model = None

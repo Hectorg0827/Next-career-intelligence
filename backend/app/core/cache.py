@@ -316,3 +316,55 @@ async def get_cached_suggestions(user_id: str) -> Optional[list]:
 async def cache_suggestions(user_id: str, suggestions: list):
     """Cache pending suggestions"""
     return await cache.set("suggestions", f"{user_id}_pending", suggestions, Cache.TTL_SHORT)
+
+
+# Lifecycle management functions
+async def init_redis():
+    """Initialize Redis connection on startup"""
+    client = get_redis_client()
+    if client:
+        logger.info("✅ Redis cache initialized")
+    else:
+        logger.warning("⚠️ Redis unavailable - running without cache")
+
+
+async def cleanup_redis():
+    """Cleanup Redis connection on shutdown"""
+    global _redis_client
+    if _redis_client:
+        try:
+            _redis_client.close()
+            logger.info("✅ Redis connection closed")
+        except Exception as e:
+            logger.error(f"❌ Error closing Redis: {e}")
+        finally:
+            _redis_client = None
+
+
+async def get_cache_stats() -> dict:
+    """Get cache statistics"""
+    client = get_redis_client()
+    if not client:
+        return {
+            "status": "unavailable",
+            "connected": False
+        }
+    
+    try:
+        info = client.info()
+        return {
+            "status": "connected",
+            "connected": True,
+            "used_memory": info.get("used_memory_human", "N/A"),
+            "connected_clients": info.get("connected_clients", 0),
+            "total_commands": info.get("total_commands_processed", 0),
+            "keyspace_hits": info.get("keyspace_hits", 0),
+            "keyspace_misses": info.get("keyspace_misses", 0)
+        }
+    except Exception as e:
+        logger.error(f"❌ Error getting cache stats: {e}")
+        return {
+            "status": "error",
+            "connected": False,
+            "error": str(e)
+        }

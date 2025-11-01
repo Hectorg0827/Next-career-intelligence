@@ -25,7 +25,8 @@ class AICoachService:
     def __init__(self):
         if genai:
             genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
-            self.model = genai.GenerativeModel('gemini-pro')
+            model_name = os.getenv("GEMINI_MODEL", "gemini-1.5-flash")
+            self.model = genai.GenerativeModel(model_name)
         else:
             self.model = None
             logger.warning("AI Coach running without Gemini - responses will be limited")

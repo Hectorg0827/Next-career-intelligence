@@ -9,9 +9,10 @@ import json
 from loguru import logger
 import google.generativeai as genai
 from fastapi import HTTPException
+from app.core.config import settings
 
 # Configure AI Engine
-NEXTAI_API_KEY = os.getenv("GEMINI_API_KEY")  # Internal config name
+NEXTAI_API_KEY = os.getenv("GEMINI_API_KEY") or settings.GEMINI_API_KEY
 if NEXTAI_API_KEY:
     genai.configure(api_key=NEXTAI_API_KEY)
 
@@ -32,8 +33,10 @@ class GeminiAnalyzer:
             genai.types.HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT: genai.types.HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE,
         }
         
+        # Use configurable model from settings
+        model_name = getattr(settings, 'GEMINI_MODEL', 'gemini-flash-latest')
         self.model = genai.GenerativeModel(
-            'gemini-2.5-flash',  # Latest fast model, good for production
+            model_name,
             safety_settings=safety_settings
         )
     

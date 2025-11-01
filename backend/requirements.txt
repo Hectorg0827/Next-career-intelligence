@@ -77,3 +77,6 @@ python-docx==1.1.0
 # Redis (Caching & Rate Limiting)
 redis==5.0.1
 hiredis==2.3.2  # C parser for Redis (faster)
+
+# Background task scheduling
+APScheduler==3.10.4
