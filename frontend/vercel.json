@@ -2,7 +2,7 @@
   "rewrites": [
     {
       "source": "/api/:path*",
-      "destination": "https://next-backend-795538981829.us-central1.run.app/api/:path*"
+      "destination": "https://next-career-backend-795538981829.us-central1.run.app/api/:path*"
     }
   ],
   "headers": [
