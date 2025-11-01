@@ -11,21 +11,46 @@ from loguru import logger
 import json
 
 
+_supabase_client_instance = None
+
+
 class SupabaseClient:
     """Supabase database client for NEXT Career Intelligence"""
-    
+
+    def __new__(cls):
+        global _supabase_client_instance
+        if _supabase_client_instance is None:
+            _supabase_client_instance = super(SupabaseClient, cls).__new__(cls)
+            _supabase_client_instance._initialized = False
+        return _supabase_client_instance
+
     def __init__(self):
         """Initialize Supabase client"""
+        if self._initialized:
+            return
         try:
+            if not settings.SUPABASE_URL or not settings.SUPABASE_SERVICE_KEY:
+                raise ValueError("SUPABASE_URL and SUPABASE_SERVICE_KEY must be set")
+
             self.client: Client = create_client(
                 settings.SUPABASE_URL,
                 settings.SUPABASE_SERVICE_KEY
             )
             logger.info("✅ Supabase client initialized")
+            self._initialized = True
         except Exception as e:
             logger.error(f"❌ Failed to initialize Supabase client: {str(e)}")
-            raise
-    
+            # Do not raise here to allow app to start, but log critical error
+            self.client = None
+            self._initialized = False
+
+    def get_client(self) -> Optional[Client]:
+        """Returns the Supabase client if initialized, otherwise None."""
+        if not self._initialized or self.client is None:
+            logger.warning("Supabase client not initialized. Trying to re-initialize.")
+            self.__init__() # Attempt to re-initialize
+        return self.client
+
     # ==================== USER OPERATIONS ====================
     
     async def create_user(self, 

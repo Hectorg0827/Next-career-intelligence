@@ -27,7 +27,8 @@ class ProfileAgent:
     """
     
     def __init__(self):
-        self.supabase = SupabaseClient().client
+        self.supabase_client_wrapper = SupabaseClient()
+        self.supabase = self.supabase_client_wrapper.get_client()
     
     async def get_profile(self, user_id: str) -> Optional[UserProfile]:
         """
