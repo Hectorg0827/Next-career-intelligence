@@ -15,8 +15,15 @@ from app.models.user_profile import UserProfile
 
 router = APIRouter(prefix="/match", tags=["Career Matching"])
 
-# Initialize orchestrator
-orchestrator = CareerOrchestrator()
+# Lazy initialize orchestrator on first use to avoid blocking app startup
+_orchestrator = None
+
+def get_orchestrator():
+    """Lazy load orchestrator on first use"""
+    global _orchestrator
+    if _orchestrator is None:
+        _orchestrator = CareerOrchestrator()
+    return _orchestrator
 
 
 class MatchRequest(BaseModel):
@@ -52,7 +59,7 @@ async def analyze_job_match(request: MatchRequest = Body(...)):
     try:
         logger.info(f"Match analysis request for user {request.user_id}")
         
-        result = await orchestrator.analyze_job_match(
+        result = await get_orchestrator().analyze_job_match(
             user_id=request.user_id,
             job=request.job,
             recent_conversation=request.recent_conversation
@@ -85,7 +92,7 @@ async def rank_jobs(request: RankJobsRequest = Body(...)):
     try:
         logger.info(f"Ranking {len(request.jobs)} jobs for user {request.user_id}")
         
-        ranked = await orchestrator.rank_jobs(
+        ranked = await get_orchestrator().rank_jobs(
             user_id=request.user_id,
             jobs=request.jobs
         )
@@ -113,7 +120,7 @@ async def get_user_profile(user_id: str):
     """
     
     try:
-        profile = await orchestrator.profile_agent.get_profile(user_id)
+        profile = await get_orchestrator().profile_agent.get_profile(user_id)
         
         if not profile:
             raise HTTPException(status_code=404, detail="User profile not found")
@@ -139,7 +146,7 @@ async def create_user_profile(user_id: str, email: Optional[str] = None):
     """
     
     try:
-        profile = await orchestrator.profile_agent.create_profile(user_id, email)
+        profile = await get_orchestrator().profile_agent.create_profile(user_id, email)
         
         return {
             "message": "Profile created successfully",
@@ -163,12 +170,12 @@ async def assess_current_job_risk(user_id: str):
     """
     
     try:
-        profile = await orchestrator.profile_agent.get_profile(user_id)
+        profile = await get_orchestrator().profile_agent.get_profile(user_id)
         
         if not profile:
             raise HTTPException(status_code=404, detail="User profile not found")
         
-        risk_assessment = await orchestrator.risk_agent.assess_current_job_risk(profile)
+        risk_assessment = await get_orchestrator().risk_agent.assess_current_job_risk(profile)
         
         return risk_assessment
         
@@ -198,7 +205,7 @@ async def get_career_forecast(user_id: str):
     """
     
     try:
-        profile = await orchestrator.profile_agent.get_profile(user_id)
+        profile = await get_orchestrator().profile_agent.get_profile(user_id)
         
         if not profile:
             raise HTTPException(status_code=404, detail="User profile not found")
@@ -207,13 +214,13 @@ async def get_career_forecast(user_id: str):
         role_keywords = profile.current_role or "professional"
         industry = profile.industry
         
-        market_context = await orchestrator.market_intel_agent.get_market_intelligence(
+        market_context = await get_orchestrator().market_intel_agent.get_market_intelligence(
             role_keywords=role_keywords,
             industry=industry
         )
         
         # Generate forecast
-        forecast = await orchestrator.trajectory_agent.forecast_career_paths(
+        forecast = await get_orchestrator().trajectory_agent.forecast_career_paths(
             user_profile=profile,
             market_context=market_context
         )
@@ -252,7 +259,7 @@ async def get_market_intelligence(
     """
     
     try:
-        intel = await orchestrator.market_intel_agent.get_market_intelligence(
+        intel = await get_orchestrator().market_intel_agent.get_market_intelligence(
             role_keywords=role_keywords,
             industry=industry,
             location=location
@@ -292,12 +299,12 @@ async def get_early_warnings(user_id: str):
     """
     
     try:
-        profile = await orchestrator.profile_agent.get_profile(user_id)
+        profile = await get_orchestrator().profile_agent.get_profile(user_id)
         
         if not profile:
             raise HTTPException(status_code=404, detail="User profile not found")
         
-        warnings = await orchestrator.early_warning_agent.scan_for_threats(profile)
+        warnings = await get_orchestrator().early_warning_agent.scan_for_threats(profile)
         
         return warnings
         
@@ -336,12 +343,12 @@ async def analyze_offer(request: OfferAnalysisRequest = Body(...)):
     """
     
     try:
-        profile = await orchestrator.profile_agent.get_profile(request.user_id)
+        profile = await get_orchestrator().profile_agent.get_profile(request.user_id)
         
         if not profile:
             raise HTTPException(status_code=404, detail="User profile not found")
         
-        analysis = await orchestrator.negotiation_agent.analyze_offer(
+        analysis = await get_orchestrator().negotiation_agent.analyze_offer(
             user_profile=profile,
             offer_details=request.offer_details
         )
@@ -375,12 +382,12 @@ async def get_peer_insights(user_id: str):
     """
     
     try:
-        profile = await orchestrator.profile_agent.get_profile(user_id)
+        profile = await get_orchestrator().profile_agent.get_profile(user_id)
         
         if not profile:
             raise HTTPException(status_code=404, detail="User profile not found")
         
-        insights = await orchestrator.peer_benchmarking_agent.find_peer_insights(profile)
+        insights = await get_orchestrator().peer_benchmarking_agent.find_peer_insights(profile)
         
         return insights
         
