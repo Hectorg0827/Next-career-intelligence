@@ -59,9 +59,16 @@ export default function AnalyzePage() {
         setError(null);
         
         // Call the MULTI-AGENT ORCHESTRATOR API
+        const normalizedSkills = jobTitle
+          ? [
+              `${jobTitle} core skills`,
+              `${jobTitle} domain expertise`
+            ]
+          : ['transferable career skills'];
+
         const result = await intelligenceApi.analyzeCareer({
           job_title: jobTitle,
-          skills: [],
+          skills: normalizedSkills,
           location: 'United States'
         });
         

@@ -19,14 +19,21 @@ class RiskLevel(str, Enum):
 class AnalysisRequest(BaseModel):
     """Request model for career analysis"""
     job_title: str = Field(..., min_length=2, max_length=200, description="Current job title")
-    skills: List[str] = Field(..., min_items=1, description="List of current skills")
+    skills: List[str] = Field(default_factory=list, description="List of current skills")
     location: str = Field(..., description="Country or region")
     years_experience: Optional[int] = Field(None, ge=0, le=50, description="Years of experience")
-    
-    @validator('skills')
-    def validate_skills(cls, v):
-        """Ensure skills are not empty strings"""
-        return [skill.strip() for skill in v if skill.strip()]
+
+    @validator('skills', pre=True, always=True)
+    def validate_skills(cls, v, values):
+        """Ensure skill list is usable, add sensible fallback when empty"""
+        provided_skills = v or []
+        cleaned = [skill.strip() for skill in provided_skills if isinstance(skill, str) and skill.strip()]
+        if cleaned:
+            return cleaned
+
+        # When no skills are provided, generate a fallback based on job title so AI has context
+        job_title = values.get('job_title') or 'Professional'
+        return [f"{job_title} core skills"]
 
 
 class AIDisplacementRisk(BaseModel):
