@@ -10,14 +10,27 @@ import { AnalysisResult, CareerPath, CareerPathRequest, Goal, GoalRequest, Traje
 import { Conversation, Message } from '@/types/coach';
 import { InterviewSession, SessionFeedback } from '@/types/interviewer';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+const resolveApiBaseUrl = () => {
+  if (process.env.NEXT_PUBLIC_API_URL) {
+    return process.env.NEXT_PUBLIC_API_URL;
+  }
+
+  // Use localhost only for local development; otherwise fall back to same-origin rewrites
+  if (process.env.NODE_ENV === 'development') {
+    return 'http://localhost:8000';
+  }
+
+  return '';
+};
+
+const API_URL = resolveApiBaseUrl();
 
 class APIClient {
   public client: AxiosInstance;
 
   constructor() {
     this.client = axios.create({
-      baseURL: `${API_URL}/api`,
+      baseURL: `${API_URL}/api`.replace('//api', '/api'),
       timeout: 180000, // 3 minutes for long AI analysis
       headers: {
         'Content-Type': 'application/json',
