@@ -40,6 +40,23 @@ class GeminiAnalyzer:
             safety_settings=safety_settings
         )
     
+    def _extract_text(self, response) -> str:
+        """Safely extract text content from Gemini response."""
+        try:
+            candidates = getattr(response, "candidates", [])
+            parts: list[str] = []
+            for candidate in candidates or []:
+                content = getattr(candidate, "content", None)
+                for part in getattr(content, "parts", []) or []:
+                    text = getattr(part, "text", None)
+                    if text:
+                        parts.append(text)
+            if parts:
+                return "\n".join(parts)
+        except Exception as exc:  # pragma: no cover - defensive
+            logger.debug(f"Failed to extract structured response text: {exc}")
+        return getattr(response, "text", "") or ""
+
     def _clean_json_response(self, text: str) -> str:
         """
         Clean Gemini response text to ensure valid JSON
@@ -170,10 +187,20 @@ Return valid JSON only:
 
 BE SPECIFIC TO THE JOB. Avoid generic phrases. Use concrete examples."""
 
-            response = self.model.generate_content(prompt)
+            response = self.model.generate_content(
+                prompt,
+                generation_config={
+                    "temperature": 0.3,
+                    "top_p": 0.9,
+                    "top_k": 40,
+                    "max_output_tokens": 2048,
+                    "response_mime_type": "application/json",
+                },
+            )
             
             # Clean and parse the response
-            cleaned_text = self._clean_json_response(response.text)
+            raw_text = self._extract_text(response)
+            cleaned_text = self._clean_json_response(raw_text)
             result = json.loads(cleaned_text)
             
             # Validate that we got real data, not defaults
@@ -217,10 +244,20 @@ JSON output:
     "skill_strength_score": {{"overall_score":75,"interpretation":"brief"}}
 }}"""
 
-            response = self.model.generate_content(prompt)
+            response = self.model.generate_content(
+                prompt,
+                generation_config={
+                    "temperature": 0.35,
+                    "top_p": 0.9,
+                    "top_k": 40,
+                    "max_output_tokens": 2048,
+                    "response_mime_type": "application/json",
+                },
+            )
             
             # Clean and parse the response
-            cleaned_text = self._clean_json_response(response.text)
+            raw_text = self._extract_text(response)
+            cleaned_text = self._clean_json_response(raw_text)
             result = json.loads(cleaned_text)
             
             logger.info(f"Gemini skill insights generated for {job_title}")
@@ -313,10 +350,20 @@ Make the roadmap realistic, AI-resilient, and location-appropriate.
 Return ONLY valid JSON.
 """
 
-            response = self.model.generate_content(prompt)
+            response = self.model.generate_content(
+                prompt,
+                generation_config={
+                    "temperature": 0.4,
+                    "top_p": 0.9,
+                    "top_k": 40,
+                    "max_output_tokens": 2048,
+                    "response_mime_type": "application/json",
+                },
+            )
             
             # Clean and parse the response
-            cleaned_text = self._clean_json_response(response.text)
+            raw_text = self._extract_text(response)
+            cleaned_text = self._clean_json_response(raw_text)
             result = json.loads(cleaned_text)
             
             logger.info(f"Gemini roadmap generated for {job_title}")
