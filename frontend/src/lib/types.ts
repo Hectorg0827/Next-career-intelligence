@@ -44,6 +44,8 @@ export interface AnalysisResponse {
   ai_displacement_risk: AIDisplacementRisk;
   compatibility_score: number;
   human_advantage_factors: string[];
+  automation_vulnerable_tasks: string[];
+  automation_resistant_tasks: string[];
   transition_pathways: TransitionPathway[];
   skill_gaps: string[];
   recommended_training: TrainingResource[];

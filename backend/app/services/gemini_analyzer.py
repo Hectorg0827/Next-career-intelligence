@@ -4,7 +4,7 @@ Powered by state-of-the-art AI for career analysis
 """
 
 import os
-from typing import Dict, List, Optional, Any
+from typing import Dict, List, Optional, Any, Iterable
 import json
 from loguru import logger
 from google import genai
@@ -24,17 +24,33 @@ class GeminiAnalyzer:
     """
     
     def __init__(self):
-        # Initialize the new Gemini client
-        self.client = genai.Client(api_key=NEXTAI_API_KEY)
-        
+        """Initialize Gemini client if credentials are available."""
+
+        self.client = None
+
         # Use configurable model from settings
         self.model_name = getattr(settings, 'GEMINI_MODEL', 'gemini-2.0-flash-exp')
-        
+
         # Configure generation settings
         self.generation_config = {
             "response_mime_type": "application/json",
             "temperature": 0.3
         }
+
+        if NEXTAI_API_KEY:
+            try:
+                # Initialize the new Gemini client when credentials are present
+                self.client = genai.Client(api_key=NEXTAI_API_KEY)
+                logger.info("✅ Gemini client initialized successfully")
+            except Exception as exc:  # pragma: no cover - defensive guard
+                logger.warning(
+                    "⚠️ Failed to initialize Gemini client. Falling back to offline mode: {}".format(exc)
+                )
+                self.client = None
+        else:
+            logger.warning(
+                "⚠️ GEMINI_API_KEY not configured. Using deterministic fallback responses for analysis."
+            )
     
     def _extract_text(self, response) -> str:
         """Safely extract text content from Gemini response."""
@@ -164,6 +180,9 @@ Return ONLY valid JSON matching the requested schema. No markdown, no explanatio
         """
         Analyze AI displacement risk using NextAI intelligence
         """
+        if not self.client:
+            return self._generate_fallback_displacement_risk(job_title, skills, years_experience)
+
         try:
             prompt = f"""Analyze AI automation risk for {job_title} ({years_experience or 0}y exp) with skills: {', '.join(skills[:8])}.
 
@@ -215,10 +234,7 @@ BE SPECIFIC TO THE JOB. Avoid generic phrases. Use concrete examples."""
             
         except Exception as e:
             logger.error(f"NextAI displacement analysis error: {e}")
-            raise HTTPException(
-                status_code=500,
-                detail=f"NextAI analysis encountered an error. Please try again."
-            )
+            return self._generate_fallback_displacement_risk(job_title, skills, years_experience)
 
     async def generate_skill_insights(
         self,
@@ -229,6 +245,9 @@ BE SPECIFIC TO THE JOB. Avoid generic phrases. Use concrete examples."""
         """
         Generate comprehensive skill insights using Gemini
         """
+        if not self.client:
+            return self._generate_fallback_skill_insights(job_title, skills, years_experience)
+
         try:
             prompt = f"""Skill analysis for {job_title} ({years_experience or 0}y): {', '.join(skills[:8])}
 
@@ -253,15 +272,7 @@ JSON output:
             
         except Exception as e:
             logger.error(f"Gemini skill insights error: {e}")
-            return {
-                "transferable_to": [],
-                "hidden_skills": [],
-                "skill_gaps_for_growth": [],
-                "skill_strength_score": {
-                    "overall_score": 70.0,
-                    "interpretation": "Analysis unavailable"
-                }
-            }
+            return self._generate_fallback_skill_insights(job_title, skills, years_experience)
 
     async def generate_career_roadmap(
         self,
@@ -364,6 +375,9 @@ Return ONLY valid JSON.
         """
         Generate industry benchmarking data using Gemini
         """
+        if not self.client:
+            return self._generate_fallback_benchmarks(job_title, location)
+
         try:
             prompt = f"""Benchmarks for {job_title} in {location} ({years_experience or 0}y): {', '.join(skills[:5])}
 
@@ -393,6 +407,191 @@ Use {location} market data."""
         except Exception as e:
             logger.error(f"Gemini benchmarks error: {e}")
             return self._generate_fallback_benchmarks(job_title, location)
+
+    def _generate_fallback_displacement_risk(
+        self,
+        job_title: str,
+        skills: List[str],
+        years_experience: Optional[int]
+    ) -> Dict[str, Any]:
+        """Generate deterministic displacement insights when Gemini is unavailable."""
+
+        job_lower = job_title.lower()
+        high_risk_keywords = ["data entry", "assistant", "telemarketer", "clerk", "bookkeeper", "cashier"]
+        low_risk_keywords = ["therapist", "nurse", "teacher", "manager", "strategist", "leader"]
+        technical_keywords = ["engineer", "developer", "scientist", "analyst", "architect", "designer"]
+
+        if any(keyword in job_lower for keyword in high_risk_keywords):
+            score = 82.0
+        elif any(keyword in job_lower for keyword in low_risk_keywords):
+            score = 32.0
+        elif any(keyword in job_lower for keyword in technical_keywords):
+            score = 58.0
+        else:
+            score = 48.0
+
+        experience_bonus = min(max((years_experience or 0) * 0.6, -5), 8)
+        score = max(15.0, min(95.0, score - experience_bonus))
+
+        if score >= 80:
+            level = "Critical"
+            velocity = "Rapid"
+        elif score >= 60:
+            level = "High"
+            velocity = "Rapid"
+        elif score >= 40:
+            level = "Medium"
+            velocity = "Moderate"
+        else:
+            level = "Low"
+            velocity = "Slow"
+
+        highlighted_skills = skills[:3] or [f"{job_title} fundamentals"]
+        augmentation = f"Adopt AI copilots to accelerate {highlighted_skills[0].lower()} and reporting workflows."
+        reasoning = (
+            f"Based on the task profile for {job_title}, routine work such as {highlighted_skills[0].lower()} can be automated,"
+            " while stakeholder-facing responsibilities still require human judgment."
+        )
+
+        human_advantage = [
+            "Relationship building and trust",
+            "Handling ambiguous, cross-functional decisions",
+            f"Domain knowledge of {job_title} operations"
+        ]
+
+        automation_vulnerable = [
+            f"Routine {highlighted_skills[0].lower()} tasks",
+            "Status reporting and documentation",
+            "Data collection and consolidation"
+        ]
+
+        automation_resistant = [
+            "Human-centered collaboration",
+            "Strategic prioritization",
+            "Ethical and compliance oversight"
+        ]
+
+        compatibility = round(max(35.0, min(92.0, 105.0 - score)), 1)
+
+        return {
+            "ai_displacement_risk": {
+                "score": round(score, 1),
+                "level": level,
+                "velocity": velocity,
+                "augmentation_potential": augmentation,
+                "reasoning": reasoning,
+            },
+            "compatibility_score": compatibility,
+            "human_advantage_factors": human_advantage,
+            "automation_vulnerable_tasks": automation_vulnerable,
+            "automation_resistant_tasks": automation_resistant,
+        }
+
+    def _generate_fallback_skill_insights(
+        self,
+        job_title: str,
+        skills: List[str],
+        years_experience: Optional[int]
+    ) -> Dict[str, Any]:
+        """Generate skill insights when Gemini is offline."""
+
+        normalized_skills = skills[:5] or [f"{job_title} fundamentals"]
+        lead_skill = normalized_skills[0]
+
+        transition_pathways = [
+            {
+                "role": f"Senior {job_title}",
+                "ease": 74.0,
+                "required_skills": self._unique([lead_skill, "Leadership", "AI collaboration"])[:3],
+                "estimated_training_time": "6-12 months",
+                "salary_potential": "+$15k",
+                "demand_trend": "Growing",
+            },
+            {
+                "role": f"{job_title} Consultant",
+                "ease": 61.0,
+                "required_skills": self._unique([lead_skill, "Stakeholder management", "Strategy"])[:3],
+                "estimated_training_time": "9-15 months",
+                "salary_potential": "+$20k",
+                "demand_trend": "Stable",
+            },
+        ]
+
+        skill_gaps = [
+            f"Advanced {lead_skill}",
+            "AI collaboration workflows",
+            "Strategic communication",
+        ]
+
+        recommended_training = [
+            {
+                "title": f"{lead_skill} Deep Dive",
+                "provider": "NextAI Academy",
+                "url": f"https://www.coursera.org/search?query={lead_skill.replace(' ', '%20')}",
+                "duration": "4-6 weeks",
+                "skill_covered": lead_skill,
+                "cost": "Varies",
+                "rating": 4.6,
+            },
+            {
+                "title": "AI-Augmented Workflow Design",
+                "provider": "NextAI Academy",
+                "url": "https://www.coursera.org/search?query=ai%20workflow",
+                "duration": "3-4 weeks",
+                "skill_covered": "AI collaboration workflows",
+                "cost": "Free to audit",
+                "rating": 4.7,
+            },
+        ]
+
+        transferable = [
+            {
+                "skill": lead_skill,
+                "confidence": 0.72,
+                "target_roles": [f"Senior {job_title}", f"{job_title} Lead"],
+                "reasoning": f"{lead_skill} maps well to advanced {job_title} responsibilities and adjacent advisory roles.",
+                "source_skills": normalized_skills[:3],
+            }
+        ]
+
+        skill_gaps_for_growth = [
+            {
+                "skill": gap,
+                "priority": "High" if idx == 0 else "Medium",
+                "why_important": "Supports progression into higher-impact roles",
+                "estimated_learning_time": "6-8 weeks" if idx == 0 else "3-4 weeks",
+                "market_demand": "High",
+                "learn_difficulty": "Moderate" if idx == 0 else "Easy",
+            }
+            for idx, gap in enumerate(skill_gaps)
+        ]
+
+        return {
+            "transition_pathways": transition_pathways,
+            "skill_gaps": skill_gaps,
+            "recommended_training": recommended_training,
+            "transferable_to": transferable,
+            "hidden_skills": [f"Implicit expertise in {lead_skill}", "Stakeholder empathy"],
+            "skill_gaps_for_growth": skill_gaps_for_growth,
+            "skill_strength_score": {
+                "overall_score": 72.0,
+                "interpretation": "Core strengths established with clear upskilling opportunities",
+            },
+        }
+
+    @staticmethod
+    def _unique(values: Iterable[str]) -> List[str]:
+        """Return unique values preserving order."""
+
+        seen: set[str] = set()
+        result: List[str] = []
+        for value in values:
+            if not value:
+                continue
+            if value not in seen:
+                seen.add(value)
+                result.append(value)
+        return result
 
     def _generate_fallback_roadmap(self, job_title: str, timeline: str) -> Dict[str, Any]:
         """Fallback roadmap if Gemini fails"""
