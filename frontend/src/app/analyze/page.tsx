@@ -10,23 +10,16 @@ import MicroWin from '@/components/MicroWins';
 import SocialShare from '@/components/SocialShare';
 import PremiumContentOverlay from '@/components/PremiumContentOverlay';
 import SignupModal from '@/components/SignupModal';
-import { RiskCard, CompatibilityCard, SkillGapsCard, NextStepsCard, CoachQuestionsCard } from '@/components/analysis/AnalysisCards';
-
-interface AnalysisResult {
-  risk?: {
-    score: number;
-    level: string;
-  };
-  compatibility?: {
-    score: number;
-    highlights: string[];
-  };
-  gaps?: string[];
-  next_steps?: string[];
-  coach_questions?: string[];
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  [key: string]: any; // Allow additional properties from API
-}
+import {
+  RiskCard,
+  CompatibilityCard,
+  SkillGapsCard,
+  NextStepsCard,
+  CoachQuestionsCard,
+  HumanAdvantageCard,
+  BenchmarksCard,
+} from '@/components/analysis/AnalysisCards';
+import type { AnalysisResult } from '@/types/intelligence';
 
 export default function AnalyzePage() {
   const searchParams = useSearchParams();
@@ -151,14 +144,15 @@ export default function AnalyzePage() {
         {/* Multi-Agent Analysis Cards */}
         <div className="grid md:grid-cols-2 gap-6 mb-8">
           {/* Free Preview: Risk Card (always visible) */}
-          <RiskCard risk={analysis?.risk} />
+          <RiskCard risk={analysis?.risk || analysis?.ai_displacement_risk} />
           
           {/* Gated: Compatibility Card */}
           <div className="relative">
             <div className={!hasPremiumAccess ? 'blur-sm pointer-events-none' : ''}>
-              <CompatibilityCard 
-                score={analysis?.compatibility?.score || 0} 
-                highlights={analysis?.compatibility?.highlights || []} 
+              <CompatibilityCard
+                compatibility={analysis?.compatibility}
+                fallbackScore={analysis?.compatibility_score ?? 0}
+                fallbackHighlights={analysis?.human_advantage_factors || []}
               />
             </div>
             {!hasPremiumAccess && (
@@ -168,6 +162,21 @@ export default function AnalyzePage() {
               />
             )}
           </div>
+
+          {/* Gated: Human Advantage Factors */}
+          {analysis?.human_advantage_factors && analysis.human_advantage_factors.length > 0 && (
+            <div className="md:col-span-2 relative">
+              <div className={!hasPremiumAccess ? 'blur-sm pointer-events-none' : ''}>
+                <HumanAdvantageCard factors={analysis.human_advantage_factors} />
+              </div>
+              {!hasPremiumAccess && (
+                <PremiumContentOverlay
+                  onUnlock={() => setShowSignupModal(true)}
+                  feature="Human Advantage Insights"
+                />
+              )}
+            </div>
+          )}
           
           {/* Gated: Skill Gaps Card */}
           <div className="md:col-span-2 relative">
@@ -194,6 +203,21 @@ export default function AnalyzePage() {
               />
             )}
           </div>
+
+          {/* Gated: Industry Benchmarks */}
+          {analysis?.industry_benchmarks && (
+            <div className="md:col-span-2 relative">
+              <div className={!hasPremiumAccess ? 'blur-sm pointer-events-none' : ''}>
+                <BenchmarksCard benchmarks={analysis.industry_benchmarks} />
+              </div>
+              {!hasPremiumAccess && (
+                <PremiumContentOverlay
+                  onUnlock={() => setShowSignupModal(true)}
+                  feature="Industry Benchmarks"
+                />
+              )}
+            </div>
+          )}
           
           {/* Gated: Coach Questions Card */}
           {analysis?.coach_questions && analysis.coach_questions.length > 0 && (

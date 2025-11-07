@@ -6,12 +6,206 @@ import { OnboardingData } from '@/types/onboarding';
 import { UserProfile } from '@/types/user';
 import { Job, JobApplication, JobSearchQuery, PaginatedResponse } from '@/types/jobs';
 import { ResumeData, ResumeFeedback, ResumeProfile } from '@/types/resume';
-import { AnalysisResult, CareerPath, CareerPathRequest, Goal, GoalRequest, Trajectory } from '@/types/intelligence';
+import type {
+  AnalysisRequestPayload,
+  AnalysisResult,
+  CareerPath,
+  CareerPathRequest,
+  Goal,
+  GoalRequest,
+  Trajectory,
+} from '@/types/intelligence';
 import { Conversation, Message } from '@/types/coach';
-import { InterviewSession, SessionFeedback } from '@/types/interviewer';
+import { InterviewSession } from '@/types/interviewer';
 
 const PROD_BACKEND_URL = 'https://next-career-backend-795538981829.us-central1.run.app';
 const LEGACY_BACKEND_FRAGMENT = 'next-backend-795538981829.us-central1.run.app';
+
+const isRecord = (value: unknown): value is Record<string, unknown> =>
+  typeof value === 'object' && value !== null;
+
+const ensureArray = <T = unknown>(value: T | T[] | undefined | null): T[] => {
+  if (value === undefined || value === null) {
+    return [];
+  }
+
+  return Array.isArray(value) ? value : [value];
+};
+
+const getString = (record: Record<string, unknown>, key: string): string | undefined => {
+  const value = record[key];
+  return typeof value === 'string' ? value : undefined;
+};
+
+const getNumber = (record: Record<string, unknown>, key: string): number | undefined => {
+  const value = record[key];
+  return typeof value === 'number' ? value : undefined;
+};
+
+const getValue = <T = unknown>(record: Record<string, unknown>, key: string): T | undefined => {
+  return record[key] as T | undefined;
+};
+
+const toReadableStrings = (entries: unknown): string[] =>
+  ensureArray(entries)
+    .map((item) => {
+      if (item === null || item === undefined) {
+        return '';
+      }
+
+      if (typeof item === 'string') {
+        return item.trim();
+      }
+
+      if (typeof item === 'number') {
+        return item.toString();
+      }
+
+      if (isRecord(item)) {
+        if (typeof item.name === 'string' && item.importance) {
+          return `${item.name} (importance ${item.importance})`;
+        }
+
+        if (typeof item.name === 'string' && item.growth) {
+          return `${item.name} (${item.growth})`;
+        }
+
+        if (typeof item.title === 'string' && item.description) {
+          return `${item.title}: ${item.description}`;
+        }
+
+        const joined = Object.values(item)
+          .filter((value) => value !== null && value !== undefined && value !== '')
+          .map((value) =>
+            typeof value === 'string' || typeof value === 'number'
+              ? value.toString()
+              : ''
+          )
+          .filter(Boolean)
+          .join(' • ');
+
+        return joined || JSON.stringify(item);
+      }
+
+      return String(item);
+    })
+    .filter(Boolean);
+
+const uniqueStrings = (values: string[]): string[] => Array.from(new Set(values));
+
+type IndustryBenchmarks = Record<string, unknown>;
+
+const normalizeAnalysisResult = (raw: Record<string, unknown>): AnalysisResult => {
+  const normalized: AnalysisResult = { ...raw } as AnalysisResult;
+
+  const riskCandidate = (raw['risk'] ?? raw['ai_displacement_risk']) as
+    | Record<string, unknown>
+    | undefined;
+
+  if (isRecord(riskCandidate)) {
+    normalized.risk = {
+      level: getString(riskCandidate, 'level') ?? 'Unknown',
+      score: getNumber(riskCandidate, 'score') ?? getNumber(riskCandidate, 'value'),
+      justification: getString(riskCandidate, 'justification') ?? getString(riskCandidate, 'reasoning'),
+      velocity: getString(riskCandidate, 'velocity'),
+      augmentation_potential: getString(riskCandidate, 'augmentation_potential'),
+    };
+  }
+
+  const compatibilityCandidate = raw['compatibility'] as Record<string, unknown> | number | undefined;
+  const compatibilityHighlights = toReadableStrings(
+    isRecord(compatibilityCandidate) ? getValue(compatibilityCandidate, 'highlights') : undefined
+  );
+
+  const metadataCandidate = (() => {
+    const value = raw['metadata'] ?? raw['industry_benchmarks'];
+    return isRecord(value) ? value : undefined;
+  })();
+
+  const benchmarksRecord =
+    metadataCandidate && isRecord(getValue(metadataCandidate, 'benchmarks'))
+      ? (getValue(metadataCandidate, 'benchmarks') as Record<string, unknown>)
+      : undefined;
+
+  const skillDemandRecord =
+    benchmarksRecord && isRecord(getValue(benchmarksRecord, 'skill_demand'))
+      ? (getValue(benchmarksRecord, 'skill_demand') as Record<string, unknown>)
+      : undefined;
+
+  const benchmarkHighlights = skillDemandRecord
+    ? toReadableStrings(
+        getValue(skillDemandRecord, 'top_skills') ?? getValue(skillDemandRecord, 'highlights')
+      )
+    : [];
+
+  const humanAdvantageHighlights = toReadableStrings(raw['human_advantage_factors']);
+
+  const allHighlights = uniqueStrings([
+    ...compatibilityHighlights,
+    ...humanAdvantageHighlights,
+    ...benchmarkHighlights,
+  ]);
+
+  const compatibilityScore = (() => {
+    if (isRecord(compatibilityCandidate)) {
+      const score = getNumber(compatibilityCandidate, 'score');
+      if (typeof score === 'number') {
+        return score;
+      }
+    }
+
+    if (typeof raw['compatibility_score'] === 'number') {
+      return raw['compatibility_score'] as number;
+    }
+
+    if (typeof compatibilityCandidate === 'number') {
+      return compatibilityCandidate;
+    }
+
+    return 0;
+  })();
+
+  normalized.compatibility = {
+    score: compatibilityScore,
+    highlights: allHighlights.length ? allHighlights : undefined,
+  };
+
+  const gaps = uniqueStrings([
+    ...toReadableStrings(raw['gaps']),
+    ...toReadableStrings(raw['skill_gaps']),
+  ]);
+  if (gaps.length) {
+    normalized.gaps = gaps;
+  }
+
+  const nextSteps = uniqueStrings([
+    ...toReadableStrings(raw['next_steps']),
+    ...toReadableStrings(raw['recommended_training']),
+  ]);
+  if (nextSteps.length) {
+    normalized.next_steps = nextSteps;
+  }
+
+  const coachQuestions = uniqueStrings([
+    ...toReadableStrings(raw['coach_questions']),
+    ...toReadableStrings(raw['transition_pathways']),
+  ]);
+  if (coachQuestions.length) {
+    normalized.coach_questions = coachQuestions;
+  }
+
+  if (metadataCandidate) {
+    if (benchmarksRecord) {
+      normalized.industry_benchmarks = benchmarksRecord as IndustryBenchmarks;
+    } else {
+      normalized.industry_benchmarks = metadataCandidate as IndustryBenchmarks;
+    }
+  } else if (isRecord(raw['industry_benchmarks'])) {
+    normalized.industry_benchmarks = raw['industry_benchmarks'] as IndustryBenchmarks;
+  }
+
+  return normalized;
+};
 
 const resolveApiBaseUrl = () => {
   const envValue = process.env.NEXT_PUBLIC_API_URL?.trim();
@@ -80,7 +274,7 @@ class APIClient {
   // ============================================
   // Health Check
   // ============================================
-  async healthCheck(): Promise<any> {
+  async healthCheck(): Promise<unknown> {
     const response = await this.client.get('/health');
     return response.data;
   }
@@ -110,9 +304,9 @@ class APIClient {
   // ============================================
   // Career Intelligence & Analysis
   // ============================================
-  async analyzeCareer(data: { job_title: string; skills: string[]; location: string; }): Promise<AnalysisResult> {
-    const response = await this.client.post('/analyze', data);
-    return response.data;
+  async analyzeCareer(payload: AnalysisRequestPayload): Promise<AnalysisResult> {
+    const response = await this.client.post('/analyze', payload);
+    return normalizeAnalysisResult(response.data as Record<string, unknown>);
   }
 
   async generateCareerTrajectory(data: { job_title: string; years_experience: number; }): Promise<Trajectory> {
@@ -138,7 +332,7 @@ class APIClient {
     return response.data;
   }
 
-  async applyForJob(jobId: string, applicationData: any): Promise<JobApplication> {
+  async applyForJob(jobId: string, applicationData: Record<string, unknown>): Promise<JobApplication> {
     const response = await this.client.post(`/jobs/${jobId}/apply`, applicationData);
     return response.data;
   }
@@ -246,7 +440,7 @@ class APIClient {
     return response.data;
   }
 
-  async submitInterviewResponse(sessionId: string, response: any): Promise<any> {
+  async submitInterviewResponse(sessionId: string, response: Record<string, unknown>): Promise<unknown> {
     const res = await this.client.post(`/interviewer/sessions/${sessionId}/responses`, response);
     return res.data;
   }
@@ -254,22 +448,31 @@ class APIClient {
   // ============================================
   // Authentication (delegates to Firebase)
   // ============================================
-  async requestPasswordReset(data: { email: string }): Promise<any> {
+  async requestPasswordReset(data: { email: string }): Promise<never> {
+    void data;
     // This should be handled by Firebase, but for API compatibility
     throw new Error('Use Firebase resetPassword instead');
   }
 
-  async resetPassword(data: { email: string; reset_code: string; new_password: string; confirm_password: string }): Promise<any> {
+  async resetPassword(payload: {
+    email: string;
+    reset_code: string;
+    new_password: string;
+    confirm_password: string;
+  }): Promise<never> {
+    void payload;
     // This should be handled by Firebase, but for API compatibility
     throw new Error('Use Firebase confirmPasswordReset instead');
   }
 
-  async verifyEmail(data: { email: string; verification_code: string }): Promise<any> {
+  async verifyEmail(data: { email: string; verification_code: string }): Promise<never> {
+    void data;
     // This should be handled by Firebase, but for API compatibility
     throw new Error('Use Firebase email verification instead');
   }
 
-  async resendVerificationCode(data: { email: string }): Promise<any> {
+  async resendVerificationCode(data: { email: string }): Promise<never> {
+    void data;
     // This should be handled by Firebase, but for API compatibility
     throw new Error('Use Firebase sendEmailVerification instead');
   }
@@ -277,22 +480,22 @@ class APIClient {
   // ============================================
   // Subscription Management
   // ============================================
-  async getSubscriptionStatus(userId: string): Promise<any> {
+  async getSubscriptionStatus(userId: string): Promise<unknown> {
     const response = await this.client.get(`/subscriptions/status/${userId}`);
     return response.data;
   }
 
-  async createSubscription(data: any): Promise<any> {
+  async createSubscription(data: Record<string, unknown>): Promise<unknown> {
     const response = await this.client.post('/subscriptions', data);
     return response.data;
   }
 
-  async cancelSubscription(subscriptionId: string): Promise<any> {
+  async cancelSubscription(subscriptionId: string): Promise<unknown> {
     const response = await this.client.delete(`/subscriptions/${subscriptionId}`);
     return response.data;
   }
 
-  async createPortalSession(): Promise<any> {
+  async createPortalSession(): Promise<unknown> {
     const response = await this.client.post('/subscriptions/portal');
     return response.data;
   }
