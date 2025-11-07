@@ -12,7 +12,10 @@ alembic==1.13.1
 # Supabase (PostgreSQL on GCP)
 supabase==2.10.0
 
-# Google Gemini AI (Replaces OpenAI)
+# Google Gemini AI (New SDK for gemini_analyzer.py)
+google-genai
+
+# Google Gemini AI (Old SDK - still used by other services)
 google-generativeai==0.8.3
 
 # HTTP clients
@@ -41,6 +44,7 @@ sentry-sdk==2.1.1
 email-validator==2.1.1
 phonenumbers==8.13.35
 numpy==1.26.4
+json-repair==0.52.4
 
 # Testing
 pytest==8.2.0

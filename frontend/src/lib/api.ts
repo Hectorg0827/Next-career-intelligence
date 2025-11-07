@@ -10,14 +10,29 @@ import { AnalysisResult, CareerPath, CareerPathRequest, Goal, GoalRequest, Traje
 import { Conversation, Message } from '@/types/coach';
 import { InterviewSession, SessionFeedback } from '@/types/interviewer';
 
+const PROD_BACKEND_URL = 'https://next-career-backend-795538981829.us-central1.run.app';
+const LEGACY_BACKEND_FRAGMENT = 'next-backend-795538981829.us-central1.run.app';
+
 const resolveApiBaseUrl = () => {
-  if (process.env.NEXT_PUBLIC_API_URL) {
-    return process.env.NEXT_PUBLIC_API_URL;
+  const envValue = process.env.NEXT_PUBLIC_API_URL?.trim();
+
+  if (envValue) {
+    const normalized = envValue.replace(/\/$/, '');
+
+    if (normalized.includes(LEGACY_BACKEND_FRAGMENT)) {
+      console.warn('Detected legacy Cloud Run host in NEXT_PUBLIC_API_URL. Falling back to next-career-backend service.');
+      return PROD_BACKEND_URL;
+    }
+
+    return normalized;
   }
 
-  // Use localhost only for local development; otherwise fall back to same-origin rewrites
   if (process.env.NODE_ENV === 'development') {
     return 'http://localhost:8000';
+  }
+
+  if (process.env.VERCEL === '1' || process.env.NODE_ENV === 'production') {
+    return PROD_BACKEND_URL;
   }
 
   return '';

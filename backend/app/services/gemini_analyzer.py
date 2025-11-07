@@ -7,14 +7,13 @@ import os
 from typing import Dict, List, Optional, Any
 import json
 from loguru import logger
-import google.generativeai as genai
+from google import genai
 from fastapi import HTTPException
+from json_repair import repair_json
 from app.core.config import settings
 
-# Configure AI Engine
+# Configure AI Engine with new SDK
 NEXTAI_API_KEY = os.getenv("GEMINI_API_KEY") or settings.GEMINI_API_KEY
-if NEXTAI_API_KEY:
-    genai.configure(api_key=NEXTAI_API_KEY)
 
 
 class GeminiAnalyzer:
@@ -25,20 +24,17 @@ class GeminiAnalyzer:
     """
     
     def __init__(self):
-        # Configure safety settings for career-focused content
-        safety_settings = {
-            genai.types.HarmCategory.HARM_CATEGORY_HATE_SPEECH: genai.types.HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE,
-            genai.types.HarmCategory.HARM_CATEGORY_HARASSMENT: genai.types.HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE,
-            genai.types.HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT: genai.types.HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE,
-            genai.types.HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT: genai.types.HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE,
-        }
+        # Initialize the new Gemini client
+        self.client = genai.Client(api_key=NEXTAI_API_KEY)
         
         # Use configurable model from settings
-        model_name = getattr(settings, 'GEMINI_MODEL', 'gemini-flash-latest')
-        self.model = genai.GenerativeModel(
-            model_name,
-            safety_settings=safety_settings
-        )
+        self.model_name = getattr(settings, 'GEMINI_MODEL', 'gemini-2.0-flash-exp')
+        
+        # Configure generation settings
+        self.generation_config = {
+            "response_mime_type": "application/json",
+            "temperature": 0.3
+        }
     
     def _extract_text(self, response) -> str:
         """Safely extract text content from Gemini response."""
@@ -84,6 +80,35 @@ class GeminiAnalyzer:
         text = re.sub(r'\s+', ' ', text)
         
         return text
+
+    def _parse_json_response(self, response: Any, context: str, raise_http_error: bool = False) -> Dict[str, Any]:
+        """Parse a Gemini response into JSON with automatic repair fallback."""
+        raw_text = self._extract_text(response)
+        if not raw_text:
+            raw_text = getattr(response, "text", "") or ""
+
+        cleaned_text = self._clean_json_response(raw_text)
+        try:
+            return json.loads(cleaned_text)
+        except json.JSONDecodeError as exc:
+            logger.warning(f"JSON decode error for {context}: {exc}")
+            try:
+                repaired_text = repair_json(raw_text)
+                repaired_clean = self._clean_json_response(repaired_text)
+                parsed = json.loads(repaired_clean)
+                logger.info(f"Recovered Gemini response via json-repair for {context}")
+                return parsed
+            except Exception as repair_exc:
+                snippet = raw_text[:500] if raw_text else "<empty response>"
+                logger.error(
+                    f"Failed to repair Gemini response for {context}: {repair_exc}. Snippet: {snippet}"
+                )
+                if raise_http_error:
+                    raise HTTPException(
+                        status_code=500,
+                        detail="NextAI analysis failed: Unable to parse response. Please try again."
+                    ) from repair_exc
+                raise
     
     async def analyze_with_prompts(
         self,
@@ -112,34 +137,20 @@ Return ONLY valid JSON matching the requested schema. No markdown, no explanatio
             # Apply additional safety settings if provided
             generation_config = {
                 "temperature": 0.3,  # Lower temperature for factual, structured output
-                "top_p": 0.95,
-                "top_k": 40,
-                "max_output_tokens": 4096,
+                "response_mime_type": "application/json"
             }
             
-            response = self.model.generate_content(
-                full_prompt,
-                generation_config=generation_config
+            response = self.client.models.generate_content(
+                model=self.model_name,
+                contents=full_prompt,
+                config=generation_config
             )
-            
-            # Parse JSON response
-            response_text = response.text.strip()
-            
-            # Remove markdown code blocks if present
-            if response_text.startswith("```json"):
-                response_text = response_text.replace("```json", "").replace("```", "").strip()
-            elif response_text.startswith("```"):
-                response_text = response_text.replace("```", "").strip()
-            
-            result = json.loads(response_text)
+
+            result = self._parse_json_response(response, "multi-prompt analysis")
             
             logger.info("Gemini multi-prompt analysis completed successfully")
             return {"parsed_data": result}
             
-        except json.JSONDecodeError as e:
-            logger.error(f"JSON parsing error in Gemini response: {e}")
-            logger.error(f"Response text: {response.text[:500]}")
-            raise ValueError(f"Invalid JSON response from AI: {str(e)}")
         except Exception as e:
             logger.error(f"Gemini multi-prompt analysis error: {e}")
             raise
@@ -187,21 +198,13 @@ Return valid JSON only:
 
 BE SPECIFIC TO THE JOB. Avoid generic phrases. Use concrete examples."""
 
-            response = self.model.generate_content(
-                prompt,
-                generation_config={
-                    "temperature": 0.3,
-                    "top_p": 0.9,
-                    "top_k": 40,
-                    "max_output_tokens": 2048,
-                    "response_mime_type": "application/json",
-                },
+            response = self.client.models.generate_content(
+                model=self.model_name,
+                contents=prompt,
+                config=self.generation_config
             )
-            
-            # Clean and parse the response
-            raw_text = self._extract_text(response)
-            cleaned_text = self._clean_json_response(raw_text)
-            result = json.loads(cleaned_text)
+
+            result = self._parse_json_response(response, f"displacement risk for {job_title}", raise_http_error=True)
             
             # Validate that we got real data, not defaults
             if result.get("ai_displacement_risk", {}).get("score", 50) == 50.0:
@@ -210,13 +213,6 @@ BE SPECIFIC TO THE JOB. Avoid generic phrases. Use concrete examples."""
             logger.info(f"✅ NextAI displacement analysis complete for {job_title}: {result.get('ai_displacement_risk', {}).get('score', 'N/A')}%")
             return result
             
-        except json.JSONDecodeError as e:
-            logger.error(f"JSON decode error in NextAI analysis: {e}")
-            logger.error(f"Response text: {response.text[:500] if 'response' in locals() else 'No response'}")
-            raise HTTPException(
-                status_code=500,
-                detail=f"NextAI analysis failed: Unable to parse response. Please try again."
-            )
         except Exception as e:
             logger.error(f"NextAI displacement analysis error: {e}")
             raise HTTPException(
@@ -244,21 +240,13 @@ JSON output:
     "skill_strength_score": {{"overall_score":75,"interpretation":"brief"}}
 }}"""
 
-            response = self.model.generate_content(
-                prompt,
-                generation_config={
-                    "temperature": 0.35,
-                    "top_p": 0.9,
-                    "top_k": 40,
-                    "max_output_tokens": 2048,
-                    "response_mime_type": "application/json",
-                },
+            response = self.client.models.generate_content(
+                model=self.model_name,
+                contents=prompt,
+                config=self.generation_config
             )
-            
-            # Clean and parse the response
-            raw_text = self._extract_text(response)
-            cleaned_text = self._clean_json_response(raw_text)
-            result = json.loads(cleaned_text)
+
+            result = self._parse_json_response(response, f"skill insights for {job_title}")
             
             logger.info(f"Gemini skill insights generated for {job_title}")
             return result
@@ -350,21 +338,13 @@ Make the roadmap realistic, AI-resilient, and location-appropriate.
 Return ONLY valid JSON.
 """
 
-            response = self.model.generate_content(
-                prompt,
-                generation_config={
-                    "temperature": 0.4,
-                    "top_p": 0.9,
-                    "top_k": 40,
-                    "max_output_tokens": 2048,
-                    "response_mime_type": "application/json",
-                },
+            response = self.client.models.generate_content(
+                model=self.model_name,
+                contents=prompt,
+                config=self.generation_config
             )
-            
-            # Clean and parse the response
-            raw_text = self._extract_text(response)
-            cleaned_text = self._clean_json_response(raw_text)
-            result = json.loads(cleaned_text)
+
+            result = self._parse_json_response(response, f"career roadmap for {job_title}")
             
             logger.info(f"Gemini roadmap generated for {job_title}")
             return result
@@ -399,11 +379,13 @@ JSON:
 
 Use {location} market data."""
 
-            response = self.model.generate_content(prompt)
-            
-            # Clean and parse the response
-            cleaned_text = self._clean_json_response(response.text)
-            result = json.loads(cleaned_text)
+            response = self.client.models.generate_content(
+                model=self.model_name,
+                contents=prompt,
+                config=self.generation_config
+            )
+
+            result = self._parse_json_response(response, f"industry benchmarks for {job_title}")
             
             logger.info(f"Gemini benchmarks generated for {job_title}")
             return result
