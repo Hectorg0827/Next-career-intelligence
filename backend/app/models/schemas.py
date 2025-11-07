@@ -73,6 +73,8 @@ class AnalysisResponse(BaseModel):
     ai_displacement_risk: AIDisplacementRisk
     compatibility_score: float = Field(..., ge=0, le=100)
     human_advantage_factors: List[str]
+    automation_vulnerable_tasks: List[str]
+    automation_resistant_tasks: List[str]
     transition_pathways: List[TransitionPathway]
     skill_gaps: List[str]
     recommended_training: List[TrainingResource]
