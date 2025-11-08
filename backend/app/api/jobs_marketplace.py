@@ -13,6 +13,7 @@ from app.db.supabase import get_supabase_client
 from app.services.job_matcher import job_matcher
 from app.services.gemini_analyzer import gemini_analyzer
 from app.services.prompts import get_prompt_set
+from app.services.job_seeder import job_seeder
 from app.core.auth import get_current_user, require_premium
 from app.core.cache import cache, cached
 
@@ -589,6 +590,60 @@ async def get_preferences(
     except Exception as e:
         logger.error(f"Get preferences error: {e}")
         raise HTTPException(500, str(e))
+
+
+@router.post("/seed")
+async def seed_jobs(
+    count: int = 50,
+    current_user: Dict = Depends(get_current_user)
+):
+    """
+    Seed the job marketplace with AI-generated job postings.
+    Requires authentication. Recommended for development/testing.
+    """
+    try:
+        # Optional: Add admin check here if needed
+        # if current_user.get('subscription_tier') != 'admin':
+        #     raise HTTPException(403, "Admin access required")
+        
+        logger.info(f"Seeding {count} jobs for user {current_user['user_id']}")
+        
+        job_ids = await job_seeder.seed_jobs(count=count)
+        
+        return {
+            "success": True,
+            "jobs_created": len(job_ids),
+            "job_ids": job_ids[:10],  # Return first 10 IDs
+            "message": f"Successfully seeded {len(job_ids)} jobs"
+        }
+        
+    except Exception as e:
+        logger.error(f"Seed jobs error: {e}")
+        raise HTTPException(500, f"Failed to seed jobs: {str(e)}")
+
+
+@router.delete("/seed")
+async def clear_seeded_jobs(
+    current_user: Dict = Depends(get_current_user)
+):
+    """
+    Clear all AI-seeded jobs from the marketplace.
+    Useful for resetting test data.
+    """
+    try:
+        logger.info(f"Clearing seeded jobs for user {current_user['user_id']}")
+        
+        deleted_count = await job_seeder.clear_seeded_jobs()
+        
+        return {
+            "success": True,
+            "jobs_deleted": deleted_count,
+            "message": f"Cleared {deleted_count} seeded jobs"
+        }
+        
+    except Exception as e:
+        logger.error(f"Clear seeded jobs error: {e}")
+        raise HTTPException(500, f"Failed to clear seeded jobs: {str(e)}")
 
 
 @router.get("/health")
