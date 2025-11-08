@@ -240,21 +240,6 @@ export default function AnalyzePage() {
               )}
             </div>
           )}
-          
-          {/* Gated: Coach Questions Card */}
-          {analysis?.coach_questions && analysis.coach_questions.length > 0 && (
-            <div className="md:col-span-2 relative">
-              <div className={!hasPremiumAccess ? 'blur-sm pointer-events-none' : ''}>
-                <CoachQuestionsCard questions={analysis.coach_questions} />
-              </div>
-              {!hasPremiumAccess && (
-                <PremiumContentOverlay 
-                  onUnlock={() => setShowSignupModal(true)} 
-                  feature="AI Coach Questions"
-                />
-              )}
-            </div>
-          )}
         </div>
 
         {/* Social Share Section */}
