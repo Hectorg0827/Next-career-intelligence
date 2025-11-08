@@ -35,7 +35,7 @@ async def generate_career_roadmap(
             skills=request.skills,
             location=request.location,
             years_experience=request.years_experience,
-            timeline=getattr(request, 'timeline', '5 years')
+            timeline=request.timeline or '5 years'
         )
 
         logger.info(f"✅ NextAI roadmap generated successfully for {request.job_title}")

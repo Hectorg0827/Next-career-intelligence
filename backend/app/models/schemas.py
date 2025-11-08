@@ -22,6 +22,7 @@ class AnalysisRequest(BaseModel):
     skills: List[str] = Field(default_factory=list, description="List of current skills")
     location: str = Field(..., description="Country or region")
     years_experience: Optional[int] = Field(None, ge=0, le=50, description="Years of experience")
+    timeline: Optional[str] = Field("5 years", description="Career roadmap timeline (e.g., '5 years')")
 
     @validator('skills', pre=True, always=True)
     def validate_skills(cls, v, values):

@@ -319,6 +319,11 @@ class APIClient {
     return response.data;
   }
 
+  async generateRoadmap(data: AnalysisRequestPayload): Promise<any> {
+    const response = await this.client.post('/roadmap', data);
+    return response.data;
+  }
+
   // ============================================
   // Jobs Marketplace
   // ============================================
@@ -566,7 +571,7 @@ export const coachChat = apiClient.coachChat.bind(apiClient);
 
 // Backward compatibility exports
 export const analyzeCareer = apiClient.analyzeCareer.bind(apiClient);
-export const generateCareerRoadmap = apiClient.generateCareerPaths.bind(apiClient); // Map to existing method
+export const generateCareerRoadmap = apiClient.generateRoadmap.bind(apiClient);
 // Export the apiClient instance as a named export (do not re-declare)
 export { apiClient };
 
