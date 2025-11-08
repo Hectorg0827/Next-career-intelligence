@@ -490,6 +490,11 @@ class APIClient {
     return response.data;
   }
 
+  async createCheckoutSession(data: { price_id: string; success_url: string; cancel_url: string }): Promise<{ url: string }> {
+    const response = await this.client.post('/subscriptions/create-checkout-session', data);
+    return response.data;
+  }
+
   async createSubscription(data: Record<string, unknown>): Promise<unknown> {
     const response = await this.client.post('/subscriptions', data);
     return response.data;
@@ -558,6 +563,7 @@ export const userApi = {
 
 export const subscriptionApi = {
   getSubscriptionStatus: apiClient.getSubscriptionStatus.bind(apiClient),
+  createCheckoutSession: apiClient.createCheckoutSession.bind(apiClient),
   createSubscription: apiClient.createSubscription.bind(apiClient),
   cancelSubscription: apiClient.cancelSubscription.bind(apiClient),
   createPortalSession: apiClient.createPortalSession.bind(apiClient),
