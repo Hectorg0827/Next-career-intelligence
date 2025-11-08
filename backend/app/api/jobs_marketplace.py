@@ -594,19 +594,14 @@ async def get_preferences(
 
 @router.post("/seed")
 async def seed_jobs(
-    count: int = 50,
-    current_user: Dict = Depends(get_current_user)
+    count: int = 50
 ):
     """
     Seed the job marketplace with AI-generated job postings.
-    Requires authentication. Recommended for development/testing.
+    Public endpoint for development/testing.
     """
     try:
-        # Optional: Add admin check here if needed
-        # if current_user.get('subscription_tier') != 'admin':
-        #     raise HTTPException(403, "Admin access required")
-        
-        logger.info(f"Seeding {count} jobs for user {current_user['user_id']}")
+        logger.info(f"Seeding {count} jobs")
         
         job_ids = await job_seeder.seed_jobs(count=count)
         
@@ -623,15 +618,13 @@ async def seed_jobs(
 
 
 @router.delete("/seed")
-async def clear_seeded_jobs(
-    current_user: Dict = Depends(get_current_user)
-):
+async def clear_seeded_jobs():
     """
     Clear all AI-seeded jobs from the marketplace.
-    Useful for resetting test data.
+    Public endpoint for development/testing.
     """
     try:
-        logger.info(f"Clearing seeded jobs for user {current_user['user_id']}")
+        logger.info(f"Clearing seeded jobs")
         
         deleted_count = await job_seeder.clear_seeded_jobs()
         
