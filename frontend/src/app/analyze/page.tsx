@@ -146,11 +146,14 @@ export default function AnalyzePage() {
           {/* Free Preview: Risk Card (always visible) */}
           <RiskCard risk={analysis?.risk || analysis?.ai_displacement_risk} />
           
-          {/* Free Preview: Compatibility Card (visible with preview) */}
+          {/* Free Preview: Compatibility Card (always visible) */}
           <CompatibilityCard
             compatibility={analysis?.compatibility}
             fallbackScore={analysis?.compatibility_score ?? 0}
-            fallbackHighlights={analysis?.human_advantage_factors?.slice(0, 2) || []}
+            fallbackHighlights={hasPremiumAccess 
+              ? (analysis?.human_advantage_factors || [])
+              : (analysis?.human_advantage_factors?.slice(0, 2) || [])
+            }
           />
 
           {/* Free Preview: Skill Gaps Card (show first 3 gaps) */}
@@ -185,17 +188,25 @@ export default function AnalyzePage() {
             )}
           </div>
 
-          {/* Premium: Human Advantage Factors (premium only) */}
-          {analysis?.human_advantage_factors && analysis.human_advantage_factors.length > 2 && (
-            <div className="md:col-span-2 relative">
-              <div className={!hasPremiumAccess ? 'blur-sm pointer-events-none' : ''}>
-                <HumanAdvantageCard factors={analysis.human_advantage_factors} />
-              </div>
-              {!hasPremiumAccess && (
-                <PremiumContentOverlay
-                  onUnlock={() => setShowSignupModal(true)}
-                  feature="Human Advantage Insights"
-                />
+          {/* Human Advantage Factors - Show preview for free users */}
+          {analysis?.human_advantage_factors && analysis.human_advantage_factors.length > 0 && (
+            <div className="md:col-span-2">
+              <HumanAdvantageCard 
+                factors={hasPremiumAccess 
+                  ? analysis.human_advantage_factors 
+                  : analysis.human_advantage_factors.slice(0, 2)
+                } 
+              />
+              {!hasPremiumAccess && analysis.human_advantage_factors.length > 2 && (
+                <div className="mt-4 text-center">
+                  <button
+                    onClick={() => setShowSignupModal(true)}
+                    className="px-6 py-3 bg-gradient-to-r from-gold-primary to-gold-accent hover:from-gold-accent hover:to-gold-hover text-white font-semibold rounded-xl transition-all shadow-lg hover:shadow-xl inline-flex items-center gap-2"
+                  >
+                    <Sparkles className="w-4 h-4" />
+                    Unlock {analysis.human_advantage_factors.length - 2} More Advantages
+                  </button>
+                </div>
               )}
             </div>
           )}
