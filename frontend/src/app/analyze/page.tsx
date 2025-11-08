@@ -146,25 +146,47 @@ export default function AnalyzePage() {
           {/* Free Preview: Risk Card (always visible) */}
           <RiskCard risk={analysis?.risk || analysis?.ai_displacement_risk} />
           
-          {/* Gated: Compatibility Card */}
-          <div className="relative">
-            <div className={!hasPremiumAccess ? 'blur-sm pointer-events-none' : ''}>
-              <CompatibilityCard
-                compatibility={analysis?.compatibility}
-                fallbackScore={analysis?.compatibility_score ?? 0}
-                fallbackHighlights={analysis?.human_advantage_factors || []}
-              />
-            </div>
-            {!hasPremiumAccess && (
-              <PremiumContentOverlay 
-                onUnlock={() => setShowSignupModal(true)} 
-                feature="Compatibility Analysis"
-              />
+          {/* Free Preview: Compatibility Card (visible with preview) */}
+          <CompatibilityCard
+            compatibility={analysis?.compatibility}
+            fallbackScore={analysis?.compatibility_score ?? 0}
+            fallbackHighlights={analysis?.human_advantage_factors?.slice(0, 2) || []}
+          />
+
+          {/* Free Preview: Skill Gaps Card (show first 3 gaps) */}
+          <div className="md:col-span-2">
+            <SkillGapsCard gaps={hasPremiumAccess ? (analysis?.gaps || []) : (analysis?.gaps || []).slice(0, 3)} />
+            {!hasPremiumAccess && (analysis?.gaps || []).length > 3 && (
+              <div className="mt-4 text-center">
+                <button
+                  onClick={() => setShowSignupModal(true)}
+                  className="px-6 py-3 bg-gradient-to-r from-gold-primary to-gold-accent hover:from-gold-accent hover:to-gold-hover text-white font-semibold rounded-xl transition-all shadow-lg hover:shadow-xl inline-flex items-center gap-2"
+                >
+                  <Sparkles className="w-4 h-4" />
+                  Unlock {(analysis?.gaps || []).length - 3} More Skill Gaps
+                </button>
+              </div>
+            )}
+          </div>
+          
+          {/* Free Preview: Next Steps Card (show first 3 steps) */}
+          <div className="md:col-span-2">
+            <NextStepsCard steps={hasPremiumAccess ? (analysis?.next_steps || []) : (analysis?.next_steps || []).slice(0, 3)} />
+            {!hasPremiumAccess && (analysis?.next_steps || []).length > 3 && (
+              <div className="mt-4 text-center">
+                <button
+                  onClick={() => setShowSignupModal(true)}
+                  className="px-6 py-3 bg-gradient-to-r from-gold-primary to-gold-accent hover:from-gold-accent hover:to-gold-hover text-white font-semibold rounded-xl transition-all shadow-lg hover:shadow-xl inline-flex items-center gap-2"
+                >
+                  <Sparkles className="w-4 h-4" />
+                  See Full Personalized Roadmap
+                </button>
+              </div>
             )}
           </div>
 
-          {/* Gated: Human Advantage Factors */}
-          {analysis?.human_advantage_factors && analysis.human_advantage_factors.length > 0 && (
+          {/* Premium: Human Advantage Factors (premium only) */}
+          {analysis?.human_advantage_factors && analysis.human_advantage_factors.length > 2 && (
             <div className="md:col-span-2 relative">
               <div className={!hasPremiumAccess ? 'blur-sm pointer-events-none' : ''}>
                 <HumanAdvantageCard factors={analysis.human_advantage_factors} />
@@ -178,33 +200,22 @@ export default function AnalyzePage() {
             </div>
           )}
           
-          {/* Gated: Skill Gaps Card */}
-          <div className="md:col-span-2 relative">
-            <div className={!hasPremiumAccess ? 'blur-sm pointer-events-none' : ''}>
-              <SkillGapsCard gaps={analysis?.gaps || []} />
+          {/* Premium: Coach Questions (premium only) */}
+          {analysis?.coach_questions && analysis.coach_questions.length > 0 && (
+            <div className="md:col-span-2 relative">
+              <div className={!hasPremiumAccess ? 'blur-sm pointer-events-none' : ''}>
+                <CoachQuestionsCard questions={analysis.coach_questions} />
+              </div>
+              {!hasPremiumAccess && (
+                <PremiumContentOverlay 
+                  onUnlock={() => setShowSignupModal(true)} 
+                  feature="AI Coach Questions"
+                />
+              )}
             </div>
-            {!hasPremiumAccess && (
-              <PremiumContentOverlay 
-                onUnlock={() => setShowSignupModal(true)} 
-                feature="Skill Gap Analysis"
-              />
-            )}
-          </div>
-          
-          {/* Gated: Next Steps Card */}
-          <div className="md:col-span-2 relative">
-            <div className={!hasPremiumAccess ? 'blur-sm pointer-events-none' : ''}>
-              <NextStepsCard steps={analysis?.next_steps || []} />
-            </div>
-            {!hasPremiumAccess && (
-              <PremiumContentOverlay 
-                onUnlock={() => setShowSignupModal(true)} 
-                feature="Career Roadmap"
-              />
-            )}
-          </div>
+          )}
 
-          {/* Gated: Industry Benchmarks */}
+          {/* Premium: Industry Benchmarks (premium only) */}
           {analysis?.industry_benchmarks && (
             <div className="md:col-span-2 relative">
               <div className={!hasPremiumAccess ? 'blur-sm pointer-events-none' : ''}>
