@@ -11,7 +11,7 @@ from loguru import logger
 import time
 from contextlib import asynccontextmanager
 
-from app.api import analyze, jobs, users, health, coach, interviewer, jobs_marketplace, subscriptions, roadmap, auth, onboarding, marketplace, resume_studio, match, elite_auth, health_advanced, career_health, rft
+from app.api import analyze, jobs, users, health, coach, interviewer, jobs_marketplace, subscriptions, roadmap, auth, onboarding, marketplace, resume_studio, match, elite_auth, health_advanced, career_health, rft, talent_graph
 try:
     from app.api import resume_studio
 except ImportError:
@@ -26,6 +26,7 @@ from app.core.rate_limiter import limiter, get_rate_limiter, rate_limit_exceeded
 from app.core.compression import CompressionMiddleware, RequestSizeLimitMiddleware
 from app.core.monitoring import init_sentry, capture_exception
 from app.core.scheduler import setup_scheduled_tasks, shutdown_scheduled_tasks, task_manager
+from app.core.neo4j_client import neo4j_client
 from slowapi.errors import RateLimitExceeded
 
 # Initialize database tables
@@ -59,6 +60,13 @@ async def lifespan(app: FastAPI):
         logger.error(f"❌ Supabase initialization failed: {e}")
         capture_exception(e, {"startup": {"service": "supabase"}})
     
+    # Initialize Neo4j Talent Graph
+    try:
+        await neo4j_client.connect()
+        logger.info("✅ Neo4j Talent Graph connected")
+    except Exception as e:
+        logger.warning(f"⚠️ Neo4j initialization failed: {e} - Talent Graph features will be disabled")
+
     # Initialize scheduled background tasks
     try:
         setup_scheduled_tasks()
@@ -81,13 +89,20 @@ async def lifespan(app: FastAPI):
     except Exception as e:
         logger.error(f"❌ Background tasks shutdown failed: {e}")
     
+    # Cleanup Neo4j connections
+    try:
+        await neo4j_client.close()
+        logger.info("✅ Neo4j connections closed")
+    except Exception as e:
+        logger.error(f"❌ Neo4j cleanup failed: {e}")
+
     # Cleanup Redis connections
     try:
         await cleanup_redis()
         logger.info("✅ Redis connections closed")
     except Exception as e:
         logger.error(f"❌ Redis cleanup failed: {e}")
-    
+
     logger.info("✅ Shutdown complete")
 
 
@@ -225,6 +240,9 @@ app.include_router(career_health.router, tags=["Career Health Score"])
 
 # RFT (Reinforcement Fine-Tuning) System
 app.include_router(rft.router, tags=["RFT Feedback"])
+
+# Talent Graph (Neo4j)
+app.include_router(talent_graph.router, tags=["Talent Graph - Neo4j"])
 
 
 # Performance monitoring endpoint
