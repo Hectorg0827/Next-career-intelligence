@@ -11,7 +11,7 @@ from loguru import logger
 import time
 from contextlib import asynccontextmanager
 
-from app.api import analyze, jobs, users, health, coach, interviewer, jobs_marketplace, subscriptions, roadmap, auth, onboarding, marketplace, resume_studio, match, elite_auth, health_advanced
+from app.api import analyze, jobs, users, health, coach, interviewer, jobs_marketplace, subscriptions, roadmap, auth, onboarding, marketplace, resume_studio, match, elite_auth, health_advanced, career_health, rft
 try:
     from app.api import resume_studio
 except ImportError:
@@ -219,6 +219,12 @@ app.include_router(jobs_marketplace.router, prefix="/api", tags=["Jobs Marketpla
 
 # Jobs Marketplace v2 (New Endpoints)
 app.include_router(marketplace.router, tags=["Job Marketplace - Search & Apply"])
+
+# Career Health Score
+app.include_router(career_health.router, tags=["Career Health Score"])
+
+# RFT (Reinforcement Fine-Tuning) System
+app.include_router(rft.router, tags=["RFT Feedback"])
 
 
 # Performance monitoring endpoint
