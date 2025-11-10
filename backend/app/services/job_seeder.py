@@ -172,16 +172,13 @@ Make it realistic and specific to the role."""
         
         job_ids = []
         
-        # First, ensure employers exist
-        employer_ids = await self._seed_employers()
-        
+        # Use fallback mode (no Gemini to avoid quota) and no employers table dependency
         for i in range(count):
             try:
                 # Random selections
                 category = random.choice(list(self.job_categories.keys()))
                 title = random.choice(self.job_categories[category])
-                employer_idx = random.randint(0, len(self.tech_companies) - 1)
-                company = self.tech_companies[employer_idx]
+                company = random.choice(self.tech_companies)
                 location = random.choice(self.locations)
                 
                 # Determine seniority from title
@@ -192,16 +189,19 @@ Make it realistic and specific to the role."""
                 else:
                     seniority = "mid"
                 
-                # Generate or use fallback description
-                job_data = await self.generate_job_description(title, company["name"], seniority)
+                # Use fallback job data (no AI)
+                job_data = self._get_fallback_description(title, seniority)
                 
                 # Determine location type
                 is_remote = location["city"] == "Remote" or random.random() < 0.3
                 location_type = "remote" if is_remote else ("hybrid" if random.random() < 0.4 else "onsite")
                 
-                # Build job record
+                # Calculate salary range
+                salary_min = job_data["salary_min"]
+                salary_max = job_data["salary_max"]
+                
+                # Build job record with ONLY fields that exist in schema
                 job_record = {
-                    "employer_id": employer_ids[employer_idx],
                     "title": title,
                     "seniority": seniority,
                     "description": job_data["description"],
@@ -213,17 +213,14 @@ Make it realistic and specific to the role."""
                     "location_city": location["city"] if not is_remote else None,
                     "location_state": location["state"] if not is_remote else None,
                     "location_country": location["country"],
-                    "salary_min": job_data["salary_min"],
-                    "salary_max": job_data["salary_max"],
+                    "salary_min": salary_min,
+                    "salary_max": salary_max,
                     "salary_currency": "USD",
                     "employment_type": "full_time",
                     "experience_years_min": job_data["experience_years_min"],
                     "experience_years_max": job_data["experience_years_max"],
                     "apply_url": f"https://careers.example.com/jobs/{i}",
-                    "source": "seeded",
-                    "status": "active",
-                    "is_spam": False,
-                    "posted_at": datetime.now() - timedelta(days=random.randint(0, 30))
+                    "source": "seeded"
                 }
                 
                 # Insert job
@@ -233,10 +230,6 @@ Make it realistic and specific to the role."""
                     job_id = response.data[0]['id']
                     job_ids.append(job_id)
                     logger.info(f"✅ Seeded job {i+1}/{count}: {title} at {company['name']}")
-                
-                # Rate limit to avoid overwhelming Gemini API
-                if i % 5 == 0:
-                    await asyncio.sleep(2)
                     
             except Exception as e:
                 logger.error(f"Failed to seed job {i+1}: {e}")
