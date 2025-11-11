@@ -421,25 +421,44 @@ async def create_checkout_session(
 @router.post("/webhook")
 async def stripe_webhook(request: Request):
     """
-    Handle Stripe webhook events (payment success, subscription updates, etc.)
+    Handle Stripe webhook events with signature verification
+
+    Security: Validates webhook signature to prevent spoofed events
     """
     try:
         payload = await request.body()
         sig_header = request.headers.get('stripe-signature')
-        
+
+        # Check webhook secret configuration
         if not settings.STRIPE_WEBHOOK_SECRET:
-            logger.warning("Stripe webhook secret not configured")
-            # Process without signature verification (development only)
+            # Production: Fail fast if webhook secret not configured
+            if settings.ENVIRONMENT == "production":
+                logger.error("❌ STRIPE_WEBHOOK_SECRET not configured in production")
+                raise HTTPException(
+                    status_code=503,
+                    detail="Webhook not configured"
+                )
+
+            # Development: Allow without signature verification with warning
+            logger.warning("⚠️ Stripe webhook processing without signature verification (DEV MODE ONLY)")
             event = stripe.Event.construct_from(
                 await request.json(), stripe.api_key
             )
         else:
+            # Verify webhook signature
             try:
                 event = stripe.Webhook.construct_event(
                     payload, sig_header, settings.STRIPE_WEBHOOK_SECRET
                 )
-            except stripe.error.SignatureVerificationError:
-                raise HTTPException(status_code=400, detail="Invalid signature")
+                logger.info(f"✅ Webhook signature verified: {event['type']}")
+            except ValueError as e:
+                # Invalid payload
+                logger.error(f"❌ Invalid webhook payload: {e}")
+                raise HTTPException(status_code=400, detail="Invalid payload")
+            except stripe.error.SignatureVerificationError as e:
+                # Invalid signature
+                logger.error(f"❌ Invalid webhook signature: {e}")
+                raise HTTPException(status_code=401, detail="Invalid signature")
         
         # Handle the event
         if event['type'] == 'checkout.session.completed':

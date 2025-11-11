@@ -62,13 +62,23 @@ async def get_current_user(
     - email_verified: Boolean
     - firebase_token: Original token
     """
-    # Development mode - allow bypass if Firebase not configured
+    # Check if Firebase is initialized
     if _firebase_app is None:
-        logger.warning("⚠️ Auth bypass - Firebase not configured (ENTERPRISE MODE)")
+        # Production: Fail fast if Firebase unavailable
+        from app.core.config import settings
+        if settings.ENVIRONMENT == "production":
+            logger.error("❌ Firebase not initialized in production")
+            raise HTTPException(
+                status_code=503,
+                detail="Authentication service unavailable"
+            )
+
+        # Development: Allow bypass with warning
+        logger.warning("⚠️ Auth bypass - Firebase not configured (DEV MODE ONLY)")
         return {
-            "user_id": "enterprise_test_user",
-            "email": "enterprise@next-career.com",
-            "name": "Enterprise Test User",
+            "user_id": "dev_test_user",
+            "email": "dev@next-career.com",
+            "name": "Development Test User",
             "email_verified": True,
             "dev_mode": True,
             "subscription_tier": "enterprise",

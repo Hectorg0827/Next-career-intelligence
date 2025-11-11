@@ -8,12 +8,19 @@ from pydantic import BaseModel, Field, EmailStr, validator
 from typing import Optional
 from datetime import datetime, timedelta
 import secrets
-import hashlib
 from loguru import logger
 
 # Import database and email services
 from app.services.supabase_client import get_db_client
 from app.services.email_service import get_email_service
+
+# Import security functions (bcrypt, JWT)
+from app.core.security_fixes import (
+    hash_password_secure,
+    verify_password_secure,
+    generate_jwt_tokens,
+    verify_jwt_token
+)
 
 router = APIRouter(prefix="/api/auth", tags=["authentication"])
 
@@ -90,21 +97,13 @@ class EmailVerificationResponse(BaseModel):
 # ==================== Helper Functions ====================
 
 def hash_password(password: str) -> str:
-    """Hash password using SHA256 (in production, use bcrypt)"""
-    # TODO: Replace with bcrypt.hashpw() for production
-    salt = secrets.token_hex(16)
-    pwd_hash = hashlib.sha256((password + salt).encode()).hexdigest()
-    return f"{salt}${pwd_hash}"
+    """Hash password using bcrypt (12 rounds)"""
+    return hash_password_secure(password)
 
 
 def verify_password(password: str, hashed: str) -> bool:
-    """Verify password against hash"""
-    # TODO: Replace with bcrypt.checkpw() for production
-    try:
-        salt, pwd_hash = hashed.split('$')
-        return hashlib.sha256((password + salt).encode()).hexdigest() == pwd_hash
-    except:
-        return False
+    """Verify password against bcrypt hash"""
+    return verify_password_secure(password, hashed)
 
 
 def generate_verification_code() -> str:
@@ -117,19 +116,14 @@ def generate_reset_code() -> str:
     return secrets.token_urlsafe(32)
 
 
-def generate_tokens(user_id: str) -> dict:
+def generate_tokens(user_id: str, email: str = "") -> dict:
     """Generate JWT access and refresh tokens"""
-    # TODO: Implement JWT token generation
-    # This is a placeholder - implement with python-jose
-    access_token = secrets.token_urlsafe(64)
-    refresh_token = secrets.token_urlsafe(64)
-    
-    return {
-        'access_token': access_token,
-        'refresh_token': refresh_token,
-        'expires_in': 3600,  # 1 hour
-        'token_type': 'bearer'
-    }
+    from app.core.config import settings
+    return generate_jwt_tokens(
+        user_id=user_id,
+        email=email,
+        secret_key=settings.SECRET_KEY
+    )
 
 
 async def send_verification_email(email: str, full_name: str, verification_code: str, background_tasks: BackgroundTasks):
@@ -280,8 +274,8 @@ async def login(request: LoginRequest):
             )
         
         # Generate tokens
-        tokens = generate_tokens(user_id=user['id'])
-        
+        tokens = generate_tokens(user_id=user['id'], email=request.email)
+
         logger.info(f"✅ Login successful: {request.email}")
         
         return AuthResponse(
