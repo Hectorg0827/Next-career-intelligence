@@ -16,7 +16,7 @@ from datetime import timedelta
 _redis_client = None
 
 def get_redis_client() -> Optional[redis.Redis]:
-    """Get Redis client singleton"""
+    """Get Redis client singleton with production-ready configuration"""
     global _redis_client
 
     if _redis_client is not None:
@@ -24,16 +24,39 @@ def get_redis_client() -> Optional[redis.Redis]:
 
     redis_url = os.getenv("REDIS_URL", "redis://localhost:6379/0")
 
+    # Production configuration
+    max_connections = int(os.getenv("REDIS_MAX_CONNECTIONS", "50"))
+    socket_timeout = int(os.getenv("REDIS_SOCKET_TIMEOUT", "5"))
+    socket_connect_timeout = int(os.getenv("REDIS_SOCKET_CONNECT_TIMEOUT", "5"))
+    cache_enabled = os.getenv("CACHE_ENABLED", "true").lower() == "true"
+
+    if not cache_enabled:
+        logger.info("⚠️ Redis caching disabled by CACHE_ENABLED=false")
+        return None
+
     try:
-        _redis_client = redis.from_url(
+        # Create connection pool for better performance
+        pool = redis.ConnectionPool.from_url(
             redis_url,
+            max_connections=max_connections,
+            socket_connect_timeout=socket_connect_timeout,
+            socket_timeout=socket_timeout,
             decode_responses=True,
-            socket_connect_timeout=5,
-            socket_timeout=5
+            # Enable SSL/TLS for production (Upstash uses rediss://)
+            ssl_cert_reqs=None if redis_url.startswith("rediss://") else None,
+            retry_on_timeout=True,
+            health_check_interval=30  # Check connection health every 30s
         )
+
+        _redis_client = redis.Redis(connection_pool=pool)
+
         # Test connection
         _redis_client.ping()
-        logger.info(f"✅ Redis connected: {redis_url}")
+
+        # Log sanitized connection info (hide password)
+        safe_url = redis_url.split("@")[-1] if "@" in redis_url else redis_url
+        logger.info(f"✅ Redis connected: {safe_url} (pool_size={max_connections})")
+
         return _redis_client
     except Exception as e:
         logger.warning(f"⚠️ Redis unavailable: {e} - caching disabled")
@@ -43,10 +66,10 @@ def get_redis_client() -> Optional[redis.Redis]:
 class Cache:
     """Cache management"""
 
-    # Cache TTLs (in seconds)
-    TTL_SHORT = 300  # 5 minutes
-    TTL_MEDIUM = 3600  # 1 hour
-    TTL_LONG = 86400  # 24 hours
+    # Cache TTLs (in seconds) - configurable via environment variables
+    TTL_SHORT = int(os.getenv("CACHE_SHORT_TTL", "300"))  # 5 minutes
+    TTL_MEDIUM = int(os.getenv("CACHE_DEFAULT_TTL", "3600"))  # 1 hour
+    TTL_LONG = int(os.getenv("CACHE_LONG_TTL", "86400"))  # 24 hours
 
     @staticmethod
     def _make_key(namespace: str, key: str) -> str:
