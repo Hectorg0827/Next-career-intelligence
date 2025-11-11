@@ -13,7 +13,7 @@ from app.core.neo4j_client import neo4j_client
 from app.core.auth import get_current_user
 from app.db.supabase import get_supabase_client
 from loguru import logger
-from typing import List, Optional
+from typing import List, Optional, Dict
 
 router = APIRouter(prefix="/api/talent-graph", tags=["talent_graph"])
 

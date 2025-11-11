@@ -501,6 +501,7 @@ class SupabaseClient:
 
 # Create singleton instance
 db_client = None
+supabase_client = None  # Alias for compatibility
 
 
 def get_db_client() -> SupabaseClient:
@@ -510,7 +511,13 @@ def get_db_client() -> SupabaseClient:
     Returns:
         SupabaseClient instance
     """
-    global db_client
+    global db_client, supabase_client
     if db_client is None:
         db_client = SupabaseClient()
+        supabase_client = db_client  # Keep alias in sync
     return db_client
+
+
+def get_supabase() -> SupabaseClient:
+    """Alias for get_db_client for compatibility"""
+    return get_db_client()
