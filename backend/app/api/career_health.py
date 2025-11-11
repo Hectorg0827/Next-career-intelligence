@@ -6,7 +6,7 @@ Endpoints for calculating and retrieving Career Health Scores
 
 from fastapi import APIRouter, Depends, HTTPException
 from app.services.career_health_score import chs_calculator, CareerHealthScore
-from app.services.auth import get_current_user
+from app.core.auth import get_current_user
 from app.db.supabase import get_supabase_client
 from loguru import logger
 from datetime import datetime, timedelta

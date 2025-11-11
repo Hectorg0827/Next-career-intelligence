@@ -8,7 +8,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel
 from typing import Optional, Dict, List
 from app.db.supabase import get_supabase_client
-from app.services.auth import get_current_user
+from app.core.auth import get_current_user
 from loguru import logger
 from datetime import datetime
 import json
