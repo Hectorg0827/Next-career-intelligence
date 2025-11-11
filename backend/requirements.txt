@@ -84,3 +84,7 @@ hiredis==2.3.2  # C parser for Redis (faster)
 
 # Background task scheduling
 APScheduler==3.10.4
+
+# Two-Factor Authentication
+pyotp==2.9.0  # TOTP implementation
+qrcode[pil]==7.4.2  # QR code generation
