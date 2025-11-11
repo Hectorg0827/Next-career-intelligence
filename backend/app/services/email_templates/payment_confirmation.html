@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif; margin: 0; padding: 0; background-color: #f4f4f7; }
+        .container { max-width: 600px; margin: 20px auto; background: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+        .header { background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: #fff; padding: 40px 30px; text-align: center; }
+        .header h1 { margin: 0 0 10px 0; font-size: 28px; }
+        .header p { margin: 0; font-size: 16px; opacity: 0.95; }
+        .content { padding: 40px 30px; color: #333; line-height: 1.6; }
+        .content p { margin: 0 0 16px 0; font-size: 15px; }
+        .content h2 { margin: 30px 0 20px 0; font-size: 22px; }
+        .invoice-box { background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 6px; padding: 20px; margin: 20px 0; }
+        .invoice-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #e5e7eb; }
+        .invoice-row:last-child { border-bottom: none; font-weight: 600; font-size: 18px; color: #10b981; }
+        .invoice-label { color: #6b7280; }
+        .invoice-value { font-weight: 500; }
+        .button { display: inline-block; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: #fff !important; padding: 14px 32px; text-decoration: none; border-radius: 6px; font-weight: 600; margin: 20px 0; }
+        .button-container { text-align: center; margin: 30px 0; }
+        .features { background: #e8f5e9; border-left: 4px solid #10b981; padding: 16px 20px; margin: 20px 0; border-radius: 4px; }
+        .features ul { margin: 10px 0; padding-left: 20px; }
+        .features li { margin: 8px 0; }
+        .footer { background: #2d3748; color: #a0aec0; padding: 30px; text-align: center; font-size: 13px; }
+        .footer p { margin: 0 0 10px 0; }
+        .footer a { color: #667eea; text-decoration: none; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Payment Successful! ✅</h1>
+            <p>Thank you for your subscription</p>
+        </div>
+
+        <div class="content">
+            <p>Hi {user_name},</p>
+
+            <p>We've successfully processed your payment for <strong>{plan_name}</strong>. Your subscription is now active!</p>
+
+            <h2>📋 Payment Summary</h2>
+
+            <div class="invoice-box">
+                <div class="invoice-row">
+                    <span class="invoice-label">Subscription Plan:</span>
+                    <span class="invoice-value">{plan_name}</span>
+                </div>
+                <div class="invoice-row">
+                    <span class="invoice-label">Billing Period:</span>
+                    <span class="invoice-value">{billing_period}</span>
+                </div>
+                <div class="invoice-row">
+                    <span class="invoice-label">Payment Method:</span>
+                    <span class="invoice-value">Card ending in {card_last4}</span>
+                </div>
+                <div class="invoice-row">
+                    <span class="invoice-label">Transaction ID:</span>
+                    <span class="invoice-value">{transaction_id}</span>
+                </div>
+                <div class="invoice-row">
+                    <span class="invoice-label">Payment Date:</span>
+                    <span class="invoice-value">{payment_date}</span>
+                </div>
+                <div class="invoice-row">
+                    <span class="invoice-label">Next Billing Date:</span>
+                    <span class="invoice-value">{next_billing_date}</span>
+                </div>
+                <div class="invoice-row">
+                    <span class="invoice-label">Total Amount:</span>
+                    <span class="invoice-value">${amount_paid} {currency}</span>
+                </div>
+            </div>
+
+            <div class="features">
+                <strong>🎉 You now have access to:</strong>
+                <ul>
+                    {features_list}
+                </ul>
+            </div>
+
+            <div class="button-container">
+                <a href="{dashboard_url}" class="button">Go to Dashboard</a>
+            </div>
+
+            <p style="margin-top: 30px; font-size: 14px; color: #6b7280;">
+                <strong>Need a receipt?</strong> A detailed receipt has been sent to your email and is available in your <a href="{billing_url}" style="color: #667eea;">billing settings</a>.
+            </p>
+
+            <p style="font-size: 14px; color: #6b7280;">
+                <strong>Questions about your subscription?</strong> Visit our <a href="https://nextcareer.ai/help" style="color: #667eea;">Help Center</a> or contact <a href="mailto:support@nextcareer.ai" style="color: #667eea;">support@nextcareer.ai</a>
+            </p>
+        </div>
+
+        <div class="footer">
+            <p><strong>NEXT Career Intelligence</strong></p>
+            <p>© 2025 NEXT. All rights reserved.</p>
+            <p style="margin-top: 15px; font-size: 12px;">
+                <a href="https://nextcareer.ai/privacy">Privacy Policy</a> |
+                <a href="https://nextcareer.ai/terms">Terms of Service</a> |
+                <a href="mailto:support@nextcareer.ai">Contact Support</a>
+            </p>
+        </div>
+    </div>
+</body>
+</html>

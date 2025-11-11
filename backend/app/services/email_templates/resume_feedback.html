@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head><meta charset="UTF-8">
+<style>
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;margin:0;padding:0;background:#f4f4f7}
+.container{max-width:600px;margin:20px auto;background:#fff;border-radius:8px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.1)}
+.header{background:linear-gradient(135deg,#3b82f6 0%,#2563eb 100%);color:#fff;padding:40px 30px;text-align:center}
+.header h1{margin:0 0 10px 0;font-size:28px}
+.content{padding:40px 30px;color:#333;line-height:1.6}
+.content p{margin:0 0 16px 0;font-size:15px}
+.content h2{margin:30px 0 20px 0;font-size:20px;color:#1f2937}
+.score-box{background:#dbeafe;border:2px solid #3b82f6;border-radius:8px;padding:24px;margin:24px 0;text-align:center}
+.score{font-size:48px;font-weight:700;color:#2563eb}
+.score-label{font-size:14px;color:#1e40af;margin-top:5px}
+.feedback-section{background:#f9fafb;border-left:4px solid #3b82f6;padding:16px 20px;margin:16px 0;border-radius:4px}
+.feedback-title{font-weight:600;color:#1f2937;margin-bottom:10px}
+.strengths{background:#e8f5e9;border-left-color:#10b981}
+.improvements{background:#fff3e0;border-left-color:#f59e0b}
+.button{display:inline-block;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:#fff!important;padding:14px 32px;text-decoration:none;border-radius:6px;font-weight:600;margin:20px 0}
+.button-container{text-align:center;margin:30px 0}
+.footer{background:#2d3748;color:#a0aec0;padding:30px;text-align:center;font-size:13px}
+</style>
+</head>
+<body>
+<div class="container">
+<div class="header"><h1>Your Resume Analysis is Ready 📄</h1><p>AI-powered feedback on your resume</p></div>
+<div class="content">
+<p>Hi {user_name},</p>
+<p>We've analyzed your resume for <strong>{job_title}</strong> and have personalized feedback to help you stand out!</p>
+<div class="score-box">
+<div class="score">{ats_score}/100</div>
+<div class="score-label">ATS Compatibility Score</div>
+<p style="font-size:14px;color:#1e40af;margin:15px 0 0 0">{score_interpretation}</p>
+</div>
+<h2>✅ Strengths</h2>
+<div class="feedback-section strengths">
+{strengths_list}
+</div>
+<h2>🔄 Areas for Improvement</h2>
+<div class="feedback-section improvements">
+{improvements_list}
+</div>
+<h2>💡 AI Recommendations</h2>
+{recommendations}
+<div class="button-container">
+<a href="{resume_url}" class="button">View Full Analysis</a>
+</div>
+<p style="font-size:14px;color:#6b7280;margin-top:30px">
+<strong>Next Steps:</strong> Apply the suggested improvements and re-upload your resume for a fresh analysis.
+</p>
+</div>
+<div class="footer"><p><strong>NEXT Career Intelligence</strong></p><p>© 2025 NEXT. All rights reserved.</p></div>
+</div>
+</body>
+</html>

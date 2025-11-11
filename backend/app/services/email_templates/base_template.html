@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ subject }}</title>
+    <style>
+        /* Reset styles */
+        body, table, td, a {
+            -webkit-text-size-adjust: 100%;
+            -ms-text-size-adjust: 100%;
+        }
+        table, td {
+            mso-table-lspace: 0pt;
+            mso-table-rspace: 0pt;
+        }
+        img {
+            -ms-interpolation-mode: bicubic;
+            border: 0;
+            height: auto;
+            line-height: 100%;
+            outline: none;
+            text-decoration: none;
+        }
+
+        /* Base styles */
+        body {
+            margin: 0;
+            padding: 0;
+            width: 100% !important;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background-color: #f4f4f7;
+        }
+
+        /* Container */
+        .email-container {
+            max-width: 600px;
+            margin: 20px auto;
+            background-color: #ffffff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Header */
+        .email-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #ffffff;
+            padding: 40px 30px;
+            text-align: center;
+        }
+        .email-header h1 {
+            margin: 0 0 10px 0;
+            font-size: 28px;
+            font-weight: 700;
+        }
+        .email-header p {
+            margin: 0;
+            font-size: 16px;
+            opacity: 0.95;
+        }
+
+        /* Content */
+        .email-content {
+            padding: 40px 30px;
+            color: #333333;
+            line-height: 1.6;
+        }
+        .email-content p {
+            margin: 0 0 16px 0;
+            font-size: 15px;
+        }
+        .email-content h2 {
+            margin: 30px 0 20px 0;
+            font-size: 22px;
+            color: #333333;
+        }
+        .email-content h3 {
+            margin: 20px 0 15px 0;
+            font-size: 18px;
+            color: #333333;
+        }
+
+        /* Button */
+        .button {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #ffffff !important;
+            padding: 14px 32px;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 15px;
+            margin: 20px 0;
+            transition: opacity 0.2s;
+        }
+        .button:hover {
+            opacity: 0.9;
+        }
+        .button-container {
+            text-align: center;
+            margin: 30px 0;
+        }
+
+        /* Feature box */
+        .feature-box {
+            background-color: #f9fafb;
+            border-left: 4px solid #667eea;
+            padding: 16px 20px;
+            margin: 12px 0;
+            border-radius: 4px;
+        }
+        .feature-box strong {
+            color: #667eea;
+            display: block;
+            margin-bottom: 8px;
+            font-size: 16px;
+        }
+
+        /* Info box */
+        .info-box {
+            background-color: #e3f2fd;
+            border: 1px solid #90caf9;
+            border-radius: 6px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .warning-box {
+            background-color: #fff3e0;
+            border: 1px solid #ffb74d;
+            border-radius: 6px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .success-box {
+            background-color: #e8f5e9;
+            border: 1px solid #81c784;
+            border-radius: 6px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        /* Code display */
+        .code-box {
+            background-color: #ffffff;
+            border: 2px dashed #667eea;
+            border-radius: 8px;
+            padding: 24px;
+            text-align: center;
+            margin: 24px 0;
+        }
+        .code {
+            font-size: 36px;
+            font-weight: 700;
+            color: #667eea;
+            letter-spacing: 8px;
+            font-family: 'Courier New', Courier, monospace;
+        }
+
+        /* Footer */
+        .email-footer {
+            background-color: #2d3748;
+            color: #a0aec0;
+            padding: 30px;
+            text-align: center;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+        .email-footer p {
+            margin: 0 0 10px 0;
+        }
+        .email-footer a {
+            color: #667eea;
+            text-decoration: none;
+        }
+        .social-links {
+            margin: 20px 0 10px 0;
+        }
+        .social-links a {
+            display: inline-block;
+            margin: 0 8px;
+            color: #a0aec0;
+            text-decoration: none;
+        }
+
+        /* Responsive */
+        @media only screen and (max-width: 600px) {
+            .email-container {
+                width: 100% !important;
+                margin: 0 !important;
+                border-radius: 0 !important;
+            }
+            .email-header {
+                padding: 30px 20px;
+            }
+            .email-header h1 {
+                font-size: 24px;
+            }
+            .email-content {
+                padding: 30px 20px;
+            }
+            .button {
+                display: block;
+                width: 100%;
+                box-sizing: border-box;
+            }
+            .code {
+                font-size: 28px;
+                letter-spacing: 4px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="email-container">
+        <!-- Header -->
+        <div class="email-header">
+            {% block header %}
+            <h1>{{ header_title }}</h1>
+            <p>{{ header_subtitle }}</p>
+            {% endblock %}
+        </div>
+
+        <!-- Content -->
+        <div class="email-content">
+            {% block content %}
+            <!-- Email content goes here -->
+            {% endblock %}
+        </div>
+
+        <!-- Footer -->
+        <div class="email-footer">
+            <p><strong>NEXT Career Intelligence</strong></p>
+            <p>AI-powered career resilience platform</p>
+
+            <div class="social-links">
+                <a href="https://nextcareer.ai">Website</a> |
+                <a href="https://nextcareer.ai/help">Help Center</a> |
+                <a href="https://nextcareer.ai/about">About Us</a>
+            </div>
+
+            <p style="margin-top: 15px; font-size: 12px;">
+                © 2025 NEXT Career Intelligence. All rights reserved.
+            </p>
+            <p style="font-size: 12px; color: #718096;">
+                You're receiving this email because you have an account with NEXT.
+            </p>
+            <p style="font-size: 11px; color: #718096; margin-top: 10px;">
+                <a href="{{ unsubscribe_url }}">Unsubscribe</a> |
+                <a href="https://nextcareer.ai/privacy">Privacy Policy</a> |
+                <a href="mailto:support@nextcareer.ai">Contact Support</a>
+            </p>
+        </div>
+    </div>
+</body>
+</html>

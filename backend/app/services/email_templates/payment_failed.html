@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head><meta charset="UTF-8">
+<style>
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;margin:0;padding:0;background:#f4f4f7}
+.container{max-width:600px;margin:20px auto;background:#fff;border-radius:8px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.1)}
+.header{background:linear-gradient(135deg,#ef4444 0%,#dc2626 100%);color:#fff;padding:40px 30px;text-align:center}
+.header h1{margin:0 0 10px 0;font-size:28px}
+.content{padding:40px 30px;color:#333;line-height:1.6}
+.content p{margin:0 0 16px 0;font-size:15px}
+.alert-box{background:#fee2e2;border:2px solid #ef4444;border-radius:8px;padding:24px;margin:24px 0}
+.alert-box strong{color:#991b1b;font-size:18px;display:block;margin-bottom:12px}
+.button{display:inline-block;background:linear-gradient(135deg,#ef4444 0%,#dc2626 100%);color:#fff!important;padding:14px 32px;text-decoration:none;border-radius:6px;font-weight:600;margin:20px 0}
+.button-container{text-align:center;margin:30px 0}
+.help-box{background:#f3f4f6;border-radius:6px;padding:20px;margin:20px 0}
+.help-box h3{margin:0 0 15px 0;color:#1f2937;font-size:18px}
+.help-box ul{margin:0;padding-left:20px}
+.help-box li{margin:8px 0;color:#4b5563}
+.footer{background:#2d3748;color:#a0aec0;padding:30px;text-align:center;font-size:13px}
+</style>
+</head>
+<body>
+<div class="container">
+<div class="header"><h1>Payment Failed ⚠️</h1><p>Action Required: Update Payment Method</p></div>
+<div class="content">
+<p>Hi {user_name},</p>
+<p>We were unable to process your payment for your <strong>{plan_name}</strong> subscription.</p>
+<div class="alert-box">
+<strong>⚠️ What Happened</strong>
+<p style="margin:10px 0 0 0;color:#991b1b">Your payment of <strong>${amount} {currency}</strong> failed on {payment_date}.</p>
+<p style="margin:10px 0 0 0;color:#991b1b">Reason: {failure_reason}</p>
+</div>
+<p><strong>Next Billing Attempt:</strong> {next_attempt_date}</p>
+<p>To avoid service interruption, please update your payment method as soon as possible.</p>
+<div class="button-container">
+<a href="{update_payment_url}" class="button">Update Payment Method</a>
+</div>
+<div class="help-box">
+<h3>Common Reasons for Payment Failures</h3>
+<ul>
+<li>Insufficient funds</li>
+<li>Expired card</li>
+<li>Incorrect card details</li>
+<li>Card issuer declined</li>
+<li>Billing address mismatch</li>
+</ul>
+</div>
+<p><strong>What Happens Next?</strong></p>
+<p style="font-size:14px;color:#4b5563">We'll automatically retry the payment in {retry_days} days. If payment continues to fail, your subscription will be downgraded to the Free plan on {downgrade_date}.</p>
+<p style="font-size:14px;color:#6b7280;margin-top:30px">
+<strong>Need help?</strong> Contact our billing team at <a href="mailto:billing@nextcareer.ai" style="color:#ef4444">billing@nextcareer.ai</a> or visit our <a href="https://nextcareer.ai/help/billing" style="color:#ef4444">billing FAQ</a>.
+</p>
+</div>
+<div class="footer"><p><strong>NEXT Career Intelligence</strong></p><p>© 2025 NEXT. All rights reserved.</p></div>
+</div>
+</body>
+</html>
