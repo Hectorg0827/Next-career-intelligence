@@ -200,7 +200,7 @@ Make it realistic and specific to the role."""
                 salary_min = job_data["salary_min"]
                 salary_max = job_data["salary_max"]
                 
-                # Build job record with ONLY fields that exist in schema
+                # Build job record with ONLY fields that exist in schema (excluding experience_years fields due to PostgREST cache)
                 job_record = {
                     "title": title,
                     "seniority": seniority,
@@ -217,8 +217,6 @@ Make it realistic and specific to the role."""
                     "salary_max": salary_max,
                     "salary_currency": "USD",
                     "employment_type": "full_time",
-                    "experience_years_min": job_data["experience_years_min"],
-                    "experience_years_max": job_data["experience_years_max"],
                     "apply_url": f"https://careers.example.com/jobs/{i}",
                     "source": "seeded"
                 }
