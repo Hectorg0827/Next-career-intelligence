@@ -11,7 +11,7 @@ Endpoints for Neo4j-powered career intelligence:
 from fastapi import APIRouter, Depends, HTTPException, Query
 from app.core.neo4j_client import neo4j_client
 from app.services.auth import get_current_user
-from app.core.supabase_client import supabase
+from app.db.supabase import get_supabase_client
 from loguru import logger
 from typing import List, Optional
 

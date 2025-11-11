@@ -7,7 +7,7 @@ Endpoints for calculating and retrieving Career Health Scores
 from fastapi import APIRouter, Depends, HTTPException
 from app.services.career_health_score import chs_calculator, CareerHealthScore
 from app.services.auth import get_current_user
-from app.core.supabase_client import supabase
+from app.db.supabase import get_supabase_client
 from loguru import logger
 from datetime import datetime, timedelta
 from typing import List
@@ -48,6 +48,10 @@ async def get_score_history(
         List of historical scores with dates
     """
     try:
+        supabase = get_supabase_client()
+        if not supabase:
+            raise HTTPException(503, "Database unavailable")
+            
         response = supabase.table("career_health_history") \
             .select("score, grade, created_at") \
             .eq("user_id", current_user.id) \
@@ -81,6 +85,10 @@ async def get_career_insights(current_user = Depends(get_current_user)):
         - Personalized recommendations
     """
     try:
+        supabase = get_supabase_client()
+        if not supabase:
+            raise HTTPException(503, "Database unavailable")
+            
         # Calculate current score
         current_score = await chs_calculator.calculate(current_user.id)
 

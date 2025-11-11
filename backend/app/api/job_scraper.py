@@ -7,7 +7,7 @@ Endpoints for triggering and managing job scraping.
 from fastapi import APIRouter, HTTPException, BackgroundTasks
 from app.scrapers.greenhouse_scraper import GreenhouseScraper
 from app.scrapers.lever_scraper import LeverScraper
-from app.core.supabase_client import supabase
+from app.db.supabase import get_supabase_client
 from loguru import logger
 from datetime import datetime
 from typing import Dict, List

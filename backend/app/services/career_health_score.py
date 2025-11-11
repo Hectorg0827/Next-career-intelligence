@@ -15,7 +15,7 @@ Formula:
 from datetime import datetime, timedelta
 from typing import Dict, List, Optional
 from pydantic import BaseModel
-from app.core.supabase_client import supabase
+from app.db.supabase import get_supabase_client
 from loguru import logger
 import re
 
@@ -101,6 +101,10 @@ class CareerHealthScoreCalculator:
 
     async def _fetch_user_data(self, user_id: str) -> Dict:
         """Fetch all user data needed for CHS calculation"""
+        
+        supabase = get_supabase_client()
+        if not supabase:
+            raise Exception("Database unavailable")
 
         # User profile
         user_response = supabase.table("users").select("*").eq("id", user_id).execute()
@@ -445,6 +449,10 @@ class CareerHealthScoreCalculator:
         Returns: 'improving', 'stable', or 'declining'
         """
         try:
+            supabase = get_supabase_client()
+            if not supabase:
+                return None
+                
             # Fetch historical CHS records
             history_response = supabase.table("career_health_history") \
                 .select("score, created_at") \
@@ -480,6 +488,10 @@ class CareerHealthScoreCalculator:
     async def _save_score_history(self, user_id: str, score: int):
         """Save CHS score to history table"""
         try:
+            supabase = get_supabase_client()
+            if not supabase:
+                return
+                
             supabase.table("career_health_history").insert({
                 "user_id": user_id,
                 "score": score,

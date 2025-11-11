@@ -7,7 +7,7 @@ Collects user feedback signals for training self-improving AI agents
 from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel
 from typing import Optional, Dict, List
-from app.core.supabase_client import supabase
+from app.db.supabase import get_supabase_client
 from app.services.auth import get_current_user
 from loguru import logger
 from datetime import datetime
