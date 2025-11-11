@@ -11,7 +11,7 @@ from loguru import logger
 import time
 from contextlib import asynccontextmanager
 
-from app.api import analyze, jobs, users, health, coach, interviewer, jobs_marketplace, subscriptions, roadmap, auth, onboarding, marketplace, resume_studio, match, elite_auth, health_advanced, career_health, rft, talent_graph, job_scraper
+from app.api import analyze, jobs, users, health, coach, interviewer, jobs_marketplace, subscriptions, roadmap, auth, onboarding, marketplace, resume_studio, match, elite_auth, health_advanced, career_health, rft, talent_graph, job_scraper, gdpr
 try:
     from app.api import resume_studio
 except ImportError:
@@ -246,6 +246,9 @@ app.include_router(talent_graph.router, tags=["Talent Graph - Neo4j"])
 
 # Job Scrapers
 app.include_router(job_scraper.router, tags=["Job Scraper"])
+
+# GDPR Compliance
+app.include_router(gdpr.router, tags=["GDPR Compliance"])
 
 
 # Performance monitoring endpoint
