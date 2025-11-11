@@ -5,6 +5,7 @@ import { Providers } from "@/components/Providers";
 import { Analytics } from "@vercel/analytics/react";
 import { AuthProvider } from "@/contexts/AuthContext";
 import ErrorBoundary from "@/components/ErrorBoundary";
+import { CookieConsentBanner } from "@/components/CookieConsentBanner";
 
 export const metadata: Metadata = {
   title: "NEXT | Adaptive Career Intelligence",
@@ -25,6 +26,7 @@ export default function RootLayout({
             <AuthProvider>
               <Navigation />
               {children}
+              <CookieConsentBanner />
             </AuthProvider>
           </Providers>
         </ErrorBoundary>
