@@ -117,18 +117,18 @@ export default function DashboardPage() {
   };
 
   return (
-    <main className="min-h-screen bg-next-bg-light">
+    <main className="min-h-screen gradient-dark-glass">
       {/* Header */}
-      <header className="bg-gradient-next border-b border-white/10 shadow-next-md">
+      <header className="sticky top-0 z-50 glass-card border-b border-glass-line shadow-glass-lg rounded-none">
         <div className="container mx-auto px-4 py-6">
           <nav className="flex justify-between items-center">
-            <Link href="/" className="flex items-center gap-2 text-white/80 hover:text-white transition-colors">
+            <Link href="/" className="flex items-center gap-2 text-ink-300 hover:text-white transition-colors">
               <ArrowLeft className="w-5 h-5" />
-              <span className="text-sm font-body">Back to Home</span>
+              <span className="text-sm font-medium">Back to Home</span>
             </Link>
             <div className="flex items-center gap-3">
               <NextLogo variant="text" size="md" />
-              <span className="text-xl font-heading font-semibold text-white">Dashboard</span>
+              <span className="text-xl font-semibold text-white">Dashboard</span>
             </div>
           </nav>
         </div>
@@ -136,39 +136,39 @@ export default function DashboardPage() {
 
       <div className="container mx-auto px-4 py-8">
         {/* Input Form */}
-        <div className="bg-white rounded-2xl shadow-next-lg p-8 mb-8 border border-next-bg-light">
+        <div className="glass-card hover-reflect rounded-2xl shadow-glass-lg p-8 mb-8">
           <div className="flex items-center gap-3 mb-6">
-            <div className="w-12 h-12 bg-gradient-next-gold rounded-xl flex items-center justify-center">
+            <div className="relative p-3 bg-gradient-to-br from-accent-500 to-accent-400 rounded-2xl shadow-glass-md">
               <Sparkles className="w-6 h-6 text-white" />
             </div>
-            <h1 className="text-3xl font-heading font-bold text-next-deep-blue">Career Analysis & Roadmap</h1>
+            <h1 className="text-3xl font-bold text-white">Career Analysis & Roadmap</h1>
           </div>
           
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="grid md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-sm font-heading font-medium text-next-deep-blue mb-2">
+                <label className="block text-sm font-medium text-white mb-2">
                   Job Title *
                 </label>
                 <input
                   type="text"
                   value={formData.jobTitle}
                   onChange={(e) => setFormData({ ...formData, jobTitle: e.target.value })}
-                  className="w-full px-4 py-2 border border-next-text-muted/30 rounded-lg focus:ring-2 focus:ring-next-gold focus:border-next-gold font-body transition-all"
+                  className="input-glass w-full"
                   placeholder="e.g., Software Engineer"
                   required
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-heading font-medium text-next-deep-blue mb-2">
+                <label className="block text-sm font-medium text-white mb-2">
                   Location *
                 </label>
                 <input
                   type="text"
                   value={formData.location}
                   onChange={(e) => setFormData({ ...formData, location: e.target.value })}
-                  className="w-full px-4 py-2 border border-next-text-muted/30 rounded-lg focus:ring-2 focus:ring-next-gold focus:border-next-gold font-body transition-all"
+                  className="input-glass w-full"
                   placeholder="e.g., San Francisco, CA"
                   required
                 />
@@ -176,13 +176,13 @@ export default function DashboardPage() {
             </div>
 
             <div>
-              <label className="block text-sm font-heading font-medium text-next-deep-blue mb-2">
+              <label className="block text-sm font-medium text-white mb-2">
                 Skills * (comma-separated)
               </label>
               <textarea
                 value={formData.skills}
                 onChange={(e) => setFormData({ ...formData, skills: e.target.value })}
-                className="w-full px-4 py-2 border border-next-text-muted/30 rounded-lg focus:ring-2 focus:ring-next-gold focus:border-next-gold font-body transition-all"
+                className="input-glass w-full"
                 rows={3}
                 placeholder="e.g., Python, JavaScript, Project Management, Communication"
                 required
@@ -191,14 +191,14 @@ export default function DashboardPage() {
 
             <div className="grid md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-sm font-heading font-medium text-next-deep-blue mb-2">
+                <label className="block text-sm font-medium text-white mb-2">
                   Years of Experience
                 </label>
                 <input
                   type="number"
                   value={formData.yearsExperience}
                   onChange={(e) => setFormData({ ...formData, yearsExperience: e.target.value })}
-                  className="w-full px-4 py-2 border border-next-text-muted/30 rounded-lg focus:ring-2 focus:ring-next-gold focus:border-next-gold font-body transition-all"
+                  className="input-glass w-full"
                   placeholder="e.g., 5"
                   min="0"
                   max="50"
@@ -206,13 +206,13 @@ export default function DashboardPage() {
               </div>
 
               <div>
-                <label className="block text-sm font-heading font-medium text-next-deep-blue mb-2">
+                <label className="block text-sm font-medium text-white mb-2">
                   Timeline for Career Roadmap
                 </label>
                 <select
                   value={formData.timeline}
                   onChange={(e) => setFormData({ ...formData, timeline: e.target.value })}
-                  className="w-full px-4 py-2 border border-next-text-muted/30 rounded-lg focus:ring-2 focus:ring-next-gold focus:border-next-gold font-body transition-all"
+                  className="input-glass w-full"
                 >
                   <option value="3 years">3 Years</option>
                   <option value="5 years">5 Years</option>
@@ -222,7 +222,7 @@ export default function DashboardPage() {
             </div>
 
             {error && (
-              <div className="p-4 bg-red-50 border border-red-200 rounded-lg text-red-700 font-body">
+              <div className="glass-card p-4 border border-red-400/50 bg-red-500/10 rounded-lg text-red-300">
                 {error}
               </div>
             )}
@@ -231,7 +231,7 @@ export default function DashboardPage() {
               <button
                 type="submit"
                 disabled={isLoading}
-                className="flex-1 bg-next-gold hover:bg-next-gold-light text-next-deep-blue px-8 py-3 rounded-lg font-heading font-semibold disabled:bg-next-text-muted disabled:cursor-not-allowed transition-all shadow-next-gold hover:scale-105 transform flex items-center justify-center gap-2"
+                className="primary-btn flex-1 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
               >
                 {isLoading ? (
                   <>
@@ -251,7 +251,7 @@ export default function DashboardPage() {
                   type="button"
                   onClick={handleGenerateRoadmap}
                   disabled={isGeneratingRoadmap}
-                  className="flex-1 bg-gradient-next text-white px-8 py-3 rounded-lg font-heading font-semibold hover:opacity-90 disabled:bg-next-text-muted disabled:cursor-not-allowed transition-all shadow-next-md hover:shadow-next-lg flex items-center justify-center gap-2"
+                  className="glass-card flex-1 px-8 py-3 text-white hover:bg-glass-edge disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center justify-center gap-2 font-semibold"
                 >
                   {isGeneratingRoadmap ? (
                     <>
@@ -274,39 +274,39 @@ export default function DashboardPage() {
         {analysisResult && (
           <div className="space-y-8">
             {/* AI Displacement Risk */}
-            <div className="bg-white rounded-2xl shadow-next-lg p-8 border border-next-bg-light">
+            <div className="glass-card hover-reflect rounded-2xl shadow-glass-lg p-8">
               <div className="flex items-center gap-3 mb-6">
-                <div className="w-10 h-10 bg-gradient-next rounded-lg flex items-center justify-center">
+                <div className="relative p-3 bg-gradient-to-br from-accent-500 to-accent-400 rounded-2xl shadow-glass-md">
                   <Brain className="w-6 h-6 text-white" />
                 </div>
-                <h2 className="text-2xl font-heading font-bold text-next-deep-blue">AI Displacement Risk Analysis</h2>
+                <h2 className="text-2xl font-bold text-white">AI Displacement Risk Analysis</h2>
               </div>
-              
+
               <div className="mb-6">
                 <div className="flex items-center gap-4 mb-4">
                   <span
-                    className={`px-6 py-3 rounded-full font-heading font-bold text-lg border-2 ${getRiskLevelColor(
+                    className={`glass-pill px-6 py-3 font-bold text-lg ${getRiskLevelColor(
                       analysisResult.ai_displacement_risk.level
                     )}`}
                   >
                     {analysisResult.ai_displacement_risk.level} Risk
                   </span>
-                  <span className="text-4xl font-heading font-bold text-next-deep-blue">
+                  <span className="text-4xl font-bold text-white">
                     {analysisResult.ai_displacement_risk.score.toFixed(1)}%
                   </span>
                 </div>
 
-                <div className="space-y-2 text-next-text-muted font-body">
+                <div className="space-y-2 text-ink-200">
                   <p>
-                    <strong className="text-next-deep-blue">Velocity:</strong> {analysisResult.ai_displacement_risk.velocity}
+                    <strong className="text-white">Velocity:</strong> {analysisResult.ai_displacement_risk.velocity}
                   </p>
                   <p>
-                    <strong className="text-next-deep-blue">Augmentation Potential:</strong>{" "}
+                    <strong className="text-white">Augmentation Potential:</strong>{" "}
                     {analysisResult.ai_displacement_risk.augmentation_potential}
                   </p>
                   {analysisResult.ai_displacement_risk.reasoning && (
-                    <p className="mt-4 p-4 bg-next-bg-light/50 rounded-lg border border-next-text-muted/20">
-                      <strong className="text-next-deep-blue">Why?</strong> {analysisResult.ai_displacement_risk.reasoning}
+                    <p className="mt-4 glass-card p-4 rounded-lg border border-glass-line">
+                      <strong className="text-white">Why?</strong> {analysisResult.ai_displacement_risk.reasoning}
                     </p>
                   )}
                 </div>
@@ -315,7 +315,7 @@ export default function DashboardPage() {
               {/* Feature 6: Industry Benchmarks - Risk Comparison */}
               {benchmarkData?.benchmarks?.automation_risk_comparison && (
                 <div className="mt-6">
-                  <h3 className="text-xl font-heading font-semibold text-next-deep-blue mb-4">How You Compare</h3>
+                  <h3 className="text-xl font-semibold text-white mb-4">How You Compare</h3>
                   <RiskComparisonBadge
                     yourScore={benchmarkData.benchmarks.automation_risk_comparison.your_score}
                     industryAverage={benchmarkData.benchmarks.automation_risk_comparison.industry_average}
@@ -329,14 +329,14 @@ export default function DashboardPage() {
 
             {/* Feature 6: Industry Benchmarking Dashboard */}
             {benchmarkData && (
-              <div className="bg-white rounded-2xl shadow-next-lg p-8">
-                <h2 className="text-2xl font-bold mb-6">📊 Industry Benchmarks</h2>
+              <div className="glass-card hover-reflect rounded-2xl shadow-glass-lg p-8">
+                <h2 className="text-2xl font-bold text-white mb-6">📊 Industry Benchmarks</h2>
                 
                 <div className="space-y-8">
                   {/* Skill Demand Analysis */}
                   {benchmarkData.benchmarks?.skill_demand && (
                     <div>
-                      <h3 className="text-xl font-semibold mb-4">Skill Demand & Gaps</h3>
+                      <h3 className="text-xl font-semibold text-white mb-4">Skill Demand & Gaps</h3>
                       <ProgressTracker
                         overallScore={benchmarkData.benchmarks.skill_demand.overall_score}
                         topSkills={benchmarkData.benchmarks.skill_demand.top_skills}
@@ -348,7 +348,7 @@ export default function DashboardPage() {
                   {/* Salary Benchmarking */}
                   {benchmarkData.benchmarks?.salary_benchmark && (
                     <div>
-                      <h3 className="text-xl font-semibold mb-4">Salary Benchmarking</h3>
+                      <h3 className="text-xl font-semibold text-white mb-4">Salary Benchmarking</h3>
                       <BenchmarkChart
                         yourEstimatedRange={benchmarkData.benchmarks.salary_benchmark.your_estimated_range}
                         industryMedian={benchmarkData.benchmarks.salary_benchmark.industry_median}
@@ -364,7 +364,7 @@ export default function DashboardPage() {
                   {/* Market Trends & Career Progression */}
                   {benchmarkData.benchmarks?.market_trends && benchmarkData.benchmarks?.career_progression && (
                     <div>
-                      <h3 className="text-xl font-semibold mb-4">Market Trends & Career Progression</h3>
+                      <h3 className="text-xl font-semibold text-white mb-4">Market Trends & Career Progression</h3>
                       <TrendIndicator
                         roleGrowth={benchmarkData.benchmarks.market_trends.role_growth}
                         hiringDifficulty={benchmarkData.benchmarks.market_trends.hiring_difficulty}
@@ -379,22 +379,22 @@ export default function DashboardPage() {
 
                   {/* Competitive Position */}
                   {benchmarkData.benchmarks?.competitive_position && (
-                    <div className="mt-6 p-6 bg-gradient-to-r from-silver-soft to-blue-50 rounded-xl">
-                      <h3 className="text-xl font-semibold mb-4">Your Competitive Position</h3>
+                    <div className="mt-6 glass-card p-6 rounded-xl border border-glass-line">
+                      <h3 className="text-xl font-semibold text-white mb-4">Your Competitive Position</h3>
                       <div className="space-y-3">
-                        <p className="text-lg">
-                          <strong>Ranking:</strong>{" "}
-                          <span className="text-next-gold font-bold">
+                        <p className="text-lg text-ink-200">
+                          <strong className="text-white">Ranking:</strong>{" "}
+                          <span className="text-accent-400 font-bold">
                             {benchmarkData.benchmarks.competitive_position.peer_ranking}
                           </span>
                         </p>
                         {benchmarkData.benchmarks.competitive_position.strengths && benchmarkData.benchmarks.competitive_position.strengths.length > 0 && (
                           <div>
-                            <strong>Strengths:</strong>
+                            <strong className="text-white">Strengths:</strong>
                             <ul className="mt-2 space-y-1">
                               {benchmarkData.benchmarks.competitive_position.strengths.map((strength, idx) => (
-                                <li key={idx} className="text-green-700 flex items-center gap-2">
-                                  <span className="text-green-500">✓</span> {strength}
+                                <li key={idx} className="text-green-300 flex items-center gap-2">
+                                  <span className="text-green-400">✓</span> {strength}
                                 </li>
                               ))}
                             </ul>
@@ -402,11 +402,11 @@ export default function DashboardPage() {
                         )}
                         {benchmarkData.benchmarks.competitive_position.areas_for_improvement && benchmarkData.benchmarks.competitive_position.areas_for_improvement.length > 0 && (
                           <div>
-                            <strong>Areas for Improvement:</strong>
+                            <strong className="text-white">Areas for Improvement:</strong>
                             <ul className="mt-2 space-y-1">
                               {benchmarkData.benchmarks.competitive_position.areas_for_improvement.map((area, idx) => (
-                                <li key={idx} className="text-orange-700 flex items-center gap-2">
-                                  <span className="text-orange-500">→</span> {area}
+                                <li key={idx} className="text-orange-300 flex items-center gap-2">
+                                  <span className="text-orange-400">→</span> {area}
                                 </li>
                               ))}
                             </ul>
@@ -421,25 +421,25 @@ export default function DashboardPage() {
 
             {/* Skill Insights */}
             {analysisResult.skill_insights && (
-              <div className="bg-white rounded-2xl shadow-next-lg p-8">
-                <h2 className="text-2xl font-bold mb-6">💡 Skill Intelligence</h2>
+              <div className="glass-card hover-reflect rounded-2xl shadow-glass-lg p-8">
+                <h2 className="text-2xl font-bold text-white mb-6">💡 Skill Intelligence</h2>
                 
                 {/* Skill Strength Score */}
                 {analysisResult.skill_insights.skill_strength_score && (
-                  <div className="mb-6 p-6 bg-gradient-to-r from-blue-50 to-silver-soft rounded-xl">
-                    <h3 className="text-xl font-semibold mb-3">Overall Skill Strength</h3>
+                  <div className="mb-6 glass-card p-6 rounded-xl border border-glass-line">
+                    <h3 className="text-xl font-semibold text-white mb-3">Overall Skill Strength</h3>
                     <div className="flex items-center gap-4">
-                      <div className="text-5xl font-bold text-next-royal-blue">
+                      <div className="text-5xl font-bold text-accent-400">
                         {analysisResult.skill_insights.skill_strength_score.overall_score.toFixed(1)}
                       </div>
                       <div className="flex-1">
-                        <div className="w-full bg-gray-200 rounded-full h-4">
+                        <div className="w-full bg-glass-white rounded-full h-4 border border-glass-line">
                           <div
-                            className="bg-gradient-to-r from-blue-500 to-royal-blue h-4 rounded-full transition-all duration-500"
+                            className="bg-gradient-to-r from-accent-500 to-accent-400 h-4 rounded-full transition-all duration-500"
                             style={{ width: `${analysisResult.skill_insights.skill_strength_score.overall_score}%` }}
                           />
                         </div>
-                        <p className="mt-2 text-next-text-muted font-body">
+                        <p className="mt-2 text-ink-200">
                           {analysisResult.skill_insights.skill_strength_score.interpretation}
                         </p>
                       </div>
@@ -450,19 +450,19 @@ export default function DashboardPage() {
                 {/* Transferable Skills */}
                 {analysisResult.skill_insights.transferable_to && analysisResult.skill_insights.transferable_to.length > 0 && (
                   <div className="mb-6">
-                    <h3 className="text-xl font-semibold mb-3">🔄 Transferable Skills</h3>
+                    <h3 className="text-xl font-semibold text-white mb-3">🔄 Transferable Skills</h3>
                     <div className="grid md:grid-cols-2 gap-4">
                       {analysisResult.skill_insights.transferable_to.map((skill, idx) => (
-                        <div key={idx} className="p-4 bg-green-50 border border-green-200 rounded-lg">
+                        <div key={idx} className="glass-card p-4 border border-green-400/30 bg-green-500/10 rounded-lg">
                           <div className="flex justify-between items-start mb-2">
-                            <span className="font-semibold text-green-800">{skill.skill}</span>
-                            <span className="text-sm text-green-600">
+                            <span className="font-semibold text-green-300">{skill.skill}</span>
+                            <span className="text-sm text-green-400">
                               {(skill.confidence * 100).toFixed(0)}% match
                             </span>
                           </div>
-                          <p className="text-sm text-next-text-muted font-body">{skill.reasoning}</p>
+                          <p className="text-sm text-ink-200">{skill.reasoning}</p>
                           {skill.source_skills && skill.source_skills.length > 0 && (
-                            <p className="text-xs text-gray-500 mt-2">
+                            <p className="text-xs text-ink-300 mt-2">
                               From: {skill.source_skills.join(", ")}
                             </p>
                           )}
@@ -475,12 +475,12 @@ export default function DashboardPage() {
                 {/* Hidden Skills */}
                 {analysisResult.skill_insights.hidden_skills && analysisResult.skill_insights.hidden_skills.length > 0 && (
                   <div className="mb-6">
-                    <h3 className="text-xl font-semibold mb-3">💎 Hidden Skills Detected</h3>
+                    <h3 className="text-xl font-semibold text-white mb-3">💎 Hidden Skills Detected</h3>
                     <div className="flex flex-wrap gap-2">
                       {analysisResult.skill_insights.hidden_skills.map((skill, idx) => (
                         <span
                           key={idx}
-                          className="px-4 py-2 bg-next-gold/10 text-next-gold rounded-full font-medium"
+                          className="glass-pill bg-accent-500/10 text-accent-400 border border-accent-400/30"
                         >
                           {skill}
                         </span>
@@ -492,26 +492,26 @@ export default function DashboardPage() {
                 {/* Skill Gaps for Growth */}
                 {analysisResult.skill_insights.skill_gaps_for_growth && analysisResult.skill_insights.skill_gaps_for_growth.length > 0 && (
                   <div>
-                    <h3 className="text-xl font-semibold mb-3">📈 Skills to Develop</h3>
+                    <h3 className="text-xl font-semibold text-white mb-3">📈 Skills to Develop</h3>
                     <div className="space-y-3">
                       {analysisResult.skill_insights.skill_gaps_for_growth.map((gap, idx) => (
                         <div
                           key={idx}
-                          className="p-4 bg-orange-50 border-l-4 border-orange-400 rounded-r-lg"
+                          className="glass-card p-4 border-l-4 border-orange-400 bg-orange-500/10 rounded-r-lg"
                         >
                           <div className="flex justify-between items-start mb-2">
-                            <span className="font-semibold text-orange-800">{gap.skill}</span>
-                            <span className={`px-2 py-1 rounded text-xs font-medium ${
-                              gap.priority === "Critical" ? "bg-red-100 text-red-700" :
-                              gap.priority === "High" ? "bg-orange-100 text-orange-700" :
-                              gap.priority === "Medium" ? "bg-yellow-100 text-yellow-700" :
-                              "bg-next-royal-blue/10 text-next-royal-blue"
+                            <span className="font-semibold text-orange-300">{gap.skill}</span>
+                            <span className={`glass-pill px-2 py-1 text-xs font-medium ${
+                              gap.priority === "Critical" ? "bg-red-500/20 text-red-300 border-red-400/30" :
+                              gap.priority === "High" ? "bg-orange-500/20 text-orange-300 border-orange-400/30" :
+                              gap.priority === "Medium" ? "bg-yellow-500/20 text-yellow-300 border-yellow-400/30" :
+                              "bg-accent-500/20 text-accent-400 border-accent-400/30"
                             }`}>
                               {gap.priority}
                             </span>
                           </div>
-                          <p className="text-sm text-next-text-muted font-body mb-2">{gap.why_important}</p>
-                          <div className="flex gap-4 text-sm text-next-text-muted font-body">
+                          <p className="text-sm text-ink-200 mb-2">{gap.why_important}</p>
+                          <div className="flex gap-4 text-sm text-ink-300">
                             <span>⏱ {gap.estimated_learning_time}</span>
                             <span>📊 {gap.market_demand}</span>
                             <span>🎯 {gap.learn_difficulty}</span>
@@ -526,9 +526,9 @@ export default function DashboardPage() {
 
             {/* Feature 5: Visual Career Map */}
             {sankeyData && (
-              <div className="bg-white rounded-2xl shadow-next-lg p-8">
-                <h2 className="text-2xl font-bold mb-6">🗺️ Your Visual Career Map</h2>
-                <p className="text-next-text-muted font-body mb-6">
+              <div className="glass-card hover-reflect rounded-2xl shadow-glass-lg p-8">
+                <h2 className="text-2xl font-bold text-white mb-6">🗺️ Your Visual Career Map</h2>
+                <p className="text-ink-200 mb-6">
                   Interactive visualization of your career pathways. Click on nodes to highlight connections.
                 </p>
                 
@@ -553,8 +553,8 @@ export default function DashboardPage() {
 
             {/* Career Roadmap Details */}
             {roadmapResult && (
-              <div className="bg-white rounded-2xl shadow-next-lg p-8">
-                <h2 className="text-2xl font-bold mb-6">Career Roadmap Details</h2>
+              <div className="glass-card hover-reflect rounded-2xl shadow-glass-lg p-8">
+                <h2 className="text-2xl font-bold text-white mb-6">Career Roadmap Details</h2>
                 
                 {["3_year", "5_year", "10_year"].map((timeframe) => {
                   const pathway = roadmapResult.career_roadmap[timeframe as keyof typeof roadmapResult.career_roadmap];
@@ -562,48 +562,48 @@ export default function DashboardPage() {
 
                   return (
                     <div key={timeframe} className="mb-8 last:mb-0">
-                      <h3 className="text-xl font-semibold mb-4 capitalize">
+                      <h3 className="text-xl font-semibold text-white mb-4 capitalize">
                         {timeframe.replace("_", "-")} Path
                       </h3>
-                      
-                      <div className="bg-gradient-to-r from-blue-50 to-silver-soft p-6 rounded-xl mb-4">
-                        <h4 className="font-bold text-lg text-next-deep-blue mb-2">
+
+                      <div className="glass-card p-6 rounded-xl mb-4 border border-glass-line">
+                        <h4 className="font-bold text-lg text-white mb-2">
                           {pathway.primary_path.target_role}
                         </h4>
-                        <p className="text-next-text-muted font-body mb-4">{pathway.primary_path.milestone_title}</p>
+                        <p className="text-ink-200 mb-4">{pathway.primary_path.milestone_title}</p>
                         
                         <div className="grid md:grid-cols-2 gap-4 text-sm">
                           {pathway.primary_path.skills_to_develop && pathway.primary_path.skills_to_develop.length > 0 && (
                             <div>
-                              <strong>Skills to Develop:</strong>
+                              <strong className="text-white">Skills to Develop:</strong>
                               <ul className="mt-2 space-y-1">
                                 {pathway.primary_path.skills_to_develop.map((skill: string, idx: number) => (
-                                  <li key={idx} className="text-next-text-muted font-body">• {skill}</li>
+                                  <li key={idx} className="text-ink-200">• {skill}</li>
                                 ))}
                               </ul>
                             </div>
                           )}
-                          
+
                           {pathway.primary_path.certifications && pathway.primary_path.certifications.length > 0 && (
                             <div>
-                              <strong>Certifications:</strong>
+                              <strong className="text-white">Certifications:</strong>
                               <ul className="mt-2 space-y-1">
                                 {pathway.primary_path.certifications.map((cert: string, idx: number) => (
-                                  <li key={idx} className="text-next-text-muted font-body">• {cert}</li>
+                                  <li key={idx} className="text-ink-200">• {cert}</li>
                                 ))}
                               </ul>
                             </div>
                           )}
                         </div>
 
-                        <div className="mt-4 pt-4 border-t border-blue-200">
+                        <div className="mt-4 pt-4 border-t border-glass-line">
                           <div className="flex justify-between items-center text-sm">
-                            <span>
-                              <strong>Salary Range:</strong> {pathway.primary_path.estimated_salary_range}
+                            <span className="text-ink-200">
+                              <strong className="text-white">Salary Range:</strong> {pathway.primary_path.estimated_salary_range}
                             </span>
-                            <span>
-                              <strong>AI Resilience:</strong>{" "}
-                              <span className="text-green-600 font-bold">
+                            <span className="text-ink-200">
+                              <strong className="text-white">AI Resilience:</strong>{" "}
+                              <span className="text-green-400 font-bold">
                                 {pathway.primary_path.ai_resilience_score}/100
                               </span>
                             </span>
@@ -612,9 +612,9 @@ export default function DashboardPage() {
                       </div>
 
                       {pathway.alternative_paths && pathway.alternative_paths.length > 0 && (
-                        <div className="bg-gray-50 p-4 rounded-lg">
-                          <h5 className="font-semibold mb-2">Alternative Paths:</h5>
-                          <ul className="text-sm text-next-text-muted font-body list-disc list-inside">
+                        <div className="glass-card p-4 rounded-lg border border-glass-line">
+                          <h5 className="font-semibold text-white mb-2">Alternative Paths:</h5>
+                          <ul className="text-sm text-ink-200 list-disc list-inside">
                             {pathway.alternative_paths.map((altPath, idx) => (
                               <li key={idx}>{altPath}</li>
                             ))}
@@ -629,24 +629,24 @@ export default function DashboardPage() {
 
             {/* Transition Pathways */}
             {analysisResult.transition_pathways && analysisResult.transition_pathways.length > 0 && (
-              <div className="bg-white rounded-2xl shadow-next-lg p-8">
-                <h2 className="text-2xl font-bold mb-6">🎯 Recommended Career Transitions</h2>
-                
+              <div className="glass-card hover-reflect rounded-2xl shadow-glass-lg p-8">
+                <h2 className="text-2xl font-bold text-white mb-6">🎯 Recommended Career Transitions</h2>
+
                 <div className="grid md:grid-cols-2 gap-6">
                   {analysisResult.transition_pathways.map((pathway, idx) => (
                     <div
                       key={idx}
-                      className="p-6 border-2 border-gray-200 rounded-xl hover:border-blue-400 transition-all"
+                      className="glass-card p-6 border border-glass-line rounded-xl hover:border-accent-400/50 hover:shadow-glass-md transition-all"
                     >
-                      <h3 className="text-xl font-bold mb-2">{pathway.role}</h3>
+                      <h3 className="text-xl font-bold text-white mb-2">{pathway.role}</h3>
                       <div className="mb-4">
                         <div className="flex justify-between mb-1">
-                          <span className="text-sm text-next-text-muted font-body">Transition Ease</span>
-                          <span className="text-sm font-semibold">{pathway.ease.toFixed(0)}%</span>
+                          <span className="text-sm text-ink-300">Transition Ease</span>
+                          <span className="text-sm font-semibold text-white">{pathway.ease.toFixed(0)}%</span>
                         </div>
-                        <div className="w-full bg-gray-200 rounded-full h-2">
+                        <div className="w-full bg-glass-white rounded-full h-2 border border-glass-line">
                           <div
-                            className="bg-gradient-to-r from-green-400 to-blue-500 h-2 rounded-full"
+                            className="bg-gradient-to-r from-green-400 to-accent-500 h-2 rounded-full"
                             style={{ width: `${pathway.ease}%` }}
                           />
                         </div>
@@ -655,12 +655,12 @@ export default function DashboardPage() {
                       <div className="space-y-3 text-sm">
                         {pathway.required_skills && pathway.required_skills.length > 0 && (
                           <div>
-                            <strong>Required Skills:</strong>
+                            <strong className="text-white">Required Skills:</strong>
                             <div className="flex flex-wrap gap-2 mt-2">
                               {pathway.required_skills.map((skill, skillIdx) => (
                                 <span
                                   key={skillIdx}
-                                  className="px-3 py-1 bg-next-royal-blue/10 text-next-royal-blue rounded-full text-xs"
+                                  className="glass-pill px-3 py-1 bg-accent-500/10 text-accent-400 border border-accent-400/30 text-xs"
                                 >
                                   {skill}
                                 </span>
@@ -670,20 +670,20 @@ export default function DashboardPage() {
                         )}
 
                         {pathway.estimated_training_time && (
-                          <p>
-                            <strong>Training Time:</strong> {pathway.estimated_training_time}
+                          <p className="text-ink-200">
+                            <strong className="text-white">Training Time:</strong> {pathway.estimated_training_time}
                           </p>
                         )}
-                        
+
                         {pathway.salary_potential && (
-                          <p>
-                            <strong>Salary Range:</strong> {pathway.salary_potential}
+                          <p className="text-ink-200">
+                            <strong className="text-white">Salary Range:</strong> {pathway.salary_potential}
                           </p>
                         )}
-                        
+
                         {pathway.demand_trend && (
-                          <p>
-                            <strong>Market Demand:</strong> {pathway.demand_trend}
+                          <p className="text-ink-200">
+                            <strong className="text-white">Market Demand:</strong> {pathway.demand_trend}
                           </p>
                         )}
                       </div>

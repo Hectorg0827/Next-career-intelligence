@@ -13,6 +13,7 @@ interface SkeletonProps {
   width?: string | number;
   height?: string | number;
   animation?: 'pulse' | 'wave' | 'none';
+  glass?: boolean;
 }
 
 export const Skeleton: React.FC<SkeletonProps> = ({
@@ -21,6 +22,7 @@ export const Skeleton: React.FC<SkeletonProps> = ({
   width,
   height,
   animation = 'pulse',
+  glass = false,
 }) => {
   const variantClasses = {
     text: 'rounded',
@@ -29,11 +31,19 @@ export const Skeleton: React.FC<SkeletonProps> = ({
     rounded: 'rounded-xl',
   };
 
-  const animationClasses = {
-    pulse: 'animate-pulse',
-    wave: 'animate-shimmer bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 bg-[length:200%_100%]',
-    none: '',
-  };
+  const animationClasses = glass
+    ? {
+        pulse: 'skeleton-glass',
+        wave: 'skeleton-glass',
+        none: '',
+      }
+    : {
+        pulse: 'animate-pulse',
+        wave: 'animate-shimmer bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 bg-[length:200%_100%]',
+        none: '',
+      };
+
+  const bgClass = glass ? '' : 'bg-gray-200 dark:bg-gray-700';
 
   const style: React.CSSProperties = {
     width: width ? (typeof width === 'number' ? `${width}px` : width) : undefined,
@@ -43,7 +53,7 @@ export const Skeleton: React.FC<SkeletonProps> = ({
   return (
     <div
       className={`
-        bg-gray-200 dark:bg-gray-700
+        ${bgClass}
         ${variantClasses[variant]}
         ${animationClasses[animation]}
         ${className}

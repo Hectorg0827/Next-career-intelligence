@@ -13,6 +13,32 @@ module.exports = {
         background: "var(--background)",
         foreground: "var(--foreground)",
 
+        // Liquid Glass Design System - Ink Colors (main palette)
+        ink: {
+          900: '#0a0a0f',    // Almost black
+          800: '#1a1a2e',    // Deep navy
+          700: '#2d2d44',    // Dark slate
+          600: '#4a4a66',    // Medium slate
+          500: '#6b6b88',    // Light slate
+          400: '#9090aa',    // Muted purple-gray
+          300: '#b5b5cc',    // Light gray-purple
+          200: '#d4d4e4',    // Very light gray
+          100: '#ebebf5',    // Near white
+        },
+
+        // Liquid Glass Design System - Glass Effect Colors
+        glass: {
+          white: 'rgba(255, 255, 255, 0.03)',  // Subtle white glass
+          edge: 'rgba(255, 255, 255, 0.15)',   // Edge highlight
+          line: 'rgba(255, 255, 255, 0.1)',    // Border line
+        },
+
+        // Liquid Glass Design System - Accent Colors
+        accent: {
+          500: '#8b5cf6',    // Vibrant purple
+          400: '#a78bfa',    // Light purple
+        },
+
         // Premium Design System - Primary Colors
         primary: {
           50: 'var(--color-primary-50)',
@@ -211,6 +237,11 @@ module.exports = {
         inner: 'var(--shadow-inner)',
         premium: 'var(--shadow-premium)',
         primary: 'var(--shadow-primary)',
+        // Liquid Glass Design System - Glass Shadows
+        'glass-sm': '0 4px 16px rgba(0, 0, 0, 0.15)',
+        'glass-md': '0 8px 32px rgba(0, 0, 0, 0.2)',
+        'glass-lg': '0 12px 48px rgba(0, 0, 0, 0.25)',
+        'glass-xl': '0 20px 64px rgba(0, 0, 0, 0.3)',
         // Legacy shadows (backward compatibility)
         'next-sm': '0 2px 4px rgba(11, 29, 69, 0.1)',
         'next-md': '0 4px 6px rgba(11, 29, 69, 0.15)',
@@ -241,6 +272,14 @@ module.exports = {
         xl: 'var(--blur-xl)',
         '2xl': 'var(--blur-2xl)',
         '3xl': 'var(--blur-3xl)',
+      },
+
+      backdropBlur: {
+        xs: '2px',
+        sm: '4px',
+        md: '8px',
+        lg: '12px',
+        xl: '16px',
       },
 
       opacity: {

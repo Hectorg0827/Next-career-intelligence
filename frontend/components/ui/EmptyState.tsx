@@ -55,6 +55,8 @@ export interface EmptyStateProps {
   animate?: boolean;
   /** Compact layout */
   compact?: boolean;
+  /** Use glass variant styling */
+  glass?: boolean;
 }
 
 export type EmptyStateIcon =
@@ -99,6 +101,7 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
   className = '',
   animate = true,
   compact = false,
+  glass = false,
 }) => {
   // Icon size classes
   const iconSizes = {
@@ -145,7 +148,7 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
         className={`
           ${iconSizes[iconSize]}
           mx-auto
-          text-gray-300 dark:text-gray-600
+          ${glass ? 'text-ink-400' : 'text-gray-300 dark:text-gray-600'}
           ${animate ? 'animate-float' : ''}
         `}
       >
@@ -183,7 +186,8 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
       {/* Title */}
       <h3
         className={`
-          font-semibold text-gray-900 dark:text-white
+          font-semibold
+          ${glass ? 'text-white' : 'text-gray-900 dark:text-white'}
           ${compact ? 'text-lg' : 'text-2xl'}
         `}
       >
@@ -194,7 +198,7 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
       {description && (
         <p
           className={`
-            text-gray-500 dark:text-gray-400
+            ${glass ? 'text-ink-300' : 'text-gray-500 dark:text-gray-400'}
             max-w-md
             ${compact ? 'mt-2 text-sm' : 'mt-3 text-base'}
           `}
@@ -209,8 +213,10 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
           {action && (
             <button
               onClick={action.onClick}
-              className="
-                inline-flex items-center gap-2
+              className={
+                glass
+                  ? 'primary-btn inline-flex items-center gap-2'
+                  : `inline-flex items-center gap-2
                 px-5 py-2.5
                 bg-gradient-to-r from-primary-600 to-primary-500
                 text-white font-medium
@@ -218,8 +224,8 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
                 hover:from-primary-700 hover:to-primary-600
                 transition-all duration-200
                 shadow-lg shadow-primary-500/30
-                focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2
-              "
+                focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2`
+              }
             >
               {action.icon}
               {action.label}
@@ -229,15 +235,17 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
           {secondaryAction && (
             <button
               onClick={secondaryAction.onClick}
-              className="
-                px-5 py-2.5
+              className={
+                glass
+                  ? 'glass-card px-5 py-2.5 text-white rounded-lg hover:bg-glass-edge transition-all duration-200'
+                  : `px-5 py-2.5
                 text-gray-700 dark:text-gray-300
                 border border-gray-300 dark:border-gray-600
                 rounded-lg
                 hover:bg-gray-50 dark:hover:bg-gray-800
                 transition-all duration-200
-                focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2
-              "
+                focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2`
+              }
             >
               {secondaryAction.label}
             </button>
