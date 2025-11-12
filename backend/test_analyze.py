@@ -9,7 +9,7 @@ payload = {
     "job_title": "Software Engineer",
     "skills": ["Python", "JavaScript", "React"],
     "years_experience": 3,
-    "location": "San Francisco, CA"
+    "location": "San Francisco, CA",
 }
 
 print("🧪 Testing analyze endpoint...")
@@ -18,10 +18,10 @@ print(f"Payload: {json.dumps(payload, indent=2)}\n")
 
 try:
     response = requests.post(url, json=payload, timeout=120)
-    
+
     print(f"Status Code: {response.status_code}")
     print(f"Response Headers: {dict(response.headers)}\n")
-    
+
     if response.status_code == 200 or response.status_code == 201:
         print("✅ SUCCESS!")
         result = response.json()
@@ -35,7 +35,7 @@ try:
             print(f"Error: {json.dumps(error, indent=2)}")
         except:
             print(f"Raw response: {response.text}")
-            
+
 except requests.exceptions.Timeout:
     print("❌ REQUEST TIMEOUT (120s)")
 except Exception as e:

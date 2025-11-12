@@ -20,9 +20,11 @@ ELITE_PASSWORD_HASH = hashlib.sha256("NextElite2025!".encode()).hexdigest()
 ELITE_EMAIL = "elite@nextci.net"
 ELITE_FIREBASE_UID = "elite_d41d8cd98f00b204e9800998ecf8427e"
 
+
 class EliteLoginRequest(BaseModel):
     username: str
     password: str
+
 
 class EliteLoginResponse(BaseModel):
     success: bool
@@ -33,35 +35,30 @@ class EliteLoginResponse(BaseModel):
     role: str
     subscription_status: str
 
+
 @router.post("/elite/login", response_model=EliteLoginResponse)
-async def elite_login(
-    credentials: EliteLoginRequest,
-    db: Session = Depends(get_db)
-):
+async def elite_login(credentials: EliteLoginRequest, db: Session = Depends(get_db)):
     """
     Elite/Admin login endpoint
     Username: elite_admin
     Password: NextElite2025!
     """
-    
+
     try:
         # Verify credentials
         password_hash = hashlib.sha256(credentials.password.encode()).hexdigest()
-        
+
         if credentials.username != ELITE_USERNAME or password_hash != ELITE_PASSWORD_HASH:
             logger.warning(f"Invalid elite credentials attempt: {credentials.username}")
-            raise HTTPException(
-                status_code=status.HTTP_401_UNAUTHORIZED,
-                detail="Invalid elite credentials"
-            )
-        
+            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid elite credentials")
+
         # Find or create elite user
         elite_user = db.query(User).filter(User.firebase_uid == ELITE_FIREBASE_UID).first()
-        
+
         if not elite_user:
             # Also check by email in case it exists with different firebase_uid
             elite_user = db.query(User).filter(User.email == ELITE_EMAIL).first()
-            
+
             if elite_user:
                 # Update existing user to be elite
                 elite_user.firebase_uid = ELITE_FIREBASE_UID
@@ -79,7 +76,7 @@ async def elite_login(
                         firebase_uid=ELITE_FIREBASE_UID,
                         name="Elite Admin",
                         role="admin",
-                        subscription_status="elite"
+                        subscription_status="elite",
                     )
                     db.add(elite_user)
                     db.commit()
@@ -92,8 +89,7 @@ async def elite_login(
                     elite_user = db.query(User).filter(User.firebase_uid == ELITE_FIREBASE_UID).first()
                     if not elite_user:
                         raise HTTPException(
-                            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                            detail="Failed to create elite user"
+                            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Failed to create elite user"
                         )
         else:
             # Update to ensure admin privileges
@@ -102,7 +98,7 @@ async def elite_login(
             db.commit()
             db.refresh(elite_user)
             logger.info(f"Elite admin user logged in: {elite_user.email}")
-        
+
         return EliteLoginResponse(
             success=True,
             message="Elite login successful",
@@ -110,49 +106,35 @@ async def elite_login(
             firebase_uid=elite_user.firebase_uid,
             email=elite_user.email,
             role=elite_user.role,
-            subscription_status=elite_user.subscription_status
+            subscription_status=elite_user.subscription_status,
         )
-        
+
     except HTTPException:
         raise
     except Exception as e:
         logger.error(f"Elite login failed with exception: {str(e)}", exc_info=True)
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"Elite login failed: {str(e)}"
-        )
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"Elite login failed: {str(e)}")
 
 
 @router.get("/elite/status")
-async def elite_status(
-    firebase_uid: str,
-    db: Session = Depends(get_db)
-):
+async def elite_status(firebase_uid: str, db: Session = Depends(get_db)):
     """
     Check if a user has elite/admin privileges
     """
-    
+
     try:
         user = db.query(User).filter(User.firebase_uid == firebase_uid).first()
-        
+
         if not user:
-            return {
-                "is_elite": False,
-                "is_admin": False,
-                "role": "none",
-                "subscription_status": "none"
-            }
-        
+            return {"is_elite": False, "is_admin": False, "role": "none", "subscription_status": "none"}
+
         return {
             "is_elite": user.role in ["elite", "admin"],
             "is_admin": user.role == "admin",
             "role": user.role,
-            "subscription_status": user.subscription_status
+            "subscription_status": user.subscription_status,
         }
-        
+
     except Exception as e:
         logger.error(f"Failed to check elite status: {e}")
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="Failed to check elite status"
-        )
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Failed to check elite status")

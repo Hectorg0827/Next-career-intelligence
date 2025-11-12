@@ -15,6 +15,7 @@ from datetime import timedelta
 # Initialize Redis connection
 _redis_client = None
 
+
 def get_redis_client() -> Optional[redis.Redis]:
     """Get Redis client singleton with production-ready configuration"""
     global _redis_client
@@ -45,7 +46,7 @@ def get_redis_client() -> Optional[redis.Redis]:
             # Enable SSL/TLS for production (Upstash uses rediss://)
             ssl_cert_reqs=None if redis_url.startswith("rediss://") else None,
             retry_on_timeout=True,
-            health_check_interval=30  # Check connection health every 30s
+            health_check_interval=30,  # Check connection health every 30s
         )
 
         _redis_client = redis.Redis(connection_pool=pool)
@@ -189,11 +190,7 @@ class RateLimiter:
     """Rate limiting using Redis"""
 
     @staticmethod
-    async def check_rate_limit(
-        identifier: str,
-        max_requests: int = 60,
-        window_seconds: int = 60
-    ) -> tuple[bool, dict]:
+    async def check_rate_limit(identifier: str, max_requests: int = 60, window_seconds: int = 60) -> tuple[bool, dict]:
         """
         Check if request should be rate limited
 
@@ -225,17 +222,9 @@ class RateLimiter:
             if current_count > max_requests:
                 ttl = client.ttl(key)
                 logger.warning(f"⚠️ Rate limit exceeded: {identifier} ({current_count}/{max_requests})")
-                return False, {
-                    "remaining": 0,
-                    "reset_in": ttl,
-                    "limit": max_requests
-                }
+                return False, {"remaining": 0, "reset_in": ttl, "limit": max_requests}
 
-            return True, {
-                "remaining": remaining,
-                "reset_in": window_seconds,
-                "limit": max_requests
-            }
+            return True, {"remaining": remaining, "reset_in": window_seconds, "limit": max_requests}
 
         except Exception as e:
             logger.error(f"Rate limit check error: {e}")
@@ -260,11 +249,7 @@ class RateLimiter:
             return False
 
 
-def cached(
-    namespace: str,
-    ttl: int = Cache.TTL_MEDIUM,
-    key_builder: Optional[Callable] = None
-):
+def cached(namespace: str, ttl: int = Cache.TTL_MEDIUM, key_builder: Optional[Callable] = None):
     """
     Decorator to cache function results
 
@@ -279,6 +264,7 @@ def cached(
             # Expensive operation
             return profile_data
     """
+
     def decorator(func: Callable):
         @wraps(func)
         async def wrapper(*args, **kwargs):
@@ -304,6 +290,7 @@ def cached(
             return result
 
         return wrapper
+
     return decorator
 
 
@@ -368,11 +355,8 @@ async def get_cache_stats() -> dict:
     """Get cache statistics"""
     client = get_redis_client()
     if not client:
-        return {
-            "status": "unavailable",
-            "connected": False
-        }
-    
+        return {"status": "unavailable", "connected": False}
+
     try:
         info = client.info()
         return {
@@ -382,12 +366,8 @@ async def get_cache_stats() -> dict:
             "connected_clients": info.get("connected_clients", 0),
             "total_commands": info.get("total_commands_processed", 0),
             "keyspace_hits": info.get("keyspace_hits", 0),
-            "keyspace_misses": info.get("keyspace_misses", 0)
+            "keyspace_misses": info.get("keyspace_misses", 0),
         }
     except Exception as e:
         logger.error(f"❌ Error getting cache stats: {e}")
-        return {
-            "status": "error",
-            "connected": False,
-            "error": str(e)
-        }
+        return {"status": "error", "connected": False, "error": str(e)}

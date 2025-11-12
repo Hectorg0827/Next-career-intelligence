@@ -29,19 +29,39 @@ class ResumeBulletGrader:
 
     # Strong action verbs from O*NET taxonomy
     STRONG_ACTION_VERBS = [
-        "achieved", "improved", "reduced", "increased", "launched",
-        "built", "designed", "led", "managed", "optimized",
-        "delivered", "created", "implemented", "established", "spearheaded",
-        "developed", "engineered", "architected", "streamlined", "automated",
-        "scaled", "transformed", "drove", "executed", "directed",
-        "initiated", "pioneered", "revolutionized", "facilitated", "coordinated"
+        "achieved",
+        "improved",
+        "reduced",
+        "increased",
+        "launched",
+        "built",
+        "designed",
+        "led",
+        "managed",
+        "optimized",
+        "delivered",
+        "created",
+        "implemented",
+        "established",
+        "spearheaded",
+        "developed",
+        "engineered",
+        "architected",
+        "streamlined",
+        "automated",
+        "scaled",
+        "transformed",
+        "drove",
+        "executed",
+        "directed",
+        "initiated",
+        "pioneered",
+        "revolutionized",
+        "facilitated",
+        "coordinated",
     ]
 
-    def score_bullet(
-        self,
-        bullet: str,
-        job_description: str = None
-    ) -> Dict:
+    def score_bullet(self, bullet: str, job_description: str = None) -> Dict:
         """
         Score a resume bullet (0-100)
 
@@ -61,27 +81,20 @@ class ResumeBulletGrader:
         suggestions = []
 
         if not bullet or not bullet.strip():
-            return {
-                "overall_score": 0,
-                "breakdown": {},
-                "suggestions": ["Bullet point is empty"],
-                "grade": "F"
-            }
+            return {"overall_score": 0, "breakdown": {}, "suggestions": ["Bullet point is empty"], "grade": "F"}
 
         # 1. Action Verb Check (20 points)
-        first_word = bullet.strip().split()[0].lower().rstrip('.,;:')
+        first_word = bullet.strip().split()[0].lower().rstrip(".,;:")
         if first_word in self.STRONG_ACTION_VERBS:
             scores["action_verb"] = 20
         else:
             scores["action_verb"] = 0
-            suggestions.append(
-                f"Start with a strong action verb (e.g., {', '.join(self.STRONG_ACTION_VERBS[:3])})"
-            )
+            suggestions.append(f"Start with a strong action verb (e.g., {', '.join(self.STRONG_ACTION_VERBS[:3])})")
 
         # 2. Quantifiable Metrics (30 points)
-        has_numbers = bool(re.search(r'\d+', bullet))
-        has_percentage = bool(re.search(r'\d+%', bullet))
-        has_currency = bool(re.search(r'\$[\d,]+', bullet))
+        has_numbers = bool(re.search(r"\d+", bullet))
+        has_percentage = bool(re.search(r"\d+%", bullet))
+        has_currency = bool(re.search(r"\$[\d,]+", bullet))
 
         metric_score = 0
         if has_numbers:
@@ -108,9 +121,7 @@ class ResumeBulletGrader:
             if keyword_score < 15:
                 missing_keywords = list(jd_keywords - bullet_keywords)[:3]
                 if missing_keywords:
-                    suggestions.append(
-                        f"Include key skills from job description: {', '.join(missing_keywords)}"
-                    )
+                    suggestions.append(f"Include key skills from job description: {', '.join(missing_keywords)}")
         else:
             scores["keyword_match"] = 0
 
@@ -152,20 +163,53 @@ class ResumeBulletGrader:
             "suggestions": suggestions,
             "grade": self._score_to_grade(overall_score),
             "has_metrics": metric_score >= 20,
-            "has_action_verb": scores["action_verb"] == 20
+            "has_action_verb": scores["action_verb"] == 20,
         }
 
     def _extract_keywords(self, text: str) -> set:
         """Extract important keywords from text (simple version)"""
         # Remove common stopwords
         stopwords = {
-            "the", "a", "an", "in", "to", "for", "of", "and", "or", "is", "are",
-            "was", "were", "be", "been", "being", "have", "has", "had", "do",
-            "does", "did", "will", "would", "should", "could", "may", "might",
-            "must", "can", "this", "that", "these", "those", "with", "from", "at"
+            "the",
+            "a",
+            "an",
+            "in",
+            "to",
+            "for",
+            "of",
+            "and",
+            "or",
+            "is",
+            "are",
+            "was",
+            "were",
+            "be",
+            "been",
+            "being",
+            "have",
+            "has",
+            "had",
+            "do",
+            "does",
+            "did",
+            "will",
+            "would",
+            "should",
+            "could",
+            "may",
+            "might",
+            "must",
+            "can",
+            "this",
+            "that",
+            "these",
+            "those",
+            "with",
+            "from",
+            "at",
         }
 
-        words = re.findall(r'\b\w+\b', text.lower())
+        words = re.findall(r"\b\w+\b", text.lower())
         keywords = {w for w in words if w not in stopwords and len(w) > 3}
 
         return keywords
@@ -197,35 +241,26 @@ class InterviewAnswerGrader:
     """
 
     # Confidence markers
-    WEAK_PHRASES = [
-        "i think", "maybe", "sort of", "kind of", "i guess",
-        "probably", "possibly", "somewhat", "perhaps"
-    ]
+    WEAK_PHRASES = ["i think", "maybe", "sort of", "kind of", "i guess", "probably", "possibly", "somewhat", "perhaps"]
 
-    FILLER_WORDS = [
-        "um", "uh", "like", "you know", "basically",
-        "actually", "literally", "honestly"
-    ]
+    FILLER_WORDS = ["um", "uh", "like", "you know", "basically", "actually", "literally", "honestly"]
 
-    SITUATION_MARKERS = [
-        "when i", "at my previous", "while working", "during my time",
-        "in my role", "at", "when"
-    ]
+    SITUATION_MARKERS = ["when i", "at my previous", "while working", "during my time", "in my role", "at", "when"]
 
-    TASK_MARKERS = [
-        "needed to", "responsible for", "tasked with", "challenged to",
-        "had to", "was asked to"
-    ]
+    TASK_MARKERS = ["needed to", "responsible for", "tasked with", "challenged to", "had to", "was asked to"]
 
     ACTION_MARKERS = [
-        "i decided", "i implemented", "i created", "i led", "i built",
-        "i designed", "i developed", "i analyzed"
+        "i decided",
+        "i implemented",
+        "i created",
+        "i led",
+        "i built",
+        "i designed",
+        "i developed",
+        "i analyzed",
     ]
 
-    RESULT_MARKERS = [
-        "which resulted", "leading to", "achieved", "improved by",
-        "reduced", "increased", "successfully"
-    ]
+    RESULT_MARKERS = ["which resulted", "leading to", "achieved", "improved by", "reduced", "increased", "successfully"]
 
     def score_answer(self, question: str, answer: str) -> Dict:
         """
@@ -247,12 +282,7 @@ class InterviewAnswerGrader:
         suggestions = []
 
         if not answer or not answer.strip():
-            return {
-                "overall_score": 0,
-                "breakdown": {},
-                "suggestions": ["Answer is empty"],
-                "grade": "F"
-            }
+            return {"overall_score": 0, "breakdown": {}, "suggestions": ["Answer is empty"], "grade": "F"}
 
         answer_lower = answer.lower()
 
@@ -262,12 +292,7 @@ class InterviewAnswerGrader:
         has_action = any(marker in answer_lower for marker in self.ACTION_MARKERS)
         has_result = any(marker in answer_lower for marker in self.RESULT_MARKERS)
 
-        star_score = (
-            (has_situation * 10) +
-            (has_task * 10) +
-            (has_action * 10) +
-            (has_result * 10)
-        )
+        star_score = (has_situation * 10) + (has_task * 10) + (has_action * 10) + (has_result * 10)
         scores["star_structure"] = star_score
 
         if star_score < 30:
@@ -284,12 +309,13 @@ class InterviewAnswerGrader:
             suggestions.append(f"Add STAR components: {', '.join(missing)}")
 
         # 2. Specificity (30 points)
-        has_numbers = bool(re.search(r'\d+', answer))
-        has_specific_tools = bool(re.search(
-            r'(python|java|react|aws|sql|docker|kubernetes|'
-            r'typescript|javascript|node|fastapi|django)',
-            answer_lower
-        ))
+        has_numbers = bool(re.search(r"\d+", answer))
+        has_specific_tools = bool(
+            re.search(
+                r"(python|java|react|aws|sql|docker|kubernetes|" r"typescript|javascript|node|fastapi|django)",
+                answer_lower,
+            )
+        )
         word_count = len(answer.split())
         is_detailed = word_count >= 50
 
@@ -350,7 +376,7 @@ class InterviewAnswerGrader:
             "suggestions": suggestions,
             "grade": self._score_to_grade(overall_score),
             "word_count": word_count,
-            "has_star": star_score >= 30
+            "has_star": star_score >= 30,
         }
 
     def _score_to_grade(self, score: int) -> str:

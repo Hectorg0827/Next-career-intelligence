@@ -21,31 +21,26 @@ logger = logging.getLogger(__name__)
 
 class AIMatchingService:
     """Service for AI-powered job matching"""
-    
+
     def __init__(self):
         """Initialize Gemini client"""
         if settings.GEMINI_API_KEY:
             genai.configure(api_key=settings.GEMINI_API_KEY)
-            model_name = getattr(settings, 'GEMINI_MODEL', 'gemini-1.5-flash')
+            model_name = getattr(settings, "GEMINI_MODEL", "gemini-1.5-flash")
             self.model = genai.GenerativeModel(model_name)
         else:
             logger.warning("GEMINI_API_KEY not set - using fallback matching")
             self.model = None
-    
-    async def calculate_match_score(
-        self,
-        user_profile: Dict[str, Any],
-        job: Job,
-        db: Session
-    ) -> Dict[str, Any]:
+
+    async def calculate_match_score(self, user_profile: Dict[str, Any], job: Job, db: Session) -> Dict[str, Any]:
         """
         Calculate match score between user and job using AI
-        
+
         Args:
             user_profile: User's career profile data
             job: Job record from database
             db: Database session
-            
+
         Returns:
             Dict with match_score (0-100), skill_gaps, recommended_prep
         """
@@ -56,7 +51,7 @@ class AIMatchingService:
             user_level = user_profile.get("experience_level", "mid")
             user_goals = user_profile.get("career_goals", [])
             user_title = user_profile.get("current_job_title", "")
-            
+
             # Extract job data
             job_skills = job.required_skills or []
             job_level = job.experience_level or "mid"
@@ -64,7 +59,7 @@ class AIMatchingService:
             job_salary_max = job.salary_max or 0
             job_location = job.location or ""
             job_remote = job.remote_type or "on_site"
-            
+
             if self.model:
                 # Use AI for intelligent matching
                 result = await self._ai_match(
@@ -87,9 +82,9 @@ class AIMatchingService:
                     job_level=job_level,
                     user_level=user_level,
                 )
-            
+
             return result
-            
+
         except Exception as e:
             logger.error(f"Error calculating match score: {str(e)}")
             # Return minimal match score on error
@@ -97,9 +92,9 @@ class AIMatchingService:
                 "match_score": 50.0,
                 "skill_gaps": [],
                 "recommended_prep": "Unable to calculate recommendations. Please try again.",
-                "reasoning": str(e)
+                "reasoning": str(e),
             }
-    
+
     async def _ai_match(
         self,
         user_skills: List[str],
@@ -153,14 +148,11 @@ Be fair but realistic. Consider:
 Return ONLY valid JSON, no other text."""
 
         try:
-            response = await asyncio.to_thread(
-                self.model.generate_content,
-                prompt
-            )
-            
+            response = await asyncio.to_thread(self.model.generate_content, prompt)
+
             # Parse response
             response_text = response.text.strip()
-            
+
             # Handle markdown code blocks
             if response_text.startswith("```json"):
                 response_text = response_text[7:]
@@ -168,13 +160,13 @@ Return ONLY valid JSON, no other text."""
                 response_text = response_text[3:]
             if response_text.endswith("```"):
                 response_text = response_text[:-3]
-            
+
             result = json.loads(response_text.strip())
-            
+
             # Validate and normalize score
             match_score = float(result.get("match_score", 50))
             match_score = max(0, min(100, match_score))  # Clamp 0-100
-            
+
             return {
                 "match_score": match_score,
                 "skill_gaps": result.get("skill_gaps", []),
@@ -184,9 +176,9 @@ Return ONLY valid JSON, no other text."""
                 "strengths": result.get("strengths", []),
                 "opportunities": result.get("opportunities", []),
                 "career_alignment": result.get("career_alignment", ""),
-                "reasoning": "AI-powered analysis"
+                "reasoning": "AI-powered analysis",
             }
-            
+
         except json.JSONDecodeError as e:
             logger.error(f"Failed to parse AI response: {str(e)}")
             # Fall back to rule-based
@@ -206,7 +198,7 @@ Return ONLY valid JSON, no other text."""
                 job_level=job_level,
                 user_level=user_level,
             )
-    
+
     def _rule_based_match(
         self,
         user_skills: List[str],
@@ -221,25 +213,25 @@ Return ONLY valid JSON, no other text."""
         # Normalize skill strings for comparison
         user_skills_lower = [s.lower().strip() for s in (user_skills or [])]
         job_skills_lower = [s.lower().strip() for s in (job_skills or [])]
-        
+
         # Calculate skill match
         matched_skills = []
         missing_skills = []
-        
+
         for skill in job_skills_lower:
             if any(skill in us or us in skill for us in user_skills_lower):
                 matched_skills.append(skill)
             else:
                 missing_skills.append(skill)
-        
+
         skill_match_ratio = len(matched_skills) / max(len(job_skills_lower), 1)
         skill_score = skill_match_ratio * 100
-        
+
         # Calculate experience level match
         level_mapping = {"entry": 0, "mid": 1, "senior": 2}
         user_level_val = level_mapping.get(user_level.lower(), 1)
         job_level_val = level_mapping.get(job_level.lower(), 1)
-        
+
         # Experience level should ideally match or exceed job requirement
         level_diff = abs(user_level_val - job_level_val)
         if level_diff == 0:
@@ -249,7 +241,7 @@ Return ONLY valid JSON, no other text."""
             level_score = 80 if user_level_val >= job_level_val else 60
         else:
             level_score = 40
-        
+
         # Calculate years of experience score
         # Rough estimate: entry (0-2), mid (2-7), senior (7+)
         if job_level_val == 0:  # entry
@@ -258,85 +250,80 @@ Return ONLY valid JSON, no other text."""
             exp_score = 100 if 2 <= user_experience <= 10 else max(0, 100 - abs(user_experience - 5) * 10)
         else:  # senior
             exp_score = 100 if user_experience >= 7 else max(0, user_experience * 14.3)
-        
+
         # Combine scores
-        match_score = (skill_score * 0.6 + level_score * 0.25 + exp_score * 0.15)
+        match_score = skill_score * 0.6 + level_score * 0.25 + exp_score * 0.15
         match_score = max(0, min(100, match_score))
-        
+
         # Generate recommendation
         if skill_match_ratio < 0.3:
             recommendation = "Consider this a stretch role. Focus on learning the missing skills through online courses and side projects."
         elif skill_match_ratio < 0.6:
-            recommendation = "Good opportunity to grow. You have foundational skills; focus on the missing areas before applying."
+            recommendation = (
+                "Good opportunity to grow. You have foundational skills; focus on the missing areas before applying."
+            )
         elif skill_match_ratio < 0.85:
             recommendation = "Strong fit! You have most skills. Polish the missing areas and apply with confidence."
         else:
             recommendation = "Excellent fit! Your skills align well with this role. Apply immediately."
-        
+
         return {
             "match_score": round(match_score, 1),
             "skill_gaps": missing_skills,
             "skill_matches": matched_skills,
             "recommended_prep": recommendation,
-            "reasoning": "Rule-based matching (AI unavailable)"
+            "reasoning": "Rule-based matching (AI unavailable)",
         }
-    
-    async def calculate_all_matches_for_user(
-        self,
-        user_id: str,
-        db: Session,
-        limit: int = 50
-    ) -> int:
+
+    async def calculate_all_matches_for_user(self, user_id: str, db: Session, limit: int = 50) -> int:
         """
         Calculate match scores for all active jobs for a user
-        
+
         Args:
             user_id: User ID
             db: Database session
             limit: Max number of jobs to process
-            
+
         Returns:
             Number of matches calculated
         """
         try:
             # Get user profile
-            career_profile = db.query(CareerProfile).filter(
-                CareerProfile.user_id == user_id
-            ).first()
-            
+            career_profile = db.query(CareerProfile).filter(CareerProfile.user_id == user_id).first()
+
             if not career_profile:
                 logger.warning(f"No career profile found for user {user_id}")
                 return 0
-            
+
             profile_data = career_profile.profile_data or {}
-            
+
             # Get all active jobs without match scores
-            jobs = db.query(Job).filter(
-                and_(
-                    Job.is_active == True,
+            jobs = (
+                db.query(Job)
+                .filter(
+                    and_(
+                        Job.is_active == True,
+                    )
                 )
-            ).limit(limit).all()
-            
+                .limit(limit)
+                .all()
+            )
+
             matches_calculated = 0
-            
+
             for job in jobs:
                 try:
                     # Get existing application or create new one
-                    application = db.query(JobApplication).filter(
-                        and_(
-                            JobApplication.user_id == user_id,
-                            JobApplication.job_id == job.id
-                        )
-                    ).first()
-                    
+                    application = (
+                        db.query(JobApplication)
+                        .filter(and_(JobApplication.user_id == user_id, JobApplication.job_id == job.id))
+                        .first()
+                    )
+
                     if not application:
                         # Calculate match score
-                        match_data = await self.calculate_match_score(
-                            user_profile=profile_data,
-                            job=job,
-                            db=db
-                        )
-                        
+                        match_data = await self.calculate_match_score(user_profile=profile_data, job=job, db=db)
+
                         # Create application record with match data
                         application = JobApplication(
                             user_id=user_id,
@@ -344,128 +331,117 @@ Return ONLY valid JSON, no other text."""
                             status="matched",
                             match_score=match_data.get("match_score", 50),
                             skill_gaps=json.dumps(match_data.get("skill_gaps", [])),
-                            recommended_prep=match_data.get("recommended_prep", "")
+                            recommended_prep=match_data.get("recommended_prep", ""),
                         )
-                        
+
                         db.add(application)
                         matches_calculated += 1
-                
+
                 except Exception as e:
                     logger.error(f"Error matching job {job.id} for user {user_id}: {str(e)}")
                     continue
-            
+
             # Commit all changes
             if matches_calculated > 0:
                 db.commit()
-            
+
             return matches_calculated
-            
+
         except Exception as e:
             logger.error(f"Error calculating matches for user {user_id}: {str(e)}")
             db.rollback()
             return 0
-    
+
     async def get_top_matched_jobs(
-        self,
-        user_id: str,
-        db: Session,
-        limit: int = 10,
-        min_score: float = 60.0
+        self, user_id: str, db: Session, limit: int = 10, min_score: float = 60.0
     ) -> List[Dict[str, Any]]:
         """
         Get top matched jobs for a user
-        
+
         Args:
             user_id: User ID
             db: Database session
             limit: Max results
             min_score: Minimum match score threshold
-            
+
         Returns:
             List of matched jobs with scores
         """
         try:
             # Query applications with match scores
-            applications = db.query(JobApplication).filter(
-                and_(
-                    JobApplication.user_id == user_id,
-                    JobApplication.match_score >= min_score
-                )
-            ).order_by(
-                JobApplication.match_score.desc()
-            ).limit(limit).all()
-            
+            applications = (
+                db.query(JobApplication)
+                .filter(and_(JobApplication.user_id == user_id, JobApplication.match_score >= min_score))
+                .order_by(JobApplication.match_score.desc())
+                .limit(limit)
+                .all()
+            )
+
             results = []
             for app in applications:
                 job = db.query(Job).filter(Job.id == app.job_id).first()
                 if job:
-                    results.append({
-                        "job_id": job.id,
-                        "title": job.title,
-                        "company": job.company,
-                        "location": job.location,
-                        "match_score": app.match_score,
-                        "skill_gaps": json.loads(app.skill_gaps) if app.skill_gaps else [],
-                        "recommended_prep": app.recommended_prep,
-                        "salary_range": f"${job.salary_min:,} - ${job.salary_max:,}" if job.salary_min and job.salary_max else "Not specified"
-                    })
-            
+                    results.append(
+                        {
+                            "job_id": job.id,
+                            "title": job.title,
+                            "company": job.company,
+                            "location": job.location,
+                            "match_score": app.match_score,
+                            "skill_gaps": json.loads(app.skill_gaps) if app.skill_gaps else [],
+                            "recommended_prep": app.recommended_prep,
+                            "salary_range": (
+                                f"${job.salary_min:,} - ${job.salary_max:,}"
+                                if job.salary_min and job.salary_max
+                                else "Not specified"
+                            ),
+                        }
+                    )
+
             return results
-            
+
         except Exception as e:
             logger.error(f"Error getting top matches for user {user_id}: {str(e)}")
             return []
-    
-    async def refresh_job_match(
-        self,
-        user_id: str,
-        job_id: str,
-        db: Session
-    ) -> Optional[Dict[str, Any]]:
+
+    async def refresh_job_match(self, user_id: str, job_id: str, db: Session) -> Optional[Dict[str, Any]]:
         """
         Recalculate match score for specific job
-        
+
         Args:
             user_id: User ID
             job_id: Job ID
             db: Database session
-            
+
         Returns:
             Updated match data or None
         """
         try:
             # Get user profile
-            career_profile = db.query(CareerProfile).filter(
-                CareerProfile.user_id == user_id
-            ).first()
-            
+            career_profile = db.query(CareerProfile).filter(CareerProfile.user_id == user_id).first()
+
             if not career_profile:
                 logger.warning(f"No career profile found for user {user_id}")
                 return None
-            
+
             profile_data = career_profile.profile_data or {}
-            
+
             # Get job
             job = db.query(Job).filter(Job.id == job_id).first()
             if not job:
                 logger.warning(f"Job {job_id} not found")
                 return None
-            
+
             # Calculate match score
-            match_data = await self.calculate_match_score(
-                user_profile=profile_data,
-                job=job,
-                db=db
-            )
-            
+            match_data = await self.calculate_match_score(user_profile=profile_data, job=job, db=db)
+
             # Update or create application
-            application = db.query(JobApplication).filter(
-                and_(
-                    JobApplication.user_id == user_id,
-                    JobApplication.job_id == job_id
-                )
-            ).first()
-            
+            application = (
+                db.query(JobApplication)
+                .filter(and_(JobApplication.user_id == user_id, JobApplication.job_id == job_id))
+                .first()
+            )
+
             if application:
                 application.match_score = match_data.get("match_score", 50)
                 application.skill_gaps = json.dumps(match_data.get("skill_gaps", []))
@@ -477,19 +453,19 @@ Return ONLY valid JSON, no other text."""
                     status="matched",
                     match_score=match_data.get("match_score", 50),
                     skill_gaps=json.dumps(match_data.get("skill_gaps", [])),
-                    recommended_prep=match_data.get("recommended_prep", "")
+                    recommended_prep=match_data.get("recommended_prep", ""),
                 )
                 db.add(application)
-            
+
             db.commit()
-            
+
             return {
                 "job_id": job_id,
                 "match_score": application.match_score,
                 "skill_gaps": json.loads(application.skill_gaps) if application.skill_gaps else [],
-                "recommended_prep": application.recommended_prep
+                "recommended_prep": application.recommended_prep,
             }
-            
+
         except Exception as e:
             logger.error(f"Error refreshing match for user {user_id}, job {job_id}: {str(e)}")
             db.rollback()

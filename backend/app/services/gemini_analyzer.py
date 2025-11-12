@@ -22,20 +22,17 @@ class GeminiAnalyzer:
     Advanced AI-powered career analysis and insights
     WITH SAFETY SETTINGS
     """
-    
+
     def __init__(self):
         """Initialize Gemini client if credentials are available."""
 
         self.client = None
 
         # Use configurable model from settings
-        self.model_name = getattr(settings, 'GEMINI_MODEL', 'gemini-2.0-flash-exp')
+        self.model_name = getattr(settings, "GEMINI_MODEL", "gemini-2.0-flash-exp")
 
         # Configure generation settings
-        self.generation_config = {
-            "response_mime_type": "application/json",
-            "temperature": 0.3
-        }
+        self.generation_config = {"response_mime_type": "application/json", "temperature": 0.3}
 
         if NEXTAI_API_KEY:
             try:
@@ -43,15 +40,11 @@ class GeminiAnalyzer:
                 self.client = genai.Client(api_key=NEXTAI_API_KEY)
                 logger.info("✅ Gemini client initialized successfully")
             except Exception as exc:  # pragma: no cover - defensive guard
-                logger.warning(
-                    "⚠️ Failed to initialize Gemini client. Falling back to offline mode: {}".format(exc)
-                )
+                logger.warning("⚠️ Failed to initialize Gemini client. Falling back to offline mode: {}".format(exc))
                 self.client = None
         else:
-            logger.warning(
-                "⚠️ GEMINI_API_KEY not configured. Using deterministic fallback responses for analysis."
-            )
-    
+            logger.warning("⚠️ GEMINI_API_KEY not configured. Using deterministic fallback responses for analysis.")
+
     def _extract_text(self, response) -> str:
         """Safely extract text content from Gemini response."""
         try:
@@ -75,26 +68,26 @@ class GeminiAnalyzer:
         Removes markdown code blocks and fixes control characters
         """
         import re
-        
+
         # Remove markdown code blocks
-        text = re.sub(r'```json\s*', '', text)
-        text = re.sub(r'```\s*', '', text)
-        
+        text = re.sub(r"```json\s*", "", text)
+        text = re.sub(r"```\s*", "", text)
+
         # Remove any leading/trailing whitespace
         text = text.strip()
-        
+
         # Replace problematic control characters in string values
         # This preserves JSON structure while cleaning string content
-        text = text.replace('\\n', ' ')
-        text = text.replace('\\r', ' ')
-        text = text.replace('\\t', ' ')
-        text = text.replace('\n', ' ')
-        text = text.replace('\r', ' ')
-        text = text.replace('\t', ' ')
-        
+        text = text.replace("\\n", " ")
+        text = text.replace("\\r", " ")
+        text = text.replace("\\t", " ")
+        text = text.replace("\n", " ")
+        text = text.replace("\r", " ")
+        text = text.replace("\t", " ")
+
         # Remove multiple spaces
-        text = re.sub(r'\s+', ' ', text)
-        
+        text = re.sub(r"\s+", " ", text)
+
         return text
 
     def _parse_json_response(self, response: Any, context: str, raise_http_error: bool = False) -> Dict[str, Any]:
@@ -116,22 +109,19 @@ class GeminiAnalyzer:
                 return parsed
             except Exception as repair_exc:
                 snippet = raw_text[:500] if raw_text else "<empty response>"
-                logger.error(
-                    f"Failed to repair Gemini response for {context}: {repair_exc}. Snippet: {snippet}"
-                )
+                logger.error(f"Failed to repair Gemini response for {context}: {repair_exc}. Snippet: {snippet}")
                 if raise_http_error:
                     raise HTTPException(
-                        status_code=500,
-                        detail="NextAI analysis failed: Unable to parse response. Please try again."
+                        status_code=500, detail="NextAI analysis failed: Unable to parse response. Please try again."
                     ) from repair_exc
                 raise
-    
+
     async def analyze_with_prompts(
         self,
         system_prompt: str,
         developer_prompt: str,
         task_prompt: str,
-        safety_settings: Optional[Dict[str, Any]] = None
+        safety_settings: Optional[Dict[str, Any]] = None,
     ) -> Dict[str, Any]:
         """
         Multi-tier prompt analysis for Resume Studio.
@@ -153,29 +143,24 @@ Return ONLY valid JSON matching the requested schema. No markdown, no explanatio
             # Apply additional safety settings if provided
             generation_config = {
                 "temperature": 0.3,  # Lower temperature for factual, structured output
-                "response_mime_type": "application/json"
+                "response_mime_type": "application/json",
             }
-            
+
             response = self.client.models.generate_content(
-                model=self.model_name,
-                contents=full_prompt,
-                config=generation_config
+                model=self.model_name, contents=full_prompt, config=generation_config
             )
 
             result = self._parse_json_response(response, "multi-prompt analysis")
-            
+
             logger.info("Gemini multi-prompt analysis completed successfully")
             return {"parsed_data": result}
-            
+
         except Exception as e:
             logger.error(f"Gemini multi-prompt analysis error: {e}")
             raise
-        
+
     async def analyze_displacement_risk(
-        self,
-        job_title: str,
-        skills: List[str],
-        years_experience: Optional[int] = None
+        self, job_title: str, skills: List[str], years_experience: Optional[int] = None
     ) -> Dict[str, Any]:
         """
         Analyze AI displacement risk using NextAI intelligence
@@ -218,29 +203,26 @@ Return valid JSON only:
 BE SPECIFIC TO THE JOB. Avoid generic phrases. Use concrete examples."""
 
             response = self.client.models.generate_content(
-                model=self.model_name,
-                contents=prompt,
-                config=self.generation_config
+                model=self.model_name, contents=prompt, config=self.generation_config
             )
 
             result = self._parse_json_response(response, f"displacement risk for {job_title}", raise_http_error=True)
-            
+
             # Validate that we got real data, not defaults
             if result.get("ai_displacement_risk", {}).get("score", 50) == 50.0:
                 logger.warning(f"NextAI returned potentially generic score for {job_title}")
-            
-            logger.info(f"✅ NextAI displacement analysis complete for {job_title}: {result.get('ai_displacement_risk', {}).get('score', 'N/A')}%")
+
+            logger.info(
+                f"✅ NextAI displacement analysis complete for {job_title}: {result.get('ai_displacement_risk', {}).get('score', 'N/A')}%"
+            )
             return result
-            
+
         except Exception as e:
             logger.error(f"NextAI displacement analysis error: {e}")
             return self._generate_fallback_displacement_risk(job_title, skills, years_experience)
 
     async def generate_skill_insights(
-        self,
-        job_title: str,
-        skills: List[str],
-        years_experience: Optional[int] = None
+        self, job_title: str, skills: List[str], years_experience: Optional[int] = None
     ) -> Dict[str, Any]:
         """
         Generate comprehensive skill insights using Gemini
@@ -260,16 +242,14 @@ JSON output:
 }}"""
 
             response = self.client.models.generate_content(
-                model=self.model_name,
-                contents=prompt,
-                config=self.generation_config
+                model=self.model_name, contents=prompt, config=self.generation_config
             )
 
             result = self._parse_json_response(response, f"skill insights for {job_title}")
-            
+
             logger.info(f"Gemini skill insights generated for {job_title}")
             return result
-            
+
         except Exception as e:
             logger.error(f"Gemini skill insights error: {e}")
             return self._generate_fallback_skill_insights(job_title, skills, years_experience)
@@ -280,7 +260,7 @@ JSON output:
         skills: List[str],
         location: str,
         years_experience: Optional[int],
-        timeline: str = "5 years"
+        timeline: str = "5 years",
     ) -> Dict[str, Any]:
         """
         Generate multi-year career roadmap using Gemini
@@ -350,27 +330,21 @@ Return ONLY valid JSON.
 """
 
             response = self.client.models.generate_content(
-                model=self.model_name,
-                contents=prompt,
-                config=self.generation_config
+                model=self.model_name, contents=prompt, config=self.generation_config
             )
 
             result = self._parse_json_response(response, f"career roadmap for {job_title}")
-            
+
             logger.info(f"Gemini roadmap generated for {job_title}")
             return result
-            
+
         except Exception as e:
             logger.error(f"Gemini roadmap generation error: {e}")
             # Fallback basic roadmap
             return self._generate_fallback_roadmap(job_title, timeline)
 
     async def generate_industry_benchmarks(
-        self,
-        job_title: str,
-        skills: List[str],
-        location: str,
-        years_experience: Optional[int]
+        self, job_title: str, skills: List[str], location: str, years_experience: Optional[int]
     ) -> Dict[str, Any]:
         """
         Generate industry benchmarking data using Gemini
@@ -394,25 +368,20 @@ JSON:
 Use {location} market data."""
 
             response = self.client.models.generate_content(
-                model=self.model_name,
-                contents=prompt,
-                config=self.generation_config
+                model=self.model_name, contents=prompt, config=self.generation_config
             )
 
             result = self._parse_json_response(response, f"industry benchmarks for {job_title}")
-            
+
             logger.info(f"Gemini benchmarks generated for {job_title}")
             return result
-            
+
         except Exception as e:
             logger.error(f"Gemini benchmarks error: {e}")
             return self._generate_fallback_benchmarks(job_title, location)
 
     def _generate_fallback_displacement_risk(
-        self,
-        job_title: str,
-        skills: List[str],
-        years_experience: Optional[int]
+        self, job_title: str, skills: List[str], years_experience: Optional[int]
     ) -> Dict[str, Any]:
         """Generate deterministic displacement insights when Gemini is unavailable."""
 
@@ -456,19 +425,19 @@ Use {location} market data."""
         human_advantage = [
             "Relationship building and trust",
             "Handling ambiguous, cross-functional decisions",
-            f"Domain knowledge of {job_title} operations"
+            f"Domain knowledge of {job_title} operations",
         ]
 
         automation_vulnerable = [
             f"Routine {highlighted_skills[0].lower()} tasks",
             "Status reporting and documentation",
-            "Data collection and consolidation"
+            "Data collection and consolidation",
         ]
 
         automation_resistant = [
             "Human-centered collaboration",
             "Strategic prioritization",
-            "Ethical and compliance oversight"
+            "Ethical and compliance oversight",
         ]
 
         compatibility = round(max(35.0, min(92.0, 105.0 - score)), 1)
@@ -488,10 +457,7 @@ Use {location} market data."""
         }
 
     def _generate_fallback_skill_insights(
-        self,
-        job_title: str,
-        skills: List[str],
-        years_experience: Optional[int]
+        self, job_title: str, skills: List[str], years_experience: Optional[int]
     ) -> Dict[str, Any]:
         """Generate skill insights when Gemini is offline."""
 
@@ -603,7 +569,7 @@ Use {location} market data."""
                     "skills_to_develop": ["Leadership", "Advanced technical skills"],
                     "certifications": ["Industry certification"],
                     "estimated_salary_range": "$90k-$130k",
-                    "ai_resilience_score": 75
+                    "ai_resilience_score": 75,
                 }
             },
             "5_year": {
@@ -613,7 +579,7 @@ Use {location} market data."""
                     "skills_to_develop": ["Team management", "Strategy"],
                     "certifications": ["Management training"],
                     "estimated_salary_range": "$120k-$170k",
-                    "ai_resilience_score": 80
+                    "ai_resilience_score": 80,
                 }
             },
             "10_year": {
@@ -623,7 +589,7 @@ Use {location} market data."""
                     "skills_to_develop": ["Executive presence", "Business strategy"],
                     "certifications": ["Executive MBA"],
                     "estimated_salary_range": "$180k-$250k",
-                    "ai_resilience_score": 85
+                    "ai_resilience_score": 85,
                 }
             },
             "sankey_data": {
@@ -631,14 +597,14 @@ Use {location} market data."""
                     {"id": "current", "name": job_title, "category": "current"},
                     {"id": "year3", "name": f"Senior {job_title}", "category": "short_term"},
                     {"id": "year5", "name": f"Lead {job_title}", "category": "mid_term"},
-                    {"id": "year10", "name": "Director", "category": "long_term"}
+                    {"id": "year10", "name": "Director", "category": "long_term"},
                 ],
                 "links": [
                     {"source": "current", "target": "year3", "value": 1, "skill": "Experience"},
                     {"source": "year3", "target": "year5", "value": 1, "skill": "Leadership"},
-                    {"source": "year5", "target": "year10", "value": 1, "skill": "Strategy"}
-                ]
-            }
+                    {"source": "year5", "target": "year10", "value": 1, "skill": "Strategy"},
+                ],
+            },
         }
 
     def _generate_fallback_benchmarks(self, job_title: str, location: str) -> Dict[str, Any]:
@@ -649,14 +615,12 @@ Use {location} market data."""
                 "industry_average": 55.0,
                 "percentile": 55,
                 "comparison_text": "Moderate risk compared to industry",
-                "trend": "stable"
+                "trend": "stable",
             },
             "skill_demand": {
                 "overall_score": 70.0,
-                "top_skills": [
-                    {"name": "Core Skill", "demand": 80, "growth": "+10%"}
-                ],
-                "skill_gaps": []
+                "top_skills": [{"name": "Core Skill", "demand": 80, "growth": "+10%"}],
+                "skill_gaps": [],
             },
             "salary_benchmark": {
                 "your_estimated_range": "$80k-$120k",
@@ -665,24 +629,20 @@ Use {location} market data."""
                 "percentile_50": 100000,
                 "percentile_75": 125000,
                 "percentile_90": 150000,
-                "your_position": "At median"
+                "your_position": "At median",
             },
-            "career_progression": {
-                "pace": "Moderate",
-                "typical_years_to_next_level": 3,
-                "your_readiness_score": 70
-            },
+            "career_progression": {"pace": "Moderate", "typical_years_to_next_level": 3, "your_readiness_score": 70},
             "market_trends": {
                 "role_growth": "+10% annually",
                 "hiring_difficulty": "Moderate",
                 "remote_availability": "60%",
-                "top_hiring_industries": ["Technology", "Services"]
+                "top_hiring_industries": ["Technology", "Services"],
             },
             "competitive_position": {
                 "peer_ranking": "Middle 50%",
                 "strengths": ["Experience"],
-                "areas_for_improvement": ["Skill development"]
-            }
+                "areas_for_improvement": ["Skill development"],
+            },
         }
 
 

@@ -11,7 +11,30 @@ from loguru import logger
 import time
 from contextlib import asynccontextmanager
 
-from app.api import analyze, jobs, users, health, coach, interviewer, jobs_marketplace, subscriptions, roadmap, auth, onboarding, marketplace, resume_studio, match, elite_auth, health_advanced, career_health, rft, talent_graph, job_scraper, gdpr
+from app.api import (
+    analyze,
+    jobs,
+    users,
+    health,
+    coach,
+    interviewer,
+    jobs_marketplace,
+    subscriptions,
+    roadmap,
+    auth,
+    onboarding,
+    marketplace,
+    resume_studio,
+    match,
+    elite_auth,
+    health_advanced,
+    career_health,
+    rft,
+    talent_graph,
+    job_scraper,
+    gdpr,
+)
+
 try:
     from app.api import resume_studio
 except ImportError:
@@ -29,13 +52,14 @@ from app.core.scheduler import setup_scheduled_tasks, shutdown_scheduled_tasks, 
 from app.core.neo4j_client import neo4j_client
 from slowapi.errors import RateLimitExceeded
 
+
 # Initialize database tables
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     """Application lifespan events - Startup and Shutdown"""
     logger.info("🚀 Starting NEXT Career Intelligence API...")
     logger.info(f"Environment: {settings.ENVIRONMENT}")
-    
+
     # Initialize error monitoring
     try:
         sentry_initialized = init_sentry()
@@ -43,7 +67,7 @@ async def lifespan(app: FastAPI):
             logger.info("✅ Sentry error monitoring initialized")
     except Exception as e:
         logger.warning(f"⚠️ Sentry initialization failed: {e}")
-    
+
     # Initialize Redis cache
     try:
         redis_initialized = await init_redis()
@@ -51,7 +75,7 @@ async def lifespan(app: FastAPI):
             logger.info("✅ Redis cache initialized")
     except Exception as e:
         logger.warning(f"⚠️ Redis initialization failed: {e}")
-    
+
     # Initialize Supabase connection pool
     try:
         init_supabase()
@@ -59,7 +83,7 @@ async def lifespan(app: FastAPI):
     except Exception as e:
         logger.error(f"❌ Supabase initialization failed: {e}")
         capture_exception(e, {"startup": {"service": "supabase"}})
-    
+
     # Initialize Neo4j Talent Graph
     try:
         await neo4j_client.connect()
@@ -73,22 +97,22 @@ async def lifespan(app: FastAPI):
         logger.info("✅ Scheduled background tasks initialized")
     except Exception as e:
         logger.warning(f"⚠️ Background tasks initialization failed: {e}")
-    
+
     # Log startup complete
     logger.info("✅ All services initialized - API ready to accept requests")
-    
+
     yield
-    
+
     # Shutdown cleanup
     logger.info("👋 Shutting down NEXT Career Intelligence API...")
-    
+
     # Shutdown scheduled tasks
     try:
         shutdown_scheduled_tasks()
         logger.info("✅ Background tasks stopped")
     except Exception as e:
         logger.error(f"❌ Background tasks shutdown failed: {e}")
-    
+
     # Cleanup Neo4j connections
     try:
         await neo4j_client.close()
@@ -113,7 +137,7 @@ app = FastAPI(
     version="1.0.0",
     docs_url="/docs",
     redoc_url="/redoc",
-    lifespan=lifespan
+    lifespan=lifespan,
 )
 
 # Add rate limiting
@@ -122,17 +146,11 @@ app.add_exception_handler(RateLimitExceeded, rate_limit_exceeded_handler)
 
 # Add compression middleware (if enabled)
 if settings.ENABLE_COMPRESSION:
-    app.add_middleware(
-        GZipMiddleware,
-        minimum_size=settings.COMPRESSION_MIN_SIZE
-    )
+    app.add_middleware(GZipMiddleware, minimum_size=settings.COMPRESSION_MIN_SIZE)
     logger.info(f"✅ Response compression enabled (min size: {settings.COMPRESSION_MIN_SIZE} bytes)")
 
 # Add request size limit middleware
-app.add_middleware(
-    RequestSizeLimitMiddleware,
-    max_size=settings.MAX_REQUEST_SIZE
-)
+app.add_middleware(RequestSizeLimitMiddleware, max_size=settings.MAX_REQUEST_SIZE)
 logger.info(f"✅ Request size limit: {settings.MAX_REQUEST_SIZE / (1024*1024):.1f}MB")
 
 # CORS middleware - Allow all origins in production for Cloud Run
@@ -161,20 +179,18 @@ else:
 async def log_requests(request: Request, call_next):
     """Log all requests with timing"""
     start_time = time.time()
-    
+
     # Process request
     response = await call_next(request)
-    
+
     # Calculate duration
     duration = time.time() - start_time
-    
+
     # Log request details
     logger.info(
-        f"{request.method} {request.url.path} "
-        f"- Status: {response.status_code} "
-        f"- Duration: {duration:.3f}s"
+        f"{request.method} {request.url.path} " f"- Status: {response.status_code} " f"- Duration: {duration:.3f}s"
     )
-    
+
     return response
 
 
@@ -183,26 +199,29 @@ async def log_requests(request: Request, call_next):
 async def global_exception_handler(request: Request, exc: Exception):
     """Handle unexpected errors gracefully with monitoring"""
     logger.error(f"Unhandled exception: {exc}", exc_info=True)
-    
+
     # Send to Sentry if configured
     try:
-        capture_exception(exc, {
-            "request": {
-                "url": str(request.url),
-                "method": request.method,
-                "client_ip": request.client.host if request.client else "unknown"
-            }
-        })
+        capture_exception(
+            exc,
+            {
+                "request": {
+                    "url": str(request.url),
+                    "method": request.method,
+                    "client_ip": request.client.host if request.client else "unknown",
+                }
+            },
+        )
     except Exception as e:
         logger.error(f"Failed to capture exception in Sentry: {e}")
-    
+
     return JSONResponse(
         status_code=500,
         content={
             "error": "Internal server error",
             "message": str(exc) if settings.DEBUG else "An unexpected error occurred",
-            "path": str(request.url)
-        }
+            "path": str(request.url),
+        },
     )
 
 
@@ -260,25 +279,13 @@ async def performance_stats():
             "cache": get_cache_stats(),
             "database": get_db_stats(),
             "background_tasks": task_manager.get_task_stats(),
-            "rate_limiting": {
-                "enabled": True,
-                "storage": "redis" if settings.REDIS_HOST else "memory"
-            },
-            "compression": {
-                "enabled": settings.ENABLE_COMPRESSION,
-                "min_size_bytes": settings.COMPRESSION_MIN_SIZE
-            },
-            "monitoring": {
-                "sentry_enabled": bool(settings.SENTRY_DSN),
-                "environment": settings.SENTRY_ENVIRONMENT
-            }
+            "rate_limiting": {"enabled": True, "storage": "redis" if settings.REDIS_HOST else "memory"},
+            "compression": {"enabled": settings.ENABLE_COMPRESSION, "min_size_bytes": settings.COMPRESSION_MIN_SIZE},
+            "monitoring": {"sentry_enabled": bool(settings.SENTRY_DSN), "environment": settings.SENTRY_ENVIRONMENT},
         }
     except Exception as e:
         logger.error(f"Failed to get performance stats: {e}")
-        return {
-            "error": str(e),
-            "message": "Failed to retrieve performance statistics"
-        }
+        return {"error": str(e), "message": "Failed to retrieve performance statistics"}
 
 
 # Root endpoint
@@ -297,18 +304,12 @@ async def root():
             "caching": "enabled" if settings.REDIS_HOST else "disabled",
             "rate_limiting": "enabled",
             "compression": "enabled" if settings.ENABLE_COMPRESSION else "disabled",
-            "error_monitoring": "enabled" if settings.SENTRY_DSN else "disabled"
-        }
+            "error_monitoring": "enabled" if settings.SENTRY_DSN else "disabled",
+        },
     }
 
 
 if __name__ == "__main__":
     import uvicorn
-    
-    uvicorn.run(
-        "app.main:app",
-        host="0.0.0.0",
-        port=8000,
-        reload=settings.DEBUG,
-        log_level="info"
-    )
+
+    uvicorn.run("app.main:app", host="0.0.0.0", port=8000, reload=settings.DEBUG, log_level="info")

@@ -34,11 +34,7 @@ class TwoFactorAuthService:
         return pyotp.random_base32()
 
     @staticmethod
-    def generate_qr_code(
-        secret: str,
-        user_email: str,
-        issuer_name: str = "NEXT Career Intelligence"
-    ) -> str:
+    def generate_qr_code(secret: str, user_email: str, issuer_name: str = "NEXT Career Intelligence") -> str:
         """
         Generate QR code for TOTP secret
 
@@ -56,10 +52,7 @@ class TwoFactorAuthService:
         try:
             # Create TOTP URI
             totp = pyotp.TOTP(secret)
-            provisioning_uri = totp.provisioning_uri(
-                name=user_email,
-                issuer_name=issuer_name
-            )
+            provisioning_uri = totp.provisioning_uri(name=user_email, issuer_name=issuer_name)
 
             # Generate QR code
             qr = qrcode.QRCode(
@@ -188,7 +181,7 @@ class TwoFactorAuthService:
             "Can't scan QR code? Enter this manually: JBSW Y3DP EHPK 3PXP"
         """
         # Insert space every 4 characters
-        return ' '.join([secret[i:i+4] for i in range(0, len(secret), 4)])
+        return " ".join([secret[i : i + 4] for i in range(0, len(secret), 4)])
 
     @staticmethod
     def get_current_totp(secret: str) -> str:

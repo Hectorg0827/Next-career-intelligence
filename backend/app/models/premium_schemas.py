@@ -13,8 +13,10 @@ from enum import Enum
 # CAREER PROFILE SCHEMAS (SSOT)
 # ========================================
 
+
 class WorkHistoryItem(BaseModel):
     """Individual work experience entry"""
+
     id: Optional[str] = None
     company: str = Field(..., min_length=1, max_length=255)
     title: str = Field(..., min_length=1, max_length=255)
@@ -29,6 +31,7 @@ class WorkHistoryItem(BaseModel):
 
 class EducationItem(BaseModel):
     """Education entry"""
+
     institution: str
     degree: str
     field_of_study: Optional[str] = None
@@ -39,6 +42,7 @@ class EducationItem(BaseModel):
 
 class CertificationItem(BaseModel):
     """Certification entry"""
+
     name: str
     issuer: str
     issue_date: Optional[str] = None
@@ -49,6 +53,7 @@ class CertificationItem(BaseModel):
 
 class SkillsSet(BaseModel):
     """Structured skills taxonomy"""
+
     hard: List[str] = Field(default=[], description="Technical/hard skills")
     soft: List[str] = Field(default=[], description="Soft/interpersonal skills")
     domains: List[str] = Field(default=[], description="Domain expertise")
@@ -56,6 +61,7 @@ class SkillsSet(BaseModel):
 
 class AchievementItem(BaseModel):
     """Notable achievement"""
+
     title: str
     description: str
     date: Optional[str] = None
@@ -64,6 +70,7 @@ class AchievementItem(BaseModel):
 
 class CareerProfileBasics(BaseModel):
     """Basic contact information"""
+
     full_name: Optional[str] = None
     headline: Optional[str] = Field(None, max_length=500)
     location: Optional[str] = None
@@ -74,6 +81,7 @@ class CareerProfileBasics(BaseModel):
 
 class CareerProfileMetadata(BaseModel):
     """Profile metadata"""
+
     ats_normalized: bool = False
     last_verified_iso: Optional[str] = None
     sources: List[str] = Field(default=[], description="resume_upload, linkedin_paste, coach_suggestion, etc.")
@@ -81,6 +89,7 @@ class CareerProfileMetadata(BaseModel):
 
 class CareerProfileData(BaseModel):
     """Complete career profile - Single Source of Truth"""
+
     basics: CareerProfileBasics = Field(default_factory=CareerProfileBasics)
     work_history: List[WorkHistoryItem] = Field(default=[])
     education: List[EducationItem] = Field(default=[])
@@ -92,6 +101,7 @@ class CareerProfileData(BaseModel):
 
 class CareerProfileResponse(BaseModel):
     """Career profile API response"""
+
     id: str
     user_id: str
     profile_data: CareerProfileData
@@ -103,8 +113,10 @@ class CareerProfileResponse(BaseModel):
 # RESUME STUDIO INPUT/OUTPUT SCHEMAS
 # ========================================
 
+
 class IngestRequest(BaseModel):
     """Request to ingest and parse resume/profile"""
+
     text: Optional[str] = Field(None, description="Plain text resume or LinkedIn content")
     file_id: Optional[str] = Field(None, description="Reference to uploaded file")
     linkedin_url: Optional[str] = Field(None, description="LinkedIn profile URL")
@@ -113,6 +125,7 @@ class IngestRequest(BaseModel):
 
 class ValidationSummary(BaseModel):
     """Summary of profile validation"""
+
     summary: str = Field(..., description="Human-readable summary of parsing")
     profile_patch_json: Dict[str, Any] = Field(..., description="Partial profile data (only confident fields)")
     open_questions: List[str] = Field(default=[], description="Clarifications needed from user")
@@ -121,6 +134,7 @@ class ValidationSummary(BaseModel):
 
 class ConfirmIngestRequest(BaseModel):
     """Request to confirm and save parsed profile"""
+
     user_id: str
     profile_patch: Dict[str, Any]
     resolved_questions: Optional[Dict[str, Any]] = None
@@ -128,6 +142,7 @@ class ConfirmIngestRequest(BaseModel):
 
 class JobDescriptionInput(BaseModel):
     """Job description for tailoring"""
+
     title: str
     seniority: Optional[str] = Field(None, description="IC|Manager|Senior|Entry")
     company: str
@@ -142,6 +157,7 @@ class JobDescriptionInput(BaseModel):
 
 class KeywordCoverage(BaseModel):
     """Keyword matching analysis"""
+
     matched: List[str] = Field(default=[])
     missing: List[str] = Field(default=[])
     coverage_percentage: Optional[float] = None
@@ -149,6 +165,7 @@ class KeywordCoverage(BaseModel):
 
 class TailoredResumeOutput(BaseModel):
     """Output from resume tailoring"""
+
     summary: str = Field(..., description="2-4 line summary aligned to JD")
     core_skills: Dict[str, List[str]] = Field(default={}, description="Categorized skills")
     experience: List[Dict[str, Any]] = Field(default=[], description="Reordered and rewritten roles")
@@ -162,6 +179,7 @@ class TailoredResumeOutput(BaseModel):
 
 class CoverLetterStructure(BaseModel):
     """Cover letter structure"""
+
     salutation: str = Field(default="Hiring Manager")
     opening: str
     body: List[str] = Field(..., description="2-3 paragraphs")
@@ -172,6 +190,7 @@ class CoverLetterStructure(BaseModel):
 
 class TailoredCoverLetterOutput(BaseModel):
     """Output from cover letter generation"""
+
     cover_letter: CoverLetterStructure
     word_count: Optional[int] = None
     tone: str = Field(default="professional")
@@ -179,12 +198,14 @@ class TailoredCoverLetterOutput(BaseModel):
 
 class TailorResumeRequest(BaseModel):
     """Request to tailor resume"""
+
     user_id: str
     job_description: JobDescriptionInput
 
 
 class TailorCoverLetterRequest(BaseModel):
     """Request to tailor cover letter"""
+
     user_id: str
     job_description: JobDescriptionInput
 
@@ -193,8 +214,10 @@ class TailorCoverLetterRequest(BaseModel):
 # PROFILE SUGGESTIONS SCHEMAS
 # ========================================
 
+
 class ProfilePatchSuggestion(BaseModel):
     """Suggestion for profile improvement"""
+
     id: Optional[str] = None
     source: str = Field(..., description="coach|interviewer|manual")
     suggestion_type: str = Field(..., description="bullet|skill|achievement|certification")
@@ -207,11 +230,12 @@ class ProfilePatchSuggestion(BaseModel):
 
 class ApplySuggestionRequest(BaseModel):
     """Request to apply a user-confirmed suggestion"""
+
     user_id: str
     suggestion_id: str
     user_confirmed: bool = Field(..., description="Must be true to apply")
 
-    @validator('user_confirmed')
+    @validator("user_confirmed")
     def must_be_confirmed(cls, v):
         if not v:
             raise ValueError("user_confirmed must be true to apply suggestion")
@@ -220,6 +244,7 @@ class ApplySuggestionRequest(BaseModel):
 
 class ApplySuggestionResponse(BaseModel):
     """Response after applying suggestion"""
+
     success: bool
     audit_note: str
     updated_profile: Optional[CareerProfileData] = None
@@ -227,6 +252,7 @@ class ApplySuggestionResponse(BaseModel):
 
 class SuggestionsListResponse(BaseModel):
     """List of pending suggestions"""
+
     suggestions: List[ProfilePatchSuggestion]
     total_count: int
 
@@ -235,8 +261,10 @@ class SuggestionsListResponse(BaseModel):
 # ARTIFACT SCHEMAS
 # ========================================
 
+
 class ArtifactResponse(BaseModel):
     """Resume or cover letter artifact"""
+
     id: str
     user_id: str
     artifact_type: str
@@ -251,6 +279,7 @@ class ArtifactResponse(BaseModel):
 
 class ArtifactsListResponse(BaseModel):
     """List of user artifacts"""
+
     artifacts: List[ArtifactResponse]
     total_count: int
 
@@ -259,8 +288,10 @@ class ArtifactsListResponse(BaseModel):
 # CAREER COACH SCHEMAS
 # ========================================
 
+
 class CoachMessage(BaseModel):
     """Single message in coaching conversation"""
+
     role: str = Field(..., description="user|assistant")
     content: str
     timestamp: datetime = Field(default_factory=datetime.utcnow)
@@ -268,6 +299,7 @@ class CoachMessage(BaseModel):
 
 class CoachRequest(BaseModel):
     """Request to Career Coach"""
+
     user_id: str
     message: str
     conversation_id: Optional[str] = None
@@ -276,6 +308,7 @@ class CoachRequest(BaseModel):
 
 class CoachResponse(BaseModel):
     """Response from Career Coach"""
+
     conversation_id: str
     reply: str
     profile_patch_suggestions: List[ProfilePatchSuggestion] = Field(default=[])
@@ -285,6 +318,7 @@ class CoachResponse(BaseModel):
 
 class CoachConversationResponse(BaseModel):
     """Coach conversation details"""
+
     id: str
     conversation_title: Optional[str] = None
     conversation_type: str
@@ -299,8 +333,10 @@ class CoachConversationResponse(BaseModel):
 # CAREER GOALS SCHEMAS
 # ========================================
 
+
 class GoalMilestone(BaseModel):
     """Milestone within a goal"""
+
     title: str
     completed: bool = False
     completed_at: Optional[datetime] = None
@@ -308,6 +344,7 @@ class GoalMilestone(BaseModel):
 
 class CareerGoalData(BaseModel):
     """SMART career goal"""
+
     goal_title: str = Field(..., max_length=500)
     goal_type: str = Field(..., description="skill_acquisition|role_transition|salary_increase|certification")
     description: Optional[str] = None
@@ -327,12 +364,14 @@ class CareerGoalData(BaseModel):
 
 class CreateGoalRequest(BaseModel):
     """Request to create a new goal"""
+
     user_id: str
     goal: CareerGoalData
 
 
 class UpdateGoalRequest(BaseModel):
     """Request to update a goal"""
+
     goal_id: str
     user_id: str
     updates: Dict[str, Any]
@@ -340,6 +379,7 @@ class UpdateGoalRequest(BaseModel):
 
 class GoalResponse(BaseModel):
     """Career goal response"""
+
     id: str
     user_id: str
     goal_data: CareerGoalData
@@ -350,6 +390,7 @@ class GoalResponse(BaseModel):
 
 class GoalsListResponse(BaseModel):
     """List of career goals"""
+
     goals: List[GoalResponse]
     active_count: int
     completed_count: int
@@ -359,8 +400,10 @@ class GoalsListResponse(BaseModel):
 # INTERVIEWER AI SCHEMAS
 # ========================================
 
+
 class InterviewQuestion(BaseModel):
     """Single interview question and response"""
+
     question: str
     user_response: Optional[str] = None
     situation: Optional[str] = None
@@ -372,6 +415,7 @@ class InterviewQuestion(BaseModel):
 
 class EvidenceSummary(BaseModel):
     """Evidence extracted from interview"""
+
     summary: str = Field(..., description="Concise, verifiable statement")
     metric: Optional[str] = None
     confidence: float = Field(..., ge=0, le=1)
@@ -380,6 +424,7 @@ class EvidenceSummary(BaseModel):
 
 class StartInterviewRequest(BaseModel):
     """Request to start interview session"""
+
     user_id: str
     role_title: str
     company_name: Optional[str] = None
@@ -389,6 +434,7 @@ class StartInterviewRequest(BaseModel):
 
 class SubmitAnswerRequest(BaseModel):
     """Submit answer to interview question"""
+
     session_id: str
     user_id: str
     question_index: int
@@ -397,12 +443,14 @@ class SubmitAnswerRequest(BaseModel):
 
 class CompleteInterviewRequest(BaseModel):
     """Request to complete interview and generate suggestions"""
+
     session_id: str
     user_id: str
 
 
 class InterviewSessionResponse(BaseModel):
     """Interview session details"""
+
     session_id: str
     role_title: str
     company_name: Optional[str] = None
@@ -419,8 +467,10 @@ class InterviewSessionResponse(BaseModel):
 # SUBSCRIPTION SCHEMAS
 # ========================================
 
+
 class SubscriptionTier(str, Enum):
     """Subscription tier levels"""
+
     FREE = "free"
     PREMIUM = "premium"
     ENTERPRISE = "enterprise"
@@ -428,6 +478,7 @@ class SubscriptionTier(str, Enum):
 
 class SubscriptionResponse(BaseModel):
     """User subscription details"""
+
     user_id: str
     tier: SubscriptionTier
     status: str
@@ -437,6 +488,7 @@ class SubscriptionResponse(BaseModel):
 
 class FeatureAccessResponse(BaseModel):
     """Feature access check response"""
+
     user_id: str
     tier: SubscriptionTier
     has_access: bool

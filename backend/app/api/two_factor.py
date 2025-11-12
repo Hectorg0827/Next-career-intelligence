@@ -14,6 +14,7 @@ from datetime import datetime
 
 router = APIRouter(prefix="/api/2fa", tags=["Two-Factor Authentication"])
 
+
 # Pydantic models
 class Enable2FAResponse(BaseModel):
     secret: str
@@ -21,19 +22,24 @@ class Enable2FAResponse(BaseModel):
     manual_entry_code: str  # Formatted for manual entry
     backup_codes: List[str]
 
+
 class Verify2FARequest(BaseModel):
     token: str = Field(..., min_length=6, max_length=6, description="6-digit TOTP code")
+
 
 class Verify2FASetupRequest(BaseModel):
     secret: str
     token: str = Field(..., min_length=6, max_length=6)
 
+
 class Disable2FARequest(BaseModel):
     password: str
     token: Optional[str] = None  # Required if 2FA currently enabled
 
+
 class RegenerateBackupCodesRequest(BaseModel):
     password: str
+
 
 class Use2FABackupCodeRequest(BaseModel):
     backup_code: str = Field(..., min_length=8, max_length=8)
@@ -63,10 +69,7 @@ async def initialize_2fa_setup(current_user=Depends(get_current_user)):
 
         # Generate secret and QR code
         secret = tfa_service.generate_secret()
-        qr_code = tfa_service.generate_qr_code(
-            secret=secret,
-            user_email=current_user["email"]
-        )
+        qr_code = tfa_service.generate_qr_code(secret=secret, user_email=current_user["email"])
         manual_code = tfa_service.format_secret_for_manual_entry(secret)
 
         # Generate backup codes
@@ -74,12 +77,7 @@ async def initialize_2fa_setup(current_user=Depends(get_current_user)):
 
         logger.info(f"2FA initialization started for user {current_user['user_id']}")
 
-        return {
-            "secret": secret,
-            "qr_code": qr_code,
-            "manual_entry_code": manual_code,
-            "backup_codes": backup_codes
-        }
+        return {"secret": secret, "qr_code": qr_code, "manual_entry_code": manual_code, "backup_codes": backup_codes}
 
     except HTTPException:
         raise
@@ -89,10 +87,7 @@ async def initialize_2fa_setup(current_user=Depends(get_current_user)):
 
 
 @router.post("/enable/verify")
-async def verify_and_enable_2fa(
-    request: Verify2FASetupRequest,
-    current_user=Depends(get_current_user)
-):
+async def verify_and_enable_2fa(request: Verify2FASetupRequest, current_user=Depends(get_current_user)):
     """
     Verify TOTP token and enable 2FA (step 2)
 
@@ -117,20 +112,22 @@ async def verify_and_enable_2fa(
         hashed_codes = [tfa_service.hash_backup_code(code) for code in backup_codes]
 
         # Enable 2FA in database
-        await supabase.table("users").update({
-            "two_factor_enabled": True,
-            "two_factor_secret": request.secret,  # TODO: Encrypt at rest
-            "two_factor_backup_codes": hashed_codes,
-            "two_factor_enabled_at": datetime.utcnow().isoformat(),
-            "two_factor_method": "totp"
-        }).eq("id", current_user["user_id"]).execute()
+        await supabase.table("users").update(
+            {
+                "two_factor_enabled": True,
+                "two_factor_secret": request.secret,  # TODO: Encrypt at rest
+                "two_factor_backup_codes": hashed_codes,
+                "two_factor_enabled_at": datetime.utcnow().isoformat(),
+                "two_factor_method": "totp",
+            }
+        ).eq("id", current_user["user_id"]).execute()
 
         logger.info(f"✅ 2FA enabled for user {current_user['user_id']}")
 
         return {
             "message": "2FA successfully enabled",
             "enabled": True,
-            "backup_codes": backup_codes  # Show once, user must save
+            "backup_codes": backup_codes,  # Show once, user must save
         }
 
     except HTTPException:
@@ -141,10 +138,7 @@ async def verify_and_enable_2fa(
 
 
 @router.post("/verify")
-async def verify_2fa_token(
-    request: Verify2FARequest,
-    current_user=Depends(get_current_user)
-):
+async def verify_2fa_token(request: Verify2FARequest, current_user=Depends(get_current_user)):
     """
     Verify 2FA token during login
 
@@ -155,9 +149,12 @@ async def verify_2fa_token(
         supabase = get_supabase()
 
         # Get user's 2FA secret
-        result = await supabase.table("users").select(
-            "two_factor_enabled, two_factor_secret"
-        ).eq("id", current_user["user_id"]).execute()
+        result = (
+            await supabase.table("users")
+            .select("two_factor_enabled, two_factor_secret")
+            .eq("id", current_user["user_id"])
+            .execute()
+        )
 
         if not result.data:
             raise HTTPException(404, "User not found")
@@ -174,18 +171,15 @@ async def verify_2fa_token(
         is_valid = tfa_service.verify_totp(secret, request.token)
         if not is_valid:
             # Record failed attempt
-            await supabase.rpc("record_failed_login", {
-                "user_id_param": current_user["user_id"],
-                "max_attempts": 5,
-                "lockout_duration_minutes": 30
-            }).execute()
+            await supabase.rpc(
+                "record_failed_login",
+                {"user_id_param": current_user["user_id"], "max_attempts": 5, "lockout_duration_minutes": 30},
+            ).execute()
 
             raise HTTPException(401, "Invalid 2FA token")
 
         # Reset failed attempts on success
-        await supabase.rpc("reset_failed_logins", {
-            "user_id_param": current_user["user_id"]
-        }).execute()
+        await supabase.rpc("reset_failed_logins", {"user_id_param": current_user["user_id"]}).execute()
 
         logger.info(f"✅ 2FA verification successful for user {current_user['user_id']}")
 
@@ -199,10 +193,7 @@ async def verify_2fa_token(
 
 
 @router.post("/verify-backup-code")
-async def verify_backup_code(
-    request: Use2FABackupCodeRequest,
-    current_user=Depends(get_current_user)
-):
+async def verify_backup_code(request: Use2FABackupCodeRequest, current_user=Depends(get_current_user)):
     """
     Verify backup code (recovery method)
 
@@ -214,9 +205,9 @@ async def verify_backup_code(
         supabase = get_supabase()
 
         # Get user's backup codes
-        result = await supabase.table("users").select(
-            "two_factor_backup_codes"
-        ).eq("id", current_user["user_id"]).execute()
+        result = (
+            await supabase.table("users").select("two_factor_backup_codes").eq("id", current_user["user_id"]).execute()
+        )
 
         if not result.data:
             raise HTTPException(404, "User not found")
@@ -239,23 +230,17 @@ async def verify_backup_code(
             raise HTTPException(401, "Invalid backup code")
 
         # Update backup codes (remove used one)
-        await supabase.table("users").update({
-            "two_factor_backup_codes": backup_codes
-        }).eq("id", current_user["user_id"]).execute()
+        await supabase.table("users").update({"two_factor_backup_codes": backup_codes}).eq(
+            "id", current_user["user_id"]
+        ).execute()
 
         # Reset failed attempts
-        await supabase.rpc("reset_failed_logins", {
-            "user_id_param": current_user["user_id"]
-        }).execute()
+        await supabase.rpc("reset_failed_logins", {"user_id_param": current_user["user_id"]}).execute()
 
         remaining_codes = len(backup_codes)
         logger.info(f"✅ Backup code used for user {current_user['user_id']} ({remaining_codes} remaining)")
 
-        return {
-            "verified": True,
-            "message": "Backup code verified",
-            "remaining_codes": remaining_codes
-        }
+        return {"verified": True, "message": "Backup code verified", "remaining_codes": remaining_codes}
 
     except HTTPException:
         raise
@@ -265,10 +250,7 @@ async def verify_backup_code(
 
 
 @router.post("/disable")
-async def disable_2fa(
-    request: Disable2FARequest,
-    current_user=Depends(get_current_user)
-):
+async def disable_2fa(request: Disable2FARequest, current_user=Depends(get_current_user)):
     """
     Disable 2FA for account
 
@@ -285,9 +267,12 @@ async def disable_2fa(
             raise HTTPException(400, "Password is required")
 
         # If 2FA enabled, verify token
-        result = await supabase.table("users").select(
-            "two_factor_enabled, two_factor_secret"
-        ).eq("id", current_user["user_id"]).execute()
+        result = (
+            await supabase.table("users")
+            .select("two_factor_enabled, two_factor_secret")
+            .eq("id", current_user["user_id"])
+            .execute()
+        )
 
         if result.data and result.data[0].get("two_factor_enabled"):
             if not request.token:
@@ -299,11 +284,9 @@ async def disable_2fa(
                 raise HTTPException(401, "Invalid 2FA token")
 
         # Disable 2FA
-        await supabase.table("users").update({
-            "two_factor_enabled": False,
-            "two_factor_secret": None,
-            "two_factor_backup_codes": None
-        }).eq("id", current_user["user_id"]).execute()
+        await supabase.table("users").update(
+            {"two_factor_enabled": False, "two_factor_secret": None, "two_factor_backup_codes": None}
+        ).eq("id", current_user["user_id"]).execute()
 
         logger.info(f"2FA disabled for user {current_user['user_id']}")
 
@@ -317,10 +300,7 @@ async def disable_2fa(
 
 
 @router.post("/regenerate-backup-codes", response_model=dict)
-async def regenerate_backup_codes(
-    request: RegenerateBackupCodesRequest,
-    current_user=Depends(get_current_user)
-):
+async def regenerate_backup_codes(request: RegenerateBackupCodesRequest, current_user=Depends(get_current_user)):
     """
     Regenerate backup codes
 
@@ -336,9 +316,7 @@ async def regenerate_backup_codes(
             raise HTTPException(400, "Password is required")
 
         # Check if 2FA enabled
-        result = await supabase.table("users").select(
-            "two_factor_enabled"
-        ).eq("id", current_user["user_id"]).execute()
+        result = await supabase.table("users").select("two_factor_enabled").eq("id", current_user["user_id"]).execute()
 
         if not result.data or not result.data[0].get("two_factor_enabled"):
             raise HTTPException(400, "2FA is not enabled")
@@ -348,16 +326,13 @@ async def regenerate_backup_codes(
         hashed_codes = [tfa_service.hash_backup_code(code) for code in backup_codes]
 
         # Update database
-        await supabase.table("users").update({
-            "two_factor_backup_codes": hashed_codes
-        }).eq("id", current_user["user_id"]).execute()
+        await supabase.table("users").update({"two_factor_backup_codes": hashed_codes}).eq(
+            "id", current_user["user_id"]
+        ).execute()
 
         logger.info(f"Backup codes regenerated for user {current_user['user_id']}")
 
-        return {
-            "message": "Backup codes regenerated",
-            "backup_codes": backup_codes  # Show once, user must save
-        }
+        return {"message": "Backup codes regenerated", "backup_codes": backup_codes}  # Show once, user must save
 
     except HTTPException:
         raise
@@ -380,9 +355,12 @@ async def get_2fa_status(current_user=Depends(get_current_user)):
     try:
         supabase = get_supabase()
 
-        result = await supabase.table("users").select(
-            "two_factor_enabled, two_factor_method, two_factor_enabled_at, two_factor_backup_codes"
-        ).eq("id", current_user["user_id"]).execute()
+        result = (
+            await supabase.table("users")
+            .select("two_factor_enabled, two_factor_method, two_factor_enabled_at, two_factor_backup_codes")
+            .eq("id", current_user["user_id"])
+            .execute()
+        )
 
         if not result.data:
             raise HTTPException(404, "User not found")
@@ -394,7 +372,7 @@ async def get_2fa_status(current_user=Depends(get_current_user)):
             "enabled": user_data.get("two_factor_enabled", False),
             "method": user_data.get("two_factor_method", "totp"),
             "enabled_at": user_data.get("two_factor_enabled_at"),
-            "backup_codes_remaining": len(backup_codes)
+            "backup_codes_remaining": len(backup_codes),
         }
 
     except HTTPException:

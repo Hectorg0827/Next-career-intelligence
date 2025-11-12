@@ -45,8 +45,9 @@ class Neo4jClient:
         """Get skill gaps (stub)"""
         return []
 
-    async def get_career_pathways(self, current_role: str, current_seniority: str, 
-                                  target_role: str, target_seniority: str, max_steps: int = 4) -> List[Dict]:
+    async def get_career_pathways(
+        self, current_role: str, current_seniority: str, target_role: str, target_seniority: str, max_steps: int = 4
+    ) -> List[Dict]:
         """Get career pathways (stub)"""
         return []
 
@@ -64,12 +65,7 @@ class Neo4jClient:
 
     async def get_graph_stats(self) -> Dict:
         """Get graph statistics (stub)"""
-        return {
-            "nodes": {},
-            "relationships": {},
-            "total_nodes": 0,
-            "total_relationships": 0
-        }
+        return {"nodes": {}, "relationships": {}, "total_nodes": 0, "total_relationships": 0}
 
 
 # Global instance

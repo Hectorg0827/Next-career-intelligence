@@ -33,17 +33,14 @@ class LeverScraper:
         {"name": "Robinhood", "company_id": "robinhood"},
         {"name": "Square", "company_id": "square"},
         {"name": "Discord", "company_id": "discord"},
-        {"name": "Grammarly", "company_id": "grammarly"}
+        {"name": "Grammarly", "company_id": "grammarly"},
     ]
 
     def __init__(self):
         self.client = httpx.AsyncClient(
             timeout=30.0,
             follow_redirects=True,
-            headers={
-                "User-Agent": "NEXT-Career-Intelligence/1.0",
-                "Accept": "application/json"
-            }
+            headers={"User-Agent": "NEXT-Career-Intelligence/1.0", "Accept": "application/json"},
         )
 
     async def close(self):
@@ -158,7 +155,9 @@ class LeverScraper:
                 "responsibilities": responsibilities,
                 "benefits": benefits,
                 "skills_extracted": skills,
-                "location_type": "remote" if is_remote else ("hybrid" if "hybrid" in location_name.lower() else "onsite"),
+                "location_type": (
+                    "remote" if is_remote else ("hybrid" if "hybrid" in location_name.lower() else "onsite")
+                ),
                 "location_city": location_city if not is_remote else None,
                 "location_state": location_state if not is_remote else None,
                 "location_country": location_country,
@@ -170,7 +169,7 @@ class LeverScraper:
                 "experience_years_max": exp_max,
                 "apply_url": apply_url,
                 "source": f"lever:{company_name.lower().replace(' ', '_')}",
-                "posted_at": self._parse_date(raw_job.get("createdAt"))
+                "posted_at": self._parse_date(raw_job.get("createdAt")),
             }
 
             return job_record
@@ -243,12 +242,12 @@ class LeverScraper:
     def _extract_skills(self, title: str, description: str) -> List[str]:
         """Extract technical skills from title and description"""
         skill_patterns = [
-            r'\b(Python|Java|JavaScript|TypeScript|Go|Rust|C\+\+|C#|Ruby|PHP|Swift|Kotlin|Scala)\b',
-            r'\b(React|Vue|Angular|Next\.js|Django|Flask|FastAPI|Spring|Express|Node\.js)\b',
-            r'\b(PostgreSQL|MySQL|MongoDB|Redis|Elasticsearch|DynamoDB|Cassandra)\b',
-            r'\b(AWS|Azure|GCP|Google Cloud|Kubernetes|Docker|Terraform)\b',
-            r'\b(Git|CI/CD|Jenkins|GitHub Actions|Linux|Bash)\b',
-            r'\b(Machine Learning|AI|TensorFlow|PyTorch|NLP|Computer Vision)\b',
+            r"\b(Python|Java|JavaScript|TypeScript|Go|Rust|C\+\+|C#|Ruby|PHP|Swift|Kotlin|Scala)\b",
+            r"\b(React|Vue|Angular|Next\.js|Django|Flask|FastAPI|Spring|Express|Node\.js)\b",
+            r"\b(PostgreSQL|MySQL|MongoDB|Redis|Elasticsearch|DynamoDB|Cassandra)\b",
+            r"\b(AWS|Azure|GCP|Google Cloud|Kubernetes|Docker|Terraform)\b",
+            r"\b(Git|CI/CD|Jenkins|GitHub Actions|Linux|Bash)\b",
+            r"\b(Machine Learning|AI|TensorFlow|PyTorch|NLP|Computer Vision)\b",
         ]
 
         text = f"{title} {description}"
@@ -266,7 +265,7 @@ class LeverScraper:
             "entry": (70000, 100000),
             "mid": (100000, 140000),
             "senior": (140000, 200000),
-            "manager": (150000, 220000)
+            "manager": (150000, 220000),
         }
 
         title_lower = title.lower()
@@ -284,7 +283,7 @@ class LeverScraper:
 
     def _infer_experience_years(self, title: str, seniority: str, description: str) -> tuple:
         """Infer required experience years"""
-        years_pattern = r'(\d+)\+?\s*(?:years?|yrs?)\s*(?:of)?\s*experience'
+        years_pattern = r"(\d+)\+?\s*(?:years?|yrs?)\s*(?:of)?\s*experience"
         matches = re.findall(years_pattern, description.lower())
 
         if matches:
@@ -292,12 +291,7 @@ class LeverScraper:
             max_years = min_years + 3
             return (min_years, max_years)
 
-        exp_map = {
-            "entry": (0, 2),
-            "mid": (2, 5),
-            "senior": (5, 10),
-            "manager": (7, 15)
-        }
+        exp_map = {"entry": (0, 2), "mid": (2, 5), "senior": (5, 10), "manager": (7, 15)}
 
         return exp_map.get(seniority, (2, 5))
 
@@ -318,8 +312,8 @@ class LeverScraper:
 
     def _clean_html(self, html: str) -> str:
         """Remove HTML tags and clean text"""
-        text = re.sub(r'<[^>]+>', '', html)
-        text = re.sub(r'\s+', ' ', text)
+        text = re.sub(r"<[^>]+>", "", html)
+        text = re.sub(r"\s+", " ", text)
         return text.strip()
 
     def _parse_date(self, timestamp: Optional[int]) -> Optional[datetime]:

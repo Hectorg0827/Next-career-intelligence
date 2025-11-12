@@ -71,7 +71,9 @@ class ExtendedEmailService:
             features_html = self.renderer.render_list_items(features)
 
             # Calculate next billing date
-            next_billing = (datetime.now() + timedelta(days=30 if billing_period == "Monthly" else 365)).strftime("%B %d, %Y")
+            next_billing = (datetime.now() + timedelta(days=30 if billing_period == "Monthly" else 365)).strftime(
+                "%B %d, %Y"
+            )
 
             html_content = self.renderer.render_template(
                 "payment_confirmation",
@@ -200,11 +202,15 @@ class ExtendedEmailService:
             if new_features is None:
                 new_features = []
 
-            features_html = self.renderer.render_list_items(new_features) if new_features else "<li>All previous features</li>"
+            features_html = (
+                self.renderer.render_list_items(new_features) if new_features else "<li>All previous features</li>"
+            )
 
             proration_msg = ""
             if proration_amount:
-                proration_msg = f'<p><strong>Prorated Credit:</strong> ${proration_amount:.2f} applied to your next invoice</p>'
+                proration_msg = (
+                    f"<p><strong>Prorated Credit:</strong> ${proration_amount:.2f} applied to your next invoice</p>"
+                )
 
             html_content = self.renderer.render_template(
                 "subscription_changed",
@@ -259,13 +265,25 @@ class ExtendedEmailService:
             subject = f"Your Weekly Career Digest - Week of {datetime.now().strftime('%b %d')}"
 
             # Render job cards
-            jobs_html = self.renderer.render_card_list(recommended_jobs) if recommended_jobs else "<p>No new jobs this week.</p>"
+            jobs_html = (
+                self.renderer.render_card_list(recommended_jobs)
+                if recommended_jobs
+                else "<p>No new jobs this week.</p>"
+            )
 
             # Render course cards
-            courses_html = self.renderer.render_card_list(recommended_courses) if recommended_courses else "<p>Complete your profile to get course recommendations.</p>"
+            courses_html = (
+                self.renderer.render_card_list(recommended_courses)
+                if recommended_courses
+                else "<p>Complete your profile to get course recommendations.</p>"
+            )
 
             # Health score trend
-            health_trend = "↗️ Improving" if career_health_score >= 70 else "→ Stable" if career_health_score >= 50 else "↘️ Needs attention"
+            health_trend = (
+                "↗️ Improving"
+                if career_health_score >= 70
+                else "→ Stable" if career_health_score >= 50 else "↘️ Needs attention"
+            )
 
             html_content = self.renderer.render_template(
                 "weekly_digest",
@@ -369,9 +387,11 @@ class ExtendedEmailService:
             score_interpretation = (
                 "Excellent! Your resume is highly optimized."
                 if ats_score >= 80
-                else "Good, but there's room for improvement."
-                if ats_score >= 60
-                else "Needs work to pass ATS screening."
+                else (
+                    "Good, but there's room for improvement."
+                    if ats_score >= 60
+                    else "Needs work to pass ATS screening."
+                )
             )
 
             strengths_html = self.renderer.render_list_items(strengths)

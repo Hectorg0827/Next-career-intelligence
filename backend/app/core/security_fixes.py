@@ -16,6 +16,7 @@ from loguru import logger
 
 # ==================== 1. SECURE PASSWORD HASHING ====================
 
+
 def hash_password_secure(password: str) -> str:
     """
     Hash password using bcrypt (industry standard)
@@ -30,8 +31,8 @@ def hash_password_secure(password: str) -> str:
         Bcrypt hash string
     """
     salt = bcrypt.gensalt(rounds=12)
-    hashed = bcrypt.hashpw(password.encode('utf-8'), salt)
-    return hashed.decode('utf-8')
+    hashed = bcrypt.hashpw(password.encode("utf-8"), salt)
+    return hashed.decode("utf-8")
 
 
 def verify_password_secure(password: str, hashed: str) -> bool:
@@ -46,7 +47,7 @@ def verify_password_secure(password: str, hashed: str) -> bool:
         True if password matches, False otherwise
     """
     try:
-        return bcrypt.checkpw(password.encode('utf-8'), hashed.encode('utf-8'))
+        return bcrypt.checkpw(password.encode("utf-8"), hashed.encode("utf-8"))
     except Exception as e:
         logger.error(f"Password verification error: {e}")
         return False
@@ -54,12 +55,13 @@ def verify_password_secure(password: str, hashed: str) -> bool:
 
 # ==================== 2. JWT TOKEN GENERATION ====================
 
+
 def generate_jwt_tokens(
     user_id: str,
     email: str,
     secret_key: str,
     access_token_expire_minutes: int = 60,
-    refresh_token_expire_days: int = 30
+    refresh_token_expire_days: int = 30,
 ) -> Dict[str, Any]:
     """
     Generate secure JWT access and refresh tokens
@@ -80,36 +82,36 @@ def generate_jwt_tokens(
 
     # Access token payload
     access_payload = {
-        'sub': user_id,
-        'email': email,
-        'type': 'access',
-        'iat': now,
-        'exp': now + timedelta(minutes=access_token_expire_minutes),
-        'jti': secrets.token_urlsafe(16)  # Unique token ID
+        "sub": user_id,
+        "email": email,
+        "type": "access",
+        "iat": now,
+        "exp": now + timedelta(minutes=access_token_expire_minutes),
+        "jti": secrets.token_urlsafe(16),  # Unique token ID
     }
 
     # Refresh token payload (fewer claims for security)
     refresh_payload = {
-        'sub': user_id,
-        'type': 'refresh',
-        'iat': now,
-        'exp': now + timedelta(days=refresh_token_expire_days),
-        'jti': secrets.token_urlsafe(16)
+        "sub": user_id,
+        "type": "refresh",
+        "iat": now,
+        "exp": now + timedelta(days=refresh_token_expire_days),
+        "jti": secrets.token_urlsafe(16),
     }
 
     # Sign tokens
-    access_token = jwt.encode(access_payload, secret_key, algorithm='HS256')
-    refresh_token = jwt.encode(refresh_payload, secret_key, algorithm='HS256')
+    access_token = jwt.encode(access_payload, secret_key, algorithm="HS256")
+    refresh_token = jwt.encode(refresh_payload, secret_key, algorithm="HS256")
 
     return {
-        'access_token': access_token,
-        'refresh_token': refresh_token,
-        'expires_in': access_token_expire_minutes * 60,  # seconds
-        'token_type': 'bearer'
+        "access_token": access_token,
+        "refresh_token": refresh_token,
+        "expires_in": access_token_expire_minutes * 60,  # seconds
+        "token_type": "bearer",
     }
 
 
-def verify_jwt_token(token: str, secret_key: str, expected_type: str = 'access') -> Optional[Dict[str, Any]]:
+def verify_jwt_token(token: str, secret_key: str, expected_type: str = "access") -> Optional[Dict[str, Any]]:
     """
     Verify and decode JWT token
 
@@ -122,10 +124,10 @@ def verify_jwt_token(token: str, secret_key: str, expected_type: str = 'access')
         Decoded payload if valid, None otherwise
     """
     try:
-        payload = jwt.decode(token, secret_key, algorithms=['HS256'])
+        payload = jwt.decode(token, secret_key, algorithms=["HS256"])
 
         # Verify token type
-        if payload.get('type') != expected_type:
+        if payload.get("type") != expected_type:
             logger.warning(f"Invalid token type: expected {expected_type}, got {payload.get('type')}")
             return None
 
@@ -140,9 +142,7 @@ def verify_jwt_token(token: str, secret_key: str, expected_type: str = 'access')
 
 
 def refresh_access_token(
-    refresh_token: str,
-    secret_key: str,
-    access_token_expire_minutes: int = 60
+    refresh_token: str, secret_key: str, access_token_expire_minutes: int = 60
 ) -> Optional[Dict[str, Any]]:
     """
     Generate new access token from refresh token
@@ -155,30 +155,27 @@ def refresh_access_token(
     Returns:
         Dict with new access_token or None if refresh invalid
     """
-    payload = verify_jwt_token(refresh_token, secret_key, expected_type='refresh')
+    payload = verify_jwt_token(refresh_token, secret_key, expected_type="refresh")
     if not payload:
         return None
 
     # Generate new access token
     now = datetime.utcnow()
     access_payload = {
-        'sub': payload['sub'],
-        'type': 'access',
-        'iat': now,
-        'exp': now + timedelta(minutes=access_token_expire_minutes),
-        'jti': secrets.token_urlsafe(16)
+        "sub": payload["sub"],
+        "type": "access",
+        "iat": now,
+        "exp": now + timedelta(minutes=access_token_expire_minutes),
+        "jti": secrets.token_urlsafe(16),
     }
 
-    access_token = jwt.encode(access_payload, secret_key, algorithm='HS256')
+    access_token = jwt.encode(access_payload, secret_key, algorithm="HS256")
 
-    return {
-        'access_token': access_token,
-        'expires_in': access_token_expire_minutes * 60,
-        'token_type': 'bearer'
-    }
+    return {"access_token": access_token, "expires_in": access_token_expire_minutes * 60, "token_type": "bearer"}
 
 
 # ==================== 3. 2FA SECRET ENCRYPTION ====================
+
 
 class SecretEncryption:
     """Encrypt/decrypt sensitive data at rest (e.g., 2FA secrets)"""
@@ -207,8 +204,8 @@ class SecretEncryption:
             Base64-encoded ciphertext
         """
         try:
-            encrypted = self.cipher.encrypt(plaintext.encode('utf-8'))
-            return encrypted.decode('utf-8')
+            encrypted = self.cipher.encrypt(plaintext.encode("utf-8"))
+            return encrypted.decode("utf-8")
         except Exception as e:
             logger.error(f"Encryption failed: {e}")
             raise
@@ -224,8 +221,8 @@ class SecretEncryption:
             Original plaintext
         """
         try:
-            decrypted = self.cipher.decrypt(ciphertext.encode('utf-8'))
-            return decrypted.decode('utf-8')
+            decrypted = self.cipher.decrypt(ciphertext.encode("utf-8"))
+            return decrypted.decode("utf-8")
         except Exception as e:
             logger.error(f"Decryption failed: {e}")
             raise
@@ -239,10 +236,11 @@ def generate_encryption_key() -> str:
         Base64-encoded key (store in .env as ENCRYPTION_KEY)
     """
     key = Fernet.generate_key()
-    return key.decode('utf-8')
+    return key.decode("utf-8")
 
 
 # ==================== 4. PII REDACTION FOR LOGS ====================
+
 
 def redact_email(email: str) -> str:
     """
@@ -257,10 +255,10 @@ def redact_email(email: str) -> str:
         Redacted email string
     """
     try:
-        local, domain = email.split('@')
-        domain_parts = domain.split('.')
+        local, domain = email.split("@")
+        domain_parts = domain.split(".")
         domain_name = domain_parts[0]
-        domain_ext = domain_parts[-1] if len(domain_parts) > 1 else ''
+        domain_ext = domain_parts[-1] if len(domain_parts) > 1 else ""
 
         return f"{local[0]}***@{domain_name[0]}***.{domain_ext}"
     except Exception:
@@ -294,11 +292,12 @@ def hash_for_logging(value: str) -> str:
     Returns:
         First 8 chars of SHA-256 hash
     """
-    hashed = hashlib.sha256(value.encode('utf-8')).hexdigest()
+    hashed = hashlib.sha256(value.encode("utf-8")).hexdigest()
     return hashed[:8]
 
 
 # ==================== 5. SECURE SESSION MANAGEMENT ====================
+
 
 class SessionManager:
     """Manage user sessions with security best practices"""
@@ -329,18 +328,14 @@ class SessionManager:
         session_key = f"{self.session_prefix}{session_token}"
 
         session_data = {
-            'user_id': user_id,
-            'created_at': datetime.utcnow().isoformat(),
-            'ip_address': metadata.get('ip_address'),
-            'user_agent': metadata.get('user_agent'),
-            'last_activity': datetime.utcnow().isoformat()
+            "user_id": user_id,
+            "created_at": datetime.utcnow().isoformat(),
+            "ip_address": metadata.get("ip_address"),
+            "user_agent": metadata.get("user_agent"),
+            "last_activity": datetime.utcnow().isoformat(),
         }
 
-        await self.redis.setex(
-            session_key,
-            self.session_ttl,
-            str(session_data)
-        )
+        await self.redis.setex(session_key, self.session_ttl, str(session_data))
 
         return session_token
 
@@ -394,11 +389,7 @@ class SessionManager:
         count = 0
 
         while True:
-            cursor, keys = await self.redis.scan(
-                cursor,
-                match=f"{self.session_prefix}*",
-                count=100
-            )
+            cursor, keys = await self.redis.scan(cursor, match=f"{self.session_prefix}*", count=100)
 
             for key in keys:
                 session_data = await self.redis.get(key)
@@ -414,6 +405,7 @@ class SessionManager:
 
 # ==================== 6. INPUT VALIDATION & SANITIZATION ====================
 
+
 def validate_email_format(email: str) -> bool:
     """
     Validate email format (basic check)
@@ -425,7 +417,8 @@ def validate_email_format(email: str) -> bool:
         True if valid format
     """
     import re
-    pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
+
+    pattern = r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
     return bool(re.match(pattern, email))
 
 
@@ -447,10 +440,10 @@ def sanitize_user_input(user_input: str, max_length: int = 1000) -> str:
     sanitized = sanitized[:max_length]
 
     # Remove null bytes
-    sanitized = sanitized.replace('\x00', '')
+    sanitized = sanitized.replace("\x00", "")
 
     # Remove control characters (except newline/tab)
-    sanitized = ''.join(char for char in sanitized if ord(char) >= 32 or char in '\n\t')
+    sanitized = "".join(char for char in sanitized if ord(char) >= 32 or char in "\n\t")
 
     return sanitized
 
@@ -489,7 +482,7 @@ def validate_password_strength(password: str) -> tuple[bool, str]:
         return False, "Password must contain at least one special character"
 
     # Check against common passwords (add more as needed)
-    common_passwords = ['password', '12345678', 'qwerty', 'admin', 'letmein']
+    common_passwords = ["password", "12345678", "qwerty", "admin", "letmein"]
     if password.lower() in common_passwords:
         return False, "Password is too common. Please choose a stronger password"
 
@@ -497,6 +490,7 @@ def validate_password_strength(password: str) -> tuple[bool, str]:
 
 
 # ==================== 7. SECURITY UTILITIES ====================
+
 
 def generate_secure_token(length: int = 32) -> str:
     """

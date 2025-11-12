@@ -24,6 +24,7 @@ from functools import wraps
 
 class CircuitState(Enum):
     """Circuit breaker states"""
+
     CLOSED = "closed"  # Normal operation
     OPEN = "open"  # Service down, fail fast
     HALF_OPEN = "half_open"  # Testing recovery
@@ -31,6 +32,7 @@ class CircuitState(Enum):
 
 class CircuitBreakerOpenError(Exception):
     """Raised when circuit breaker is open"""
+
     pass
 
 
@@ -59,7 +61,7 @@ class CircuitBreaker:
         failure_threshold: int = 5,
         recovery_timeout: int = 60,
         expected_exception: type = Exception,
-        success_threshold: int = 2  # Successes needed to close from half-open
+        success_threshold: int = 2,  # Successes needed to close from half-open
     ):
         """
         Initialize circuit breaker
@@ -140,7 +142,9 @@ class CircuitBreaker:
         """Handle successful call"""
         if self.state == CircuitState.HALF_OPEN:
             self.success_count += 1
-            logger.info(f"✅ Circuit breaker '{self.name}': Success in HALF_OPEN ({self.success_count}/{self.success_threshold})")
+            logger.info(
+                f"✅ Circuit breaker '{self.name}': Success in HALF_OPEN ({self.success_count}/{self.success_threshold})"
+            )
 
             if self.success_count >= self.success_threshold:
                 # Enough successes, close the circuit
@@ -185,7 +189,7 @@ class CircuitBreaker:
             "failure_count": self.failure_count,
             "success_count": self.success_count,
             "last_failure_time": self.last_failure_time.isoformat() if self.last_failure_time else None,
-            "time_until_recovery": self._time_until_recovery()
+            "time_until_recovery": self._time_until_recovery(),
         }
 
     def _time_until_recovery(self) -> Optional[int]:
@@ -202,10 +206,7 @@ _circuit_breakers = {}
 
 
 def get_circuit_breaker(
-    name: str,
-    failure_threshold: int = 5,
-    recovery_timeout: int = 60,
-    expected_exception: type = Exception
+    name: str, failure_threshold: int = 5, recovery_timeout: int = 60, expected_exception: type = Exception
 ) -> CircuitBreaker:
     """
     Get or create circuit breaker for a service
@@ -224,7 +225,7 @@ def get_circuit_breaker(
             name=name,
             failure_threshold=failure_threshold,
             recovery_timeout=recovery_timeout,
-            expected_exception=expected_exception
+            expected_exception=expected_exception,
         )
     return _circuit_breakers[name]
 
@@ -234,7 +235,7 @@ def circuit_breaker(
     failure_threshold: int = 5,
     recovery_timeout: int = 60,
     expected_exception: type = Exception,
-    fallback: Optional[Callable] = None
+    fallback: Optional[Callable] = None,
 ):
     """
     Decorator for circuit breaker pattern
@@ -257,6 +258,7 @@ def circuit_breaker(
         expected_exception: Exception type to catch
         fallback: Optional fallback function if circuit open
     """
+
     def decorator(func: Callable):
         cb = get_circuit_breaker(name, failure_threshold, recovery_timeout, expected_exception)
 
@@ -267,10 +269,15 @@ def circuit_breaker(
             except CircuitBreakerOpenError:
                 if fallback:
                     logger.info(f"Circuit breaker '{name}' open, using fallback")
-                    return await fallback(*args, **kwargs) if asyncio.iscoroutinefunction(fallback) else fallback(*args, **kwargs)
+                    return (
+                        await fallback(*args, **kwargs)
+                        if asyncio.iscoroutinefunction(fallback)
+                        else fallback(*args, **kwargs)
+                    )
                 raise
 
         return wrapper
+
     return decorator
 
 
@@ -279,21 +286,21 @@ gemini_circuit_breaker = get_circuit_breaker(
     name="gemini_api",
     failure_threshold=5,
     recovery_timeout=60,
-    expected_exception=Exception  # Update with actual Gemini exception type
+    expected_exception=Exception,  # Update with actual Gemini exception type
 )
 
 sendgrid_circuit_breaker = get_circuit_breaker(
     name="sendgrid",
     failure_threshold=3,
     recovery_timeout=30,
-    expected_exception=Exception  # Update with SendGrid exception
+    expected_exception=Exception,  # Update with SendGrid exception
 )
 
 stripe_circuit_breaker = get_circuit_breaker(
     name="stripe",
     failure_threshold=3,
     recovery_timeout=45,
-    expected_exception=Exception  # Update with Stripe exception
+    expected_exception=Exception,  # Update with Stripe exception
 )
 
 

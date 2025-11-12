@@ -36,17 +36,14 @@ class GreenhouseScraper:
         {"name": "Airtable", "board_token": "airtable"},
         {"name": "Checkr", "board_token": "checkr"},
         {"name": "Brex", "board_token": "brex"},
-        {"name": "OpenAI", "board_token": "openai"}
+        {"name": "OpenAI", "board_token": "openai"},
     ]
 
     def __init__(self):
         self.client = httpx.AsyncClient(
             timeout=30.0,
             follow_redirects=True,
-            headers={
-                "User-Agent": "NEXT-Career-Intelligence/1.0",
-                "Accept": "application/json"
-            }
+            headers={"User-Agent": "NEXT-Career-Intelligence/1.0", "Accept": "application/json"},
         )
 
     async def close(self):
@@ -152,7 +149,9 @@ class GreenhouseScraper:
                 "responsibilities": responsibilities,
                 "benefits": benefits,
                 "skills_extracted": skills,
-                "location_type": "remote" if is_remote else ("hybrid" if "hybrid" in location_name.lower() else "onsite"),
+                "location_type": (
+                    "remote" if is_remote else ("hybrid" if "hybrid" in location_name.lower() else "onsite")
+                ),
                 "location_city": location_city if not is_remote else None,
                 "location_state": location_state if not is_remote else None,
                 "location_country": location_country,
@@ -164,7 +163,7 @@ class GreenhouseScraper:
                 "experience_years_max": exp_max,
                 "apply_url": raw_job.get("absolute_url", ""),
                 "source": f"greenhouse:{company_name.lower().replace(' ', '_')}",
-                "posted_at": self._parse_date(raw_job.get("updated_at"))
+                "posted_at": self._parse_date(raw_job.get("updated_at")),
             }
 
             return job_record
@@ -207,17 +206,17 @@ class GreenhouseScraper:
         # Common tech skills to look for
         skill_patterns = [
             # Programming languages
-            r'\b(Python|Java|JavaScript|TypeScript|Go|Rust|C\+\+|C#|Ruby|PHP|Swift|Kotlin|Scala)\b',
+            r"\b(Python|Java|JavaScript|TypeScript|Go|Rust|C\+\+|C#|Ruby|PHP|Swift|Kotlin|Scala)\b",
             # Frameworks
-            r'\b(React|Vue|Angular|Next\.js|Django|Flask|FastAPI|Spring|Express|Node\.js)\b',
+            r"\b(React|Vue|Angular|Next\.js|Django|Flask|FastAPI|Spring|Express|Node\.js)\b",
             # Databases
-            r'\b(PostgreSQL|MySQL|MongoDB|Redis|Elasticsearch|DynamoDB|Cassandra)\b',
+            r"\b(PostgreSQL|MySQL|MongoDB|Redis|Elasticsearch|DynamoDB|Cassandra)\b",
             # Cloud
-            r'\b(AWS|Azure|GCP|Google Cloud|Kubernetes|Docker|Terraform)\b',
+            r"\b(AWS|Azure|GCP|Google Cloud|Kubernetes|Docker|Terraform)\b",
             # Tools
-            r'\b(Git|CI/CD|Jenkins|GitHub Actions|Linux|Bash)\b',
+            r"\b(Git|CI/CD|Jenkins|GitHub Actions|Linux|Bash)\b",
             # ML/AI
-            r'\b(Machine Learning|AI|TensorFlow|PyTorch|NLP|Computer Vision)\b',
+            r"\b(Machine Learning|AI|TensorFlow|PyTorch|NLP|Computer Vision)\b",
         ]
 
         text = f"{title} {description}"
@@ -236,7 +235,7 @@ class GreenhouseScraper:
             "entry": (70000, 100000),
             "mid": (100000, 140000),
             "senior": (140000, 200000),
-            "manager": (150000, 220000)
+            "manager": (150000, 220000),
         }
 
         # Adjust for specific roles
@@ -258,7 +257,7 @@ class GreenhouseScraper:
     def _infer_experience_years(self, title: str, seniority: str, description: str) -> tuple:
         """Infer required experience years"""
         # Look for explicit year requirements in description
-        years_pattern = r'(\d+)\+?\s*(?:years?|yrs?)\s*(?:of)?\s*experience'
+        years_pattern = r"(\d+)\+?\s*(?:years?|yrs?)\s*(?:of)?\s*experience"
         matches = re.findall(years_pattern, description.lower())
 
         if matches:
@@ -267,12 +266,7 @@ class GreenhouseScraper:
             return (min_years, max_years)
 
         # Default based on seniority
-        exp_map = {
-            "entry": (0, 2),
-            "mid": (2, 5),
-            "senior": (5, 10),
-            "manager": (7, 15)
-        }
+        exp_map = {"entry": (0, 2), "mid": (2, 5), "senior": (5, 10), "manager": (7, 15)}
 
         return exp_map.get(seniority, (2, 5))
 
@@ -284,26 +278,36 @@ class GreenhouseScraper:
         benefits = None
 
         # Split by common section headers
-        sections = re.split(r'\n\s*(?:#+\s*)?(?:Requirements?|Qualifications?|What [Ww]e\'re [Ll]ooking [Ff]or):\s*\n', description, flags=re.IGNORECASE)
+        sections = re.split(
+            r"\n\s*(?:#+\s*)?(?:Requirements?|Qualifications?|What [Ww]e\'re [Ll]ooking [Ff]or):\s*\n",
+            description,
+            flags=re.IGNORECASE,
+        )
         if len(sections) > 1:
-            requirements = sections[1].split('\n\n')[0][:2000]
+            requirements = sections[1].split("\n\n")[0][:2000]
 
-        sections = re.split(r'\n\s*(?:#+\s*)?(?:Responsibilities?|What [Yy]ou\'ll [Dd]o|The [Rr]ole):\s*\n', description, flags=re.IGNORECASE)
+        sections = re.split(
+            r"\n\s*(?:#+\s*)?(?:Responsibilities?|What [Yy]ou\'ll [Dd]o|The [Rr]ole):\s*\n",
+            description,
+            flags=re.IGNORECASE,
+        )
         if len(sections) > 1:
-            responsibilities = sections[1].split('\n\n')[0][:2000]
+            responsibilities = sections[1].split("\n\n")[0][:2000]
 
-        sections = re.split(r'\n\s*(?:#+\s*)?(?:Benefits?|What [Ww]e [Oo]ffer|Perks):\s*\n', description, flags=re.IGNORECASE)
+        sections = re.split(
+            r"\n\s*(?:#+\s*)?(?:Benefits?|What [Ww]e [Oo]ffer|Perks):\s*\n", description, flags=re.IGNORECASE
+        )
         if len(sections) > 1:
-            benefits = sections[1].split('\n\n')[0][:1000]
+            benefits = sections[1].split("\n\n")[0][:1000]
 
         return (requirements, responsibilities, benefits)
 
     def _clean_html(self, html: str) -> str:
         """Remove HTML tags and clean text"""
         # Simple HTML tag removal
-        text = re.sub(r'<[^>]+>', '', html)
+        text = re.sub(r"<[^>]+>", "", html)
         # Clean up whitespace
-        text = re.sub(r'\s+', ' ', text)
+        text = re.sub(r"\s+", " ", text)
         return text.strip()
 
     def _parse_date(self, date_str: Optional[str]) -> Optional[datetime]:
@@ -313,7 +317,7 @@ class GreenhouseScraper:
 
         try:
             # Remove timezone suffix if present
-            date_str = date_str.replace('Z', '+00:00')
+            date_str = date_str.replace("Z", "+00:00")
             return datetime.fromisoformat(date_str)
         except:
             return datetime.utcnow()

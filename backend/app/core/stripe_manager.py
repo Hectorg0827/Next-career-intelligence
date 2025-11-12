@@ -17,29 +17,29 @@ SUBSCRIPTION_PLANS = {
     "premium": {
         "name": "Premium",
         "price_monthly": 2900,  # $29.00 in cents
-        "price_yearly": 29000,   # $290.00 in cents (save ~17%)
+        "price_yearly": 29000,  # $290.00 in cents (save ~17%)
         "features": [
             "Unlimited Resume Studio access",
             "Unlimited Career Coach sessions",
             "Unlimited Interview practice",
             "Career goal tracking",
             "AI-powered suggestions",
-            "Priority support"
-        ]
+            "Priority support",
+        ],
     },
     "enterprise": {
         "name": "Enterprise",
         "price_monthly": 9900,  # $99.00 in cents
-        "price_yearly": 99000,   # $990.00 in cents
+        "price_yearly": 99000,  # $990.00 in cents
         "features": [
             "All Premium features",
             "Team management",
             "Custom integrations",
             "Dedicated account manager",
             "API access",
-            "Advanced analytics"
-        ]
-    }
+            "Advanced analytics",
+        ],
+    },
 }
 
 
@@ -53,7 +53,7 @@ class StripeManager:
         plan: str,
         billing_period: str = "monthly",
         success_url: str = None,
-        cancel_url: str = None
+        cancel_url: str = None,
     ) -> Dict[str, Any]:
         """
         Create Stripe Checkout session for subscription
@@ -83,25 +83,19 @@ class StripeManager:
             # Create checkout session
             session = stripe.checkout.Session.create(
                 customer_email=email,
-                payment_method_types=['card'],
-                line_items=[{
-                    'price': price_id,
-                    'quantity': 1,
-                }],
-                mode='subscription',
-                success_url=success_url or f"{os.getenv('FRONTEND_URL')}/subscription/success?session_id={{CHECKOUT_SESSION_ID}}",
-                cancel_url=cancel_url or f"{os.getenv('FRONTEND_URL')}/subscription/cancel",
-                metadata={
-                    'user_id': user_id,
-                    'plan': plan,
-                    'billing_period': billing_period
-                },
-                subscription_data={
-                    'metadata': {
-                        'user_id': user_id,
-                        'plan': plan
+                payment_method_types=["card"],
+                line_items=[
+                    {
+                        "price": price_id,
+                        "quantity": 1,
                     }
-                }
+                ],
+                mode="subscription",
+                success_url=success_url
+                or f"{os.getenv('FRONTEND_URL')}/subscription/success?session_id={{CHECKOUT_SESSION_ID}}",
+                cancel_url=cancel_url or f"{os.getenv('FRONTEND_URL')}/subscription/cancel",
+                metadata={"user_id": user_id, "plan": plan, "billing_period": billing_period},
+                subscription_data={"metadata": {"user_id": user_id, "plan": plan}},
             )
 
             logger.info(f"✅ Created checkout session for {email} - {plan}")
@@ -110,7 +104,7 @@ class StripeManager:
                 "checkout_url": session.url,
                 "session_id": session.id,
                 "plan": plan,
-                "billing_period": billing_period
+                "billing_period": billing_period,
             }
 
         except Exception as e:
@@ -118,10 +112,7 @@ class StripeManager:
             return {"error": str(e)}
 
     @staticmethod
-    async def create_customer_portal_session(
-        customer_id: str,
-        return_url: str = None
-    ) -> Dict[str, Any]:
+    async def create_customer_portal_session(customer_id: str, return_url: str = None) -> Dict[str, Any]:
         """
         Create Stripe Customer Portal session for managing subscription
 
@@ -137,8 +128,7 @@ class StripeManager:
 
         try:
             session = stripe.billing_portal.Session.create(
-                customer=customer_id,
-                return_url=return_url or f"{os.getenv('FRONTEND_URL')}/subscription"
+                customer=customer_id, return_url=return_url or f"{os.getenv('FRONTEND_URL')}/subscription"
             )
 
             return {"portal_url": session.url}
@@ -162,10 +152,10 @@ class StripeManager:
         from app.db.supabase import get_supabase_client
 
         try:
-            user_id = session['metadata']['user_id']
-            plan = session['metadata']['plan']
-            subscription_id = session['subscription']
-            customer_id = session['customer']
+            user_id = session["metadata"]["user_id"]
+            plan = session["metadata"]["plan"]
+            subscription_id = session["subscription"]
+            customer_id = session["customer"]
 
             # Get subscription details from Stripe
             subscription = stripe.Subscription.retrieve(subscription_id)
@@ -180,16 +170,22 @@ class StripeManager:
                 return False
 
             # Upsert subscription
-            result = client.table('subscriptions').upsert({
-                'user_id': user_id,
-                'tier': plan,
-                'status': 'active',
-                'stripe_subscription_id': subscription_id,
-                'stripe_customer_id': customer_id,
-                'started_at': datetime.utcnow().isoformat(),
-                'expires_at': expires_at.isoformat(),
-                'updated_at': datetime.utcnow().isoformat()
-            }).execute()
+            result = (
+                client.table("subscriptions")
+                .upsert(
+                    {
+                        "user_id": user_id,
+                        "tier": plan,
+                        "status": "active",
+                        "stripe_subscription_id": subscription_id,
+                        "stripe_customer_id": customer_id,
+                        "started_at": datetime.utcnow().isoformat(),
+                        "expires_at": expires_at.isoformat(),
+                        "updated_at": datetime.utcnow().isoformat(),
+                    }
+                )
+                .execute()
+            )
 
             logger.info(f"✅ Subscription activated for user {user_id} - {plan}")
             return True
@@ -206,33 +202,31 @@ class StripeManager:
         from app.db.supabase import get_supabase_client
 
         try:
-            user_id = subscription['metadata'].get('user_id')
+            user_id = subscription["metadata"].get("user_id")
             if not user_id:
                 logger.warning("Subscription missing user_id in metadata")
                 return False
 
             status_map = {
-                'active': 'active',
-                'past_due': 'active',  # Grace period
-                'unpaid': 'cancelled',
-                'canceled': 'cancelled',
-                'incomplete': 'cancelled',
-                'incomplete_expired': 'cancelled',
-                'trialing': 'active'
+                "active": "active",
+                "past_due": "active",  # Grace period
+                "unpaid": "cancelled",
+                "canceled": "cancelled",
+                "incomplete": "cancelled",
+                "incomplete_expired": "cancelled",
+                "trialing": "active",
             }
 
-            status = status_map.get(subscription['status'], 'cancelled')
-            expires_at = datetime.fromtimestamp(subscription['current_period_end'])
+            status = status_map.get(subscription["status"], "cancelled")
+            expires_at = datetime.fromtimestamp(subscription["current_period_end"])
 
             client = get_supabase_client()
             if not client:
                 return False
 
-            client.table('subscriptions').update({
-                'status': status,
-                'expires_at': expires_at.isoformat(),
-                'updated_at': datetime.utcnow().isoformat()
-            }).eq('stripe_subscription_id', subscription['id']).execute()
+            client.table("subscriptions").update(
+                {"status": status, "expires_at": expires_at.isoformat(), "updated_at": datetime.utcnow().isoformat()}
+            ).eq("stripe_subscription_id", subscription["id"]).execute()
 
             logger.info(f"✅ Subscription updated for user {user_id} - {status}")
             return True
@@ -249,7 +243,7 @@ class StripeManager:
         from app.db.supabase import get_supabase_client
 
         try:
-            user_id = subscription['metadata'].get('user_id')
+            user_id = subscription["metadata"].get("user_id")
             if not user_id:
                 return False
 
@@ -257,11 +251,13 @@ class StripeManager:
             if not client:
                 return False
 
-            client.table('subscriptions').update({
-                'status': 'cancelled',
-                'cancelled_at': datetime.utcnow().isoformat(),
-                'updated_at': datetime.utcnow().isoformat()
-            }).eq('stripe_subscription_id', subscription['id']).execute()
+            client.table("subscriptions").update(
+                {
+                    "status": "cancelled",
+                    "cancelled_at": datetime.utcnow().isoformat(),
+                    "updated_at": datetime.utcnow().isoformat(),
+                }
+            ).eq("stripe_subscription_id", subscription["id"]).execute()
 
             logger.info(f"✅ Subscription cancelled for user {user_id}")
             return True
@@ -288,11 +284,7 @@ class StripeManager:
             if not client:
                 return None
 
-            response = client.table('subscriptions')\
-                .select('*')\
-                .eq('user_id', user_id)\
-                .single()\
-                .execute()
+            response = client.table("subscriptions").select("*").eq("user_id", user_id).single().execute()
 
             return response.data if response.data else None
 
@@ -318,10 +310,7 @@ class StripeManager:
         try:
             if at_period_end:
                 # Cancel at end of period (user keeps access until expiry)
-                stripe.Subscription.modify(
-                    subscription_id,
-                    cancel_at_period_end=True
-                )
+                stripe.Subscription.modify(subscription_id, cancel_at_period_end=True)
             else:
                 # Cancel immediately
                 stripe.Subscription.delete(subscription_id)

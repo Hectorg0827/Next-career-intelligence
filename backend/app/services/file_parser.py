@@ -10,6 +10,7 @@ import re
 
 try:
     import PyPDF2
+
     PDF_AVAILABLE = True
 except ImportError:
     PDF_AVAILABLE = False
@@ -17,6 +18,7 @@ except ImportError:
 
 try:
     from docx import Document
+
     DOCX_AVAILABLE = True
 except ImportError:
     DOCX_AVAILABLE = False
@@ -40,18 +42,12 @@ class FileParser:
             Dict with 'text' and 'metadata'
         """
         if not PDF_AVAILABLE:
-            return {
-                "error": "PDF parsing not available. Install PyPDF2: pip install PyPDF2",
-                "text": ""
-            }
+            return {"error": "PDF parsing not available. Install PyPDF2: pip install PyPDF2", "text": ""}
 
         try:
             # Check file size
             if len(file_bytes) > FileParser.MAX_FILE_SIZE:
-                return {
-                    "error": "File too large (max 10MB)",
-                    "text": ""
-                }
+                return {"error": "File too large (max 10MB)", "text": ""}
 
             pdf_file = io.BytesIO(file_bytes)
             pdf_reader = PyPDF2.PdfReader(pdf_file)
@@ -72,25 +68,15 @@ class FileParser:
             # Clean up text
             full_text = FileParser._clean_text(full_text)
 
-            metadata = {
-                "num_pages": len(pdf_reader.pages),
-                "num_characters": len(full_text),
-                "file_type": "pdf"
-            }
+            metadata = {"num_pages": len(pdf_reader.pages), "num_characters": len(full_text), "file_type": "pdf"}
 
             logger.info(f"✅ Extracted {len(full_text)} characters from PDF ({metadata['num_pages']} pages)")
 
-            return {
-                "text": full_text,
-                "metadata": metadata
-            }
+            return {"text": full_text, "metadata": metadata}
 
         except Exception as e:
             logger.error(f"❌ PDF extraction failed: {e}")
-            return {
-                "error": f"Failed to parse PDF: {str(e)}",
-                "text": ""
-            }
+            return {"error": f"Failed to parse PDF: {str(e)}", "text": ""}
 
     @staticmethod
     def extract_text_from_docx(file_bytes: bytes) -> Dict[str, Any]:
@@ -104,18 +90,12 @@ class FileParser:
             Dict with 'text' and 'metadata'
         """
         if not DOCX_AVAILABLE:
-            return {
-                "error": "DOCX parsing not available. Install python-docx: pip install python-docx",
-                "text": ""
-            }
+            return {"error": "DOCX parsing not available. Install python-docx: pip install python-docx", "text": ""}
 
         try:
             # Check file size
             if len(file_bytes) > FileParser.MAX_FILE_SIZE:
-                return {
-                    "error": "File too large (max 10MB)",
-                    "text": ""
-                }
+                return {"error": "File too large (max 10MB)", "text": ""}
 
             docx_file = io.BytesIO(file_bytes)
             doc = Document(docx_file)
@@ -146,22 +126,16 @@ class FileParser:
                 "num_paragraphs": len(paragraphs),
                 "num_tables": len(doc.tables),
                 "num_characters": len(full_text),
-                "file_type": "docx"
+                "file_type": "docx",
             }
 
             logger.info(f"✅ Extracted {len(full_text)} characters from DOCX")
 
-            return {
-                "text": full_text,
-                "metadata": metadata
-            }
+            return {"text": full_text, "metadata": metadata}
 
         except Exception as e:
             logger.error(f"❌ DOCX extraction failed: {e}")
-            return {
-                "error": f"Failed to parse DOCX: {str(e)}",
-                "text": ""
-            }
+            return {"error": f"Failed to parse DOCX: {str(e)}", "text": ""}
 
     @staticmethod
     def extract_text_from_txt(file_bytes: bytes) -> Dict[str, Any]:
@@ -177,38 +151,26 @@ class FileParser:
         try:
             # Check file size
             if len(file_bytes) > FileParser.MAX_FILE_SIZE:
-                return {
-                    "error": "File too large (max 10MB)",
-                    "text": ""
-                }
+                return {"error": "File too large (max 10MB)", "text": ""}
 
             # Try UTF-8 first, then fallback to latin-1
             try:
-                text = file_bytes.decode('utf-8')
+                text = file_bytes.decode("utf-8")
             except UnicodeDecodeError:
-                text = file_bytes.decode('latin-1')
+                text = file_bytes.decode("latin-1")
 
             # Clean up text
             text = FileParser._clean_text(text)
 
-            metadata = {
-                "num_characters": len(text),
-                "file_type": "txt"
-            }
+            metadata = {"num_characters": len(text), "file_type": "txt"}
 
             logger.info(f"✅ Extracted {len(text)} characters from TXT")
 
-            return {
-                "text": text,
-                "metadata": metadata
-            }
+            return {"text": text, "metadata": metadata}
 
         except Exception as e:
             logger.error(f"❌ TXT extraction failed: {e}")
-            return {
-                "error": f"Failed to parse TXT: {str(e)}",
-                "text": ""
-            }
+            return {"error": f"Failed to parse TXT: {str(e)}", "text": ""}
 
     @staticmethod
     def parse_file(file_bytes: bytes, filename: str) -> Dict[str, Any]:
@@ -225,11 +187,11 @@ class FileParser:
         # Detect file type from extension
         filename_lower = filename.lower()
 
-        if filename_lower.endswith('.pdf'):
+        if filename_lower.endswith(".pdf"):
             return FileParser.extract_text_from_pdf(file_bytes)
-        elif filename_lower.endswith('.docx'):
+        elif filename_lower.endswith(".docx"):
             return FileParser.extract_text_from_docx(file_bytes)
-        elif filename_lower.endswith('.txt'):
+        elif filename_lower.endswith(".txt"):
             return FileParser.extract_text_from_txt(file_bytes)
         else:
             # Try to parse as text anyway
@@ -248,18 +210,18 @@ class FileParser:
             Cleaned text
         """
         # Remove excessive whitespace
-        text = re.sub(r'\n{3,}', '\n\n', text)
-        text = re.sub(r' {2,}', ' ', text)
+        text = re.sub(r"\n{3,}", "\n\n", text)
+        text = re.sub(r" {2,}", " ", text)
 
         # Remove common PDF artifacts
-        text = re.sub(r'[^\S\n]+\n', '\n', text)
+        text = re.sub(r"[^\S\n]+\n", "\n", text)
 
         # Normalize line endings
-        text = text.replace('\r\n', '\n').replace('\r', '\n')
+        text = text.replace("\r\n", "\n").replace("\r", "\n")
 
         # Strip leading/trailing whitespace from lines
-        lines = [line.strip() for line in text.split('\n')]
-        text = '\n'.join(lines)
+        lines = [line.strip() for line in text.split("\n")]
+        text = "\n".join(lines)
 
         return text.strip()
 
@@ -280,7 +242,7 @@ class FileParser:
             "warnings": [],
             "has_contact_info": False,
             "has_experience": False,
-            "has_education": False
+            "has_education": False,
         }
 
         # Check minimum length
@@ -293,25 +255,23 @@ class FileParser:
         text_lower = text.lower()
 
         # Check for contact info
-        if any(indicator in text_lower for indicator in ['email', '@', 'phone', 'linkedin']):
+        if any(indicator in text_lower for indicator in ["email", "@", "phone", "linkedin"]):
             validation["has_contact_info"] = True
 
         # Check for experience section
-        experience_keywords = ['experience', 'work history', 'employment', 'professional']
+        experience_keywords = ["experience", "work history", "employment", "professional"]
         if any(keyword in text_lower for keyword in experience_keywords):
             validation["has_experience"] = True
 
         # Check for education section
-        education_keywords = ['education', 'university', 'college', 'degree', 'bachelor', 'master']
+        education_keywords = ["education", "university", "college", "degree", "bachelor", "master"]
         if any(keyword in text_lower for keyword in education_keywords):
             validation["has_education"] = True
 
         # Adjust confidence based on found sections
-        sections_found = sum([
-            validation["has_contact_info"],
-            validation["has_experience"],
-            validation["has_education"]
-        ])
+        sections_found = sum(
+            [validation["has_contact_info"], validation["has_experience"], validation["has_education"]]
+        )
 
         if sections_found == 0:
             validation["is_valid"] = False

@@ -107,15 +107,13 @@ def init_sentry():
     try:
         # Configure logging integration
         logging_integration = LoggingIntegration(
-            level=logging.INFO,  # Capture info and above
-            event_level=logging.ERROR  # Send errors as events
+            level=logging.INFO, event_level=logging.ERROR  # Capture info and above  # Send errors as events
         )
 
         sentry_sdk.init(
             dsn=settings.SENTRY_DSN,
             environment=settings.SENTRY_ENVIRONMENT,
             traces_sample_rate=settings.SENTRY_TRACES_SAMPLE_RATE,
-
             # Integrations
             integrations=[
                 FastApiIntegration(transaction_style="endpoint"),
@@ -124,30 +122,22 @@ def init_sentry():
                 SqlalchemyIntegration(),
                 logging_integration,
             ],
-
             # Performance monitoring
             enable_tracing=True,
             profiles_sample_rate=0.1,  # Profile 10% of transactions
-
             # Error sampling
             sample_rate=1.0,  # Capture 100% of errors
-
             # Release tracking (for source maps and deploy tracking)
             release=f"{settings.APP_NAME}@{settings.VERSION}",
-
             # Additional context
             attach_stacktrace=True,
             send_default_pii=False,  # Don't send PII (GDPR compliance)
-
             # Custom event processor
             before_send=before_send,
-
             # Max breadcrumbs (for debugging context)
             max_breadcrumbs=50,
-
             # Request bodies (size limit)
             max_request_body_size="medium",  # small/medium/large
-
             # Automatically track sessions
             auto_session_tracking=True,
         )
@@ -168,7 +158,7 @@ def init_sentry():
 def capture_exception(error: Exception, context: dict = None):
     """
     Manually capture an exception to Sentry
-    
+
     Args:
         error: Exception to capture
         context: Additional context data
@@ -178,14 +168,14 @@ def capture_exception(error: Exception, context: dict = None):
             if context:
                 for key, value in context.items():
                     scope.set_context(key, value)
-            
+
             sentry_sdk.capture_exception(error)
 
 
 def capture_message(message: str, level: str = "info", context: dict = None):
     """
     Capture a message to Sentry
-    
+
     Args:
         message: Message to capture
         level: Message level (debug, info, warning, error, fatal)
@@ -196,31 +186,27 @@ def capture_message(message: str, level: str = "info", context: dict = None):
             if context:
                 for key, value in context.items():
                     scope.set_context(key, value)
-            
+
             sentry_sdk.capture_message(message, level=level)
 
 
 def set_user_context(user_id: str, email: str = None, username: str = None):
     """
     Set user context for error tracking
-    
+
     Args:
         user_id: User ID
         email: User email (optional)
         username: Username (optional)
     """
     if settings.SENTRY_DSN:
-        sentry_sdk.set_user({
-            "id": user_id,
-            "email": email,
-            "username": username
-        })
+        sentry_sdk.set_user({"id": user_id, "email": email, "username": username})
 
 
 def add_breadcrumb(message: str, category: str = "default", level: str = "info", data: dict = None):
     """
     Add a breadcrumb for debugging context
-    
+
     Args:
         message: Breadcrumb message
         category: Breadcrumb category
@@ -228,49 +214,40 @@ def add_breadcrumb(message: str, category: str = "default", level: str = "info",
         data: Additional data
     """
     if settings.SENTRY_DSN:
-        sentry_sdk.add_breadcrumb(
-            message=message,
-            category=category,
-            level=level,
-            data=data or {}
-        )
+        sentry_sdk.add_breadcrumb(message=message, category=category, level=level, data=data or {})
 
 
 def start_transaction(name: str, op: str = "http.server") -> object:
     """
     Start a performance monitoring transaction
-    
+
     Args:
         name: Transaction name
         op: Operation type
-    
+
     Returns:
         Transaction object (use as context manager)
     """
     if settings.SENTRY_DSN:
         return sentry_sdk.start_transaction(name=name, op=op)
-    
+
     # Return a dummy context manager if Sentry is not configured
     class DummyTransaction:
         def __enter__(self):
             return self
-        
+
         def __exit__(self, *args):
             pass
-    
+
     return DummyTransaction()
 
 
 # Custom error handlers for common scenarios
 
+
 def handle_database_error(error: Exception, query: str = None):
     """Handle database-related errors"""
-    context = {
-        "database": {
-            "error_type": type(error).__name__,
-            "query": query or "N/A"
-        }
-    }
+    context = {"database": {"error_type": type(error).__name__, "query": query or "N/A"}}
     capture_exception(error, context)
 
 
@@ -280,7 +257,7 @@ def handle_ai_error(error: Exception, prompt: str = None, model: str = "gemini-1
         "ai_service": {
             "model": model,
             "error_type": type(error).__name__,
-            "prompt_length": len(prompt) if prompt else 0
+            "prompt_length": len(prompt) if prompt else 0,
         }
     }
     capture_exception(error, context)
@@ -288,13 +265,7 @@ def handle_ai_error(error: Exception, prompt: str = None, model: str = "gemini-1
 
 def handle_external_api_error(error: Exception, service: str, endpoint: str = None):
     """Handle external API errors"""
-    context = {
-        "external_api": {
-            "service": service,
-            "endpoint": endpoint or "N/A",
-            "error_type": type(error).__name__
-        }
-    }
+    context = {"external_api": {"service": service, "endpoint": endpoint or "N/A", "error_type": type(error).__name__}}
     capture_exception(error, context)
 
 
@@ -305,13 +276,14 @@ def handle_payment_error(error: Exception, amount: float = None, currency: str =
             "error_type": type(error).__name__,
             "amount": amount,
             "currency": currency,
-            "user_id": user_id or "unknown"
+            "user_id": user_id or "unknown",
         }
     }
     capture_exception(error, context)
 
 
 # Performance monitoring decorators
+
 
 def monitor_performance(operation_name: str):
     """
@@ -323,15 +295,19 @@ def monitor_performance(operation_name: str):
             # ... expensive operation
             return result
     """
+
     def decorator(func):
         async def wrapper(*args, **kwargs):
             with start_transaction(name=operation_name, op="function"):
                 return await func(*args, **kwargs)
+
         return wrapper
+
     return decorator
 
 
 # Alert severity helpers
+
 
 def alert_critical(message: str, context: Dict[str, Any] = None):
     """
@@ -375,13 +351,14 @@ def alert_info(message: str, context: Dict[str, Any] = None):
 
 # Business metrics tracking
 
+
 def track_user_signup(user_id: str, plan: str = "free"):
     """Track successful user signup"""
     add_breadcrumb(
         message=f"User signed up: {user_id} (plan: {plan})",
         category="user.signup",
         level="info",
-        data={"user_id": user_id, "plan": plan}
+        data={"user_id": user_id, "plan": plan},
     )
 
 
@@ -391,11 +368,7 @@ def track_subscription_change(user_id: str, old_plan: str, new_plan: str):
         message=f"Subscription changed: {old_plan} → {new_plan}",
         category="subscription.change",
         level="info",
-        data={
-            "user_id": user_id,
-            "old_plan": old_plan,
-            "new_plan": new_plan
-        }
+        data={"user_id": user_id, "old_plan": old_plan, "new_plan": new_plan},
     )
 
 
@@ -405,11 +378,7 @@ def track_ai_usage(user_id: str, feature: str, tokens_used: int = 0):
         message=f"AI feature used: {feature}",
         category="ai.usage",
         level="info",
-        data={
-            "user_id": user_id,
-            "feature": feature,
-            "tokens_used": tokens_used
-        }
+        data={"user_id": user_id, "feature": feature, "tokens_used": tokens_used},
     )
 
 
@@ -419,15 +388,12 @@ def track_payment_success(user_id: str, amount: float, currency: str = "USD"):
         message=f"Payment successful: ${amount} {currency}",
         category="payment.success",
         level="info",
-        data={
-            "user_id": user_id,
-            "amount": amount,
-            "currency": currency
-        }
+        data={"user_id": user_id, "amount": amount, "currency": currency},
     )
 
 
 # Health check and status monitoring
+
 
 def check_sentry_health() -> Dict[str, Any]:
     """

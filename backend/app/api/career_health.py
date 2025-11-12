@@ -16,7 +16,7 @@ router = APIRouter(prefix="/api/career-health", tags=["career_health"])
 
 
 @router.get("/score", response_model=CareerHealthScore)
-async def get_career_health_score(current_user = Depends(get_current_user)):
+async def get_career_health_score(current_user=Depends(get_current_user)):
     """
     Get current Career Health Score for authenticated user
 
@@ -34,10 +34,7 @@ async def get_career_health_score(current_user = Depends(get_current_user)):
 
 
 @router.get("/history")
-async def get_score_history(
-    limit: int = 30,
-    current_user = Depends(get_current_user)
-):
+async def get_score_history(limit: int = 30, current_user=Depends(get_current_user)):
     """
     Get historical Career Health Scores
 
@@ -51,21 +48,19 @@ async def get_score_history(
         supabase = get_supabase_client()
         if not supabase:
             raise HTTPException(503, "Database unavailable")
-            
-        response = supabase.table("career_health_history") \
-            .select("score, grade, created_at") \
-            .eq("user_id", current_user.id) \
-            .order("created_at", desc=True) \
-            .limit(limit) \
+
+        response = (
+            supabase.table("career_health_history")
+            .select("score, grade, created_at")
+            .eq("user_id", current_user.id)
+            .order("created_at", desc=True)
+            .limit(limit)
             .execute()
+        )
 
         history = response.data if response.data else []
 
-        return {
-            "user_id": current_user.id,
-            "history": history,
-            "total_records": len(history)
-        }
+        return {"user_id": current_user.id, "history": history, "total_records": len(history)}
 
     except Exception as e:
         logger.error(f"Failed to fetch CHS history: {e}")
@@ -73,7 +68,7 @@ async def get_score_history(
 
 
 @router.get("/insights")
-async def get_career_insights(current_user = Depends(get_current_user)):
+async def get_career_insights(current_user=Depends(get_current_user)):
     """
     Get detailed career insights and analytics
 
@@ -88,17 +83,19 @@ async def get_career_insights(current_user = Depends(get_current_user)):
         supabase = get_supabase_client()
         if not supabase:
             raise HTTPException(503, "Database unavailable")
-            
+
         # Calculate current score
         current_score = await chs_calculator.calculate(current_user.id)
 
         # Get history for trend
-        history_response = supabase.table("career_health_history") \
-            .select("score, created_at") \
-            .eq("user_id", current_user.id) \
-            .order("created_at", desc=True) \
-            .limit(7) \
+        history_response = (
+            supabase.table("career_health_history")
+            .select("score, created_at")
+            .eq("user_id", current_user.id)
+            .order("created_at", desc=True)
+            .limit(7)
             .execute()
+        )
 
         history = history_response.data if history_response.data else []
 
@@ -107,13 +104,7 @@ async def get_career_insights(current_user = Depends(get_current_user)):
         if history:
             # Reverse to get chronological order
             history.reverse()
-            trend_data = [
-                {
-                    "date": record["created_at"],
-                    "score": record["score"]
-                }
-                for record in history
-            ]
+            trend_data = [{"date": record["created_at"], "score": record["score"]} for record in history]
 
         # Peer comparison (simplified - can be enhanced)
         peer_avg_score = 65  # TODO: Calculate from actual user data
@@ -129,17 +120,14 @@ async def get_career_insights(current_user = Depends(get_current_user)):
 
         return {
             "current_score": current_score.dict(),
-            "trend": {
-                "direction": current_score.trend,
-                "data": trend_data
-            },
+            "trend": {"direction": current_score.trend, "data": trend_data},
             "peer_comparison": {
                 "your_score": current_score.overall_score,
                 "peer_average": peer_avg_score,
-                "percentile": _calculate_percentile(current_score.overall_score, peer_avg_score)
+                "percentile": _calculate_percentile(current_score.overall_score, peer_avg_score),
             },
             "next_milestone": next_milestone,
-            "last_updated": datetime.utcnow().isoformat()
+            "last_updated": datetime.utcnow().isoformat(),
         }
 
     except Exception as e:
@@ -148,7 +136,7 @@ async def get_career_insights(current_user = Depends(get_current_user)):
 
 
 @router.post("/refresh")
-async def refresh_score(current_user = Depends(get_current_user)):
+async def refresh_score(current_user=Depends(get_current_user)):
     """
     Force recalculation of Career Health Score
 
@@ -161,7 +149,7 @@ async def refresh_score(current_user = Depends(get_current_user)):
             "status": "refreshed",
             "score": score.overall_score,
             "grade": score.grade,
-            "message": "Career Health Score updated successfully"
+            "message": "Career Health Score updated successfully",
         }
 
     except Exception as e:

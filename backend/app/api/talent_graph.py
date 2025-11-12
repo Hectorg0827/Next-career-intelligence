@@ -30,7 +30,7 @@ async def get_user_profile(user_id: str):
 async def get_skill_gaps(
     target_role: str = Query(..., description="Target job title (e.g., 'Software Engineer')"),
     target_seniority: str = Query("mid", description="Target seniority: entry/mid/senior/staff"),
-    current_user = Depends(get_current_user)
+    current_user=Depends(get_current_user),
 ):
     """
     Get skill gaps for target role
@@ -46,8 +46,7 @@ async def get_skill_gaps(
         is_healthy = await neo4j_client.health_check()
         if not is_healthy:
             raise HTTPException(
-                status_code=503,
-                detail="Talent Graph is currently unavailable. Please try again later."
+                status_code=503, detail="Talent Graph is currently unavailable. Please try again later."
             )
 
         # Get user profile
@@ -63,9 +62,7 @@ async def get_skill_gaps(
 
         # Get skill gaps
         gaps = await neo4j_client.get_skill_gaps(
-            user_id=current_user.id,
-            target_role=target_role,
-            target_seniority=target_seniority
+            user_id=current_user.id, target_role=target_role, target_seniority=target_seniority
         )
 
         # Enrich with learning recommendations
@@ -81,7 +78,7 @@ async def get_skill_gaps(
             "skill_gaps": gaps,
             "total_gaps": len(gaps),
             "high_priority_gaps": [g for g in gaps if g["priority"] == "high"],
-            "estimated_learning_time": sum(gap["learning_time_estimate"] for gap in gaps[:5])
+            "estimated_learning_time": sum(gap["learning_time_estimate"] for gap in gaps[:5]),
         }
 
     except HTTPException:
@@ -95,7 +92,7 @@ async def get_skill_gaps(
 async def get_career_pathways(
     target_role: str = Query(..., description="Target job title"),
     target_seniority: str = Query("senior", description="Target seniority level"),
-    current_user = Depends(get_current_user)
+    current_user=Depends(get_current_user),
 ):
     """
     Get possible career pathways from current role to target
@@ -121,7 +118,7 @@ async def get_career_pathways(
             current_role=current_role,
             current_seniority=current_seniority,
             target_role=target_role,
-            target_seniority=target_seniority
+            target_seniority=target_seniority,
         )
 
         # Enrich pathways with skill requirements
@@ -133,19 +130,21 @@ async def get_career_pathways(
 
                 # Get skills needed for next step
                 # (simplified - in production, query graph for each step)
-                pathway["steps_detail"].append({
-                    "from": from_role,
-                    "to": to_role,
-                    "years": pathway["years_per_step"][i] if i < len(pathway["years_per_step"]) else 0,
-                    "skills_to_acquire": []  # TODO: Query graph for skill requirements
-                })
+                pathway["steps_detail"].append(
+                    {
+                        "from": from_role,
+                        "to": to_role,
+                        "years": pathway["years_per_step"][i] if i < len(pathway["years_per_step"]) else 0,
+                        "skills_to_acquire": [],  # TODO: Query graph for skill requirements
+                    }
+                )
 
         return {
             "user_id": current_user.id,
             "current_role": f"{current_role} ({current_seniority})",
             "target_role": f"{target_role} ({target_seniority})",
             "pathways": pathways,
-            "recommended_pathway": pathways[0] if pathways else None
+            "recommended_pathway": pathways[0] if pathways else None,
         }
 
     except HTTPException:
@@ -156,10 +155,7 @@ async def get_career_pathways(
 
 
 @router.get("/skills/{skill_name}/related")
-async def get_related_skills(
-    skill_name: str,
-    limit: int = Query(10, ge=1, le=50)
-):
+async def get_related_skills(skill_name: str, limit: int = Query(10, ge=1, le=50)):
     """
     Get skills commonly learned together with given skill
 
@@ -179,7 +175,7 @@ async def get_related_skills(
             "skill": skill_name,
             "related_skills": related,
             "count": len(related),
-            "recommendation": _generate_skill_recommendation(skill_name, related)
+            "recommendation": _generate_skill_recommendation(skill_name, related),
         }
 
     except HTTPException:
@@ -225,7 +221,7 @@ async def get_skill_market_data(skill_name: str):
 
 
 @router.post("/users/me/sync-profile")
-async def sync_user_profile(current_user = Depends(get_current_user)):
+async def sync_user_profile(current_user=Depends(get_current_user)):
     """
     Sync user profile to Talent Graph
 
@@ -254,7 +250,7 @@ async def sync_user_profile(current_user = Depends(get_current_user)):
             "status": "synced",
             "user_id": current_user.id,
             "skills_linked": linked_count,
-            "message": "Profile synced to Talent Graph successfully"
+            "message": "Profile synced to Talent Graph successfully",
         }
 
     except HTTPException:
@@ -277,38 +273,25 @@ async def get_graph_stats():
     try:
         is_healthy = await neo4j_client.health_check()
         if not is_healthy:
-            return {
-                "status": "unhealthy",
-                "message": "Talent Graph is currently unavailable"
-            }
+            return {"status": "unhealthy", "message": "Talent Graph is currently unavailable"}
 
         stats = await neo4j_client.get_graph_stats()
 
-        return {
-            "status": "healthy",
-            **stats
-        }
+        return {"status": "healthy", **stats}
 
     except Exception as e:
         logger.error(f"Failed to get graph stats: {e}")
-        return {
-            "status": "error",
-            "message": str(e)
-        }
+        return {"status": "error", "message": str(e)}
 
 
 # ========================================
 # Helper Functions
 # ========================================
 
+
 def _estimate_learning_time(learning_curve: str) -> int:
     """Estimate learning time in weeks"""
-    mapping = {
-        "easy": 2,
-        "moderate": 4,
-        "steep": 8,
-        "lifelong": 52
-    }
+    mapping = {"easy": 2, "moderate": 4, "steep": 8, "lifelong": 52}
     return mapping.get(learning_curve, 4)
 
 

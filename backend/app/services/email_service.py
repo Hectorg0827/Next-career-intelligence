@@ -12,7 +12,7 @@ from loguru import logger
 
 class EmailService:
     """Email service using SendGrid"""
-    
+
     def __init__(self):
         """Initialize SendGrid client"""
         try:
@@ -22,25 +22,22 @@ class EmailService:
         except Exception as e:
             logger.error(f"❌ Failed to initialize SendGrid: {str(e)}")
             raise
-    
-    async def send_verification_email(self, 
-                                     email: str, 
-                                     full_name: str,
-                                     verification_code: str) -> bool:
+
+    async def send_verification_email(self, email: str, full_name: str, verification_code: str) -> bool:
         """
         Send email verification code
-        
+
         Args:
             email: Recipient email address
             full_name: Recipient's full name
             verification_code: 6-digit verification code
-            
+
         Returns:
             True if successful
         """
         try:
             subject = "Verify Your Email - NEXT Career Intelligence"
-            
+
             html_content = f"""
             <html>
                 <head>
@@ -91,45 +88,42 @@ class EmailService:
                 </body>
             </html>
             """
-            
+
             message = Mail(
                 from_email=Email(self.from_email, "NEXT Career Intelligence"),
                 to_emails=To(email, full_name),
                 subject=subject,
-                html_content=html_content
+                html_content=html_content,
             )
-            
+
             response = self.client.send(message)
-            
+
             if response.status_code in [200, 201, 202]:
                 logger.info(f"✅ Verification email sent to {email} (Code: {verification_code[:3]}...)")
                 return True
             else:
                 logger.warning(f"⚠️ Unexpected SendGrid response: {response.status_code}")
                 return False
-                
+
         except Exception as e:
             logger.error(f"❌ Error sending verification email: {str(e)}")
             raise
-    
-    async def send_password_reset_email(self, 
-                                       email: str, 
-                                       full_name: str,
-                                       reset_url: str) -> bool:
+
+    async def send_password_reset_email(self, email: str, full_name: str, reset_url: str) -> bool:
         """
         Send password reset email
-        
+
         Args:
             email: Recipient email address
             full_name: Recipient's full name
             reset_url: Password reset URL with token
-            
+
         Returns:
             True if successful
         """
         try:
             subject = "Reset Your Password - NEXT Career Intelligence"
-            
+
             html_content = f"""
             <html>
                 <head>
@@ -184,43 +178,41 @@ class EmailService:
                 </body>
             </html>
             """
-            
+
             message = Mail(
                 from_email=Email(self.from_email, "NEXT Career Intelligence"),
                 to_emails=To(email, full_name),
                 subject=subject,
-                html_content=html_content
+                html_content=html_content,
             )
-            
+
             response = self.client.send(message)
-            
+
             if response.status_code in [200, 201, 202]:
                 logger.info(f"✅ Password reset email sent to {email}")
                 return True
             else:
                 logger.warning(f"⚠️ Unexpected SendGrid response: {response.status_code}")
                 return False
-                
+
         except Exception as e:
             logger.error(f"❌ Error sending password reset email: {str(e)}")
             raise
-    
-    async def send_welcome_email(self, 
-                                email: str, 
-                                full_name: str) -> bool:
+
+    async def send_welcome_email(self, email: str, full_name: str) -> bool:
         """
         Send welcome email after successful verification
-        
+
         Args:
             email: Recipient email address
             full_name: Recipient's full name
-            
+
         Returns:
             True if successful
         """
         try:
             subject = "Welcome to NEXT Career Intelligence! 🚀"
-            
+
             html_content = f"""
             <html>
                 <head>
@@ -286,23 +278,23 @@ class EmailService:
                 </body>
             </html>
             """
-            
+
             message = Mail(
                 from_email=Email(self.from_email, "NEXT Career Intelligence"),
                 to_emails=To(email, full_name),
                 subject=subject,
-                html_content=html_content
+                html_content=html_content,
             )
-            
+
             response = self.client.send(message)
-            
+
             if response.status_code in [200, 201, 202]:
                 logger.info(f"✅ Welcome email sent to {email}")
                 return True
             else:
                 logger.warning(f"⚠️ Unexpected SendGrid response: {response.status_code}")
                 return False
-                
+
         except Exception as e:
             logger.error(f"❌ Error sending welcome email: {str(e)}")
             raise
@@ -315,7 +307,7 @@ email_service = None
 def get_email_service() -> EmailService:
     """
     Get or create email service instance
-    
+
     Returns:
         EmailService instance
     """

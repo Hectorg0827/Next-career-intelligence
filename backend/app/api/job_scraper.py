@@ -31,7 +31,7 @@ async def run_full_scrape():
     stats = {
         "greenhouse": {"scraped": 0, "inserted": 0, "updated": 0, "errors": 0},
         "lever": {"scraped": 0, "inserted": 0, "updated": 0, "errors": 0},
-        "total": {"scraped": 0, "inserted": 0, "updated": 0, "duplicates": 0}
+        "total": {"scraped": 0, "inserted": 0, "updated": 0, "duplicates": 0},
     }
 
     # Scrape Greenhouse
@@ -80,17 +80,11 @@ async def run_full_scrape():
             external_id = job.get("external_id")
 
             # Check if job exists
-            existing = supabase.table("jobs") \
-                .select("id") \
-                .eq("external_id", external_id) \
-                .execute()
+            existing = supabase.table("jobs").select("id").eq("external_id", external_id).execute()
 
             if existing.data:
                 # Update existing job
-                supabase.table("jobs") \
-                    .update(job) \
-                    .eq("external_id", external_id) \
-                    .execute()
+                supabase.table("jobs").update(job).eq("external_id", external_id).execute()
 
                 source_prefix = job["source"].split(":")[0]
                 stats[source_prefix]["updated"] += 1
@@ -112,12 +106,14 @@ async def run_full_scrape():
 
     # Store scraping run metadata
     try:
-        supabase.table("scraping_runs").insert({
-            "started_at": datetime.utcnow().isoformat(),
-            "completed_at": datetime.utcnow().isoformat(),
-            "stats": stats,
-            "status": "completed"
-        }).execute()
+        supabase.table("scraping_runs").insert(
+            {
+                "started_at": datetime.utcnow().isoformat(),
+                "completed_at": datetime.utcnow().isoformat(),
+                "stats": stats,
+                "status": "completed",
+            }
+        ).execute()
     except:
         pass  # Metadata table might not exist yet
 
@@ -145,7 +141,7 @@ async def trigger_job_scrape(background_tasks: BackgroundTasks):
             "status": "started",
             "message": "Job scraping started in background",
             "expected_duration": "5-10 minutes",
-            "expected_jobs": "500-1000 jobs"
+            "expected_jobs": "500-1000 jobs",
         }
 
     except Exception as e:
@@ -168,19 +164,12 @@ async def test_greenhouse_scraping(company_name: str = "Stripe"):
 
         if not company:
             available = [c["name"] for c in greenhouse.GREENHOUSE_COMPANIES]
-            raise HTTPException(
-                status_code=404,
-                detail=f"Company not found. Available: {', '.join(available)}"
-            )
+            raise HTTPException(status_code=404, detail=f"Company not found. Available: {', '.join(available)}")
 
         jobs = await greenhouse.scrape_company(company["name"], company["board_token"])
         await greenhouse.close()
 
-        return {
-            "company": company_name,
-            "jobs_found": len(jobs),
-            "sample_jobs": jobs[:3] if jobs else []
-        }
+        return {"company": company_name, "jobs_found": len(jobs), "sample_jobs": jobs[:3] if jobs else []}
 
     except HTTPException:
         raise
@@ -203,19 +192,12 @@ async def test_lever_scraping(company_name: str = "Netflix"):
 
         if not company:
             available = [c["name"] for c in lever.LEVER_COMPANIES]
-            raise HTTPException(
-                status_code=404,
-                detail=f"Company not found. Available: {', '.join(available)}"
-            )
+            raise HTTPException(status_code=404, detail=f"Company not found. Available: {', '.join(available)}")
 
         jobs = await lever.scrape_company(company["name"], company["company_id"])
         await lever.close()
 
-        return {
-            "company": company_name,
-            "jobs_found": len(jobs),
-            "sample_jobs": jobs[:3] if jobs else []
-        }
+        return {"company": company_name, "jobs_found": len(jobs), "sample_jobs": jobs[:3] if jobs else []}
 
     except HTTPException:
         raise
@@ -236,9 +218,7 @@ async def get_scraper_stats():
     """
     try:
         # Count jobs by source
-        response = supabase.table("jobs") \
-            .select("source", count="exact") \
-            .execute()
+        response = supabase.table("jobs").select("source", count="exact").execute()
 
         # Group by source
         source_counts = {}
@@ -251,10 +231,12 @@ async def get_scraper_stats():
         total_jobs = sum(source_counts.values())
 
         # Jobs added today
-        today_response = supabase.table("jobs") \
-            .select("id", count="exact") \
-            .gte("created_at", datetime.utcnow().date().isoformat()) \
+        today_response = (
+            supabase.table("jobs")
+            .select("id", count="exact")
+            .gte("created_at", datetime.utcnow().date().isoformat())
             .execute()
+        )
 
         jobs_today = today_response.count or 0
 
@@ -264,8 +246,8 @@ async def get_scraper_stats():
             "by_source": source_counts,
             "configured_companies": {
                 "greenhouse": len(GreenhouseScraper.GREENHOUSE_COMPANIES),
-                "lever": len(LeverScraper.LEVER_COMPANIES)
-            }
+                "lever": len(LeverScraper.LEVER_COMPANIES),
+            },
         }
 
     except Exception as e:

@@ -10,6 +10,7 @@ from enum import Enum
 
 class RiskLevel(str, Enum):
     """AI displacement risk levels"""
+
     LOW = "Low"
     MEDIUM = "Medium"
     HIGH = "High"
@@ -18,13 +19,14 @@ class RiskLevel(str, Enum):
 
 class AnalysisRequest(BaseModel):
     """Request model for career analysis"""
+
     job_title: str = Field(..., min_length=2, max_length=200, description="Current job title")
     skills: List[str] = Field(default_factory=list, description="List of current skills")
     location: str = Field(..., description="Country or region")
     years_experience: Optional[int] = Field(None, ge=0, le=50, description="Years of experience")
     timeline: Optional[str] = Field("5 years", description="Career roadmap timeline (e.g., '5 years')")
 
-    @validator('skills', pre=True, always=True)
+    @validator("skills", pre=True, always=True)
     def validate_skills(cls, v, values):
         """Ensure skill list is usable, add sensible fallback when empty"""
         provided_skills = v or []
@@ -33,12 +35,13 @@ class AnalysisRequest(BaseModel):
             return cleaned
 
         # When no skills are provided, generate a fallback based on job title so AI has context
-        job_title = values.get('job_title') or 'Professional'
+        job_title = values.get("job_title") or "Professional"
         return [f"{job_title} core skills"]
 
 
 class AIDisplacementRisk(BaseModel):
     """AI displacement risk assessment"""
+
     level: RiskLevel
     score: float = Field(..., ge=0, le=100, description="Risk score 0-100")
     velocity: str = Field(..., description="Timeline for automation")
@@ -48,6 +51,7 @@ class AIDisplacementRisk(BaseModel):
 
 class TransitionPathway(BaseModel):
     """Career transition pathway recommendation"""
+
     role: str = Field(..., description="Target role title")
     ease: float = Field(..., ge=0, le=100, description="Ease of transition score")
     required_skills: List[str] = Field(..., description="Skills needed for transition")
@@ -58,6 +62,7 @@ class TransitionPathway(BaseModel):
 
 class TrainingResource(BaseModel):
     """Training course recommendation"""
+
     title: str
     provider: str
     url: str
@@ -69,6 +74,7 @@ class TrainingResource(BaseModel):
 
 class AnalysisResponse(BaseModel):
     """Response model for career analysis"""
+
     analysis_id: str
     job_title: str
     ai_displacement_risk: AIDisplacementRisk
@@ -85,6 +91,7 @@ class AnalysisResponse(BaseModel):
 
 class JobSuggestion(BaseModel):
     """Job title suggestion for autocomplete"""
+
     code: str = Field(..., description="O*NET-SOC code")
     title: str = Field(..., description="Job title")
     description: Optional[str] = Field(None, description="Brief description")
@@ -92,6 +99,7 @@ class JobSuggestion(BaseModel):
 
 class UserCreate(BaseModel):
     """User creation model"""
+
     email: str
     firebase_uid: str
     name: Optional[str] = None
@@ -99,29 +107,32 @@ class UserCreate(BaseModel):
 
 class UserResponse(BaseModel):
     """User response model"""
+
     id: str
     email: str
     name: Optional[str]
     created_at: datetime
-    
+
     class Config:
         from_attributes = True
 
 
 class AnalysisHistoryItem(BaseModel):
     """Analysis history item"""
+
     analysis_id: str
     job_title: str
     risk_score: float
     compatibility_score: float
     created_at: datetime
-    
+
     class Config:
         from_attributes = True
 
 
 class HealthResponse(BaseModel):
     """Health check response"""
+
     status: str
     version: str
     timestamp: datetime

@@ -1,4 +1,5 @@
 """Pydantic schemas for job marketplace"""
+
 from pydantic import BaseModel, Field
 from typing import Optional, List
 from datetime import datetime
@@ -8,8 +9,10 @@ from datetime import datetime
 # JOB SCHEMAS
 # ============================================================================
 
+
 class JobBase(BaseModel):
     """Base job schema"""
+
     title: str
     company: str
     description: Optional[str] = None
@@ -30,11 +33,13 @@ class JobBase(BaseModel):
 
 class JobCreate(JobBase):
     """Schema for creating a job"""
+
     pass
 
 
 class JobUpdate(BaseModel):
     """Schema for updating a job"""
+
     title: Optional[str] = None
     company: Optional[str] = None
     description: Optional[str] = None
@@ -50,6 +55,7 @@ class JobUpdate(BaseModel):
 
 class JobResponse(JobBase):
     """Schema for job response"""
+
     id: int
     created_at: datetime
     updated_at: datetime
@@ -60,6 +66,7 @@ class JobResponse(JobBase):
 
 class JobWithMatchScore(JobResponse):
     """Job response with AI match score"""
+
     match_score: Optional[float] = None
     skill_gaps: Optional[List[str]] = None
     recommended_prep: Optional[str] = None
@@ -69,8 +76,10 @@ class JobWithMatchScore(JobResponse):
 # JOB APPLICATION SCHEMAS
 # ============================================================================
 
+
 class JobApplicationBase(BaseModel):
     """Base job application schema"""
+
     job_id: int
     status: str = "applied"  # applied, rejected, interview, offered
     match_score: Optional[float] = None
@@ -80,11 +89,13 @@ class JobApplicationBase(BaseModel):
 
 class JobApplicationCreate(BaseModel):
     """Schema for creating a job application"""
+
     job_id: int
 
 
 class JobApplicationUpdate(BaseModel):
     """Schema for updating a job application"""
+
     status: Optional[str] = None
     interview_date: Optional[datetime] = None
     interview_notes: Optional[str] = None
@@ -95,6 +106,7 @@ class JobApplicationUpdate(BaseModel):
 
 class JobApplicationResponse(BaseModel):
     """Schema for job application response"""
+
     id: int
     user_id: str
     job_id: int
@@ -117,6 +129,7 @@ class JobApplicationResponse(BaseModel):
 
 class JobApplicationWithDetails(JobApplicationResponse):
     """Job application with full job details"""
+
     job: Optional[JobResponse] = None
 
 
@@ -124,20 +137,24 @@ class JobApplicationWithDetails(JobApplicationResponse):
 # SAVED JOB SCHEMAS
 # ============================================================================
 
+
 class SavedJobBase(BaseModel):
     """Base saved job schema"""
+
     job_id: int
     notes: Optional[str] = None
 
 
 class SavedJobCreate(BaseModel):
     """Schema for saving a job"""
+
     job_id: int
     notes: Optional[str] = None
 
 
 class SavedJobResponse(BaseModel):
     """Schema for saved job response"""
+
     id: int
     user_id: str
     job_id: int
@@ -150,6 +167,7 @@ class SavedJobResponse(BaseModel):
 
 class SavedJobWithDetails(SavedJobResponse):
     """Saved job with full job details"""
+
     job: Optional[JobResponse] = None
 
 
@@ -157,8 +175,10 @@ class SavedJobWithDetails(SavedJobResponse):
 # JOB ALERT PREFERENCES SCHEMAS
 # ============================================================================
 
+
 class JobAlertPreferencesBase(BaseModel):
     """Base job alert preferences schema"""
+
     job_title_keywords: Optional[List[str]] = None
     locations: Optional[List[str]] = None
     remote_types: Optional[List[str]] = None
@@ -174,11 +194,13 @@ class JobAlertPreferencesBase(BaseModel):
 
 class JobAlertPreferencesCreate(JobAlertPreferencesBase):
     """Schema for creating alert preferences"""
+
     pass
 
 
 class JobAlertPreferencesUpdate(BaseModel):
     """Schema for updating alert preferences"""
+
     job_title_keywords: Optional[List[str]] = None
     locations: Optional[List[str]] = None
     remote_types: Optional[List[str]] = None
@@ -194,6 +216,7 @@ class JobAlertPreferencesUpdate(BaseModel):
 
 class JobAlertPreferencesResponse(JobAlertPreferencesBase):
     """Schema for alert preferences response"""
+
     id: int
     user_id: str
     created_at: datetime
@@ -207,8 +230,10 @@ class JobAlertPreferencesResponse(JobAlertPreferencesBase):
 # SEARCH & FILTER SCHEMAS
 # ============================================================================
 
+
 class JobSearchFilters(BaseModel):
     """Job search and filter parameters"""
+
     query: Optional[str] = None
     location: Optional[str] = None
     remote_type: Optional[str] = None
@@ -225,6 +250,7 @@ class JobSearchFilters(BaseModel):
 
 class JobSearchResponse(BaseModel):
     """Job search results response"""
+
     total: int
     page: int
     limit: int
@@ -235,8 +261,10 @@ class JobSearchResponse(BaseModel):
 # DASHBOARD SCHEMAS
 # ============================================================================
 
+
 class ApplicationStats(BaseModel):
     """User application statistics"""
+
     total_applications: int
     applied: int
     interviewing: int
@@ -247,6 +275,7 @@ class ApplicationStats(BaseModel):
 
 class JobMarketplaceStats(BaseModel):
     """Overall job marketplace statistics"""
+
     total_jobs: int
     total_applications: int
     active_users: int

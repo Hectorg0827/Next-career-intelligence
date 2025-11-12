@@ -5,6 +5,7 @@ Usage:
     python seed_jobs.py --positions  # Seed jobs by specific positions
     python seed_jobs.py --full   # Seed 10 pages for full seeding
 """
+
 import asyncio
 import sys
 from pathlib import Path
@@ -50,7 +51,7 @@ async def seed_by_position():
         "Software Engineer",
         "Systems Engineer",
     ]
-    
+
     try:
         print(f"\n🔄 Seeding jobs for {len(positions)} positions...")
         created, skipped = await GitHubJobsService.seed_jobs_by_position(
@@ -70,10 +71,10 @@ async def seed_by_position():
 
 async def main():
     """Main entry point."""
-    print("\n" + "="*70)
+    print("\n" + "=" * 70)
     print("🌱 Job Database Seeder - GitHub Jobs Integration")
-    print("="*70)
-    
+    print("=" * 70)
+
     if len(sys.argv) > 1:
         if sys.argv[1] == "--positions":
             await seed_by_position()
@@ -89,10 +90,10 @@ async def main():
             await seed_general_jobs(pages=pages)
     else:
         await seed_general_jobs()
-    
-    print("\n" + "="*70)
+
+    print("\n" + "=" * 70)
     print("✨ All done! Your database is ready.")
-    print("="*70 + "\n")
+    print("=" * 70 + "\n")
 
 
 if __name__ == "__main__":

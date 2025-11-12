@@ -14,32 +14,31 @@ from app.models.user_profile import UserProfile
 
 class CareerPath(Dict):
     """A predicted career trajectory"""
+
     pass
 
 
 class TrajectoryAgent:
     """
     Trajectory Agent - The future predictor
-    
+
     Responsibilities:
     - Predict next 3 likely career paths
     - Calculate probability, timeline, salary ceiling for each
     - Map skill unlocks needed for each path
     - Answer: "Where can this person go next, and how long will it take?"
     """
-    
+
     def __init__(self):
         genai.configure(api_key=settings.GEMINI_API_KEY)
-        self.model = genai.GenerativeModel('gemini-1.5-flash')
-    
+        self.model = genai.GenerativeModel("gemini-1.5-flash")
+
     async def forecast_career_paths(
-        self,
-        user_profile: UserProfile,
-        market_context: Optional[Dict[str, Any]] = None
+        self, user_profile: UserProfile, market_context: Optional[Dict[str, Any]] = None
     ) -> Dict[str, Any]:
         """
         Predict 3 most likely career trajectories
-        
+
         Returns:
         {
             "career_forecast": [
@@ -57,41 +56,37 @@ class TrajectoryAgent:
             "pivot_opportunities": [...]
         }
         """
-        
+
         try:
             prompt = self._build_trajectory_prompt(user_profile, market_context)
-            
+
             response = self.model.generate_content(prompt)
-            
+
             forecast = self._parse_trajectory_response(response.text, user_profile)
-            
+
             logger.info(f"Generated {len(forecast['career_forecast'])} career paths for user {user_profile.user_id}")
-            
+
             return forecast
-            
+
         except Exception as e:
             logger.error(f"Error forecasting career paths: {e}")
             return self._create_fallback_forecast(user_profile)
-    
-    def _build_trajectory_prompt(
-        self,
-        user_profile: UserProfile,
-        market_context: Optional[Dict[str, Any]]
-    ) -> str:
+
+    def _build_trajectory_prompt(self, user_profile: UserProfile, market_context: Optional[Dict[str, Any]]) -> str:
         """Build AI prompt for trajectory forecasting"""
-        
+
         user_skills = [s.name for s in user_profile.skills[:15]]
         user_role = user_profile.current_role or "Not specified"
         years_exp = user_profile.years_total_experience or 0
-        
+
         goals_text = ""
         if user_profile.career_goals:
             goals_text = "\n".join([f"- {g.timeframe}: {g.description}" for g in user_profile.career_goals[:3]])
-        
+
         market_intel = ""
         if market_context:
             market_intel = f"\n\nMarket Context:\n{market_context.get('summary', 'Not available')}"
-        
+
         prompt = f"""You are a career trajectory analyst. Predict the 3 most likely career paths for this person.
 
 User Profile:
@@ -141,36 +136,36 @@ Return ONLY valid JSON:
 Be realistic, data-driven, and consider automation risk. Output ONLY valid JSON."""
 
         return prompt
-    
+
     def _parse_trajectory_response(self, response_text: str, user_profile: UserProfile) -> Dict[str, Any]:
         """Parse AI response into structured forecast"""
-        
+
         import json
         import re
-        
+
         try:
-            json_match = re.search(r'\{.*\}', response_text, re.DOTALL)
-            
+            json_match = re.search(r"\{.*\}", response_text, re.DOTALL)
+
             if json_match:
                 forecast_data = json.loads(json_match.group())
-                
+
                 # Validate structure
                 if "career_forecast" not in forecast_data:
                     raise ValueError("Missing career_forecast")
-                
+
                 return forecast_data
             else:
                 raise ValueError("No JSON found in response")
-                
+
         except Exception as e:
             logger.error(f"Error parsing trajectory response: {e}")
             return self._create_fallback_forecast(user_profile)
-    
+
     def _create_fallback_forecast(self, user_profile: UserProfile) -> Dict[str, Any]:
         """Create basic forecast when AI fails"""
-        
+
         current_role = user_profile.current_role or "your field"
-        
+
         return {
             "career_forecast": [
                 {
@@ -180,7 +175,7 @@ Be realistic, data-driven, and consider automation risk. Output ONLY valid JSON.
                     "salary_range": {"min": 70000, "max": 95000, "currency": "USD"},
                     "required_skills": ["Leadership", "Strategic planning"],
                     "skill_unlock_sequence": ["Gain management experience", "Build strategic portfolio"],
-                    "reasoning": "Natural progression based on your experience level."
+                    "reasoning": "Natural progression based on your experience level.",
                 },
                 {
                     "path_name": f"{current_role} - Specialized Track",
@@ -189,44 +184,44 @@ Be realistic, data-driven, and consider automation risk. Output ONLY valid JSON.
                     "salary_range": {"min": 65000, "max": 85000, "currency": "USD"},
                     "required_skills": ["Deep specialization", "Certification"],
                     "skill_unlock_sequence": ["Get industry certification", "Build specialized expertise"],
-                    "reasoning": "Deepen expertise in your current domain."
-                }
+                    "reasoning": "Deepen expertise in your current domain.",
+                },
             ],
             "current_trajectory_score": 60,
-            "pivot_opportunities": ["Adjacent roles in growing industries"]
+            "pivot_opportunities": ["Adjacent roles in growing industries"],
         }
-    
+
     def calculate_trajectory_score(self, user_profile: UserProfile) -> int:
         """
         Calculate current career momentum/trajectory strength (0-100)
-        
+
         Factors:
         - Recent skill growth
         - Market demand for current skills
         - Years of experience vs typical career arc
         - Goal clarity
         """
-        
+
         score = 50  # Start neutral
-        
+
         # Boost for clear goals
         if user_profile.career_goals and len(user_profile.career_goals) > 0:
             score += 15
-        
+
         # Boost for diverse skill set
         if user_profile.skills and len(user_profile.skills) > 5:
             score += 10
-        
+
         # Boost for recent activity
         if user_profile.total_interactions > 10:
             score += 10
-        
+
         # Penalize for high burnout
         if user_profile.burnout_level and user_profile.burnout_level > 7:
             score -= 20
-        
+
         # Boost for confidence
         if user_profile.confidence_level and user_profile.confidence_level > 7:
             score += 15
-        
+
         return max(min(score, 100), 0)

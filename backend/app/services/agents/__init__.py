@@ -9,10 +9,4 @@ from app.services.agents.match_agent import MatchAgent
 from app.services.agents.gap_agent import GapAgent
 from app.services.agents.sentiment_agent import SentimentAgent
 
-__all__ = [
-    "ProfileAgent",
-    "RiskAgent",
-    "MatchAgent",
-    "GapAgent",
-    "SentimentAgent"
-]
+__all__ = ["ProfileAgent", "RiskAgent", "MatchAgent", "GapAgent", "SentimentAgent"]

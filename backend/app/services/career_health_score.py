@@ -22,6 +22,7 @@ import re
 
 class CareerHealthScore(BaseModel):
     """Career Health Score output model"""
+
     overall_score: int  # 1-100
     grade: str  # A, B, C, D, F
     breakdown: Dict[str, float]
@@ -38,7 +39,7 @@ class CareerHealthScoreCalculator:
             "skill_currency": 0.25,
             "market_activity": 0.20,
             "goal_progress": 0.20,
-            "network_strength": 0.10
+            "network_strength": 0.10,
         }
 
     async def calculate(self, user_id: str) -> CareerHealthScore:
@@ -66,11 +67,11 @@ class CareerHealthScoreCalculator:
 
             # Weighted sum
             overall_score = int(
-                profile_score * self.weights["profile_completeness"] +
-                skill_score * self.weights["skill_currency"] +
-                activity_score * self.weights["market_activity"] +
-                goal_score * self.weights["goal_progress"] +
-                network_score * self.weights["network_strength"]
+                profile_score * self.weights["profile_completeness"]
+                + skill_score * self.weights["skill_currency"]
+                + activity_score * self.weights["market_activity"]
+                + goal_score * self.weights["goal_progress"]
+                + network_score * self.weights["network_strength"]
             )
 
             # Generate recommendations
@@ -89,10 +90,10 @@ class CareerHealthScoreCalculator:
                     "skill_currency": skill_score,
                     "market_activity": activity_score,
                     "goal_progress": goal_score,
-                    "network_strength": network_score
+                    "network_strength": network_score,
                 },
                 recommendations=recommendations,
-                trend=trend
+                trend=trend,
             )
 
         except Exception as e:
@@ -101,7 +102,7 @@ class CareerHealthScoreCalculator:
 
     async def _fetch_user_data(self, user_id: str) -> Dict:
         """Fetch all user data needed for CHS calculation"""
-        
+
         supabase = get_supabase_client()
         if not supabase:
             raise Exception("Database unavailable")
@@ -115,27 +116,24 @@ class CareerHealthScoreCalculator:
         profile = profile_response.data[0] if profile_response.data else {}
 
         # Recent applications
-        apps_response = supabase.table("job_applications") \
-            .select("*") \
-            .eq("user_id", user_id) \
-            .order("applied_at", desc=True) \
-            .limit(50) \
+        apps_response = (
+            supabase.table("job_applications")
+            .select("*")
+            .eq("user_id", user_id)
+            .order("applied_at", desc=True)
+            .limit(50)
             .execute()
+        )
         applications = apps_response.data if apps_response.data else []
 
         # Active goals
-        goals_response = supabase.table("user_goals") \
-            .select("*") \
-            .eq("user_id", user_id) \
-            .eq("status", "active") \
-            .execute()
+        goals_response = (
+            supabase.table("user_goals").select("*").eq("user_id", user_id).eq("status", "active").execute()
+        )
         goals = goals_response.data if goals_response.data else []
 
         # Interview sessions
-        sessions_response = supabase.table("interview_sessions") \
-            .select("*") \
-            .eq("user_id", user_id) \
-            .execute()
+        sessions_response = supabase.table("interview_sessions").select("*").eq("user_id", user_id).execute()
         interview_sessions = sessions_response.data if sessions_response.data else []
 
         return {
@@ -143,7 +141,7 @@ class CareerHealthScoreCalculator:
             "profile": profile,
             "applications": applications,
             "goals": goals,
-            "interview_sessions": interview_sessions
+            "interview_sessions": interview_sessions,
         }
 
     def _calculate_profile_completeness(self, user_data: Dict) -> float:
@@ -219,9 +217,21 @@ class CareerHealthScoreCalculator:
 
         # High-demand skills (50 points)
         high_demand_skills = [
-            "Python", "JavaScript", "TypeScript", "React", "AWS",
-            "Machine Learning", "AI", "LLM", "Cloud", "Kubernetes",
-            "Next.js", "FastAPI", "PostgreSQL", "Docker", "Go"
+            "Python",
+            "JavaScript",
+            "TypeScript",
+            "React",
+            "AWS",
+            "Machine Learning",
+            "AI",
+            "LLM",
+            "Cloud",
+            "Kubernetes",
+            "Next.js",
+            "FastAPI",
+            "PostgreSQL",
+            "Docker",
+            "Go",
         ]
 
         user_skill_names = [s if isinstance(s, str) else s.get("name", "") for s in skills]
@@ -237,7 +247,7 @@ class CareerHealthScoreCalculator:
             "backend": ["Python", "Java", "Go", "Node", "FastAPI", "Django"],
             "data": ["SQL", "PostgreSQL", "MongoDB", "Redis"],
             "cloud": ["AWS", "Azure", "GCP", "Cloud"],
-            "ai": ["Machine Learning", "AI", "LLM", "NLP"]
+            "ai": ["Machine Learning", "AI", "LLM", "NLP"],
         }
 
         category_coverage = 0
@@ -253,7 +263,7 @@ class CareerHealthScoreCalculator:
         updated_at = profile.get("updated_at")
         if updated_at:
             try:
-                updated_date = datetime.fromisoformat(updated_at.replace('Z', '+00:00'))
+                updated_date = datetime.fromisoformat(updated_at.replace("Z", "+00:00"))
                 days_since_update = (datetime.now() - updated_date).days
 
                 if days_since_update <= 7:
@@ -285,8 +295,9 @@ class CareerHealthScoreCalculator:
         # Recent applications (50 points)
         now = datetime.now()
         recent_apps = [
-            app for app in applications
-            if (now - datetime.fromisoformat(app.get("applied_at", "").replace('Z', '+00:00'))).days <= 30
+            app
+            for app in applications
+            if (now - datetime.fromisoformat(app.get("applied_at", "").replace("Z", "+00:00"))).days <= 30
         ]
 
         if len(recent_apps) >= 10:
@@ -300,8 +311,9 @@ class CareerHealthScoreCalculator:
 
         # Interview activity (30 points)
         recent_interviews = [
-            session for session in interview_sessions
-            if (now - datetime.fromisoformat(session.get("created_at", "").replace('Z', '+00:00'))).days <= 30
+            session
+            for session in interview_sessions
+            if (now - datetime.fromisoformat(session.get("created_at", "").replace("Z", "+00:00"))).days <= 30
         ]
 
         if len(recent_interviews) >= 5:
@@ -357,8 +369,9 @@ class CareerHealthScoreCalculator:
         # Recent goal activity (30 points)
         now = datetime.now()
         recent_activity = [
-            goal for goal in goals
-            if (now - datetime.fromisoformat(goal.get("updated_at", "").replace('Z', '+00:00'))).days <= 14
+            goal
+            for goal in goals
+            if (now - datetime.fromisoformat(goal.get("updated_at", "").replace("Z", "+00:00"))).days <= 14
         ]
 
         if len(recent_activity) >= 2:
@@ -401,12 +414,7 @@ class CareerHealthScoreCalculator:
         return min(100, score)
 
     def _generate_recommendations(
-        self,
-        profile_score: float,
-        skill_score: float,
-        activity_score: float,
-        goal_score: float,
-        network_score: float
+        self, profile_score: float, skill_score: float, activity_score: float, goal_score: float, network_score: float
     ) -> List[str]:
         """Generate actionable recommendations based on scores"""
 
@@ -418,7 +426,9 @@ class CareerHealthScoreCalculator:
 
         # Skill recommendations
         if skill_score < 70:
-            recommendations.append("🎯 Update your skills: Learn in-demand technologies like AI, Cloud, or Modern Web Frameworks")
+            recommendations.append(
+                "🎯 Update your skills: Learn in-demand technologies like AI, Cloud, or Modern Web Frameworks"
+            )
 
         # Activity recommendations
         if activity_score < 50:
@@ -452,14 +462,16 @@ class CareerHealthScoreCalculator:
             supabase = get_supabase_client()
             if not supabase:
                 return None
-                
+
             # Fetch historical CHS records
-            history_response = supabase.table("career_health_history") \
-                .select("score, created_at") \
-                .eq("user_id", user_id) \
-                .order("created_at", desc=True) \
-                .limit(2) \
+            history_response = (
+                supabase.table("career_health_history")
+                .select("score, created_at")
+                .eq("user_id", user_id)
+                .order("created_at", desc=True)
+                .limit(2)
                 .execute()
+            )
 
             history = history_response.data if history_response.data else []
 
@@ -491,12 +503,10 @@ class CareerHealthScoreCalculator:
             supabase = get_supabase_client()
             if not supabase:
                 return
-                
-            supabase.table("career_health_history").insert({
-                "user_id": user_id,
-                "score": score,
-                "created_at": datetime.utcnow().isoformat()
-            }).execute()
+
+            supabase.table("career_health_history").insert(
+                {"user_id": user_id, "score": score, "created_at": datetime.utcnow().isoformat()}
+            ).execute()
         except Exception as e:
             logger.warning(f"Could not save score history: {e}")
 

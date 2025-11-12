@@ -23,13 +23,14 @@ from app.models.premium_schemas import (
     TailorResumeRequest as TailorReq,
     TailoredResumeOutput,
     TailorCoverLetterRequest as CoverLetterReq,
-    ApplySuggestionRequest as ApplyReq
+    ApplySuggestionRequest as ApplyReq,
 )
 
 router = APIRouter(prefix="/resume-studio", tags=["Resume Studio - Premium"])
 
 
 # ==================== Pydantic Models ====================
+
 
 class WorkHistoryItem(BaseModel):
     id: str
@@ -46,10 +47,7 @@ class WorkHistoryItem(BaseModel):
 
 class CareerProfile(BaseModel):
     user_id: str
-    basics: Dict[str, Any] = {
-        "full_name": "", "headline": "", "location": "",
-        "email": "", "phone": "", "links": []
-    }
+    basics: Dict[str, Any] = {"full_name": "", "headline": "", "location": "", "email": "", "phone": "", "links": []}
     work_history: List[WorkHistoryItem] = []
     education: List[Dict[str, Any]] = []
     certifications: List[Dict[str, Any]] = []
@@ -60,7 +58,7 @@ class CareerProfile(BaseModel):
         "last_verified_iso": "",
         "sources": [],
         "privacy_consent": {},
-        "data_retention_policy": "user_controlled"
+        "data_retention_policy": "user_controlled",
     }
 
 
@@ -69,15 +67,11 @@ class IngestRequest(BaseModel):
     file_id: Optional[str] = None
     linkedin_url: Optional[str] = None
     privacy_consent: Dict[str, bool] = Field(
-        default_factory=lambda: {
-            "store_profile": False,
-            "ai_processing": False,
-            "data_retention": False
-        }
+        default_factory=lambda: {"store_profile": False, "ai_processing": False, "data_retention": False}
     )
     user_region: str = Field(default="US", description="User's region for privacy compliance")
-    
-    @validator('text')
+
+    @validator("text")
     def validate_text_length(cls, v):
         if v and len(v) > 50000:
             raise ValueError("Text content exceeds maximum length of 50,000 characters")
@@ -102,8 +96,8 @@ class JobDescription(BaseModel):
     keywords: List[str] = []
     industry: str
     region: str = "US"
-    
-    @validator('title', 'company')
+
+    @validator("title", "company")
     def validate_not_empty(cls, v):
         if not v or not v.strip():
             raise ValueError("Field cannot be empty")
@@ -214,150 +208,155 @@ SAFETY_REFUSAL_MESSAGES = {
     "harmful_content": "I cannot process content that may be harmful, discriminatory, or illegal. Please provide professional career-related content only.",
     "privacy_violation": "This request involves sensitive personal data that I cannot process without proper consent. Please review our privacy policy.",
     "fake_credentials": "I cannot generate false or misleading credentials. All career information must be truthful and verifiable.",
-    "insufficient_consent": "Insufficient privacy consent for this operation. Please review and grant necessary permissions."
+    "insufficient_consent": "Insufficient privacy consent for this operation. Please review and grant necessary permissions.",
 }
 
 
 # ==================== Safety & Privacy Classes ====================
 
+
 class SafetyGuardrails:
     """Enforce AI agent scope and content safety"""
-    
+
     # Patterns that indicate out-of-scope requests
     OUT_OF_SCOPE_PATTERNS = [
-        r'\b(medical|health|diagnosis|prescription|therapy)\b',
-        r'\b(legal advice|lawsuit|attorney|litigation)\b',
-        r'\b(financial advice|investment|stock|crypto|trading)\b',
-        r'\b(political|election|vote|campaign|party affiliation)\b',
-        r'\b(religion|religious|spiritual guidance)\b',
-        r'\b(write essay|homework|assignment)\b',
-        r'\b(ignore (previous )?instructions?|disregard (your )?system prompt)\b',
-        r'\b(you are now|act as|pretend (to be|you\'re))\s+((?!career|resume|job).)+\b',
+        r"\b(medical|health|diagnosis|prescription|therapy)\b",
+        r"\b(legal advice|lawsuit|attorney|litigation)\b",
+        r"\b(financial advice|investment|stock|crypto|trading)\b",
+        r"\b(political|election|vote|campaign|party affiliation)\b",
+        r"\b(religion|religious|spiritual guidance)\b",
+        r"\b(write essay|homework|assignment)\b",
+        r"\b(ignore (previous )?instructions?|disregard (your )?system prompt)\b",
+        r"\b(you are now|act as|pretend (to be|you\'re))\s+((?!career|resume|job).)+\b",
     ]
-    
+
     # Harmful content patterns
     HARMFUL_PATTERNS = [
-        r'\b(discrimination|racist|sexist|homophobic|xenophobic)\b',
-        r'\b(violence|weapon|bomb|attack)\b',
-        r'\b(illegal|fraud|scam|fake credentials)\b',
-        r'\b(hate speech|slur|offensive)\b',
+        r"\b(discrimination|racist|sexist|homophobic|xenophobic)\b",
+        r"\b(violence|weapon|bomb|attack)\b",
+        r"\b(illegal|fraud|scam|fake credentials)\b",
+        r"\b(hate speech|slur|offensive)\b",
     ]
-    
+
     @staticmethod
     def check_scope(text: str) -> tuple[bool, Optional[str]]:
         """Check if request is within Resume Studio scope"""
         text_lower = text.lower()
-        
+
         for pattern in SafetyGuardrails.OUT_OF_SCOPE_PATTERNS:
             if re.search(pattern, text_lower, re.IGNORECASE):
                 return False, "out_of_scope"
-        
+
         return True, None
-    
+
     @staticmethod
     def check_safety(text: str) -> tuple[bool, List[str]]:
         """Check for harmful or inappropriate content"""
         flags = []
         text_lower = text.lower()
-        
+
         for pattern in SafetyGuardrails.HARMFUL_PATTERNS:
             if re.search(pattern, text_lower, re.IGNORECASE):
                 flags.append(f"Flagged: {pattern}")
-        
+
         return len(flags) == 0, flags
-    
+
     @staticmethod
     def check_fake_credentials(text: str) -> bool:
         """Detect requests for fake credentials"""
         fake_indicators = [
-            r'\bfake\b.*\b(degree|certification|experience|credential)',
-            r'\bmake up\b.*\b(work history|experience|job)',
-            r'\binvent\b.*\b(skill|qualification|achievement)',
+            r"\bfake\b.*\b(degree|certification|experience|credential)",
+            r"\bmake up\b.*\b(work history|experience|job)",
+            r"\binvent\b.*\b(skill|qualification|achievement)",
         ]
-        
+
         text_lower = text.lower()
         for pattern in fake_indicators:
             if re.search(pattern, text_lower, re.IGNORECASE):
                 return False
-        
+
         return True
 
 
 class PrivacyFilter:
     """Handle PII detection and privacy compliance"""
-    
+
     # Sensitive data patterns
-    SSN_PATTERN = r'\b\d{3}-\d{2}-\d{4}\b'
-    FULL_ADDRESS_PATTERN = r'\d+\s+[\w\s]+(?:street|st|avenue|ave|road|rd|drive|dr|lane|ln|boulevard|blvd)'
-    PASSPORT_PATTERN = r'\b[A-Z]{1,2}\d{6,9}\b'
-    
+    SSN_PATTERN = r"\b\d{3}-\d{2}-\d{4}\b"
+    FULL_ADDRESS_PATTERN = r"\d+\s+[\w\s]+(?:street|st|avenue|ave|road|rd|drive|dr|lane|ln|boulevard|blvd)"
+    PASSPORT_PATTERN = r"\b[A-Z]{1,2}\d{6,9}\b"
+
     # Protected categories (GDPR Article 9)
     PROTECTED_CATEGORIES = [
-        'race', 'ethnicity', 'religion', 'political', 'sexual orientation',
-        'health', 'genetic', 'biometric', 'disability'
+        "race",
+        "ethnicity",
+        "religion",
+        "political",
+        "sexual orientation",
+        "health",
+        "genetic",
+        "biometric",
+        "disability",
     ]
-    
+
     @staticmethod
     def redact_pii(text: str, region: str = "US") -> tuple[str, List[str]]:
         """Redact PII based on regional requirements"""
         redactions = []
         cleaned_text = text
-        
+
         # Redact SSN/National ID
         if re.search(PrivacyFilter.SSN_PATTERN, cleaned_text):
-            cleaned_text = re.sub(PrivacyFilter.SSN_PATTERN, '[REDACTED-ID]', cleaned_text)
+            cleaned_text = re.sub(PrivacyFilter.SSN_PATTERN, "[REDACTED-ID]", cleaned_text)
             redactions.append("National ID numbers redacted")
-        
+
         # Redact full addresses (keep city/state only)
         if re.search(PrivacyFilter.FULL_ADDRESS_PATTERN, cleaned_text, re.IGNORECASE):
             cleaned_text = re.sub(
-                PrivacyFilter.FULL_ADDRESS_PATTERN,
-                '[City, State]',
-                cleaned_text,
-                flags=re.IGNORECASE
+                PrivacyFilter.FULL_ADDRESS_PATTERN, "[City, State]", cleaned_text, flags=re.IGNORECASE
             )
             redactions.append("Full addresses redacted to city/state")
-        
+
         # GDPR-specific: stricter email/phone handling for EU
         if region in ["EU", "EEA", "UK"]:
             # Keep email domain only for EU users unless explicit consent
-            email_pattern = r'\b[\w\.-]+@([\w\.-]+\.\w+)\b'
+            email_pattern = r"\b[\w\.-]+@([\w\.-]+\.\w+)\b"
             if re.search(email_pattern, cleaned_text):
-                cleaned_text = re.sub(email_pattern, r'[email]@\1', cleaned_text)
+                cleaned_text = re.sub(email_pattern, r"[email]@\1", cleaned_text)
                 redactions.append("Email addresses partially redacted (GDPR)")
-        
+
         return cleaned_text, redactions
-    
+
     @staticmethod
     def detect_protected_categories(text: str) -> List[str]:
         """Detect mention of GDPR Article 9 protected categories"""
         detected = []
         text_lower = text.lower()
-        
+
         for category in PrivacyFilter.PROTECTED_CATEGORIES:
             if category in text_lower:
                 detected.append(category)
-        
+
         return detected
-    
+
     @staticmethod
     def verify_consent(consent: Dict[str, bool], operation: str) -> tuple[bool, Optional[str]]:
         """Verify user has granted necessary consent for operation"""
         required_consent = {
             "ingest": ["store_profile", "ai_processing"],
             "tailor": ["ai_processing"],
-            "apply_suggestion": ["store_profile", "ai_processing"]
+            "apply_suggestion": ["store_profile", "ai_processing"],
         }
-        
+
         if operation not in required_consent:
             return True, None
-        
+
         for required in required_consent[operation]:
             if not consent.get(required, False):
                 return False, f"Missing consent: {required}"
-        
+
         return True, None
-    
+
     @staticmethod
     def get_retention_policy(region: str) -> Dict[str, Any]:
         """Get data retention policy based on region"""
@@ -366,26 +365,27 @@ class PrivacyFilter:
                 "max_retention_days": 730,  # 2 years
                 "auto_delete": True,
                 "right_to_erasure": True,
-                "breach_notification_hours": 72
+                "breach_notification_hours": 72,
             },
             "US": {
                 "max_retention_days": 1825,  # 5 years
                 "auto_delete": False,
                 "right_to_erasure": False,  # Unless CCPA applies
-                "breach_notification_hours": None
+                "breach_notification_hours": None,
             },
             "ASIA": {  # Generic for PDPA/APPI/PIPL
                 "max_retention_days": 1095,  # 3 years
                 "auto_delete": True,
                 "right_to_erasure": True,
-                "breach_notification_hours": 72
-            }
+                "breach_notification_hours": 72,
+            },
         }
-        
+
         return policies.get(region, policies["US"])
 
 
 # ==================== Rate Limiting Decorator ====================
+
 
 async def check_rate_limit(request: Request):
     """Simple rate limiting - enhance with Redis in production"""
@@ -396,27 +396,21 @@ async def check_rate_limit(request: Request):
 
 # ==================== Endpoints with Safety & Privacy ====================
 
+
 @router.post("/ingest", response_model=IngestResponse, dependencies=[Depends(check_rate_limit)])
-async def ingest_resume(
-    request: IngestRequest,
-    file: Optional[UploadFile] = File(None)
-):
+async def ingest_resume(request: IngestRequest, file: Optional[UploadFile] = File(None)):
     """
     Parse resume/LinkedIn text into normalized career_profile.
     WITH SAFETY & PRIVACY GUARDRAILS
     """
     try:
         # 1. VERIFY CONSENT
-        consent_valid, consent_error = PrivacyFilter.verify_consent(
-            request.privacy_consent,
-            "ingest"
-        )
+        consent_valid, consent_error = PrivacyFilter.verify_consent(request.privacy_consent, "ingest")
         if not consent_valid:
             raise HTTPException(
-                status_code=403,
-                detail=SAFETY_REFUSAL_MESSAGES["insufficient_consent"] + f" ({consent_error})"
+                status_code=403, detail=SAFETY_REFUSAL_MESSAGES["insufficient_consent"] + f" ({consent_error})"
             )
-        
+
         # 2. EXTRACT TEXT
         text_content = ""
         if request.text:
@@ -424,57 +418,42 @@ async def ingest_resume(
         elif file:
             content = await file.read()
             # TODO: Implement secure file extraction (PDF/DOCX)
-            text_content = content.decode('utf-8', errors='ignore')
+            text_content = content.decode("utf-8", errors="ignore")
         elif request.linkedin_url:
             raise HTTPException(400, "LinkedIn URL parsing requires additional privacy consent")
-        
+
         if not text_content:
             raise HTTPException(400, "No content provided for parsing")
-        
+
         # 3. SAFETY CHECKS
         in_scope, scope_error = SafetyGuardrails.check_scope(text_content)
         if not in_scope:
-            raise HTTPException(
-                status_code=400,
-                detail=SAFETY_REFUSAL_MESSAGES[scope_error]
-            )
-        
+            raise HTTPException(status_code=400, detail=SAFETY_REFUSAL_MESSAGES[scope_error])
+
         is_safe, safety_flags = SafetyGuardrails.check_safety(text_content)
         if not is_safe:
             logger.warning(f"Safety flags detected: {safety_flags}")
-            raise HTTPException(
-                status_code=400,
-                detail=SAFETY_REFUSAL_MESSAGES["harmful_content"]
-            )
-        
+            raise HTTPException(status_code=400, detail=SAFETY_REFUSAL_MESSAGES["harmful_content"])
+
         if not SafetyGuardrails.check_fake_credentials(text_content):
-            raise HTTPException(
-                status_code=400,
-                detail=SAFETY_REFUSAL_MESSAGES["fake_credentials"]
-            )
-        
+            raise HTTPException(status_code=400, detail=SAFETY_REFUSAL_MESSAGES["fake_credentials"])
+
         # 4. PRIVACY FILTERING
-        cleaned_text, redactions = PrivacyFilter.redact_pii(
-            text_content,
-            request.user_region
-        )
-        
+        cleaned_text, redactions = PrivacyFilter.redact_pii(text_content, request.user_region)
+
         protected_categories = PrivacyFilter.detect_protected_categories(cleaned_text)
         if protected_categories:
             logger.warning(f"Protected categories detected: {protected_categories}")
             # Remove references to protected categories
             for category in protected_categories:
                 cleaned_text = re.sub(
-                    rf'\b{category}\b.*?[.\n]',
-                    '[REDACTED - Protected Category]',
-                    cleaned_text,
-                    flags=re.IGNORECASE
+                    rf"\b{category}\b.*?[.\n]", "[REDACTED - Protected Category]", cleaned_text, flags=re.IGNORECASE
                 )
             redactions.append(f"Protected categories redacted: {', '.join(protected_categories)}")
-        
+
         # 5. AI PROCESSING (with Gemini)
         analyzer = GeminiAnalyzer()
-        
+
         task_prompt = f"""
 Task: Ingest & Parse (WITHIN SCOPE ONLY - Career documents only)
 
@@ -495,19 +474,16 @@ Return JSON with:
 - profile_patch_json: partial profile (only confidently parsed fields)
 - open_questions: list of clarifications to confirm with the user
 """
-        
+
         response = await analyzer.analyze_with_prompts(
             system_prompt=RESUME_STUDIO_SYSTEM_PROMPT,
             developer_prompt=RESUME_STUDIO_DEVELOPER_PROMPT,
             task_prompt=task_prompt,
-            safety_settings={
-                "category": "career_documents",
-                "allow_fabrication": False
-            }
+            safety_settings={"category": "career_documents", "allow_fabrication": False},
         )
-        
+
         result = response.get("parsed_data", {})
-        
+
         # 6. PRIVACY SUMMARY
         retention_policy = PrivacyFilter.get_retention_policy(request.user_region)
         privacy_summary = {
@@ -515,23 +491,23 @@ Return JSON with:
             "redactions_applied": redactions,
             "retention_policy": retention_policy,
             "consent_granted": request.privacy_consent,
-            "data_hash": hashlib.sha256(text_content.encode()).hexdigest()[:16]  # For audit trail
+            "data_hash": hashlib.sha256(text_content.encode()).hexdigest()[:16],  # For audit trail
         }
-        
+
         # 7. AUDIT LOG
         logger.info(
             f"Resume ingestion completed - Region: {request.user_region}, "
             f"Redactions: {len(redactions)}, Safety flags: {len(safety_flags)}"
         )
-        
+
         return IngestResponse(
             validation_summary=result.get("validation_summary", "Parsing complete"),
             profile_patch_json=result.get("profile_patch_json", {}),
             open_questions=result.get("open_questions", []),
             privacy_summary=privacy_summary,
-            safety_flags=safety_flags
+            safety_flags=safety_flags,
         )
-        
+
     except HTTPException:
         raise
     except Exception as e:
@@ -540,9 +516,7 @@ Return JSON with:
 
 
 @router.post("/tailor", response_model=TailoredResumeResponse)
-async def tailor_resume(
-    request: TailorResumeRequest
-):
+async def tailor_resume(request: TailorResumeRequest):
     """
     Tailor resume for specific job description.
     WITH SCOPE ENFORCEMENT & PRIVACY PROTECTION
@@ -550,28 +524,22 @@ async def tailor_resume(
     try:
         # 1. VALIDATE JD IS LEGITIMATE
         jd_text = f"{request.jd.title} {request.jd.company} {' '.join(request.jd.must_haves)}"
-        
+
         in_scope, scope_error = SafetyGuardrails.check_scope(jd_text)
         if not in_scope:
-            raise HTTPException(
-                status_code=400,
-                detail="Job description contains out-of-scope content"
-            )
-        
+            raise HTTPException(status_code=400, detail="Job description contains out-of-scope content")
+
         is_safe, safety_flags = SafetyGuardrails.check_safety(jd_text)
         if not is_safe:
-            raise HTTPException(
-                status_code=400,
-                detail="Job description contains inappropriate content"
-            )
-        
+            raise HTTPException(status_code=400, detail="Job description contains inappropriate content")
+
         # 2. FETCH CAREER PROFILE (TODO: implement DB retrieval with access control)
         # career_profile = get_career_profile(db, request.user_id)
         # Verify user owns this profile
-        
+
         # 3. AI PROCESSING
         analyzer = GeminiAnalyzer()
-        
+
         task_prompt = f"""
 Task: Tailor Resume for JD (CAREER DOCUMENTS ONLY)
 
@@ -590,33 +558,33 @@ job_description:
 Return Tailored Resume Output JSON with ats_notes, keyword_coverage, risk_flags, placeholders.
 DO NOT modify the career_profile.
 """
-        
+
         response = await analyzer.analyze_with_prompts(
             system_prompt=RESUME_STUDIO_SYSTEM_PROMPT,
             developer_prompt=RESUME_STUDIO_DEVELOPER_PROMPT,
-            task_prompt=task_prompt
+            task_prompt=task_prompt,
         )
-        
+
         result = response.get("parsed_data", {})
-        
+
         # 4. PRIVACY: Remove any accidentally generated PII
         resume_text = str(result.get("resume", {}))
         cleaned_resume, redactions = PrivacyFilter.redact_pii(resume_text)
-        
+
         # 5. STORE ARTIFACT (TODO: implement with encryption at rest)
         # store_artifact(db, request.user_id, "tailored_resume", result, request.jd.model_dump())
-        
+
         logger.info(f"Resume tailored for user {request.user_id} - JD: {request.jd.title}")
-        
+
         return TailoredResumeResponse(
             resume=result.get("resume", {}),
             ats_notes=result.get("ats_notes", []),
             risk_flags=result.get("risk_flags", []),
             keyword_coverage=result.get("keyword_coverage", {"matched": [], "missing": []}),
             placeholders=result.get("placeholders", []),
-            privacy_redactions=redactions
+            privacy_redactions=redactions,
         )
-        
+
     except HTTPException:
         raise
     except Exception as e:
@@ -625,9 +593,7 @@ DO NOT modify the career_profile.
 
 
 @router.post("/cover-letter/tailor")
-async def tailor_cover_letter(
-    request: TailorCoverLetterRequest
-):
+async def tailor_cover_letter(request: TailorCoverLetterRequest):
     """
     Generate tailored cover letter for job description.
     WITH SCOPE ENFORCEMENT
@@ -638,9 +604,9 @@ async def tailor_cover_letter(
         in_scope, _ = SafetyGuardrails.check_scope(jd_text)
         if not in_scope:
             raise HTTPException(400, SAFETY_REFUSAL_MESSAGES["out_of_scope"])
-        
+
         analyzer = GeminiAnalyzer()
-        
+
         task_prompt = f"""
 Task: Tailor Cover Letter (CAREER DOCUMENTS ONLY)
 
@@ -655,26 +621,26 @@ job_description:
 
 Return JSON with cover_letter structure.
 """
-        
+
         response = await analyzer.analyze_with_prompts(
             system_prompt=RESUME_STUDIO_SYSTEM_PROMPT,
             developer_prompt=RESUME_STUDIO_DEVELOPER_PROMPT,
-            task_prompt=task_prompt
+            task_prompt=task_prompt,
         )
-        
+
         result = response.get("parsed_data", {})
-        
+
         # Privacy filter
         cover_letter_text = str(result.get("cover_letter", {}))
         cleaned_letter, redactions = PrivacyFilter.redact_pii(cover_letter_text)
-        
+
         if redactions:
             result["privacy_note"] = f"Redactions applied: {', '.join(redactions)}"
-        
+
         logger.info(f"Cover letter generated for user {request.user_id}")
-        
+
         return result
-        
+
     except HTTPException:
         raise
     except Exception as e:
@@ -683,32 +649,27 @@ Return JSON with cover_letter structure.
 
 
 @router.post("/suggestions/apply")
-async def apply_suggestion(
-    request: ApplySuggestionRequest
-):
+async def apply_suggestion(request: ApplySuggestionRequest):
     """
     Apply user-confirmed profile suggestions from Coach/Interviewer.
     WITH AUDIT TRAIL & VALIDATION
     """
     if not request.user_confirmed:
         raise HTTPException(400, "Suggestion must be user-confirmed")
-    
+
     try:
         # VALIDATE SUGGESTION CONTENT
         suggestion_text = str(request.suggestion_patch)
-        
+
         if not SafetyGuardrails.check_fake_credentials(suggestion_text):
-            raise HTTPException(
-                status_code=400,
-                detail="Cannot apply suggestions that involve false credentials"
-            )
-        
+            raise HTTPException(status_code=400, detail="Cannot apply suggestions that involve false credentials")
+
         is_safe, safety_flags = SafetyGuardrails.check_safety(suggestion_text)
         if not is_safe:
             raise HTTPException(400, "Suggestion contains inappropriate content")
-        
+
         analyzer = GeminiAnalyzer()
-        
+
         task_prompt = f"""
 Task: Apply Confirmed Suggestions (CAREER PROFILE UPDATES ONLY)
 
@@ -722,15 +683,15 @@ Validate it is:
 
 Generate profile_patch_json and audit_note.
 """
-        
+
         response = await analyzer.analyze_with_prompts(
             system_prompt=RESUME_STUDIO_SYSTEM_PROMPT,
             developer_prompt=RESUME_STUDIO_DEVELOPER_PROMPT,
-            task_prompt=task_prompt
+            task_prompt=task_prompt,
         )
-        
+
         result = response.get("parsed_data", {})
-        
+
         # AUDIT LOG with timestamp and hash
         audit_entry = {
             "user_id": request.user_id,
@@ -738,20 +699,20 @@ Generate profile_patch_json and audit_note.
             "action": "apply_suggestion",
             "patch_hash": hashlib.sha256(str(request.suggestion_patch).encode()).hexdigest()[:16],
             "audit_note": result.get("audit_note", request.audit_note),
-            "confirmed": request.user_confirmed
+            "confirmed": request.user_confirmed,
         }
         logger.info(f"Suggestion applied: {audit_entry}")
-        
+
         # TODO: Save to database with audit trail
         # save_profile(db, request.user_id, result["profile_patch_json"], audit_entry)
-        
+
         return {
             "success": True,
             "audit_note": result.get("audit_note", "Suggestion applied"),
             "updated_fields": list(result.get("profile_patch_json", {}).keys()),
-            "audit_id": audit_entry["patch_hash"]
+            "audit_id": audit_entry["patch_hash"],
         }
-        
+
     except HTTPException:
         raise
     except Exception as e:
@@ -768,7 +729,7 @@ async def get_profile(user_id: str):
     # TODO: Implement authentication and authorization
     # Verify requesting user has permission to access this profile
     # Log access for audit trail
-    
+
     logger.info(f"Profile access requested for user {user_id}")
     raise HTTPException(501, "Profile retrieval not yet implemented")
 
@@ -786,16 +747,16 @@ async def erase_profile(user_id: str):
         # 3. Delete all suggestions
         # 4. Delete audit logs (after retention period)
         # 5. Confirm deletion in response
-        
+
         logger.info(f"GDPR erasure requested for user {user_id}")
-        
+
         return {
             "success": True,
             "message": "All personal data has been permanently erased",
             "user_id": user_id,
-            "erasure_timestamp": datetime.utcnow().isoformat()
+            "erasure_timestamp": datetime.utcnow().isoformat(),
         }
-        
+
     except Exception as e:
         logger.error(f"Data erasure failed for user {user_id}: {e}")
         raise HTTPException(500, "Failed to erase data")
@@ -809,5 +770,5 @@ async def health_check():
         "service": "Resume Studio",
         "safety_guardrails": "active",
         "privacy_compliance": ["GDPR", "CCPA", "PDPA", "APPI", "PIPL"],
-        "timestamp": datetime.utcnow().isoformat()
+        "timestamp": datetime.utcnow().isoformat(),
     }

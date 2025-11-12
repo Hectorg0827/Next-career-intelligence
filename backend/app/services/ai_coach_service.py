@@ -21,7 +21,7 @@ class AICoachService:
     AI Coach - Your Personal Career Development Assistant
     Provides contextual, ongoing career coaching through natural conversation
     """
-    
+
     def __init__(self):
         if genai:
             genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
@@ -30,7 +30,7 @@ class AICoachService:
         else:
             self.model = None
             logger.warning("AI Coach running without Gemini - responses will be limited")
-        
+
         self.system_prompt = """You are an expert career coach and mentor with 20+ years of experience helping professionals navigate career transitions, skill development, and job market changes.
 
 Your personality:
@@ -57,12 +57,9 @@ Conversation style:
 Current context:
 {context}
 """
-    
+
     async def start_conversation(
-        self,
-        user_id: str,
-        user_name: Optional[str] = None,
-        career_context: Optional[Dict] = None
+        self, user_id: str, user_name: Optional[str] = None, career_context: Optional[Dict] = None
     ) -> Dict:
         """
         Start a new coaching conversation with personalized greeting
@@ -70,10 +67,10 @@ Current context:
         try:
             # Build user context
             context_parts = []
-            
+
             if user_name:
                 context_parts.append(f"User's name: {user_name}")
-            
+
             if career_context:
                 if career_context.get("current_role"):
                     context_parts.append(f"Current role: {career_context['current_role']}")
@@ -83,43 +80,39 @@ Current context:
                     context_parts.append(f"Current skills: {', '.join(career_context['skills'][:5])}")
                 if career_context.get("goals"):
                     context_parts.append(f"Goals: {', '.join(career_context['goals'][:3])}")
-            
+
             context = "\n".join(context_parts) if context_parts else "New user, no career context yet"
-            
+
             # Generate personalized greeting
             greeting_prompt = f"""You're meeting a new user for the first time as their career coach. 
 
 {context}
 
 Introduce yourself briefly, acknowledge what you know about their situation, and ask 1-2 specific questions to understand how you can help them most effectively right now. Keep it warm and conversational."""
-            
+
             if self.model:
                 response = self.model.generate_content(greeting_prompt)
                 message = response.text
             else:
                 message = f"Hi{' ' + user_name if user_name else ''}! I'm your AI Career Coach. I'm here to help you navigate your career journey. What would you like to work on today?"
-            
+
             return {
                 "message": message,
                 "timestamp": datetime.utcnow().isoformat(),
                 "message_id": None,  # Will be set when saved to DB
-                "context": career_context or {}
+                "context": career_context or {},
             }
-            
+
         except Exception as e:
             logger.error(f"Failed to start conversation: {e}")
             raise
-    
+
     async def send_message(
-        self,
-        user_id: str,
-        message: str,
-        conversation_history: List[Dict],
-        user_context: Optional[Dict] = None
+        self, user_id: str, message: str, conversation_history: List[Dict], user_context: Optional[Dict] = None
     ) -> Dict:
         """
         Send a message and get AI Coach response with full conversation context
-        
+
         Args:
             user_id: User's ID
             message: User's message
@@ -129,42 +122,35 @@ Introduce yourself briefly, acknowledge what you know about their situation, and
         try:
             # Build context string
             context_str = self._build_context_string(user_context)
-            
+
             # Build conversation prompt
             full_prompt = self.system_prompt.format(context=context_str)
-            
+
             # Add conversation history
             conversation_text = self._format_conversation_history(conversation_history)
-            
+
             # Add current message
             full_prompt += f"\n\nConversation history:\n{conversation_text}\n\nUser: {message}\n\nCoach:"
-            
+
             if self.model:
                 response = self.model.generate_content(full_prompt)
                 reply = response.text
             else:
                 reply = "I'm here to help! However, my AI capabilities are currently limited. Please configure the Gemini API key to enable full coaching features."
-            
+
             return {
                 "message": reply,
                 "timestamp": datetime.utcnow().isoformat(),
                 "message_id": None,  # Will be set when saved to DB
-                "metadata": {
-                    "model": "gemini-pro" if self.model else "fallback",
-                    "context_used": bool(user_context)
-                }
+                "metadata": {"model": "gemini-pro" if self.model else "fallback", "context_used": bool(user_context)},
             }
-            
+
         except Exception as e:
             logger.error(f"Failed to process message: {e}")
             raise
-    
+
     async def generate_action_plan(
-        self,
-        user_id: str,
-        goal: str,
-        current_state: Dict,
-        timeline: Optional[str] = "3 months"
+        self, user_id: str, goal: str, current_state: Dict, timeline: Optional[str] = "3 months"
     ) -> Dict:
         """
         Generate a structured action plan based on user's goal
@@ -201,7 +187,7 @@ Format your response as a structured JSON with this format:
 }}
 
 Only return the JSON, no additional text."""
-            
+
             if self.model:
                 response = self.model.generate_content(prompt)
                 # Try to extract JSON from response
@@ -209,44 +195,30 @@ Only return the JSON, no additional text."""
                     plan_data = json.loads(response.text)
                 except:
                     # If parsing fails, wrap in basic structure
-                    plan_data = {
-                        "raw_plan": response.text,
-                        "milestones": [],
-                        "weekly_actions": [],
-                        "resources": []
-                    }
+                    plan_data = {"raw_plan": response.text, "milestones": [], "weekly_actions": [], "resources": []}
             else:
                 plan_data = {
                     "error": "AI Coach not fully configured",
                     "milestones": [],
                     "weekly_actions": [],
-                    "resources": []
+                    "resources": [],
                 }
-            
-            return {
-                "plan": plan_data,
-                "goal": goal,
-                "timeline": timeline,
-                "created_at": datetime.utcnow().isoformat()
-            }
-            
+
+            return {"plan": plan_data, "goal": goal, "timeline": timeline, "created_at": datetime.utcnow().isoformat()}
+
         except Exception as e:
             logger.error(f"Failed to generate action plan: {e}")
             raise
-    
+
     async def check_progress(
-        self,
-        user_id: str,
-        completed_actions: List[str],
-        planned_actions: List[str],
-        days_since_start: int
+        self, user_id: str, completed_actions: List[str], planned_actions: List[str], days_since_start: int
     ) -> Dict:
         """
         Check user's progress and provide motivational feedback
         """
         try:
             completion_rate = len(completed_actions) / len(planned_actions) if planned_actions else 0
-            
+
             prompt = f"""A user started their career development plan {days_since_start} days ago.
 
 PLANNED ACTIONS: {len(planned_actions)}
@@ -262,7 +234,7 @@ Provide:
 3. One actionable suggestion for the next 3 days
 
 Keep it motivational but realistic. If they're behind, help them adjust expectations, not just push harder."""
-            
+
             if self.model:
                 response = self.model.generate_content(prompt)
                 feedback = response.text
@@ -273,52 +245,54 @@ Keep it motivational but realistic. If they're behind, help them adjust expectat
                     feedback = "You're making progress! Keep focusing on consistent daily action."
                 else:
                     feedback = "Let's break down your goals into smaller steps. What's one thing you can do today?"
-            
+
             return {
                 "feedback": feedback,
                 "completion_rate": completion_rate,
                 "streak_days": days_since_start,
-                "next_milestone": planned_actions[len(completed_actions)] if len(completed_actions) < len(planned_actions) else None
+                "next_milestone": (
+                    planned_actions[len(completed_actions)] if len(completed_actions) < len(planned_actions) else None
+                ),
             }
-            
+
         except Exception as e:
             logger.error(f"Failed to check progress: {e}")
             raise
-    
+
     def _build_context_string(self, user_context: Optional[Dict]) -> str:
         """Build a formatted context string for the system prompt"""
         if not user_context:
             return "No career context available yet"
-        
+
         parts = []
-        
+
         if user_context.get("current_role"):
             parts.append(f"Current role: {user_context['current_role']}")
-        
+
         if user_context.get("target_role"):
             parts.append(f"Target role: {user_context['target_role']}")
-        
+
         if user_context.get("years_experience"):
             parts.append(f"Years of experience: {user_context['years_experience']}")
-        
+
         if user_context.get("skills"):
             parts.append(f"Skills: {', '.join(user_context['skills'][:10])}")
-        
+
         if user_context.get("goals"):
             parts.append(f"Career goals: {', '.join(user_context['goals'])}")
-        
+
         if user_context.get("completed_items"):
             parts.append(f"Completed action items: {user_context['completed_items']}")
-        
+
         return "\n".join(parts)
-    
+
     def _format_conversation_history(self, history: List[Dict]) -> str:
         """Format conversation history for the prompt"""
         formatted = []
         for msg in history[-10:]:  # Only use last 10 messages for context
             role = "User" if msg["role"] == "user" else "Coach"
             formatted.append(f"{role}: {msg['content']}")
-        
+
         return "\n".join(formatted)
 
 

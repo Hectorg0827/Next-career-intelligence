@@ -1,4 +1,5 @@
 """Database models for job marketplace"""
+
 from sqlalchemy import Column, Integer, String, Text, DateTime, Boolean, Float, ForeignKey, UniqueConstraint, Index
 from sqlalchemy.dialects.postgresql import ARRAY
 from datetime import datetime
@@ -8,6 +9,7 @@ from app.db.database import Base
 
 class Job(Base):
     """Job listing model"""
+
     __tablename__ = "jobs"
 
     id = Column(Integer, primary_key=True, index=True)
@@ -30,13 +32,12 @@ class Job(Base):
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
-    __table_args__ = (
-        UniqueConstraint('external_id', 'source', name='uq_external_job_id'),
-    )
+    __table_args__ = (UniqueConstraint("external_id", "source", name="uq_external_job_id"),)
 
 
 class JobApplication(Base):
     """Job application tracking model"""
+
     __tablename__ = "job_applications"
 
     id = Column(Integer, primary_key=True, index=True)
@@ -55,13 +56,12 @@ class JobApplication(Base):
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
-    __table_args__ = (
-        UniqueConstraint('user_id', 'job_id', name='uq_user_job_application'),
-    )
+    __table_args__ = (UniqueConstraint("user_id", "job_id", name="uq_user_job_application"),)
 
 
 class SavedJob(Base):
     """User's saved/bookmarked jobs model"""
+
     __tablename__ = "saved_jobs"
 
     id = Column(Integer, primary_key=True, index=True)
@@ -70,13 +70,12 @@ class SavedJob(Base):
     saved_at = Column(DateTime, default=datetime.utcnow)
     notes = Column(Text, nullable=True)  # User's personal notes
 
-    __table_args__ = (
-        UniqueConstraint('user_id', 'job_id', name='uq_user_saved_job'),
-    )
+    __table_args__ = (UniqueConstraint("user_id", "job_id", name="uq_user_saved_job"),)
 
 
 class JobAlertPreferences(Base):
     """User's job alert preferences and search filters"""
+
     __tablename__ = "job_alert_preferences"
 
     id = Column(Integer, primary_key=True, index=True)

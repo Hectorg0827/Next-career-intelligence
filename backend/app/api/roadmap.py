@@ -15,10 +15,7 @@ router = APIRouter()
 
 
 @router.post("/roadmap")
-async def generate_career_roadmap(
-    request: AnalysisRequest,
-    user_id: str = None  # TODO: Get from auth token
-):
+async def generate_career_roadmap(request: AnalysisRequest, user_id: str = None):  # TODO: Get from auth token
     """
     Generate multi-year career roadmap with visual Sankey data
     Powered by NextAI - Advanced Career Intelligence
@@ -35,7 +32,7 @@ async def generate_career_roadmap(
             skills=request.skills,
             location=request.location,
             years_experience=request.years_experience,
-            timeline=request.timeline or '5 years'
+            timeline=request.timeline or "5 years",
         )
 
         logger.info(f"✅ NextAI roadmap generated successfully for {request.job_title}")

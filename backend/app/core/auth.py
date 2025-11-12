@@ -15,6 +15,7 @@ from functools import lru_cache
 # Initialize Firebase Admin SDK
 _firebase_app = None
 
+
 def initialize_firebase():
     """Initialize Firebase Admin SDK"""
     global _firebase_app
@@ -43,6 +44,7 @@ def initialize_firebase():
 
     return _firebase_app
 
+
 # Initialize on module load
 initialize_firebase()
 
@@ -50,9 +52,7 @@ initialize_firebase()
 security = HTTPBearer(auto_error=False)
 
 
-async def get_current_user(
-    credentials: Optional[HTTPAuthorizationCredentials] = Security(security)
-) -> Dict[str, Any]:
+async def get_current_user(credentials: Optional[HTTPAuthorizationCredentials] = Security(security)) -> Dict[str, Any]:
     """
     Extract and verify user from Firebase JWT token
 
@@ -66,12 +66,10 @@ async def get_current_user(
     if _firebase_app is None:
         # Production: Fail fast if Firebase unavailable
         from app.core.config import settings
+
         if settings.ENVIRONMENT == "production":
             logger.error("❌ Firebase not initialized in production")
-            raise HTTPException(
-                status_code=503,
-                detail="Authentication service unavailable"
-            )
+            raise HTTPException(status_code=503, detail="Authentication service unavailable")
 
         # Development: Allow bypass with warning
         logger.warning("⚠️ Auth bypass - Firebase not configured (DEV MODE ONLY)")
@@ -82,14 +80,12 @@ async def get_current_user(
             "email_verified": True,
             "dev_mode": True,
             "subscription_tier": "enterprise",
-            "subscription_status": "active"
+            "subscription_status": "active",
         }
 
     if not credentials:
         raise HTTPException(
-            status_code=401,
-            detail="Missing authentication token",
-            headers={"WWW-Authenticate": "Bearer"}
+            status_code=401, detail="Missing authentication token", headers={"WWW-Authenticate": "Bearer"}
         )
 
     try:
@@ -100,38 +96,30 @@ async def get_current_user(
             "user_id": decoded_token["uid"],
             "email": decoded_token.get("email"),
             "email_verified": decoded_token.get("email_verified", False),
-            "firebase_token": decoded_token
+            "firebase_token": decoded_token,
         }
 
     except auth.ExpiredIdTokenError:
         raise HTTPException(
-            status_code=401,
-            detail="Token has expired. Please login again.",
-            headers={"WWW-Authenticate": "Bearer"}
+            status_code=401, detail="Token has expired. Please login again.", headers={"WWW-Authenticate": "Bearer"}
         )
     except auth.RevokedIdTokenError:
         raise HTTPException(
             status_code=401,
             detail="Token has been revoked. Please login again.",
-            headers={"WWW-Authenticate": "Bearer"}
+            headers={"WWW-Authenticate": "Bearer"},
         )
     except auth.InvalidIdTokenError:
         raise HTTPException(
-            status_code=401,
-            detail="Invalid authentication token",
-            headers={"WWW-Authenticate": "Bearer"}
+            status_code=401, detail="Invalid authentication token", headers={"WWW-Authenticate": "Bearer"}
         )
     except Exception as e:
         logger.error(f"Authentication error: {e}")
-        raise HTTPException(
-            status_code=401,
-            detail="Authentication failed",
-            headers={"WWW-Authenticate": "Bearer"}
-        )
+        raise HTTPException(status_code=401, detail="Authentication failed", headers={"WWW-Authenticate": "Bearer"})
 
 
 async def get_optional_user(
-    credentials: Optional[HTTPAuthorizationCredentials] = Security(security)
+    credentials: Optional[HTTPAuthorizationCredentials] = Security(security),
 ) -> Optional[Dict[str, Any]]:
     """
     Optional authentication - returns None if no token provided
@@ -146,9 +134,7 @@ async def get_optional_user(
         return None
 
 
-async def require_premium(
-    current_user: Dict[str, Any] = Depends(get_current_user)
-) -> Dict[str, Any]:
+async def require_premium(current_user: Dict[str, Any] = Depends(get_current_user)) -> Dict[str, Any]:
     """
     Require premium subscription
     Checks user's subscription tier from database
@@ -170,30 +156,26 @@ async def require_premium(
             return current_user
 
         # Check subscription
-        response = client.table('subscriptions')\
-            .select('tier, status')\
-            .eq('user_id', current_user['user_id'])\
-            .eq('status', 'active')\
-            .single()\
+        response = (
+            client.table("subscriptions")
+            .select("tier, status")
+            .eq("user_id", current_user["user_id"])
+            .eq("status", "active")
+            .single()
             .execute()
+        )
 
         if response.data:
-            tier = response.data.get('tier', 'free')
+            tier = response.data.get("tier", "free")
             current_user["subscription_tier"] = tier
 
-            if tier in ['premium', 'enterprise']:
+            if tier in ["premium", "enterprise"]:
                 return current_user
             else:
-                raise HTTPException(
-                    status_code=403,
-                    detail="Premium subscription required. Please upgrade your plan."
-                )
+                raise HTTPException(status_code=403, detail="Premium subscription required. Please upgrade your plan.")
         else:
             # No active subscription - default to free
-            raise HTTPException(
-                status_code=403,
-                detail="Premium subscription required. Please upgrade your plan."
-            )
+            raise HTTPException(status_code=403, detail="Premium subscription required. Please upgrade your plan.")
 
     except HTTPException:
         raise
@@ -205,9 +187,7 @@ async def require_premium(
         return current_user
 
 
-async def require_enterprise(
-    current_user: Dict[str, Any] = Depends(get_current_user)
-) -> Dict[str, Any]:
+async def require_enterprise(current_user: Dict[str, Any] = Depends(get_current_user)) -> Dict[str, Any]:
     """
     Require enterprise subscription
     """
@@ -216,14 +196,11 @@ async def require_enterprise(
         logger.warning("⚠️ Enterprise check bypass - dev mode")
         current_user["subscription_tier"] = "enterprise"
         return current_user
-    
+
     current_user = await require_premium(current_user)
 
     if current_user.get("subscription_tier") != "enterprise":
-        raise HTTPException(
-            status_code=403,
-            detail="Enterprise subscription required"
-        )
+        raise HTTPException(status_code=403, detail="Enterprise subscription required")
 
     return current_user
 
@@ -241,23 +218,23 @@ async def get_or_create_user(firebase_user: Dict[str, Any]) -> Dict[str, Any]:
 
     try:
         # Try to get existing user
-        response = client.table('users')\
-            .select('*')\
-            .eq('firebase_uid', firebase_user['user_id'])\
-            .single()\
-            .execute()
+        response = client.table("users").select("*").eq("firebase_uid", firebase_user["user_id"]).single().execute()
 
         if response.data:
             return {**firebase_user, **response.data}
 
         # Create new user
-        new_user = client.table('users')\
-            .insert({
-                'firebase_uid': firebase_user['user_id'],
-                'email': firebase_user['email'],
-                'name': firebase_user.get('name')
-            })\
+        new_user = (
+            client.table("users")
+            .insert(
+                {
+                    "firebase_uid": firebase_user["user_id"],
+                    "email": firebase_user["email"],
+                    "name": firebase_user.get("name"),
+                }
+            )
             .execute()
+        )
 
         if new_user.data:
             logger.info(f"✅ Created new user: {firebase_user['email']}")

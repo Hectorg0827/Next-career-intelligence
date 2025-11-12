@@ -43,19 +43,19 @@ def test_analyze_career():
         "job_title": "Software Developer",
         "skills": ["Python", "JavaScript", "SQL"],
         "location": "United States",
-        "years_experience": 5
+        "years_experience": 5,
     }
-    
+
     response = client.post("/api/analyze", json=payload)
     assert response.status_code == 201
     data = response.json()
-    
+
     # Verify response structure
     assert "analysis_id" in data
     assert "ai_displacement_risk" in data
     assert "compatibility_score" in data
     assert "transition_pathways" in data
-    
+
     # Verify risk data
     risk = data["ai_displacement_risk"]
     assert "level" in risk
@@ -65,11 +65,7 @@ def test_analyze_career():
 
 def test_invalid_analysis_request():
     """Test analysis with invalid data"""
-    payload = {
-        "job_title": "X",  # Too short
-        "skills": [],  # Empty
-        "location": ""
-    }
-    
+    payload = {"job_title": "X", "skills": [], "location": ""}  # Too short  # Empty
+
     response = client.post("/api/analyze", json=payload)
     assert response.status_code == 422  # Validation error

@@ -427,6 +427,7 @@ GENERATE_SUGGESTIONS_TASK = """Based on all interview evidence, generate resume 
 # HELPER FUNCTION
 # ========================================
 
+
 def get_prompt_set(feature: str, task: str) -> dict:
     """
     Get system, developer, and task prompts for a feature/task combination
@@ -439,32 +440,30 @@ def get_prompt_set(feature: str, task: str) -> dict:
         dict with 'system', 'developer', and 'task' prompts
     """
     prompts = {
-        'resume_studio': {
-            'system': RESUME_STUDIO_SYSTEM,
-            'developer': RESUME_STUDIO_DEVELOPER,
-            'tasks': {
-                'ingest': INGEST_AND_PARSE_TASK,
-                'tailor_resume': TAILOR_RESUME_TASK,
-                'tailor_cover_letter': TAILOR_COVER_LETTER_TASK,
-                'apply_suggestion': APPLY_SUGGESTION_TASK
-            }
+        "resume_studio": {
+            "system": RESUME_STUDIO_SYSTEM,
+            "developer": RESUME_STUDIO_DEVELOPER,
+            "tasks": {
+                "ingest": INGEST_AND_PARSE_TASK,
+                "tailor_resume": TAILOR_RESUME_TASK,
+                "tailor_cover_letter": TAILOR_COVER_LETTER_TASK,
+                "apply_suggestion": APPLY_SUGGESTION_TASK,
+            },
         },
-        'career_coach': {
-            'system': CAREER_COACH_SYSTEM,
-            'developer': CAREER_COACH_DEVELOPER,
-            'tasks': {
-                'respond': CAREER_COACH_TASK
-            }
+        "career_coach": {
+            "system": CAREER_COACH_SYSTEM,
+            "developer": CAREER_COACH_DEVELOPER,
+            "tasks": {"respond": CAREER_COACH_TASK},
         },
-        'interviewer': {
-            'system': INTERVIEWER_SYSTEM,
-            'developer': INTERVIEWER_DEVELOPER,
-            'tasks': {
-                'start': START_INTERVIEW_TASK,
-                'extract': EXTRACT_EVIDENCE_TASK,
-                'suggestions': GENERATE_SUGGESTIONS_TASK
-            }
-        }
+        "interviewer": {
+            "system": INTERVIEWER_SYSTEM,
+            "developer": INTERVIEWER_DEVELOPER,
+            "tasks": {
+                "start": START_INTERVIEW_TASK,
+                "extract": EXTRACT_EVIDENCE_TASK,
+                "suggestions": GENERATE_SUGGESTIONS_TASK,
+            },
+        },
     }
 
     if feature not in prompts:
@@ -472,11 +471,11 @@ def get_prompt_set(feature: str, task: str) -> dict:
 
     feature_prompts = prompts[feature]
 
-    if task not in feature_prompts['tasks']:
+    if task not in feature_prompts["tasks"]:
         raise ValueError(f"Unknown task '{task}' for feature '{feature}'")
 
     return {
-        'system': feature_prompts['system'],
-        'developer': feature_prompts['developer'],
-        'task': feature_prompts['tasks'][task]
+        "system": feature_prompts["system"],
+        "developer": feature_prompts["developer"],
+        "task": feature_prompts["tasks"][task],
     }

@@ -1,4 +1,5 @@
 """Manual job seeding with realistic sample data."""
+
 import sys
 import uuid
 from pathlib import Path
@@ -185,28 +186,32 @@ def seed_manual_jobs():
     db = SessionLocal()
     created = 0
     skipped = 0
-    
-    print("\n" + "="*70)
+
+    print("\n" + "=" * 70)
     print("🌱 Manual Job Seeding - Sample Data")
-    print("="*70 + "\n")
-    
+    print("=" * 70 + "\n")
+
     for job_data in SAMPLE_JOBS:
         try:
             # Create unique job ID
             job_id = f"manual_{uuid.uuid4().hex[:12]}"
-            
+
             # Check if job already exists
-            existing = db.query(Job).filter(
-                Job.title == job_data["title"],
-                Job.company == job_data["company"],
-                Job.source == "manual",
-            ).first()
-            
+            existing = (
+                db.query(Job)
+                .filter(
+                    Job.title == job_data["title"],
+                    Job.company == job_data["company"],
+                    Job.source == "manual",
+                )
+                .first()
+            )
+
             if existing:
                 print(f"⏭️  Skipping: {job_data['title']}")
                 skipped += 1
                 continue
-            
+
             # Create job record
             job = Job(
                 id=job_id,
@@ -224,15 +229,15 @@ def seed_manual_jobs():
                 external_id=job_id,
                 is_active="active",
             )
-            
+
             db.add(job)
             created += 1
             print(f"✅ Added: {job_data['title']} at {job_data['company']}")
-            
+
         except Exception as e:
             print(f"❌ Error adding job: {e}")
             skipped += 1
-    
+
     try:
         db.commit()
         print(f"\n✅ Database seeding complete!")
@@ -247,6 +252,6 @@ def seed_manual_jobs():
 
 if __name__ == "__main__":
     seed_manual_jobs()
-    print("\n" + "="*70)
+    print("\n" + "=" * 70)
     print("✨ Seeding complete! Your database now has sample jobs.")
-    print("="*70 + "\n")
+    print("=" * 70 + "\n")
