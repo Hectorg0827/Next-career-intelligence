@@ -59,27 +59,27 @@ export default function Home() {
         {!isLoading && isAuthenticated && user ? (
           <>
             <div
-              className="glass-pill"
+              className="px-4 py-2 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full"
               role="status"
               aria-label={`Logged in as ${user.email}${hasPremiumAccess ? ', Premium subscriber' : ''}`}
             >
-              <User className="w-4 h-4 text-accent-400 inline mr-2" aria-hidden="true" />
-              <span className="text-white text-sm font-medium">{user.email}</span>
-              {hasPremiumAccess && <Crown className="w-4 h-4 text-accent-400 inline ml-2" aria-label="Premium subscriber" />}
+              <User className="w-4 h-4 text-gold-primary inline mr-2" aria-hidden="true" />
+              <span className="text-white text-sm font-semibold">{user.email}</span>
+              {hasPremiumAccess && <Crown className="w-4 h-4 text-gold-primary inline ml-2" aria-label="Premium subscriber" />}
             </div>
             <button
               onClick={handleLogout}
-              className="glass-pill hover:bg-glass-edge transition-all group"
+              className="px-4 py-2 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full hover:bg-white/20 hover:border-gold-primary/50 transition-all group"
               aria-label="Log out of your account"
             >
-              <LogOut className="w-4 h-4 text-ink-200 group-hover:text-white inline mr-2" aria-hidden="true" />
-              <span className="text-ink-200 group-hover:text-white text-sm font-medium">Logout</span>
+              <LogOut className="w-4 h-4 text-white/70 group-hover:text-white inline mr-2" aria-hidden="true" />
+              <span className="text-white/70 group-hover:text-white text-sm font-semibold">Logout</span>
             </button>
           </>
         ) : !isLoading ? (
           <button
             onClick={() => router.push('/login')}
-            className="primary-btn flex items-center gap-2"
+            className="px-6 py-3 bg-gradient-to-r from-gold-primary to-gold-accent hover:from-gold-accent hover:to-gold-hover text-royal-navy font-bold rounded-xl transition-all shadow-lg hover:shadow-xl flex items-center gap-2"
             aria-label="Sign in to your account"
           >
             <User className="w-5 h-5" aria-hidden="true" />
@@ -110,23 +110,23 @@ export default function Home() {
               className="mb-8"
               variants={fadeInUpVariants}
             >
-              <div className="glass-card hover-reflect p-6 shadow-glass-lg">
+              <div className="glass-card hover-reflect p-6 shadow-glass-lg border-gold-primary/30">
                 <div className="flex items-center justify-between flex-wrap gap-4">
                   <div className="flex items-center gap-3">
                     <motion.div
-                      className="p-3 bg-accent-500/20 rounded-full"
+                      className="p-3 bg-gradient-to-br from-gold-primary/20 to-gold-accent/20 rounded-full"
                       whileHover={{ rotate: [0, -10, 10, -10, 0], transition: { duration: 0.5 } }}
                     >
-                      <Crown className="w-6 h-6 text-accent-400" />
+                      <Crown className="w-6 h-6 text-gold-primary" />
                     </motion.div>
                     <div className="text-left">
-                      <h3 className="text-white font-semibold text-lg">Welcome back, {user?.name || 'Subscriber'}!</h3>
-                      <p className="text-ink-300 text-sm">Access your premium features</p>
+                      <h3 className="text-white font-bold text-xl">Welcome back, {user?.name || 'Subscriber'}!</h3>
+                      <p className="text-white/70 text-sm font-medium">Access your premium features</p>
                     </div>
                   </div>
                   <motion.button
                     onClick={handleSubscriberAccess}
-                    className="primary-btn flex items-center gap-2"
+                    className="px-6 py-3 bg-gradient-to-r from-gold-primary to-gold-accent hover:from-gold-accent hover:to-gold-hover text-royal-navy font-bold rounded-xl transition-all shadow-lg hover:shadow-xl flex items-center gap-2"
                     variants={buttonVariants}
                     whileHover="hover"
                     whileTap="tap"
@@ -149,27 +149,27 @@ export default function Home() {
           </motion.div>
 
           <motion.div
-            className="glass-pill inline-flex items-center gap-2 mb-8"
+            className="inline-flex items-center gap-2 px-4 py-2 bg-white/10 backdrop-blur-sm border border-gold-primary/30 rounded-full mb-8"
             variants={staggerItemVariants}
             role="status"
             aria-label="AI-powered analysis available"
           >
-            <Sparkles className="w-4 h-4 text-accent-400" aria-hidden="true" />
-            <span className="text-white text-sm font-medium">Powered by AI</span>
+            <Sparkles className="w-4 h-4 text-gold-primary" aria-hidden="true" />
+            <span className="text-white/90 text-sm font-semibold">Powered by AI</span>
           </motion.div>
 
           <motion.h1 
-            className="text-5xl md:text-7xl font-bold text-white mb-6 leading-tight"
+            className="text-5xl md:text-7xl font-bold mb-6 leading-tight"
             variants={staggerItemVariants}
           >
-            Is Your Job
-            <span className="block bg-gradient-to-r from-accent-500 via-accent-400 to-accent-500 bg-clip-text text-transparent">
+            <span className="text-white">Is Your Job</span>
+            <span className="block bg-gradient-to-r from-gold-primary via-gold-accent to-gold-hover bg-clip-text text-transparent mt-2">
               AI-Proof?
             </span>
           </motion.h1>
 
           <motion.p
-            className="text-xl md:text-2xl text-ink-200 mb-12 max-w-2xl mx-auto"
+            className="text-xl md:text-2xl text-white/80 mb-12 max-w-2xl mx-auto leading-relaxed font-medium"
             variants={staggerItemVariants}
           >
             Get a free AI-powered analysis of your career&apos;s automation risk and discover skills that future-proof your career
@@ -182,13 +182,13 @@ export default function Home() {
             role="search"
             aria-label="Career analysis search"
           >
-            <div className="glass-card flex flex-col sm:flex-row gap-4 p-3 shadow-glass-xl">
+            <div className="glass-card flex flex-col sm:flex-row gap-4 p-3 shadow-glass-xl hover:border-gold-primary/30 transition-all">
               <motion.input
                 type="text"
                 value={jobTitle}
                 onChange={(e) => setJobTitle(e.target.value)}
                 placeholder="Enter your job title (e.g., Software Engineer)"
-                className="input-glass flex-1 text-lg"
+                className="input-glass flex-1 text-lg text-white placeholder:text-white/50 font-medium"
                 disabled={isAnalyzing}
                 whileFocus={{ scale: 1.01 }}
                 transition={{ duration: 0.2 }}
@@ -202,7 +202,7 @@ export default function Home() {
               <motion.button
                 type="submit"
                 disabled={!jobTitle.trim() || isAnalyzing}
-                className="primary-btn disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 whitespace-nowrap"
+                className="px-8 py-4 bg-gradient-to-r from-gold-primary to-gold-accent hover:from-gold-accent hover:to-gold-hover text-royal-navy font-bold text-lg rounded-xl transition-all shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 whitespace-nowrap"
                 variants={buttonVariants}
                 whileHover="hover"
                 whileTap="tap"
@@ -216,33 +216,33 @@ export default function Home() {
           </motion.form>
 
           <motion.div
-            className="flex flex-wrap items-center justify-center gap-8 text-ink-300 text-sm mb-16"
+            className="flex flex-wrap items-center justify-center gap-8 text-white/70 text-sm mb-16 font-medium"
             variants={staggerItemVariants}
             role="list"
             aria-label="Key features"
           >
             <motion.div
-              className="flex items-center gap-2"
+              className="flex items-center gap-2 hover:text-white transition-colors"
               whileHover={{ scale: 1.05 }}
               role="listitem"
             >
-              <Shield className="w-4 h-4 text-accent-400" aria-hidden="true" />
+              <Shield className="w-5 h-5 text-gold-primary" aria-hidden="true" />
               <span>100% Free Analysis</span>
             </motion.div>
             <motion.div
-              className="flex items-center gap-2"
+              className="flex items-center gap-2 hover:text-white transition-colors"
               whileHover={{ scale: 1.05 }}
               role="listitem"
             >
-              <Brain className="w-4 h-4 text-accent-400" aria-hidden="true" />
+              <Brain className="w-5 h-5 text-gold-primary" aria-hidden="true" />
               <span>AI-Powered Insights</span>
             </motion.div>
             <motion.div
-              className="flex items-center gap-2"
+              className="flex items-center gap-2 hover:text-white transition-colors"
               whileHover={{ scale: 1.05 }}
               role="listitem"
             >
-              <TrendingUp className="w-4 h-4 text-accent-400" aria-hidden="true" />
+              <TrendingUp className="w-5 h-5 text-gold-primary" aria-hidden="true" />
               <span>Personalized Roadmap</span>
             </motion.div>
           </motion.div>
@@ -256,7 +256,7 @@ export default function Home() {
           transition={{ delay: 0.8, duration: 0.5 }}
           aria-label="Secondary navigation"
         >
-          <p className="text-ink-400 text-sm mb-4">
+          <p className="text-white/60 text-base mb-4 font-medium">
             Join thousands of professionals taking control of their careers
           </p>
           <div className="flex items-center justify-center gap-4 flex-wrap">
@@ -265,17 +265,17 @@ export default function Home() {
                 const section = document.getElementById('how-it-works');
                 section?.scrollIntoView({ behavior: 'smooth' });
               }}
-              className="text-ink-300 hover:text-white text-sm transition-colors cursor-pointer"
+              className="text-white/70 hover:text-gold-primary text-sm font-medium transition-colors cursor-pointer"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               aria-label="Scroll to How It Works section"
             >
               How It Works
             </motion.button>
-            <span className="text-ink-500" aria-hidden="true">•</span>
+            <span className="text-white/30" aria-hidden="true">•</span>
             <motion.button
               onClick={() => router.push('/login')}
-              className="text-ink-300 hover:text-white text-sm transition-colors cursor-pointer"
+              className="text-white/70 hover:text-gold-primary text-sm font-medium transition-colors cursor-pointer"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               aria-label="Navigate to sign in page"
@@ -310,7 +310,7 @@ export default function Home() {
 
             <div className="relative z-10">
               <motion.h2
-                className="text-3xl md:text-4xl font-bold text-white mb-4"
+                className="text-3xl md:text-5xl font-bold text-white mb-6"
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
@@ -319,7 +319,7 @@ export default function Home() {
                 Ready to Future-Proof Your Career?
               </motion.h2>
               <motion.p
-                className="text-xl text-ink-200 mb-8 max-w-2xl mx-auto"
+                className="text-xl md:text-2xl text-white/80 mb-8 max-w-2xl mx-auto leading-relaxed font-medium"
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
@@ -335,7 +335,7 @@ export default function Home() {
                     input?.focus();
                   }, 500);
                 }}
-                className="primary-btn inline-flex items-center gap-2 group"
+                className="px-8 py-4 bg-gradient-to-r from-gold-primary to-gold-accent hover:from-gold-accent hover:to-gold-hover text-royal-navy font-bold text-lg rounded-xl transition-all shadow-lg hover:shadow-xl inline-flex items-center gap-2 group"
                 initial={{ opacity: 0, scale: 0.9 }}
                 whileInView={{ opacity: 1, scale: 1 }}
                 viewport={{ once: true }}
