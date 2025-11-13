@@ -418,8 +418,10 @@ body {
    Modern frosted glass morphism utilities
    ======================================== */
 
-/* Glass Card - Frosted glass effect with subtle border */
-.glass-card {
+/* CRITICAL: Wrap all custom component classes in @layer to prevent Tailwind purging */
+@layer components {
+  /* Glass Card - Frosted glass effect with subtle border */
+  .glass-card {
   background: rgba(255, 255, 255, 0.03);
   border: 1px solid rgba(255, 255, 255, 0.1);
   backdrop-filter: blur(12px);
@@ -587,10 +589,12 @@ body {
 }
 
 /* Gradient Background - Dark gradient for pages */
-.gradient-dark-glass {
-  background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
-  min-height: 100vh;
+  .gradient-dark-glass {
+    background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+    min-height: 100vh;
+  }
 }
+/* End @layer components */
 
 /* ========================================
    TEXT HIERARCHY & TYPOGRAPHY

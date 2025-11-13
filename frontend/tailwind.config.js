@@ -6,6 +6,26 @@ module.exports = {
     "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
     "./components/**/*.{js,ts,jsx,tsx,mdx}", // Premium UI components
   ],
+  // Safelist: Protect critical custom classes from being purged
+  safelist: [
+    'glass-card',
+    'glass-pill',
+    'primary-btn',
+    'input-glass',
+    'gradient-dark-glass',
+    'glass-divider',
+    'hover-reflect',
+    'skeleton-glass',
+    'text-gold-primary',
+    'text-white/80',
+    'text-white/70',
+    'text-white/60',
+    'bg-gradient-to-r',
+    'from-gold-primary',
+    'to-gold-accent',
+    'hover:from-gold-accent',
+    'hover:to-gold-hover',
+  ],
   darkMode: 'class', // Enable dark mode via class
   theme: {
     extend: {
