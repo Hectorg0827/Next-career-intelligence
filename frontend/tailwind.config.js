@@ -25,6 +25,34 @@ module.exports = {
     'to-gold-accent',
     'hover:from-gold-accent',
     'hover:to-gold-hover',
+    // Glass colors and utilities
+    'glass-line',
+    'glass-edge',
+    'glass-white',
+    // Glass shadows
+    'shadow-glass-sm',
+    'shadow-glass-md',
+    'shadow-glass-lg',
+    'shadow-glass-xl',
+    // Hover states
+    'hover:bg-glass-edge',
+    'hover:shadow-glass-xl',
+    'hover:border-gold-primary/30',
+    // Border utilities
+    'border-glass-line',
+    'border-gold-primary/30',
+    // Background utilities
+    'bg-glass-white',
+    'bg-gradient-to-br',
+    // Text utilities
+    'text-accent-400',
+    'text-ink-200',
+    // Layout utilities
+    'rounded-none',
+    'cursor-pointer',
+    // Animation utilities
+    'transition-all',
+    'duration-300',
   ],
   darkMode: 'class', // Enable dark mode via class
   theme: {
