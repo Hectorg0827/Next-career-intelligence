@@ -17,7 +17,7 @@ interface NavItem {
 const navItems: NavItem[] = [
   { name: 'Home', href: '/', icon: Home },
   { name: 'Dashboard', href: '/dashboard', icon: Target, isPremium: true },
-  { name: 'Jobs', href: '/jobs', icon: Briefcase, isPremium: true },
+  { name: 'Opportunities', href: '/jobs', icon: Briefcase, isPremium: true },
   { name: 'Career Coach', href: '/coach/chat', icon: MessageSquare, isPremium: true },
 ];
 

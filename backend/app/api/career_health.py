@@ -157,6 +157,67 @@ async def refresh_score(current_user=Depends(get_current_user)):
         raise HTTPException(status_code=500, detail="Failed to refresh score")
 
 
+@router.get("/actions")
+async def get_priority_actions(current_user=Depends(get_current_user)):
+    """
+    Get priority actions for user based on career health analysis
+
+    Returns:
+        List of actionable items (warnings and opportunities)
+    """
+    try:
+        supabase = get_supabase_client()
+        if not supabase:
+            raise HTTPException(503, "Database unavailable")
+
+        # Get user's career health score
+        score = await chs_calculator.calculate(current_user.id)
+
+        actions = []
+
+        # Check for skill currency issues
+        if score.breakdown.get('skill_currency', 0) < 70:
+            actions.append({
+                'type': 'warning',
+                'title': 'Skill Depreciation Detected',
+                'description': 'Some of your skills are becoming outdated. Update your skillset to stay competitive.',
+                'priority': 'high'
+            })
+
+        # Check for profile completeness
+        if score.breakdown.get('profile_completeness', 0) < 80:
+            actions.append({
+                'type': 'warning',
+                'title': 'Incomplete Profile',
+                'description': 'Complete your profile to unlock better job matches and opportunities.',
+                'priority': 'medium'
+            })
+
+        # Add opportunity for high scorers
+        if score.overall_score >= 75:
+            actions.append({
+                'type': 'opportunity',
+                'title': 'Exceptional Matches Available',
+                'description': 'Your profile matches 3 high-value opportunities. Review them now.',
+                'priority': 'high'
+            })
+
+        # Check for goal progress
+        if score.breakdown.get('goal_progress', 0) < 50:
+            actions.append({
+                'type': 'warning',
+                'title': 'Goal Progress Stalled',
+                'description': 'You haven\'t made progress toward your career goals recently.',
+                'priority': 'medium'
+            })
+
+        return {'actions': actions[:4]}  # Limit to top 4 actions
+
+    except Exception as e:
+        logger.error(f"Failed to get priority actions: {e}")
+        raise HTTPException(status_code=500, detail="Failed to get priority actions")
+
+
 def _calculate_percentile(user_score: int, peer_avg: int) -> int:
     """
     Calculate approximate percentile

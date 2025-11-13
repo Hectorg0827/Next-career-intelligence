@@ -7,7 +7,7 @@ import os
 from typing import Dict, List, Optional, Any, Iterable
 import json
 from loguru import logger
-from google import genai
+import google.generativeai as genai
 from fastapi import HTTPException
 from json_repair import repair_json
 from app.core.config import settings

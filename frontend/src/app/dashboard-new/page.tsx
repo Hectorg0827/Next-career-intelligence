@@ -7,7 +7,6 @@ import CareerHealthGauge from '@/components/dashboard/CareerHealthGauge';
 import PriorityActionCard from '@/components/dashboard/PriorityActionCard';
 import JobMatchCard from '@/components/dashboard/JobMatchCard';
 import HealthComponentBar from '@/components/dashboard/HealthComponentBar';
-import { NoJobsEmptyState, NoActionsEmptyState } from '@/components/EmptyStates';
 import { Loader2 } from 'lucide-react';
 
 interface DashboardData {
@@ -206,27 +205,23 @@ export default function Dashboard() {
           <h2 className="text-xl font-semibold text-white mb-4">
             Priority Actions
           </h2>
-          {data.priorityActions.length > 0 ? (
-            <div className="space-y-4">
-              {data.priorityActions.map((action, index) => (
-                <PriorityActionCard
-                  key={index}
-                  type={action.type}
-                  title={action.title}
-                  description={action.description}
-                  onAction={() => {
-                    if (action.type === 'warning') {
-                      router.push('/skills');
-                    } else {
-                      router.push('/jobs/recommendations');
-                    }
-                  }}
-                />
-              ))}
-            </div>
-          ) : (
-            <NoActionsEmptyState />
-          )}
+          <div className="space-y-4">
+            {data.priorityActions.map((action, index) => (
+              <PriorityActionCard
+                key={index}
+                type={action.type}
+                title={action.title}
+                description={action.description}
+                onAction={() => {
+                  if (action.type === 'warning') {
+                    router.push('/skills');
+                  } else {
+                    router.push('/jobs/recommendations');
+                  }
+                }}
+              />
+            ))}
+          </div>
         </div>
 
         {/* Top Matches */}
@@ -235,29 +230,23 @@ export default function Dashboard() {
             <h2 className="text-xl font-semibold text-white">
               Top Matches
             </h2>
-            {data.topMatches.length > 0 && (
-              <button
-                onClick={() => router.push('/jobs/recommendations')}
-                className="text-primary-500 font-medium hover:text-primary-400 transition-colors"
-              >
-                View All →
-              </button>
-            )}
+            <button
+              onClick={() => router.push('/jobs/recommendations')}
+              className="text-primary-500 font-medium hover:text-primary-400 transition-colors"
+            >
+              View All →
+            </button>
           </div>
-          {data.topMatches.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {data.topMatches.map((job) => (
-                <JobMatchCard
-                  key={job.id}
-                  job={job}
-                  matchScore={job.matchScore}
-                  onApply={() => router.push(`/jobs/${job.id}`)}
-                />
-              ))}
-            </div>
-          ) : (
-            <NoJobsEmptyState onBrowseJobs={() => router.push('/jobs')} />
-          )}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {data.topMatches.map((job) => (
+              <JobMatchCard
+                key={job.id}
+                job={job}
+                matchScore={job.matchScore}
+                onApply={() => router.push(`/jobs/${job.id}`)}
+              />
+            ))}
+          </div>
         </div>
       </div>
     </div>

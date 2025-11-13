@@ -39,15 +39,15 @@ module.exports = {
           400: '#a78bfa',    // Light purple
         },
 
-        // Premium Design System - Primary Colors
+        // Premium Design System - Primary Colors (iOS-style)
         primary: {
           50: 'var(--color-primary-50)',
           100: 'var(--color-primary-100)',
           200: 'var(--color-primary-200)',
           300: 'var(--color-primary-300)',
           400: 'var(--color-primary-400)',
-          500: 'var(--color-primary-500)',
-          600: 'var(--color-primary-600)',
+          500: '#007AFF',  // iOS Blue
+          600: '#0051D5',  // iOS Blue Dark
           700: 'var(--color-primary-700)',
           800: 'var(--color-primary-800)',
           900: 'var(--color-primary-900)',
@@ -92,9 +92,19 @@ module.exports = {
           rose: 'var(--color-accent-rose)',
         },
 
-        // Premium Design System - Semantic Colors
-        success: 'var(--color-success)',
-        warning: 'var(--color-warning)',
+        // Premium Design System - Semantic Colors (iOS-style)
+        success: {
+          500: '#34C759',  // iOS Green
+          DEFAULT: '#34C759',
+        },
+        warning: {
+          500: '#FF9500',  // iOS Orange
+          DEFAULT: '#FF9500',
+        },
+        danger: {
+          500: '#FF3B30',  // iOS Red
+          DEFAULT: '#FF3B30',
+        },
         error: 'var(--color-error)',
         info: 'var(--color-info)',
 

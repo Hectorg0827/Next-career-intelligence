@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import Navigation from "@/components/Navigation";
+import BottomNav from "@/components/BottomNav";
 import { Providers } from "@/components/Providers";
 import { Analytics } from "@vercel/analytics/react";
 import { AuthProvider } from "@/contexts/AuthContext";
@@ -25,7 +26,8 @@ export default function RootLayout({
           <Providers>
             <AuthProvider>
               <Navigation />
-              {children}
+              <div className="pb-16 md:pb-0">{children}</div>
+              <BottomNav />
               <CookieConsentBanner />
             </AuthProvider>
           </Providers>
