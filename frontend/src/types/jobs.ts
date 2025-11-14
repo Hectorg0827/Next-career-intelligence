@@ -22,6 +22,7 @@ export interface Job {
   skills_extracted: string[];
   industry?: string;
   posted_at?: string;
+  created_at?: string; // Alias for posted_at
   expires_at?: string;
   apply_url?: string;
   status: 'active' | 'closed' | 'filled';
@@ -78,9 +79,13 @@ export interface JobSearchParams {
   seniority?: string;
   remote_only?: boolean;
   min_salary?: number;
+  salary_min?: number; // Alias for min_salary
   skills?: string[];
   limit?: number;
   offset?: number;
+  page?: number; // For pagination
+  page_size?: number; // Items per page
+  job_type?: string;
 }
 
 export interface JobRecommendationParams {

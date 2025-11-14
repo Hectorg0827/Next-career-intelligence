@@ -40,7 +40,7 @@ export default function SavedJobsPage() {
         setLoading(true);
         setError(null);
         const response = await jobsApi.getSavedJobs();
-        setSavedJobs(response.results || []);
+        setSavedJobs(response || []);
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Failed to load saved jobs');
       } finally {
@@ -53,7 +53,7 @@ export default function SavedJobsPage() {
 
   const handleRemoveSaved = async (savedId: string) => {
     try {
-      await jobsApi.removeSavedJob(savedId);
+      await jobsApi.unsaveJob(savedId);
       setSavedJobs(savedJobs.filter(s => s.id !== savedId));
     } catch (err) {
       alert('Failed to remove job');

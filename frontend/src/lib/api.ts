@@ -329,6 +329,27 @@ class APIClient {
     return response.data;
   }
 
+  // Career Radar Features (stub implementations)
+  async getCareerForecast(data: unknown): Promise<unknown> {
+    const response = await this.client.post('/analyze/forecast', data);
+    return response.data;
+  }
+
+  async getEarlyWarnings(data: unknown): Promise<unknown> {
+    const response = await this.client.post('/analyze/warnings', data);
+    return response.data;
+  }
+
+  async getMarketPulse(data: unknown): Promise<unknown> {
+    const response = await this.client.post('/analyze/market-pulse', data);
+    return response.data;
+  }
+
+  async getPeerBenchmark(data: unknown): Promise<unknown> {
+    const response = await this.client.post('/analyze/peer-benchmark', data);
+    return response.data;
+  }
+
   // ============================================
   // Jobs Marketplace
   // ============================================
@@ -409,6 +430,11 @@ class APIClient {
 
   async coachChat(conversationId: string, message: string): Promise<Message> {
     const response = await this.client.post(`/coach/conversations/${conversationId}/chat`, { message });
+    return response.data;
+  }
+
+  async deleteCoachConversation(conversationId: string): Promise<{ message: string }> {
+    const response = await this.client.delete(`/coach/conversations/${conversationId}`);
     return response.data;
   }
 
@@ -541,6 +567,10 @@ export const intelligenceApi = {
   analyzeCareer: apiClient.analyzeCareer.bind(apiClient),
   generateCareerTrajectory: apiClient.generateCareerTrajectory.bind(apiClient),
   generateCareerPaths: apiClient.generateCareerPaths.bind(apiClient),
+  getCareerForecast: apiClient.getCareerForecast.bind(apiClient),
+  getEarlyWarnings: apiClient.getEarlyWarnings.bind(apiClient),
+  getMarketPulse: apiClient.getMarketPulse.bind(apiClient),
+  getPeerBenchmark: apiClient.getPeerBenchmark.bind(apiClient),
 };
 
 export const jobsApi = {

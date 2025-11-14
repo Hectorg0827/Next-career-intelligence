@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '@/lib/auth-context';
-import { intelligenceApi } from '@/lib/api';
+import { jobsApi } from '@/lib/api';
 import { Job, JobSearchQuery } from '@/types/jobs';
 import { 
   Briefcase, 
@@ -37,7 +37,7 @@ export default function JobsPage() {
   const loadJobs = async () => {
     try {
       setLoading(true);
-      const response = await intelligenceApi.searchJobs(filters);
+      const response = await jobsApi.searchJobs(filters);
       setJobs(response.data);
     } catch (error) {
       console.error('Failed to load jobs:', error);

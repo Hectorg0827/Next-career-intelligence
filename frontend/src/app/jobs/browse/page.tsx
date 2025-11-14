@@ -81,7 +81,7 @@ export default function BrowseJobsPage() {
         if (filters.job_type) params.job_type = filters.job_type;
 
         const response = await jobsApi.searchJobs(params);
-        setJobs(response.results);
+        setJobs(response.data);
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Failed to load jobs');
       } finally {
