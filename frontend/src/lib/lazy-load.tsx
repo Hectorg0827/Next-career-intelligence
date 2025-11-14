@@ -52,48 +52,48 @@ export function lazyLoad<P = {}>(
  * Lazy load heavy components
  */
 export const LazyComponents = {
-  // Charts
-  JobMatchChart: lazyLoad(() => import('@/components/dashboard/JobMatchChart'), {
-    ssr: false,
-  }),
-  SkillsRadarChart: lazyLoad(() => import('@/components/dashboard/SkillsRadarChart'), {
-    ssr: false,
-  }),
-  CareerProgressChart: lazyLoad(() => import('@/components/dashboard/CareerProgressChart'), {
-    ssr: false,
-  }),
+  // Charts - COMMENTED OUT: Components don't exist yet
+  // JobMatchChart: lazyLoad(() => import('@/components/dashboard/JobMatchChart'), {
+  //   ssr: false,
+  // }),
+  // SkillsRadarChart: lazyLoad(() => import('@/components/dashboard/SkillsRadarChart'), {
+  //   ssr: false,
+  // }),
+  // CareerProgressChart: lazyLoad(() => import('@/components/dashboard/CareerProgressChart'), {
+  //   ssr: false,
+  // }),
   
-  // Resume Builder
-  ResumeEditor: lazyLoad(() => import('@/components/resume/ResumeEditor'), {
-    ssr: false,
-  }),
-  ResumePreviewer: lazyLoad(() => import('@/components/resume/ResumePreviewer'), {
-    ssr: false,
-  }),
+  // Resume Builder - COMMENTED OUT: Components don't exist yet
+  // ResumeEditor: lazyLoad(() => import('@/components/resume/ResumeEditor'), {
+  //   ssr: false,
+  // }),
+  // ResumePreviewer: lazyLoad(() => import('@/components/resume/ResumePreviewer'), {
+  //   ssr: false,
+  // }),
   
-  // AI Features
-  CareerCoach: lazyLoad(() => import('@/components/ai/CareerCoach'), {
-    ssr: false,
-  }),
-  InterviewPractice: lazyLoad(() => import('@/components/ai/InterviewPractice'), {
-    ssr: false,
-  }),
+  // AI Features - COMMENTED OUT: Components don't exist yet
+  // CareerCoach: lazyLoad(() => import('@/components/ai/CareerCoach'), {
+  //   ssr: false,
+  // }),
+  // InterviewPractice: lazyLoad(() => import('@/components/ai/InterviewPractice'), {
+  //   ssr: false,
+  // }),
   
-  // Modals
-  JobDetailsModal: lazyLoad(() => import('@/components/jobs/JobDetailsModal'), {
-    ssr: false,
-  }),
-  ApplicationModal: lazyLoad(() => import('@/components/jobs/ApplicationModal'), {
-    ssr: false,
-  }),
+  // Modals - COMMENTED OUT: Components don't exist yet
+  // JobDetailsModal: lazyLoad(() => import('@/components/jobs/JobDetailsModal'), {
+  //   ssr: false,
+  // }),
+  // ApplicationModal: lazyLoad(() => import('@/components/jobs/ApplicationModal'), {
+  //   ssr: false,
+  // }),
   
-  // Settings
-  ProfileSettings: lazyLoad(() => import('@/components/settings/ProfileSettings')),
-  NotificationSettings: lazyLoad(() => import('@/components/settings/NotificationSettings')),
+  // Settings - COMMENTED OUT: Components don't exist yet
+  // ProfileSettings: lazyLoad(() => import('@/components/settings/ProfileSettings')),
+  // NotificationSettings: lazyLoad(() => import('@/components/settings/NotificationSettings')),
   
-  // Marketplace
-  JobMarketplace: lazyLoad(() => import('@/components/marketplace/JobMarketplace')),
-  EmployerDashboard: lazyLoad(() => import('@/components/marketplace/EmployerDashboard')),
+  // Marketplace - COMMENTED OUT: Components don't exist yet
+  // JobMarketplace: lazyLoad(() => import('@/components/marketplace/JobMarketplace')),
+  // EmployerDashboard: lazyLoad(() => import('@/components/marketplace/EmployerDashboard')),
 };
 
 /**
@@ -208,13 +208,14 @@ export function LazyImage({
 
 /**
  * Code splitting for routes
+ * COMMENTED OUT: Dashboard routes are in different locations
  */
 export const LazyRoutes = {
-  Dashboard: lazyLoad(() => import('@/app/(dashboard)/dashboard/page')),
-  Jobs: lazyLoad(() => import('@/app/(dashboard)/jobs/page')),
-  Applications: lazyLoad(() => import('@/app/(dashboard)/applications/page')),
-  Resume: lazyLoad(() => import('@/app/(dashboard)/resume/page')),
-  Learning: lazyLoad(() => import('@/app/(dashboard)/learning/page')),
-  Profile: lazyLoad(() => import('@/app/(dashboard)/profile/page')),
-  Settings: lazyLoad(() => import('@/app/(dashboard)/settings/page')),
+  // Dashboard: lazyLoad(() => import('@/app/(dashboard)/dashboard/page')),
+  // Jobs: lazyLoad(() => import('@/app/(dashboard)/jobs/page')),
+  // Applications: lazyLoad(() => import('@/app/(dashboard)/applications/page')),
+  // Resume: lazyLoad(() => import('@/app/(dashboard)/resume/page')),
+  // Learning: lazyLoad(() => import('@/app/(dashboard)/learning/page')),
+  // Profile: lazyLoad(() => import('@/app/(dashboard)/profile/page')),
+  // Settings: lazyLoad(() => import('@/app/(dashboard)/settings/page')),
 };

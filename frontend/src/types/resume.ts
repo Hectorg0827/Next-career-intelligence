@@ -306,3 +306,8 @@ export function calculateDuration(startDate: string, endDate?: string): string {
     return `${years} year${years !== 1 ? 's' : ''}, ${remainingMonths} month${remainingMonths !== 1 ? 's' : ''}`;
   }
 }
+
+// Additional type aliases for API compatibility
+export type ResumeData = ProfileData;
+export type ResumeFeedback = ProfileSuggestion;
+export type ResumeProfile = CareerProfile;

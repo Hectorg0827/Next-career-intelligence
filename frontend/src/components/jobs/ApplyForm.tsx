@@ -25,8 +25,8 @@ export default function ApplyForm({ jobId, onSuccess }: ApplyFormProps) {
       setLoading(true);
       setError(null);
 
-      await jobsApi.applyToJob({
-        job_id: jobId
+      await jobsApi.applyForJob(jobId, {
+        auto_tailor: true
       });
 
       setSuccess(true);

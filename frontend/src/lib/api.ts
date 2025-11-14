@@ -287,6 +287,11 @@ class APIClient {
     return response.data;
   }
 
+  async completeOnboarding(data: Record<string, unknown>): Promise<{ success: boolean; message: string }> {
+    const response = await this.client.post('/onboarding/complete', data);
+    return response.data;
+  }
+
   async getUserProfile(): Promise<UserProfile> {
     const response = await this.client.get('/users/profile');
     return response.data;
@@ -453,6 +458,26 @@ class APIClient {
   // ============================================
   // Authentication (delegates to Firebase)
   // ============================================
+  
+  async signup(data: {
+    full_name: string;
+    email: string;
+    password: string;
+    confirm_password: string;
+  }): Promise<{ success: boolean; message: string; user_id?: string }> {
+    const res = await this.client.post('/auth/signup', data);
+    return res.data;
+  }
+
+  async login(data: {
+    email: string;
+    password: string;
+    remember_me?: boolean;
+  }): Promise<{ success: boolean; message: string; token?: string; user?: unknown }> {
+    const res = await this.client.post('/auth/login', data);
+    return res.data;
+  }
+  
   async requestPasswordReset(data: { email: string }): Promise<never> {
     void data;
     // This should be handled by Firebase, but for API compatibility
@@ -470,16 +495,14 @@ class APIClient {
     throw new Error('Use Firebase confirmPasswordReset instead');
   }
 
-  async verifyEmail(data: { email: string; verification_code: string }): Promise<never> {
-    void data;
-    // This should be handled by Firebase, but for API compatibility
-    throw new Error('Use Firebase email verification instead');
+  async verifyEmail(data: { email: string; verification_code: string }): Promise<{ success: boolean; message: string }> {
+    const res = await this.client.post('/auth/verify-email', data);
+    return res.data;
   }
 
-  async resendVerificationCode(data: { email: string }): Promise<never> {
-    void data;
-    // This should be handled by Firebase, but for API compatibility
-    throw new Error('Use Firebase sendEmailVerification instead');
+  async resendVerificationCode(data: { email: string }): Promise<{ success: boolean; message: string }> {
+    const res = await this.client.post('/auth/resend-verification', data);
+    return res.data;
   }
 
   // ============================================

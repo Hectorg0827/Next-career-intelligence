@@ -198,3 +198,14 @@ export function getAIRiskBadge(risk: number): AIRiskBadge {
     };
   }
 }
+
+// Additional type aliases for API compatibility
+export type JobSearchQuery = JobSearchParams;
+
+export interface PaginatedResponse<T> {
+  data: T[];
+  total: number;
+  page: number;
+  perPage: number;
+  hasMore: boolean;
+}
