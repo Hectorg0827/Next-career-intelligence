@@ -21,12 +21,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className="font-sans">
+      <body className="font-sans bg-dark">
         <ErrorBoundary>
           <Providers>
             <AuthProvider>
               <Navigation />
-              <div className="pb-16 md:pb-0">{children}</div>
+              <main className="pb-24 md:pb-0 min-h-screen">{children}</main>
               <BottomNav />
               <CookieConsentBanner />
             </AuthProvider>

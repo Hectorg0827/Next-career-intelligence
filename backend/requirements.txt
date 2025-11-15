@@ -46,6 +46,9 @@ phonenumbers==8.13.35
 numpy==1.26.4
 json-repair==0.52.4
 
+# Redis for event bus (Phase 1 Foundation)
+redis[hiredis]==5.2.1
+
 # Testing
 pytest==8.2.0
 pytest-asyncio==0.23.6
@@ -78,9 +81,8 @@ firebase-admin==6.5.0
 PyPDF2==3.0.1
 python-docx==1.1.0
 
-# Redis (Caching & Rate Limiting)
-redis==5.0.1
-hiredis==2.3.2  # C parser for Redis (faster)
+# Redis (Caching & Rate Limiting) - Updated for Phase 1 Foundation
+# Using 5.2.1 with hiredis support instead of separate packages
 
 # Neo4j (Graph Database for Talent Graph)
 neo4j==5.14.1

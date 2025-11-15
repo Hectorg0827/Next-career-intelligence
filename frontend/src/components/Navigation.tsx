@@ -43,34 +43,34 @@ export default function Navigation() {
   };
 
   return (
-    <nav className="bg-gradient-to-r from-royal-navy via-royal-blue-deep to-royal-navy border-b border-white/10 sticky top-0 z-50 backdrop-blur-md bg-opacity-95">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16">
+    <nav className="nav-glass sticky top-0 z-50">
+      <div className="max-w-container container-padding">
+        <div className="flex justify-between items-center h-20">
           {/* Logo */}
           <div className="flex-shrink-0">
             <Logo size="sm" linkTo="/" />
           </div>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-1">
+          <div className="hidden md:flex items-center gap-2">
             {navItems.map((item) => {
               const isActive = pathname === item.href;
               const Icon = item.icon;
-              
+
               return (
                 <Link
                   key={item.name}
                   href={item.href}
-                  className={`px-4 py-2 rounded-lg font-medium transition-all flex items-center gap-2 group relative ${
+                  className={`px-5 py-2.5 rounded-xl font-medium transition-all duration-200 flex items-center gap-2 group relative ${
                     isActive
-                      ? 'bg-white/10 text-white'
-                      : 'text-white/70 hover:text-white hover:bg-white/5'
+                      ? 'bg-white/15 text-white shadow-lg'
+                      : 'text-white/70 hover:text-white hover:bg-white/10'
                   }`}
                 >
-                  <Icon className="w-4 h-4" />
-                  <span>{item.name}</span>
+                  <Icon className="w-4.5 h-4.5 transition-transform group-hover:scale-110" />
+                  <span className="text-sm">{item.name}</span>
                   {item.isPremium && !hasPremiumAccess && (
-                    <Crown className="w-3 h-3 text-gold-primary" />
+                    <Crown className="w-3.5 h-3.5 text-gold-primary animate-pulse" />
                   )}
                 </Link>
               );
@@ -82,30 +82,30 @@ export default function Navigation() {
             {isAuthenticated && user ? (
               <>
                 {/* User Info */}
-                <div className="flex items-center gap-2 px-4 py-2 bg-white/10 backdrop-blur-md rounded-full border border-white/20">
-                  <User className="w-4 h-4 text-gold-primary" />
-                  <span className="text-white text-sm font-medium max-w-[150px] truncate">
+                <div className="flex items-center gap-2.5 px-5 py-2.5 bg-white/10 backdrop-blur-md rounded-full border border-white/20 shadow-lg">
+                  <User className="w-4.5 h-4.5 text-primary-500" />
+                  <span className="text-white text-sm font-medium max-w-[160px] truncate">
                     {user.name || user.email}
                   </span>
-                  {hasPremiumAccess && <Crown className="w-4 h-4 text-gold-primary" />}
+                  {hasPremiumAccess && <Crown className="w-4 h-4 text-gold-primary animate-pulse" />}
                 </div>
-                
+
                 {/* Logout Button */}
                 <button
                   onClick={handleLogout}
-                  className="flex items-center gap-2 px-4 py-2 bg-white/10 hover:bg-white/20 backdrop-blur-md rounded-full border border-white/20 transition-all group"
+                  className="flex items-center gap-2 px-5 py-2.5 bg-white/10 hover:bg-white/15 backdrop-blur-md rounded-full border border-white/20 transition-all duration-200 group shadow-lg hover:shadow-xl"
                   aria-label="Log out"
                 >
-                  <LogOut className="w-4 h-4 text-white/70 group-hover:text-white" />
-                  <span className="text-white/70 group-hover:text-white text-sm font-medium">Logout</span>
+                  <LogOut className="w-4.5 h-4.5 text-white/70 group-hover:text-white transition-colors" />
+                  <span className="text-white/70 group-hover:text-white text-sm font-medium transition-colors">Logout</span>
                 </button>
               </>
             ) : (
               <Link
                 href="/login"
-                className="flex items-center gap-2 px-6 py-2.5 bg-gradient-to-r from-gold-primary to-gold-accent hover:from-gold-accent hover:to-gold-hover text-royal-navy font-semibold rounded-xl transition-all shadow-lg hover:shadow-xl"
+                className="btn-primary flex items-center gap-2"
               >
-                <User className="w-4 h-4" />
+                <User className="w-4.5 h-4.5" />
                 <span>Sign In</span>
               </Link>
             )}
@@ -115,7 +115,7 @@ export default function Navigation() {
           <div className="md:hidden">
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="p-2 rounded-lg text-white/70 hover:text-white hover:bg-white/10 transition-all"
+              className="p-2.5 rounded-xl text-white/70 hover:text-white hover:bg-white/10 transition-all duration-200"
               aria-label="Toggle menu"
             >
               {isMobileMenuOpen ? (
@@ -130,53 +130,53 @@ export default function Navigation() {
 
       {/* Mobile Menu */}
       {isMobileMenuOpen && (
-        <div className="md:hidden border-t border-white/10 bg-royal-navy/95 backdrop-blur-md animate-fade-in">
-          <div className="px-4 py-4 space-y-2">
+        <div className="md:hidden border-t border-glass nav-glass animate-fade-in-up">
+          <div className="container-padding py-6 space-y-3">
             {/* Navigation Items */}
             {navItems.map((item) => {
               const isActive = pathname === item.href;
               const Icon = item.icon;
-              
+
               return (
                 <button
                   key={item.name}
                   onClick={() => handleNavClick(item.href)}
-                  className={`w-full px-4 py-3 rounded-lg font-medium transition-all flex items-center gap-3 ${
+                  className={`w-full px-5 py-3.5 rounded-xl font-medium transition-all duration-200 flex items-center gap-3 ${
                     isActive
-                      ? 'bg-white/10 text-white'
-                      : 'text-white/70 hover:text-white hover:bg-white/5'
+                      ? 'bg-white/15 text-white shadow-lg'
+                      : 'text-white/70 hover:text-white hover:bg-white/10'
                   }`}
                 >
                   <Icon className="w-5 h-5" />
                   <span className="flex-1 text-left">{item.name}</span>
                   {item.isPremium && !hasPremiumAccess && (
-                    <Crown className="w-4 h-4 text-gold-primary" />
+                    <Crown className="w-4.5 h-4.5 text-gold-primary animate-pulse" />
                   )}
                 </button>
               );
             })}
 
             {/* Divider */}
-            <div className="h-px bg-white/10 my-4"></div>
+            <div className="glass-divider my-4"></div>
 
             {/* User Section */}
             {isAuthenticated && user ? (
               <>
-                <div className="px-4 py-2 bg-white/5 rounded-lg border border-white/10">
-                  <div className="flex items-center gap-2 mb-1">
-                    <User className="w-4 h-4 text-gold-primary" />
-                    <span className="text-white text-sm font-medium truncate">
+                <div className="px-5 py-3.5 glass-card-enhanced">
+                  <div className="flex items-center gap-2.5 mb-1.5">
+                    <User className="w-4.5 h-4.5 text-primary-500" />
+                    <span className="text-white text-sm font-medium truncate flex-1">
                       {user.name || user.email}
                     </span>
-                    {hasPremiumAccess && <Crown className="w-4 h-4 text-gold-primary" />}
+                    {hasPremiumAccess && <Crown className="w-4.5 h-4.5 text-gold-primary animate-pulse" />}
                   </div>
                   {hasPremiumAccess && (
-                    <p className="text-xs text-white/60 ml-6">Premium Member</p>
+                    <p className="text-xs text-white/60 ml-7">Premium Member</p>
                   )}
                 </div>
                 <button
                   onClick={handleLogout}
-                  className="w-full px-4 py-3 bg-white/10 hover:bg-white/20 text-white font-medium rounded-lg transition-all flex items-center gap-3"
+                  className="w-full px-5 py-3.5 btn-secondary flex items-center gap-3 justify-center"
                   aria-label="Log out"
                 >
                   <LogOut className="w-5 h-5" />
@@ -186,7 +186,7 @@ export default function Navigation() {
             ) : (
               <button
                 onClick={() => handleNavClick('/login')}
-                className="w-full px-4 py-3 bg-gradient-to-r from-gold-primary to-gold-accent text-royal-navy font-semibold rounded-lg transition-all flex items-center justify-center gap-2 shadow-lg"
+                className="w-full btn-primary flex items-center justify-center gap-2.5"
               >
                 <User className="w-5 h-5" />
                 <span>Sign In</span>

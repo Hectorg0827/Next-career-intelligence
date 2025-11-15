@@ -33,6 +33,7 @@ from app.api import (
     talent_graph,
     job_scraper,
     gdpr,
+    ai_agents,  # NEW: Phase 2 AI Agents
 )
 
 try:
@@ -50,6 +51,7 @@ from app.core.compression import CompressionMiddleware, RequestSizeLimitMiddlewa
 from app.core.monitoring import init_sentry, capture_exception
 from app.core.scheduler import setup_scheduled_tasks, shutdown_scheduled_tasks, task_manager
 from app.core.neo4j_client import neo4j_client
+from app.tasks.ai_jobs import start_ai_jobs, stop_ai_jobs  # NEW: AI background jobs
 from slowapi.errors import RateLimitExceeded
 
 
@@ -98,6 +100,13 @@ async def lifespan(app: FastAPI):
     except Exception as e:
         logger.warning(f"⚠️ Background tasks initialization failed: {e}")
 
+    # Initialize AI background jobs
+    try:
+        start_ai_jobs()
+        logger.info("✅ AI background jobs scheduler started")
+    except Exception as e:
+        logger.warning(f"⚠️ AI jobs initialization failed: {e}")
+
     # Log startup complete
     logger.info("✅ All services initialized - API ready to accept requests")
 
@@ -112,6 +121,13 @@ async def lifespan(app: FastAPI):
         logger.info("✅ Background tasks stopped")
     except Exception as e:
         logger.error(f"❌ Background tasks shutdown failed: {e}")
+
+    # Stop AI background jobs
+    try:
+        stop_ai_jobs()
+        logger.info("✅ AI jobs scheduler stopped")
+    except Exception as e:
+        logger.error(f"❌ AI jobs shutdown failed: {e}")
 
     # Cleanup Neo4j connections
     try:
@@ -234,6 +250,9 @@ app.include_router(onboarding.router, tags=["Onboarding"])
 
 # NEW: Multi-Agent Career Intelligence System
 app.include_router(match.router, prefix="/api", tags=["Career Intelligence - Multi-Agent System"])
+
+# NEW: Phase 2 Autonomous AI Agents
+app.include_router(ai_agents.router, prefix="/api", tags=["AI Agents - Memory, Recommendations, Guidance, Predictions, Profile"])
 
 app.include_router(analyze.router, prefix="/api", tags=["Analysis"])
 app.include_router(roadmap.router, prefix="/api", tags=["Career Roadmap"])

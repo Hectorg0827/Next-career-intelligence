@@ -7,6 +7,8 @@ import CareerHealthGauge from '@/components/dashboard/CareerHealthGauge';
 import PriorityActionCard from '@/components/dashboard/PriorityActionCard';
 import JobMatchCard from '@/components/dashboard/JobMatchCard';
 import HealthComponentBar from '@/components/dashboard/HealthComponentBar';
+import AIGuidancePanel from '@/components/dashboard/AIGuidancePanel';
+import AIProfileAssistant from '@/components/profile/AIProfileAssistant';
 import { NoJobsEmptyState, NoActionsEmptyState } from '@/components/EmptyStates';
 import { Loader2 } from 'lucide-react';
 
@@ -165,14 +167,14 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="min-h-screen gradient-dark-glass">
-      <div className="max-w-7xl mx-auto px-4 py-8 space-y-6">
+    <div className="min-h-screen bg-dark">
+      <div className="max-w-container container-padding section-spacing space-y-8 md:space-y-10">
         {/* Header */}
-        <div>
-          <h1 className="text-3xl font-bold text-white mb-2">
+        <div className="animate-fade-in-up">
+          <h1 className="heading-lg text-primary-white mb-3">
             Welcome back, {user?.email?.split('@')[0] || 'there'}
           </h1>
-          <p className="text-ink-300">
+          <p className="body-md text-secondary-white">
             Here's your career intelligence for today
           </p>
         </div>
@@ -184,12 +186,29 @@ export default function Dashboard() {
           onViewReport={() => router.push('/career-health')}
         />
 
+        {/* AI Proactive Guidance */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 grid-gap">
+          <div className="lg:col-span-2">
+            <h2 className="heading-sm text-primary-white mb-5">
+              AI Career Guidance
+            </h2>
+            <AIGuidancePanel maxMessages={3} showDismiss={true} />
+          </div>
+
+          <div>
+            <h2 className="heading-sm text-primary-white mb-5">
+              Profile Intelligence
+            </h2>
+            <AIProfileAssistant compact={true} showInferredSkills={false} />
+          </div>
+        </div>
+
         {/* Health Components Breakdown */}
-        <div>
-          <h2 className="text-xl font-semibold text-white mb-4">
+        <div className="animate-fade-in-up">
+          <h2 className="heading-sm text-primary-white mb-6">
             Health Breakdown
           </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 grid-gap-sm">
             {data.healthComponents.map((component, index) => (
               <HealthComponentBar
                 key={index}
@@ -202,8 +221,8 @@ export default function Dashboard() {
         </div>
 
         {/* Priority Actions */}
-        <div>
-          <h2 className="text-xl font-semibold text-white mb-4">
+        <div className="animate-fade-in-up">
+          <h2 className="heading-sm text-primary-white mb-6">
             Priority Actions
           </h2>
           {data.priorityActions.length > 0 ? (
@@ -230,9 +249,9 @@ export default function Dashboard() {
         </div>
 
         {/* Top Matches */}
-        <div>
-          <div className="flex justify-between items-center mb-4">
-            <h2 className="text-xl font-semibold text-white">
+        <div className="animate-fade-in-up">
+          <div className="flex justify-between items-center mb-6">
+            <h2 className="heading-sm text-primary-white">
               Top Matches
             </h2>
             {data.topMatches.length > 0 && (

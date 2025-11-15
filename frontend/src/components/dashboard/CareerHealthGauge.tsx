@@ -22,31 +22,31 @@ export default function CareerHealthGauge({ score, trend, onViewReport }: Career
       initial={{ opacity: 0, scale: 0.9 }}
       animate={{ opacity: 1, scale: 1 }}
       transition={{ duration: 0.5 }}
-      className="glass-card hover-reflect rounded-3xl p-8"
+      className="glass-card-enhanced hover-reflect card-padding-lg"
     >
-      <h2 className="text-2xl font-semibold text-white mb-6">Career Health Score</h2>
+      <h2 className="heading-sm text-primary-white mb-8 text-center">Career Health Score</h2>
 
-      <div className="w-48 h-48 mx-auto">
+      <div className="w-52 h-52 mx-auto">
         <CircularProgressbar
           value={score}
           text={`${score}`}
-          strokeWidth={8}
+          strokeWidth={6}
           styles={buildStyles({
-            textSize: '32px',
+            textSize: '28px',
             textColor: getColor(score),
             pathColor: getColor(score),
-            trailColor: 'rgba(255, 255, 255, 0.1)',
+            trailColor: 'rgba(255, 255, 255, 0.08)',
             pathTransitionDuration: 1.5,
           })}
         />
       </div>
 
       {trend !== undefined && (
-        <div className="mt-6 text-center">
-          <span className={`text-2xl ${trend > 0 ? 'text-success-500' : 'text-danger-500'}`}>
+        <div className="mt-8 text-center">
+          <span className={`text-3xl font-bold ${trend > 0 ? 'text-ios-green' : 'text-ios-red'}`}>
             {trend > 0 ? '↑' : '↓'} {Math.abs(trend)}
           </span>
-          <span className="ml-2 text-ink-300">
+          <span className="ml-3 body-md text-secondary-white">
             points this week
           </span>
         </div>
@@ -55,9 +55,9 @@ export default function CareerHealthGauge({ score, trend, onViewReport }: Career
       {onViewReport && (
         <button
           onClick={onViewReport}
-          className="w-full mt-6 py-3 text-primary-500 font-medium hover:bg-white/5 rounded-xl transition-colors"
+          className="w-full mt-8 py-3.5 btn-secondary hover:bg-white/15"
         >
-          View Full Report →
+          <span className="text-primary-white">View Full Report →</span>
         </button>
       )}
     </motion.div>

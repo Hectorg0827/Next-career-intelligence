@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
 import ProfileView from '@/components/resume-studio/ProfileView';
+import AIProfileAssistant from '@/components/profile/AIProfileAssistant';
 import { ResumeStudioAPI } from '@/lib/api/premiumAPI';
 import { CareerProfile } from '@/types/resume';
 
@@ -49,6 +50,16 @@ export default function ProfilePage() {
             Single Source of Truth • Last updated {profile && new Date(profile.updated_at).toLocaleDateString()}
           </p>
         </div>
+
+        {/* AI Profile Assistant */}
+        {!loading && !error && profile && (
+          <div className="mb-8">
+            <AIProfileAssistant 
+              showInferredSkills={true} 
+              maxSuggestions={5} 
+            />
+          </div>
+        )}
 
         {/* Loading State */}
         {loading && (

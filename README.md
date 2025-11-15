@@ -4,8 +4,33 @@
 
 [![Build Status](https://github.com/yourusername/next-career-intelligence/workflows/CI/badge.svg)](https://github.com/yourusername/next-career-intelligence/actions)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![API Endpoints](https://img.shields.io/badge/API%20Endpoints-38-blue)](./COMPLETE_SYSTEM_VERIFICATION.md)
+[![API Endpoints](https://img.shields.io/badge/API%20Endpoints-53-blue)](./COMPLETE_SYSTEM_VERIFICATION.md)
 [![Premium Ready](https://img.shields.io/badge/Premium-Ready-gold)](./PREMIUM_SETUP_GUIDE.md)
+
+---
+
+## ⚡ Latest: Phase 2 - Autonomous AI Agents (v2.1)
+
+**5 Intelligent Agents Now Live:**
+- 🧠 **AI Memory System** - Learns from your career journey
+- 🎯 **Smart Recommendations** - Personalized job matching beyond keywords
+- 💡 **Proactive Guidance** - Career advice at exactly the right moment
+- 📊 **Churn Prevention** - Identifies disengagement risks before they happen
+- ✨ **Profile Assistant** - AI-powered completeness analysis & suggestions
+
+**New Features:**
+- 🎨 **AI Guidance Panel** on dashboard with priority-based messages
+- 📈 **Profile Intelligence Widget** showing real-time completeness score
+- 🤖 **Quick Fill** - Auto-complete profile using AI inference
+- 📝 **Generate Summary** - AI-written professional summaries
+- 🔄 **Background Jobs** - 5 automated tasks maintaining intelligence
+
+👉 **[Quick Start Guide](./PHASE2_START_HERE.md)** | **[Full Documentation](./PHASE2_INTEGRATION_COMPLETE.md)** | **[API Reference](./AI_AGENTS_API_GUIDE.md)**
+
+**Verification:**
+```bash
+python3 verify-phase2.py  # ✅ All 7 modules verified
+```
 
 ---
 

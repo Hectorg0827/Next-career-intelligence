@@ -29,8 +29,8 @@ export default function BottomNav() {
 
   return (
     <nav className="fixed bottom-0 left-0 right-0 z-50 md:hidden">
-      <div className="glass-card border-t border-glass-line rounded-none">
-        <div className="flex h-16">
+      <div className="nav-glass border-t border-glass-strong safe-area-bottom">
+        <div className="flex h-20 items-center px-2">
           {tabs.map((tab) => {
             const active = isActive(tab.path);
             const Icon = active ? tab.iconSolid : tab.icon;
@@ -39,14 +39,20 @@ export default function BottomNav() {
               <button
                 key={tab.path}
                 onClick={() => router.push(tab.path)}
-                className={`flex flex-col items-center justify-center flex-1 transition-colors ${
-                  active ? 'text-primary-500' : 'text-ink-400 hover:text-white'
+                className={`flex flex-col items-center justify-center flex-1 py-2 px-1 rounded-xl transition-all duration-200 ${
+                  active
+                    ? 'text-ios-blue'
+                    : 'text-white/60 hover:text-white/90 hover:bg-white/5'
                 }`}
                 aria-label={`Navigate to ${tab.name}`}
                 aria-current={active ? 'page' : undefined}
               >
-                <Icon className="w-6 h-6" />
-                <span className="text-xs mt-1 font-medium">{tab.name}</span>
+                <div className={`transition-transform duration-200 ${active ? 'scale-110' : ''}`}>
+                  <Icon className="w-6 h-6" />
+                </div>
+                <span className={`text-xs mt-1.5 font-medium transition-all ${active ? 'font-semibold' : ''}`}>
+                  {tab.name}
+                </span>
               </button>
             );
           })}

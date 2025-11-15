@@ -592,12 +592,85 @@ async def clear_seeded_jobs():
         raise HTTPException(500, f"Failed to clear seeded jobs: {str(e)}")
 
 
+@router.get("/ai-recommendations")
+async def get_ai_recommendations(
+    limit: int = Query(10, ge=1, le=50, description="Number of recommendations"),
+    include_stretch: bool = Query(True, description="Include stretch recommendations"),
+    current_user: Dict = Depends(require_premium),
+):
+    """
+    Get AI-powered job recommendations using Phase 2 AI agents
+    
+    Premium feature - uses autonomous AI recommendation engine with:
+    - Multi-factor scoring (skills, behavior, goals, growth, engagement)
+    - Behavioral learning (learns from clicks and applications)
+    - Stretch recommendations for career growth
+    - Semantic understanding of preferences
+    
+    This is the next-generation recommendation system that learns
+    from user behavior over time.
+    """
+    try:
+        from app.services.foundation.ai import recommendation_engine
+        
+        user_id = current_user["user_id"]
+        
+        # Get AI recommendations
+        recommendations = await recommendation_engine.get_recommendations(
+            user_id=user_id,
+            limit=limit,
+            include_stretch=include_stretch
+        )
+        
+        # Get full job details for each recommendation
+        client = get_supabase_client()
+        job_ids = [rec.job_id for rec in recommendations]
+        
+        jobs_response = client.table("jobs").select("*").in_("id", job_ids).execute()
+        jobs_by_id = {job["id"]: job for job in jobs_response.data} if jobs_response.data else {}
+        
+        # Combine recommendations with job details
+        results = []
+        for rec in recommendations:
+            job = jobs_by_id.get(rec.job_id)
+            if job:
+                results.append({
+                    "job": job,
+                    "ai_score": rec.recommendation_score,
+                    "match_reasons": rec.match_reasons,
+                    "growth_potential": rec.growth_potential,
+                    "is_stretch": rec.is_stretch,
+                    "confidence": rec.confidence,
+                    "component_scores": rec.component_scores
+                })
+        
+        logger.info(f"✨ AI Recommendations: {len(results)} jobs for user {user_id}")
+        
+        return {
+            "success": True,
+            "count": len(results),
+            "recommendations": results,
+            "algorithm": "phase2_ai_agents",
+            "learning_enabled": True
+        }
+        
+    except Exception as e:
+        logger.error(f"AI recommendations error: {e}")
+        # Fallback to standard recommendations
+        return await get_recommendations(
+            user_id=current_user["user_id"],
+            refresh=False,
+            limit=limit,
+            current_user=current_user
+        )
+
+
 @router.get("/health")
 async def health_check():
     """Health check"""
     return {
         "status": "operational",
         "service": "Jobs Marketplace",
-        "features": ["search", "ai_matching", "auto_tailor", "auto_apply"],
+        "features": ["search", "ai_matching", "auto_tailor", "auto_apply", "ai_recommendations"],
         "timestamp": datetime.utcnow().isoformat(),
     }
