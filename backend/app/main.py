@@ -34,6 +34,7 @@ from app.api import (
     job_scraper,
     gdpr,
     ai_agents,  # NEW: Phase 2 AI Agents
+    risk,  # NEW: Phase 3 AI Displacement Risk Engine
 )
 
 try:
@@ -53,6 +54,7 @@ from app.core.scheduler import setup_scheduled_tasks, shutdown_scheduled_tasks, 
 from app.core.neo4j_client import neo4j_client
 from app.tasks.ai_jobs import start_ai_jobs, stop_ai_jobs  # NEW: AI background jobs
 from slowapi.errors import RateLimitExceeded
+import asyncpg  # NEW: For Phase 3 risk engine database pool
 
 
 # Initialize database tables
@@ -86,6 +88,25 @@ async def lifespan(app: FastAPI):
         logger.error(f"❌ Supabase initialization failed: {e}")
         capture_exception(e, {"startup": {"service": "supabase"}})
 
+    # Initialize asyncpg pool for Phase 3 Risk Engine
+    try:
+        # Use DATABASE_URL from settings (Supabase connection string from .env)
+        db_url = settings.DATABASE_URL
+        if not db_url.startswith("postgresql://"):
+            # If DATABASE_URL is not set, construct from individual params
+            db_url = "postgresql://postgres:ssuRd6vrGSdP5z7a@db.whxbxjpymksgvixudnjh.supabase.co:5432/postgres"
+        
+        app.state.db_pool = await asyncpg.create_pool(
+            db_url,
+            min_size=2,
+            max_size=10,
+            command_timeout=60
+        )
+        logger.info("✅ AsyncPG connection pool initialized for Risk Engine")
+    except Exception as e:
+        logger.warning(f"⚠️ AsyncPG pool initialization failed: {e} - Risk analysis features may be limited")
+        app.state.db_pool = None
+
     # Initialize Neo4j Talent Graph
     try:
         await neo4j_client.connect()
@@ -114,6 +135,14 @@ async def lifespan(app: FastAPI):
 
     # Shutdown cleanup
     logger.info("👋 Shutting down NEXT Career Intelligence API...")
+
+    # Cleanup asyncpg pool
+    if hasattr(app.state, 'db_pool') and app.state.db_pool:
+        try:
+            await app.state.db_pool.close()
+            logger.info("✅ AsyncPG pool closed")
+        except Exception as e:
+            logger.error(f"❌ AsyncPG pool cleanup failed: {e}")
 
     # Shutdown scheduled tasks
     try:
@@ -250,6 +279,9 @@ app.include_router(onboarding.router, tags=["Onboarding"])
 
 # NEW: Multi-Agent Career Intelligence System
 app.include_router(match.router, prefix="/api", tags=["Career Intelligence - Multi-Agent System"])
+
+# NEW: Phase 3 AI Displacement Risk Engine v1.0
+app.include_router(risk.router, prefix="/api", tags=["AI Displacement Risk"])
 
 # NEW: Phase 2 Autonomous AI Agents
 app.include_router(ai_agents.router, prefix="/api", tags=["AI Agents - Memory, Recommendations, Guidance, Predictions, Profile"])
