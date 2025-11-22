@@ -54,40 +54,6 @@ export default function Home() {
         Skip to main content
       </a>
 
-      {/* Top Right - Login/Logout */}
-      <nav className="absolute top-6 right-6 z-20 flex items-center gap-4" aria-label="User account navigation">
-        {!isLoading && isAuthenticated && user ? (
-          <>
-            <div
-              className="px-4 py-2 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full"
-              role="status"
-              aria-label={`Logged in as ${user.email}${hasPremiumAccess ? ', Premium subscriber' : ''}`}
-            >
-              <User className="w-4 h-4 text-gold-primary inline mr-2" aria-hidden="true" />
-              <span className="text-white text-sm font-semibold">{user.email}</span>
-              {hasPremiumAccess && <Crown className="w-4 h-4 text-gold-primary inline ml-2" aria-label="Premium subscriber" />}
-            </div>
-            <button
-              onClick={handleLogout}
-              className="px-4 py-2 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full hover:bg-white/20 hover:border-gold-primary/50 transition-all group"
-              aria-label="Log out of your account"
-            >
-              <LogOut className="w-4 h-4 text-white/70 group-hover:text-white inline mr-2" aria-hidden="true" />
-              <span className="text-white/70 group-hover:text-white text-sm font-semibold">Logout</span>
-            </button>
-          </>
-        ) : !isLoading ? (
-          <button
-            onClick={() => router.push('/login')}
-            className="px-6 py-3 bg-gradient-to-r from-gold-primary to-gold-accent hover:from-gold-accent hover:to-gold-hover text-royal-navy font-bold rounded-xl transition-all shadow-lg hover:shadow-xl flex items-center gap-2"
-            aria-label="Sign in to your account"
-          >
-            <User className="w-5 h-5" aria-hidden="true" />
-            <span>Sign In</span>
-          </button>
-        ) : null}
-      </nav>
-
       {/* Animated Background */}
       <div className="absolute inset-0 overflow-hidden opacity-30">
         <div className="absolute top-20 left-10 w-72 h-72 bg-accent-500 rounded-full blur-3xl animate-pulse"></div>
@@ -96,7 +62,7 @@ export default function Home() {
       </div>
 
       <main id="main-content" className="relative z-10 flex flex-col items-center justify-center min-h-screen px-4 py-12">
-        <motion.div 
+        <motion.div
           className="max-w-4xl w-full text-center"
           variants={staggerContainerVariants}
           initial="initial"
@@ -141,7 +107,7 @@ export default function Home() {
           )}
 
           {/* NEXT Logo */}
-          <motion.div 
+          <motion.div
             className="mb-8"
             variants={scaleInVariants}
           >
@@ -158,7 +124,7 @@ export default function Home() {
             <span className="text-white/90 text-sm font-semibold">Powered by AI</span>
           </motion.div>
 
-          <motion.h1 
+          <motion.h1
             className="text-5xl md:text-7xl font-bold mb-6 leading-tight"
             variants={staggerItemVariants}
           >
@@ -175,8 +141,8 @@ export default function Home() {
             Get a free AI-powered analysis of your career&apos;s automation risk and discover skills that future-proof your career
           </motion.p>
 
-          <motion.form 
-            onSubmit={handleAnalyze} 
+          <motion.form
+            onSubmit={handleAnalyze}
             className="max-w-2xl mx-auto mb-8"
             variants={staggerItemVariants}
             role="search"
@@ -249,7 +215,7 @@ export default function Home() {
 
         </motion.div>
 
-        <motion.nav 
+        <motion.nav
           className="mt-16 text-center"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}

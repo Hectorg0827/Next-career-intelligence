@@ -38,13 +38,13 @@ class JobDataValidator(BaseModel):
     city: Optional[str] = Field(None, max_length=100)
     state: Optional[str] = Field(None, max_length=50)
     country: Optional[str] = Field(None, max_length=100)
-    remote_type: Optional[str] = Field(None, regex="^(remote|hybrid|on_site|Remote|Hybrid|On-site)$")
+    remote_type: Optional[str] = Field(None, pattern="^(remote|hybrid|on_site|Remote|Hybrid|On-site)$")
 
     # Salary fields
     salary_min: Optional[int] = Field(None, ge=0, le=1000000)
     salary_max: Optional[int] = Field(None, ge=0, le=1000000)
-    salary_currency: str = Field(default="USD", regex="^[A-Z]{3}$")
-    salary_period: Optional[str] = Field(None, regex="^(hourly|monthly|yearly)$")
+    salary_currency: str = Field(default="USD", pattern="^[A-Z]{3}$")
+    salary_period: Optional[str] = Field(None, pattern="^(hourly|monthly|yearly)$")
 
     # Job details
     required_skills: List[str] = Field(default_factory=list, max_items=50)
@@ -53,11 +53,11 @@ class JobDataValidator(BaseModel):
     requirements: Optional[List[str]] = Field(default_factory=list, max_items=20)
     benefits: Optional[List[str]] = Field(default_factory=list, max_items=20)
 
-    experience_level: Optional[str] = Field(None, regex="^(entry|mid|senior|lead|executive)$")
+    experience_level: Optional[str] = Field(None, pattern="^(entry|mid|senior|lead|executive)$")
     years_experience_min: Optional[int] = Field(None, ge=0, le=50)
     years_experience_max: Optional[int] = Field(None, ge=0, le=50)
 
-    job_type: Optional[str] = Field(None, regex="^(full_time|part_time|contract|temporary|internship)$")
+    job_type: Optional[str] = Field(None, pattern="^(full_time|part_time|contract|temporary|internship)$")
 
     # Metadata
     source: str = Field(..., max_length=100)
@@ -347,6 +347,14 @@ class JobDataQualityPipeline:
         # Normalize skills
         if "required_skills" in enriched and enriched["required_skills"]:
             enriched["required_skills"] = self._normalize_skills(enriched["required_skills"])
+            
+        # Extract skills from description if few or none provided
+        if not enriched.get("required_skills") or len(enriched["required_skills"]) < 3:
+            if "description" in enriched:
+                extracted = self._extract_skills_from_text(enriched["description"])
+                current = set(enriched.get("required_skills", []))
+                current.update(extracted)
+                enriched["required_skills"] = list(current)
 
         if "nice_to_have_skills" in enriched and enriched["nice_to_have_skills"]:
             enriched["nice_to_have_skills"] = self._normalize_skills(enriched["nice_to_have_skills"])
@@ -570,6 +578,36 @@ class JobDataQualityPipeline:
             return "hybrid"
         else:
             return "on_site"
+
+    def _extract_skills_from_text(self, text: str) -> List[str]:
+        """
+        Extract skills from text using taxonomy keywords
+
+        Args:
+            text: Text to analyze (description, title, etc.)
+
+        Returns:
+            List of extracted skill names (normalized)
+        """
+        extracted = set()
+        text_lower = text.lower()
+
+        # Simple keyword matching against taxonomy
+        # This is basic but effective for common tech skills
+        for standard_name, variants in self.SKILL_TAXONOMY.items():
+            # Check standard name
+            # Use word boundary to avoid partial matches (e.g. "go" in "good")
+            if re.search(r"\b" + re.escape(standard_name) + r"\b", text_lower):
+                extracted.add(standard_name)
+                continue
+
+            # Check variants
+            for variant in variants:
+                if re.search(r"\b" + re.escape(variant) + r"\b", text_lower):
+                    extracted.add(standard_name)
+                    break
+
+        return list(extracted)
 
     # ==================== QUALITY SCORING ====================
 

@@ -5,6 +5,7 @@ Queries ai_task_taxonomy to calculate role-level automation risk.
 
 from typing import Tuple
 import asyncpg
+from ..cache import get_cache
 
 
 class TaskAutomationCalculator:
@@ -27,6 +28,7 @@ class TaskAutomationCalculator:
             db_connection: asyncpg connection or pool
         """
         self.db = db_connection
+        self.cache = get_cache()
     
     async def calculate(self, occupation_code: str) -> Tuple[float, float]:
         """
@@ -44,6 +46,11 @@ class TaskAutomationCalculator:
             >>> print(f"TAS: {tas:.1f}, Coverage: {coverage:.1f}%")
             TAS: 68.2, Coverage: 85.0%
         """
+        # Check cache first (1 hour TTL)
+        cached = await self.cache.get_task_automation_scores(occupation_code)
+        if cached:
+            return cached['tas'], cached['coverage']
+        
         # Query all tasks for this occupation
         query = """
             SELECT 
@@ -94,6 +101,12 @@ class TaskAutomationCalculator:
         # Coverage tells us how confident we are in the TAS
         expected_task_count = 20.0
         coverage = min(len(rows) / expected_task_count, 1.0) * 100.0
+        
+        # Cache the result (1 hour TTL)
+        await self.cache.set_task_automation_scores(
+            occupation_code,
+            {'tas': tas, 'coverage': coverage}
+        )
         
         return tas, coverage
     

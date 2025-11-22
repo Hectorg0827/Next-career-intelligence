@@ -9,6 +9,8 @@ import JobMatchCard from '@/components/dashboard/JobMatchCard';
 import HealthComponentBar from '@/components/dashboard/HealthComponentBar';
 import AIGuidancePanel from '@/components/dashboard/AIGuidancePanel';
 import AIProfileAssistant from '@/components/profile/AIProfileAssistant';
+import SkillProfileWidget from '@/components/dashboard/SkillProfileWidget';
+import SkillGapWidget from '@/components/dashboard/SkillGapWidget';
 import { NoJobsEmptyState, NoActionsEmptyState } from '@/components/EmptyStates';
 import { Loader2 } from 'lucide-react';
 
@@ -68,35 +70,35 @@ export default function Dashboard() {
       const healthScore = apiData.healthScore;
       const healthComponents = healthScore
         ? [
-            {
-              name: 'Profile Completeness',
-              score: Math.round(healthScore.breakdown.profile_completeness),
-              description: healthScore.breakdown.profile_completeness >= 80
-                ? 'Your profile is nearly complete'
-                : 'Complete your profile for better matches',
-            },
-            {
-              name: 'Skill Currency',
-              score: Math.round(healthScore.breakdown.skill_currency),
-              description: healthScore.breakdown.skill_currency >= 70
-                ? 'Your skills are up to date'
-                : 'Some skills need updating',
-            },
-            {
-              name: 'Market Activity',
-              score: Math.round(healthScore.breakdown.market_activity),
-              description: healthScore.breakdown.market_activity >= 80
-                ? 'Good engagement with opportunities'
-                : 'Increase your market activity',
-            },
-            {
-              name: 'Goal Progress',
-              score: Math.round(healthScore.breakdown.goal_progress),
-              description: healthScore.breakdown.goal_progress >= 70
-                ? 'Making steady progress'
-                : 'Review your career goals',
-            },
-          ]
+          {
+            name: 'Profile Completeness',
+            score: Math.round(healthScore.breakdown.profile_completeness),
+            description: healthScore.breakdown.profile_completeness >= 80
+              ? 'Your profile is nearly complete'
+              : 'Complete your profile for better matches',
+          },
+          {
+            name: 'Skill Currency',
+            score: Math.round(healthScore.breakdown.skill_currency),
+            description: healthScore.breakdown.skill_currency >= 70
+              ? 'Your skills are up to date'
+              : 'Some skills need updating',
+          },
+          {
+            name: 'Market Activity',
+            score: Math.round(healthScore.breakdown.market_activity),
+            description: healthScore.breakdown.market_activity >= 80
+              ? 'Good engagement with opportunities'
+              : 'Increase your market activity',
+          },
+          {
+            name: 'Goal Progress',
+            score: Math.round(healthScore.breakdown.goal_progress),
+            description: healthScore.breakdown.goal_progress >= 70
+              ? 'Making steady progress'
+              : 'Review your career goals',
+          },
+        ]
         : [];
 
       // Calculate trend from history (simplified)
@@ -217,6 +219,17 @@ export default function Dashboard() {
                 description={component.description}
               />
             ))}
+          </div>
+        </div>
+
+        {/* Skills & Gap Analysis */}
+        <div className="animate-fade-in-up">
+          <h2 className="heading-sm text-primary-white mb-6">
+            Skills & Gap Analysis
+          </h2>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <SkillProfileWidget />
+            <SkillGapWidget />
           </div>
         </div>
 

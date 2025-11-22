@@ -1,100 +1,67 @@
-"""Script to seed job database with GitHub jobs.
-
-Usage:
-    python seed_jobs.py        # Seed 5 pages of general jobs
-    python seed_jobs.py --positions  # Seed jobs by specific positions
-    python seed_jobs.py --full   # Seed 10 pages for full seeding
-"""
-
-import asyncio
+import os
 import sys
-from pathlib import Path
+import uuid
+import random
+from datetime import datetime, timedelta
+from sqlalchemy.orm import Session
 
-# Add parent directory to path for imports
-sys.path.insert(0, str(Path(__file__).parent))
+# Add backend to path (current dir)
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 from app.db.database import SessionLocal
-from app.services.github_jobs_service import GitHubJobsService
+from app.models.database import Job
 
-
-async def seed_general_jobs(pages: int = 5):
-    """Seed general tech jobs."""
+def seed_jobs():
     db = SessionLocal()
-    try:
-        print(f"\n🔄 Seeding {pages} pages of GitHub jobs...")
-        created, skipped = await GitHubJobsService.seed_github_jobs_batch(
-            db=db,
-            num_pages=pages,
-            source="github",
-        )
-        print(f"\n✅ Seeding complete!")
-        print(f"   📊 Created: {created} jobs")
-        print(f"   ⏭️  Skipped: {skipped} (already in database)")
-    except Exception as e:
-        print(f"\n❌ Error during seeding: {e}")
-    finally:
-        db.close()
-
-
-async def seed_by_position():
-    """Seed jobs by specific positions."""
-    db = SessionLocal()
-    positions = [
-        "Python Developer",
-        "JavaScript Developer",
-        "Full Stack Developer",
-        "DevOps Engineer",
-        "Data Engineer",
-        "Machine Learning Engineer",
-        "Frontend Developer",
-        "Backend Developer",
-        "Software Engineer",
-        "Systems Engineer",
+    
+    print("Seeding jobs...")
+    
+    titles = [
+        "Senior Python Developer", "Frontend Engineer (React)", "Data Scientist", 
+        "DevOps Engineer", "Product Manager", "UX Designer", "Full Stack Developer",
+        "Machine Learning Engineer", "Cloud Architect", "QA Automation Engineer"
     ]
-
-    try:
-        print(f"\n🔄 Seeding jobs for {len(positions)} positions...")
-        created, skipped = await GitHubJobsService.seed_jobs_by_position(
-            db=db,
-            positions=positions,
-            pages_per_position=2,
-            source="github",
+    
+    companies = ["Tech Corp", "Startup Inc", "Big Data Co", "Cloud Systems", "Design Studio"]
+    locations = ["Remote", "New York, NY", "San Francisco, CA", "Austin, TX", "London, UK"]
+    skills_pool = ["Python", "React", "AWS", "Docker", "Kubernetes", "SQL", "NoSQL", "TypeScript", "Java", "Go", "Figma", "JIRA"]
+    
+    jobs_to_create = []
+    
+    for i in range(20):
+        title = random.choice(titles)
+        company_name = random.choice(companies)
+        full_title = f"{title} at {company_name}"
+        
+        job_skills = random.sample(skills_pool, k=random.randint(3, 6))
+        
+        job = Job(
+            id=uuid.uuid4(),
+            title=full_title,
+            description=f"We are looking for a {title} to join our team at {company_name}. \n\nRequirements:\n- Experience with {', '.join(job_skills)}.\n- Strong communication skills.",
+            location=random.choice(locations),
+            remote_policy=random.choice(["remote", "hybrid", "on_site"]),
+            employment_type=random.choice(["full_time", "contract"]),
+            salary_min=random.randint(80000, 120000),
+            salary_max=random.randint(130000, 200000),
+            salary_currency="USD",
+            required_skills=job_skills,
+            seniority=random.choice(["entry", "mid", "senior"]),
+            source="mock_seeder",
+            is_active=True,
+            posted_date=datetime.utcnow() - timedelta(days=random.randint(0, 30))
         )
-        print(f"\n✅ Position-based seeding complete!")
-        print(f"   📊 Created: {created} jobs")
-        print(f"   ⏭️  Skipped: {skipped} (already in database)")
+        jobs_to_create.append(job)
+        
+    try:
+        db.add_all(jobs_to_create)
+        db.commit()
+        print(f"Successfully seeded {len(jobs_to_create)} jobs.")
     except Exception as e:
-        print(f"\n❌ Error during seeding: {e}")
+        print(f"Error seeding jobs: {e}")
+        db.rollback()
     finally:
         db.close()
-
-
-async def main():
-    """Main entry point."""
-    print("\n" + "=" * 70)
-    print("🌱 Job Database Seeder - GitHub Jobs Integration")
-    print("=" * 70)
-
-    if len(sys.argv) > 1:
-        if sys.argv[1] == "--positions":
-            await seed_by_position()
-        elif sys.argv[1] == "--full":
-            await seed_general_jobs(pages=10)
-        elif sys.argv[1] == "--help":
-            print("\nUsage:")
-            print("  python seed_jobs.py              # Seed 5 pages (default)")
-            print("  python seed_jobs.py --positions  # Seed by job positions")
-            print("  python seed_jobs.py --full       # Seed 10 pages")
-        else:
-            pages = int(sys.argv[1]) if sys.argv[1].isdigit() else 5
-            await seed_general_jobs(pages=pages)
-    else:
-        await seed_general_jobs()
-
-    print("\n" + "=" * 70)
-    print("✨ All done! Your database is ready.")
-    print("=" * 70 + "\n")
-
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    seed_jobs()

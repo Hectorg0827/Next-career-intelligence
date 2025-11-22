@@ -8,6 +8,7 @@ from datetime import datetime
 from loguru import logger
 import json
 import os
+import asyncio
 
 try:
     import google.generativeai as genai
@@ -15,6 +16,17 @@ except ImportError:
     logger.warning("google.generativeai not installed")
     genai = None
 
+from app.services.prompts import (
+    CAREER_COACH_SYSTEM, 
+    TOPIC_CLASSIFIER_PROMPT, 
+    MEMORY_SUMMARIZER_PROMPT
+)
+from app.services.skill_service import skill_service
+
+# We need database access for memory and skills
+# Since this service is often called from API, we'll assume the caller handles DB session
+# But for async sidecars, we might need a fresh session. 
+# For this implementation, we'll keep it simple and assume the API layer passes necessary data or we use a helper.
 
 class AICoachService:
     """
@@ -27,36 +39,29 @@ class AICoachService:
             genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
             model_name = os.getenv("GEMINI_MODEL", "gemini-1.5-flash")
             self.model = genai.GenerativeModel(model_name)
+            # Separate model for fast tasks to avoid context pollution
+            self.fast_model = genai.GenerativeModel("gemini-1.5-flash") 
         else:
             self.model = None
+            self.fast_model = None
             logger.warning("AI Coach running without Gemini - responses will be limited")
 
-        self.system_prompt = """You are an expert career coach and mentor with 20+ years of experience helping professionals navigate career transitions, skill development, and job market changes.
+    async def is_career_related(self, message: str) -> bool:
+        """Check if the user message is within scope."""
+        if not self.fast_model:
+            return True # Fail open if no model
 
-Your personality:
-- Empathetic and encouraging, but also direct and honest
-- Data-driven: You reference real market trends and statistics
-- Action-oriented: You always end with concrete next steps
-- Accountability partner: You check in on progress and celebrate wins
-
-Your capabilities:
-- Analyze career goals and create actionable roadmaps
-- Break down complex career transitions into manageable steps
-- Recommend specific courses, certifications, and learning paths
-- Provide interview preparation and resume feedback
-- Track user progress and adjust plans based on real-world feedback
-
-Conversation style:
-- Use the user's name when you know it
-- Ask clarifying questions before giving advice
-- Give specific, actionable recommendations (not generic advice)
-- Use examples and analogies to explain concepts
-- Keep responses conversational but focused (2-4 paragraphs max)
-- End with a question or call-to-action to continue the dialogue
-
-Current context:
-{context}
-"""
+        try:
+            prompt = f"""{TOPIC_CLASSIFIER_PROMPT}
+            
+            User message: "{message}"
+            """
+            response = self.fast_model.generate_content(prompt)
+            label = response.text.strip().upper()
+            return "IN_SCOPE" in label
+        except Exception as e:
+            logger.error(f"Topic classification failed: {e}")
+            return True # Fail open
 
     async def start_conversation(
         self, user_id: str, user_name: Optional[str] = None, career_context: Optional[Dict] = None
@@ -80,15 +85,19 @@ Current context:
                     context_parts.append(f"Current skills: {', '.join(career_context['skills'][:5])}")
                 if career_context.get("goals"):
                     context_parts.append(f"Goals: {', '.join(career_context['goals'][:3])}")
+                if career_context.get("memory_summary"):
+                    context_parts.append(f"MEMORY_SUMMARY: {career_context['memory_summary']}")
 
             context = "\n".join(context_parts) if context_parts else "New user, no career context yet"
 
             # Generate personalized greeting
-            greeting_prompt = f"""You're meeting a new user for the first time as their career coach. 
-
-{context}
-
-Introduce yourself briefly, acknowledge what you know about their situation, and ask 1-2 specific questions to understand how you can help them most effectively right now. Keep it warm and conversational."""
+            greeting_prompt = f"""You're meeting a user for a coaching session.
+            
+            CONTEXT:
+            {context}
+            
+            Introduce yourself briefly. If there is a MEMORY_SUMMARY, reference a past topic to show continuity.
+            Ask 1 specific question to get started. Keep it warm and conversational."""
 
             if self.model:
                 response = self.model.generate_content(greeting_prompt)
@@ -99,7 +108,7 @@ Introduce yourself briefly, acknowledge what you know about their situation, and
             return {
                 "message": message,
                 "timestamp": datetime.utcnow().isoformat(),
-                "message_id": None,  # Will be set when saved to DB
+                "message_id": None,
                 "context": career_context or {},
             }
 
@@ -108,156 +117,113 @@ Introduce yourself briefly, acknowledge what you know about their situation, and
             raise
 
     async def send_message(
-        self, user_id: str, message: str, conversation_history: List[Dict], user_context: Optional[Dict] = None
+        self, user_id: str, message: str, conversation_history: List[Dict], user_context: Optional[Dict] = None, db_session = None
     ) -> Dict:
         """
         Send a message and get AI Coach response with full conversation context
-
-        Args:
-            user_id: User's ID
-            message: User's message
-            conversation_history: Previous messages in format [{"role": "user"|"assistant", "content": "..."}]
-            user_context: User's career data (current role, goals, progress, etc.)
         """
         try:
-            # Build context string
+            # 1. Guardrail: Topic Filter
+            if not await self.is_career_related(message):
+                return {
+                    "message": "I'm focused only on your career, skills, and job security. For general questions, please use a general AI assistant. Let's bring this back to your professional goals.",
+                    "timestamp": datetime.utcnow().isoformat(),
+                    "metadata": {"blocked": True}
+                }
+
+            # 2. Sidecar: Skill Extraction (Fire and forget)
+            # In a real async app, we'd use background tasks. Here we just await it or run it.
+            # We'll await it for simplicity in this prototype, but catch errors so it doesn't block chat.
+            if db_session:
+                try:
+                    skills_found = await skill_service.extract_skills_from_text(message)
+                    if skills_found:
+                        await skill_service.upsert_user_skills(db_session, user_id, skills_found, "conversation")
+                except Exception as e:
+                    logger.error(f"Sidecar skill extraction failed: {e}")
+
+            # 3. Build Context
             context_str = self._build_context_string(user_context)
 
-            # Build conversation prompt
-            full_prompt = self.system_prompt.format(context=context_str)
+            # 4. Build Prompt
+            # We want structured output for goals/actions, but conversational for the reply.
+            # Gemini supports response_schema, but mixed mode is tricky.
+            # We'll ask for JSON to ensure we capture the data, then parse the 'reply' field for the user.
+            
+            full_prompt = f"""{CAREER_COACH_SYSTEM}
 
-            # Add conversation history
-            conversation_text = self._format_conversation_history(conversation_history)
+            CONTEXT:
+            {context_str}
 
-            # Add current message
-            full_prompt += f"\n\nConversation history:\n{conversation_text}\n\nUser: {message}\n\nCoach:"
+            CONVERSATION HISTORY:
+            {self._format_conversation_history(conversation_history)}
+
+            USER MESSAGE:
+            {message}
+
+            Return your response in JSON format as specified in the system prompt.
+            """
 
             if self.model:
-                response = self.model.generate_content(full_prompt)
-                reply = response.text
+                # Force JSON mode
+                response = self.model.generate_content(
+                    full_prompt, 
+                    generation_config={"response_mime_type": "application/json"}
+                )
+                try:
+                    response_data = json.loads(response.text)
+                    reply = response_data.get("reply", "I'm having trouble formulating a response right now.")
+                    suggestions = response_data.get("profile_patch_suggestions", [])
+                    goal_updates = response_data.get("goal_updates", [])
+                    next_actions = response_data.get("next_actions", [])
+                except json.JSONDecodeError:
+                    # Fallback if model refuses JSON
+                    reply = response.text
+                    suggestions = []
+                    goal_updates = []
+                    next_actions = []
             else:
-                reply = "I'm here to help! However, my AI capabilities are currently limited. Please configure the Gemini API key to enable full coaching features."
+                reply = "I'm here to help! However, my AI capabilities are currently limited. Please configure the Gemini API key."
+                suggestions = []
+                goal_updates = []
+                next_actions = []
 
+            # 5. Update Memory (Async/Background ideally)
+            # For now, we'll just return the data and let the caller handle persistence if needed
+            
             return {
                 "message": reply,
+                "suggestions": suggestions,
+                "goal_updates": goal_updates,
+                "next_actions": next_actions,
                 "timestamp": datetime.utcnow().isoformat(),
-                "message_id": None,  # Will be set when saved to DB
-                "metadata": {"model": "gemini-pro" if self.model else "fallback", "context_used": bool(user_context)},
+                "metadata": {"model": "gemini-1.5-flash", "context_used": bool(user_context)},
             }
 
         except Exception as e:
             logger.error(f"Failed to process message: {e}")
             raise
 
-    async def generate_action_plan(
-        self, user_id: str, goal: str, current_state: Dict, timeline: Optional[str] = "3 months"
-    ) -> Dict:
+    async def update_long_term_memory(self, user_id: str, old_summary: str, recent_turns: List[Dict]) -> str:
         """
-        Generate a structured action plan based on user's goal
-        Returns a checklist of actionable steps
+        Condense conversation into long-term memory.
         """
+        if not self.fast_model:
+            return old_summary
+
         try:
-            prompt = f"""Create a detailed, actionable career development plan for this goal:
-
-GOAL: {goal}
-
-CURRENT STATE:
-{json.dumps(current_state, indent=2)}
-
-TIMELINE: {timeline}
-
-Create a step-by-step action plan with:
-1. Specific milestones (what success looks like)
-2. Concrete action items (what to do each week)
-3. Recommended resources (courses, books, communities)
-4. Success metrics (how to measure progress)
-
-Format your response as a structured JSON with this format:
-{{
-    "milestones": [
-        {{"title": "Milestone name", "description": "What this achieves", "week": 1}}
-    ],
-    "weekly_actions": [
-        {{"week": 1, "actions": ["Specific action 1", "Specific action 2"]}}
-    ],
-    "resources": [
-        {{"type": "course", "title": "Resource name", "url": "https://...", "priority": "high"}}
-    ],
-    "success_metrics": ["Metric 1", "Metric 2"]
-}}
-
-Only return the JSON, no additional text."""
-
-            if self.model:
-                response = self.model.generate_content(prompt)
-                # Try to extract JSON from response
-                try:
-                    plan_data = json.loads(response.text)
-                except:
-                    # If parsing fails, wrap in basic structure
-                    plan_data = {"raw_plan": response.text, "milestones": [], "weekly_actions": [], "resources": []}
-            else:
-                plan_data = {
-                    "error": "AI Coach not fully configured",
-                    "milestones": [],
-                    "weekly_actions": [],
-                    "resources": [],
-                }
-
-            return {"plan": plan_data, "goal": goal, "timeline": timeline, "created_at": datetime.utcnow().isoformat()}
-
+            turns_text = "\n".join([f"{msg['role']}: {msg['content']}" for msg in recent_turns])
+            
+            prompt = MEMORY_SUMMARIZER_PROMPT.format(
+                old_summary=old_summary or "None",
+                recent_turns=turns_text
+            )
+            
+            response = self.fast_model.generate_content(prompt)
+            return response.text.strip()
         except Exception as e:
-            logger.error(f"Failed to generate action plan: {e}")
-            raise
-
-    async def check_progress(
-        self, user_id: str, completed_actions: List[str], planned_actions: List[str], days_since_start: int
-    ) -> Dict:
-        """
-        Check user's progress and provide motivational feedback
-        """
-        try:
-            completion_rate = len(completed_actions) / len(planned_actions) if planned_actions else 0
-
-            prompt = f"""A user started their career development plan {days_since_start} days ago.
-
-PLANNED ACTIONS: {len(planned_actions)}
-COMPLETED ACTIONS: {len(completed_actions)}
-COMPLETION RATE: {completion_rate:.0%}
-
-Recently completed:
-{json.dumps(completed_actions[-5:], indent=2)}
-
-Provide:
-1. Honest assessment of their progress (2-3 sentences)
-2. Specific encouragement or course correction (1-2 sentences)
-3. One actionable suggestion for the next 3 days
-
-Keep it motivational but realistic. If they're behind, help them adjust expectations, not just push harder."""
-
-            if self.model:
-                response = self.model.generate_content(prompt)
-                feedback = response.text
-            else:
-                if completion_rate > 0.7:
-                    feedback = "Great progress! You're on track with your goals."
-                elif completion_rate > 0.3:
-                    feedback = "You're making progress! Keep focusing on consistent daily action."
-                else:
-                    feedback = "Let's break down your goals into smaller steps. What's one thing you can do today?"
-
-            return {
-                "feedback": feedback,
-                "completion_rate": completion_rate,
-                "streak_days": days_since_start,
-                "next_milestone": (
-                    planned_actions[len(completed_actions)] if len(completed_actions) < len(planned_actions) else None
-                ),
-            }
-
-        except Exception as e:
-            logger.error(f"Failed to check progress: {e}")
-            raise
+            logger.error(f"Memory update failed: {e}")
+            return old_summary
 
     def _build_context_string(self, user_context: Optional[Dict]) -> str:
         """Build a formatted context string for the system prompt"""
@@ -265,24 +231,20 @@ Keep it motivational but realistic. If they're behind, help them adjust expectat
             return "No career context available yet"
 
         parts = []
-
+        
+        # Profile
         if user_context.get("current_role"):
-            parts.append(f"Current role: {user_context['current_role']}")
-
-        if user_context.get("target_role"):
-            parts.append(f"Target role: {user_context['target_role']}")
-
-        if user_context.get("years_experience"):
-            parts.append(f"Years of experience: {user_context['years_experience']}")
-
+            parts.append(f"USER_PROFILE: Role={user_context['current_role']}")
         if user_context.get("skills"):
-            parts.append(f"Skills: {', '.join(user_context['skills'][:10])}")
-
+            parts.append(f"USER_PROFILE: Skills={', '.join(user_context['skills'][:10])}")
+            
+        # Goals
         if user_context.get("goals"):
-            parts.append(f"Career goals: {', '.join(user_context['goals'])}")
-
-        if user_context.get("completed_items"):
-            parts.append(f"Completed action items: {user_context['completed_items']}")
+            parts.append(f"GOALS: {', '.join(user_context['goals'])}")
+            
+        # Memory
+        if user_context.get("memory_summary"):
+            parts.append(f"MEMORY_SUMMARY: {user_context['memory_summary']}")
 
         return "\n".join(parts)
 

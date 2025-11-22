@@ -65,7 +65,7 @@ async def search_jobs(
     """
 
     # Build query
-    db_query = db.query(Job).filter(Job.is_active == "active")
+    db_query = db.query(Job).filter(Job.is_active == True)
 
     if query:
         search_term = f"%{query}%"

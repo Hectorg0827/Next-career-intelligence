@@ -8,11 +8,16 @@ from fastapi import APIRouter, HTTPException, BackgroundTasks
 from app.scrapers.greenhouse_scraper import GreenhouseScraper
 from app.scrapers.lever_scraper import LeverScraper
 from app.db.supabase import get_supabase_client
+from app.services.job_aggregator import JobAggregatorService
+from app.services.job_data_quality import JobDataQualityPipeline
 from loguru import logger
-from datetime import datetime
+from datetime import datetime, timedelta
 from typing import Dict, List
 
 router = APIRouter(prefix="/api/job-scraper", tags=["job_scraper"])
+
+# Initialize client for module-level usage
+supabase = get_supabase_client()
 
 
 async def run_full_scrape():
@@ -253,3 +258,53 @@ async def get_scraper_stats():
     except Exception as e:
         logger.error(f"Failed to get scraper stats: {e}")
         raise HTTPException(status_code=500, detail="Failed to get stats")
+
+
+@router.post("/run-aggregated")
+async def trigger_aggregated_scrape(background_tasks: BackgroundTasks):
+    """
+    Trigger a multi-source job scrape (RemoteOK, WeWorkRemotely, Arbeitnow)
+    """
+    background_tasks.add_task(run_aggregated_scrape_task)
+    return {
+        "status": "started",
+        "message": "Aggregated job scraping started",
+        "sources": ["remoteok", "weworkremotely", "arbeitnow"],
+    }
+
+
+async def run_aggregated_scrape_task():
+    """Background task for aggregated scraping"""
+    aggregator = JobAggregatorService()
+    try:
+        await aggregator.run_scrape_and_store()
+    except Exception as e:
+        logger.error(f"Aggregated scrape task failed: {e}")
+    finally:
+        await aggregator.close()
+
+
+@router.get("/health")
+async def get_scraper_health():
+    """
+    Get health metrics for job scraping
+    """
+    client = get_supabase_client()
+    
+    try:
+        # Total active jobs
+        active_jobs = client.table("jobs").select("id", count="exact").eq("is_active", True).execute()
+        
+        # Stale jobs (not updated in 7 days)
+        seven_days_ago = (datetime.utcnow() - timedelta(days=7)).isoformat()
+        stale_jobs = client.table("jobs").select("id", count="exact").lt("updated_at", seven_days_ago).eq("is_active", True).execute()
+        
+        return {
+            "status": "healthy",
+            "total_active_jobs": active_jobs.count,
+            "stale_jobs_7d": stale_jobs.count,
+            "last_check": datetime.utcnow().isoformat()
+        }
+    except Exception as e:
+        logger.error(f"Health check failed: {e}")
+        raise HTTPException(status_code=500, detail="Health check failed")

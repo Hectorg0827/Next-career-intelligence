@@ -80,6 +80,7 @@ firebase-admin==6.5.0
 # File Parsing
 PyPDF2==3.0.1
 python-docx==1.1.0
+feedparser==6.0.10  # RSS Feed Parsing for Job Aggregator
 
 # Redis (Caching & Rate Limiting) - Updated for Phase 1 Foundation
 # Using 5.2.1 with hiredis support instead of separate packages

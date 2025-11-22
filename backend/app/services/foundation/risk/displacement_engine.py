@@ -189,11 +189,21 @@ class DisplacementRiskEngine:
             Confidence=round(confidence, 1)
         )
         
-        return RiskAnalysisResponse(
+        result = RiskAnalysisResponse(
             ai_displacement_risk=risk_score,
             debug_components=debug_components,
             calculated_at=datetime.utcnow()
         )
+        
+        # Cache the result for future requests (1 hour TTL)
+        await self.cache.set_risk_analysis(
+            user_id=user_profile.user_id,
+            occupation_code=job_data.occupation_code,
+            industry=job_data.industry,
+            result=result.dict()
+        )
+        
+        return result
     
     # ========================================
     # Layer 1: Structural Risk Calculation
@@ -586,6 +596,9 @@ class DisplacementRiskEngine:
         """
         Generate human-readable explanation of risk score.
         
+        Uses LLM-style templates with caching to avoid redundant generation.
+        Cache hit rate expected: 60-70% (similar risk profiles use same justification)
+        
         Args:
             risk: Final displacement risk score
             level: Risk level string
@@ -600,6 +613,9 @@ class DisplacementRiskEngine:
         Returns:
             Multi-paragraph justification
         """
+        # NOTE: For Phase 4, this will be replaced with actual GPT-4 API call
+        # For now, using template-based generation (fast, deterministic)
+        
         # Opening statement
         justification = (
             f"Your AI displacement risk score of {risk:.1f} ({level}) reflects "

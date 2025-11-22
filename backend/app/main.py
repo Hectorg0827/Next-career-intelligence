@@ -35,6 +35,13 @@ from app.api import (
     gdpr,
     ai_agents,  # NEW: Phase 2 AI Agents
     risk,  # NEW: Phase 3 AI Displacement Risk Engine
+    skills,  # NEW: Skills API for AI Coach 2.0
+    profile, # NEW: Profile API (Skills V2)
+    jobs_search,  # NEW: Phase 4 Job Search V2
+    job_matching,  # NEW: AI Job Matching Engine
+    applications,  # NEW: Application Tracking
+    recommendations,  # NEW: Real-time Recommendations
+    analytics,  # NEW: Analytics Dashboard
 )
 
 try:
@@ -55,6 +62,7 @@ from app.core.neo4j_client import neo4j_client
 from app.tasks.ai_jobs import start_ai_jobs, stop_ai_jobs  # NEW: AI background jobs
 from slowapi.errors import RateLimitExceeded
 import asyncpg  # NEW: For Phase 3 risk engine database pool
+from app.services.foundation.risk.cache import get_cache  # NEW: For Phase 3 Redis cache
 
 
 # Initialize database tables
@@ -106,6 +114,15 @@ async def lifespan(app: FastAPI):
     except Exception as e:
         logger.warning(f"⚠️ AsyncPG pool initialization failed: {e} - Risk analysis features may be limited")
         app.state.db_pool = None
+    
+    # Initialize Redis cache for Risk Engine
+    try:
+        cache = get_cache()
+        await cache.connect()
+        logger.info("✅ Redis cache initialized for Risk Engine")
+    except Exception as e:
+        logger.warning(f"⚠️ Redis cache initialization failed: {e} - Performance will be degraded")
+
 
     # Initialize Neo4j Talent Graph
     try:
@@ -135,6 +152,14 @@ async def lifespan(app: FastAPI):
 
     # Shutdown cleanup
     logger.info("👋 Shutting down NEXT Career Intelligence API...")
+
+    # Cleanup Risk Engine Redis cache
+    try:
+        cache = get_cache()
+        await cache.close()
+        logger.info("✅ Redis cache closed")
+    except Exception as e:
+        logger.warning(f"⚠️ Redis cache cleanup failed: {e}")
 
     # Cleanup asyncpg pool
     if hasattr(app.state, 'db_pool') and app.state.db_pool:
@@ -297,6 +322,8 @@ if resume_studio:
     app.include_router(resume_studio.router, prefix="/api", tags=["Resume Studio - Premium"])
 app.include_router(coach.router, prefix="/api", tags=["Career Coach - Premium"])
 app.include_router(interviewer.router, prefix="/api", tags=["Interviewer AI - Premium"])
+app.include_router(skills.router, prefix="/api", tags=["Skills - AI Coach 2.0"])
+app.include_router(profile.router, prefix="/api", tags=["Profile - Skills V2"])
 app.include_router(subscriptions.router, prefix="/api", tags=["Subscription Management"])
 
 # Jobs Marketplace (360° Career Builder)
@@ -304,6 +331,15 @@ app.include_router(jobs_marketplace.router, prefix="/api", tags=["Jobs Marketpla
 
 # Jobs Marketplace v2 (New Endpoints)
 app.include_router(marketplace.router, tags=["Job Marketplace - Search & Apply"])
+
+# Jobs Search V2 (Phase 4)
+app.include_router(jobs_search.router, prefix="/api", tags=["Job Search & Browse"])
+
+# AI Job Matching & Recommendations (Phase 4+)
+app.include_router(job_matching.router, prefix="/api", tags=["AI Job Matching"])
+app.include_router(applications.router, prefix="/api", tags=["Application Tracking"])
+app.include_router(recommendations.router, prefix="/api", tags=["Job Recommendations & Alerts"])
+app.include_router(analytics.router, prefix="/api", tags=["Analytics & Insights"])
 
 # Career Health Score
 app.include_router(career_health.router, tags=["Career Health Score"])

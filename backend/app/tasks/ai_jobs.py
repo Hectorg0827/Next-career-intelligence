@@ -49,6 +49,15 @@ class AIBackgroundJobs:
             name='Form Daily Memories',
             replace_existing=True
         )
+
+        # Daily job ingestion (runs at 3 AM)
+        self.scheduler.add_job(
+            self.run_daily_job_ingestion,
+            CronTrigger(hour=3, minute=0),
+            id='daily_job_ingestion',
+            name='Daily Job Ingestion',
+            replace_existing=True
+        )
         
         # Hourly recommendation updates
         self.scheduler.add_job(
@@ -302,13 +311,33 @@ class AIBackgroundJobs:
             ).execute()
             guidance_deleted = len(result.data) if result.data else 0
             
+            # Expire old jobs (>60 days)
+            result = db.table('jobs').update({'status': 'expired'}).eq('status', 'active').lt(
+                'posted_at', 'now() - interval \'60 days\''
+            ).execute()
+            jobs_expired = len(result.data) if result.data else 0
+
             logger.info(
                 f"Cleanup complete: {recs_deleted} recommendations, "
-                f"{predictions_deleted} predictions, {guidance_deleted} guidance messages deleted"
+                f"{predictions_deleted} predictions, {guidance_deleted} guidance messages deleted, "
+                f"{jobs_expired} jobs expired"
             )
             
         except Exception as e:
             logger.error(f"Data cleanup failed: {e}")
+    
+    async def run_daily_job_ingestion(self):
+        """Run daily job ingestion from all sources"""
+        from app.services.job_aggregator import JobAggregatorService
+        
+        logger.info("⏰ Starting scheduled job ingestion...")
+        aggregator = JobAggregatorService()
+        try:
+            await aggregator.run_scrape_and_store()
+        except Exception as e:
+            logger.error(f"Scheduled job ingestion failed: {e}")
+        finally:
+            await aggregator.close()
     
     async def _get_user_interactions(self, user_id: str) -> List[Dict[str, Any]]:
         """Get recent interactions for a user"""

@@ -1,0 +1,549 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.12.8, pytest-8.2.0, pluggy-1.6.0 -- /usr/local/bin/python3
+cachedir: .pytest_cache
+rootdir: /Users/hectorgarcia/Desktop/Next-career-intelligence/backend
+configfile: pyproject.toml
+plugins: cov-5.0.0, anyio-4.11.0, asyncio-0.23.6, mock-3.14.0
+asyncio: mode=Mode.STRICT
+collecting ... 2025-11-18 21:44:55.553 | WARNING  | app.services.gemini_analyzer:__init__:43 - ⚠️ Failed to initialize Gemini client. Falling back to offline mode: module 'google.generativeai' has no attribute 'Client'
+2025-11-18 21:45:01.429 | WARNING  | app.services.gemini_analyzer:__init__:43 - ⚠️ Failed to initialize Gemini client. Falling back to offline mode: module 'google.generativeai' has no attribute 'Client'
+2025-11-18 21:45:01.724 | INFO     | app.db.supabase:get_supabase_client:30 - ✅ Supabase client initialized
+2025-11-18 21:45:01.878 | WARNING  | app.core.auth:initialize_firebase:39 - ⚠️ Firebase not configured - auth disabled for development
+2025-11-18 21:45:14.174 | WARNING  | app.core.neo4j_client:__init__:21 - ⚠️ Neo4j Talent Graph temporarily disabled
+2025-11-18 21:45:15.370 | INFO     | app.services.foundation.ai.profile_assistant:__init__:82 - Smart Profile Assistant initialized with Gemini
+2025-11-18 21:45:19.578 | INFO     | app.main:<module>:215 - ✅ Response compression enabled (min size: 1024 bytes)
+2025-11-18 21:45:19.579 | INFO     | app.main:<module>:219 - ✅ Request size limit: 10.0MB
+Using DATABASE_URL: postgresql://postgres:ssuRd6vrGSdP5z7a@db.whxbxjpymksgvixudnjh.supabase.co:5432/postgres
+collected 1 item
+
+backend/tests/test_skills_e2e.py::test_skills_flow 2025-11-18 21:45:23.449 | INFO     | app.api.profile:add_skills_manually:43 - Adding 2 manual skills for user d451d528-f81b-4624-9668-acdc0f798340
+2025-11-18 21:45:24.204 | ERROR    | app.api.profile:add_skills_manually:59 - Failed to add manual skills: (psycopg2.errors.UndefinedColumn) column user_skills.created_at does not exist
+LINE 1: ...lls.last_used_year AS user_skills_last_used_year, user_skill...
+                                                             ^
+
+[SQL: SELECT user_skills.id AS user_skills_id, user_skills.user_id AS user_skills_user_id, user_skills.skill_id AS user_skills_skill_id, user_skills.proficiency_level AS user_skills_proficiency_level, user_skills.confidence_score AS user_skills_confidence_score, user_skills.source_tags AS user_skills_source_tags, user_skills.evidence_snippets AS user_skills_evidence_snippets, user_skills.confirmed_by_user AS user_skills_confirmed_by_user, user_skills.hidden AS user_skills_hidden, user_skills.evidence_source AS user_skills_evidence_source, user_skills.last_used_year AS user_skills_last_used_year, user_skills.created_at AS user_skills_created_at, user_skills.updated_at AS user_skills_updated_at, user_skills.last_updated_at AS user_skills_last_updated_at 
+FROM user_skills 
+WHERE user_skills.user_id = %(user_id_1)s::UUID AND user_skills.skill_id = %(skill_id_1)s::UUID 
+ LIMIT %(param_1)s]
+[parameters: {'user_id_1': UUID('d451d528-f81b-4624-9668-acdc0f798340'), 'skill_id_1': UUID('08eacd60-ead3-47b7-aea2-28f1cea8cf7e'), 'param_1': 1}]
+(Background on this error at: https://sqlalche.me/e/20/f405)
+2025-11-18 21:45:24.251 | INFO     | app.main:log_requests:255 - POST /api/profile/skills/manual - Status: 500 - Duration: 0.824s
+Testing with user: d451d528-f81b-4624-9668-acdc0f798340
+Testing manual skills addition...
+FAILED
+backend/tests/test_skills_e2e.py::test_skills_flow ERROR
+
+==================================== ERRORS ====================================
+____________________ ERROR at teardown of test_skills_flow _____________________
+
+self = <sqlalchemy.engine.base.Connection object at 0x11e755880>
+dialect = <sqlalchemy.dialects.postgresql.psycopg2.PGDialect_psycopg2 object at 0x10a3e6750>
+context = <sqlalchemy.dialects.postgresql.psycopg2.PGExecutionContext_psycopg2 object at 0x1228b7d70>
+statement = <sqlalchemy.dialects.postgresql.base.PGCompiler object at 0x1228b7380>
+parameters = [{'param_1': 'd451d528-f81b-4624-9668-acdc0f798340'}]
+
+    def _exec_single_context(
+        self,
+        dialect: Dialect,
+        context: ExecutionContext,
+        statement: Union[str, Compiled],
+        parameters: Optional[_AnyMultiExecuteParams],
+    ) -> CursorResult[Any]:
+        """continue the _execute_context() method for a single DBAPI
+        cursor.execute() or cursor.executemany() call.
+    
+        """
+        if dialect.bind_typing is BindTyping.SETINPUTSIZES:
+            generic_setinputsizes = context._prepare_set_input_sizes()
+    
+            if generic_setinputsizes:
+                try:
+                    dialect.do_set_input_sizes(
+                        context.cursor, generic_setinputsizes, context
+                    )
+                except BaseException as e:
+                    self._handle_dbapi_exception(
+                        e, str(statement), parameters, None, context
+                    )
+    
+        cursor, str_statement, parameters = (
+            context.cursor,
+            context.statement,
+            context.parameters,
+        )
+    
+        effective_parameters: Optional[_AnyExecuteParams]
+    
+        if not context.executemany:
+            effective_parameters = parameters[0]
+        else:
+            effective_parameters = parameters
+    
+        if self._has_events or self.engine._has_events:
+            for fn in self.dispatch.before_cursor_execute:
+                str_statement, effective_parameters = fn(
+                    self,
+                    cursor,
+                    str_statement,
+                    effective_parameters,
+                    context,
+                    context.executemany,
+                )
+    
+        if self._echo:
+            self._log_info(str_statement)
+    
+            stats = context._get_cache_stats()
+    
+            if not self.engine.hide_parameters:
+                self._log_info(
+                    "[%s] %r",
+                    stats,
+                    sql_util._repr_params(
+                        effective_parameters,
+                        batches=10,
+                        ismulti=context.executemany,
+                    ),
+                )
+            else:
+                self._log_info(
+                    "[%s] [SQL parameters hidden due to hide_parameters=True]",
+                    stats,
+                )
+    
+        evt_handled: bool = False
+        try:
+            if context.execute_style is ExecuteStyle.EXECUTEMANY:
+                effective_parameters = cast(
+                    "_CoreMultiExecuteParams", effective_parameters
+                )
+                if self.dialect._has_events:
+                    for fn in self.dialect.dispatch.do_executemany:
+                        if fn(
+                            cursor,
+                            str_statement,
+                            effective_parameters,
+                            context,
+                        ):
+                            evt_handled = True
+                            break
+                if not evt_handled:
+                    self.dialect.do_executemany(
+                        cursor,
+                        str_statement,
+                        effective_parameters,
+                        context,
+                    )
+            elif not effective_parameters and context.no_parameters:
+                if self.dialect._has_events:
+                    for fn in self.dialect.dispatch.do_execute_no_params:
+                        if fn(cursor, str_statement, context):
+                            evt_handled = True
+                            break
+                if not evt_handled:
+                    self.dialect.do_execute_no_params(
+                        cursor, str_statement, context
+                    )
+            else:
+                effective_parameters = cast(
+                    "_CoreSingleExecuteParams", effective_parameters
+                )
+                if self.dialect._has_events:
+                    for fn in self.dialect.dispatch.do_execute:
+                        if fn(
+                            cursor,
+                            str_statement,
+                            effective_parameters,
+                            context,
+                        ):
+                            evt_handled = True
+                            break
+                if not evt_handled:
+>                   self.dialect.do_execute(
+                        cursor, str_statement, effective_parameters, context
+                    )
+
+/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1967: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <sqlalchemy.dialects.postgresql.psycopg2.PGDialect_psycopg2 object at 0x10a3e6750>
+cursor = <cursor object at 0x122856020; closed: -1>
+statement = 'SELECT user_skills.id AS user_skills_id, user_skills.user_id AS user_skills_user_id, user_skills.skill_id AS user_ski...ills.last_updated_at AS user_skills_last_updated_at \nFROM user_skills \nWHERE %(param_1)s::UUID = user_skills.user_id'
+parameters = {'param_1': 'd451d528-f81b-4624-9668-acdc0f798340'}
+context = <sqlalchemy.dialects.postgresql.psycopg2.PGExecutionContext_psycopg2 object at 0x1228b7d70>
+
+    def do_execute(self, cursor, statement, parameters, context=None):
+>       cursor.execute(statement, parameters)
+E       psycopg2.errors.UndefinedColumn: column user_skills.created_at does not exist
+E       LINE 1: ...lls.last_used_year AS user_skills_last_used_year, user_skill...
+E                                                                    ^
+
+/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/sqlalchemy/engine/default.py:924: UndefinedColumn
+
+The above exception was the direct cause of the following exception:
+
+db = <sqlalchemy.orm.session.Session object at 0x11e6225a0>
+
+    @pytest.fixture(scope="module")
+    def test_user(db):
+        # Create test user
+        # We use a random firebase_uid to avoid collisions
+        firebase_uid = f"test_user_{uuid.uuid4()}"
+        email = f"test_{uuid.uuid4()}@example.com"
+    
+        # User ID must be a string if the model uses as_uuid=False
+        user_id = str(uuid.uuid4())
+    
+        user = User(
+            id=user_id,
+            firebase_uid=firebase_uid,
+            email=email,
+            first_name="Test",
+            last_name="User",
+            account_created_at=datetime.utcnow(),
+            updated_at=datetime.utcnow()
+        )
+        db.add(user)
+        db.commit()
+        db.refresh(user)
+    
+        yield user
+    
+        # Cleanup
+        # We need to merge the user back into the session if it's detached
+        user = db.merge(user)
+        db.delete(user)
+>       db.commit()
+
+backend/tests/test_skills_e2e.py:57: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/sqlalchemy/orm/session.py:2017: in commit
+    trans.commit(_to_root=True)
+<string>:2: in commit
+    ???
+/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/sqlalchemy/orm/state_changes.py:139: in _go
+    ret_value = fn(self, *arg, **kw)
+/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/sqlalchemy/orm/session.py:1302: in commit
+    self._prepare_impl()
+<string>:2: in _prepare_impl
+    ???
+/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/sqlalchemy/orm/state_changes.py:139: in _go
+    ret_value = fn(self, *arg, **kw)
+/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/sqlalchemy/orm/session.py:1277: in _prepare_impl
+    self.session.flush()
+/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/sqlalchemy/orm/session.py:4341: in flush
+    self._flush(objects)
+/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/sqlalchemy/orm/session.py:4476: in _flush
+    with util.safe_reraise():
+/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/sqlalchemy/util/langhelpers.py:146: in __exit__
+    raise exc_value.with_traceback(exc_tb)
+/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/sqlalchemy/orm/session.py:4437: in _flush
+    flush_context.execute()
+/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/sqlalchemy/orm/unitofwork.py:442: in execute
+    postsort_actions = self._generate_actions()
+/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/sqlalchemy/orm/unitofwork.py:400: in _generate_actions
+    if action.execute(self):
+/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/sqlalchemy/orm/unitofwork.py:532: in execute
+    self.dependency_processor.presort_deletes(uow, delete_states)
+/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/sqlalchemy/orm/dependency.py:450: in presort_deletes
+    history = uowcommit.get_attribute_history(
+/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/sqlalchemy/orm/unitofwork.py:283: in get_attribute_history
+    history = impl.get_history(
+/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/sqlalchemy/orm/attributes.py:1679: in get_history
+    current = self.get(state, dict_, passive=passive)
+/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/sqlalchemy/orm/attributes.py:1086: in get
+    value = self._fire_loader_callables(state, key, passive)
+/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/sqlalchemy/orm/attributes.py:1121: in _fire_loader_callables
+    return self.callable_(state, passive)
+/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/sqlalchemy/orm/strategies.py:967: in _load_for_state
+    return self._emit_lazyload(
+/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/sqlalchemy/orm/strategies.py:1130: in _emit_lazyload
+    result = session.execute(
+/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/sqlalchemy/orm/session.py:2351: in execute
+    return self._execute_internal(
+/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/sqlalchemy/orm/session.py:2236: in _execute_internal
+    result: Result[Any] = compile_state_cls.orm_execute_statement(
+/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/sqlalchemy/orm/context.py:293: in orm_execute_statement
+    result = conn.execute(
+/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1418: in execute
+    return meth(
+/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/sqlalchemy/sql/elements.py:515: in _execute_on_connection
+    return connection._execute_clauseelement(
+/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1640: in _execute_clauseelement
+    ret = self._execute_context(
+/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1846: in _execute_context
+    return self._exec_single_context(
+/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1986: in _exec_single_context
+    self._handle_dbapi_exception(
+/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/sqlalchemy/engine/base.py:2353: in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1967: in _exec_single_context
+    self.dialect.do_execute(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <sqlalchemy.dialects.postgresql.psycopg2.PGDialect_psycopg2 object at 0x10a3e6750>
+cursor = <cursor object at 0x122856020; closed: -1>
+statement = 'SELECT user_skills.id AS user_skills_id, user_skills.user_id AS user_skills_user_id, user_skills.skill_id AS user_ski...ills.last_updated_at AS user_skills_last_updated_at \nFROM user_skills \nWHERE %(param_1)s::UUID = user_skills.user_id'
+parameters = {'param_1': 'd451d528-f81b-4624-9668-acdc0f798340'}
+context = <sqlalchemy.dialects.postgresql.psycopg2.PGExecutionContext_psycopg2 object at 0x1228b7d70>
+
+    def do_execute(self, cursor, statement, parameters, context=None):
+>       cursor.execute(statement, parameters)
+E       sqlalchemy.exc.ProgrammingError: (psycopg2.errors.UndefinedColumn) column user_skills.created_at does not exist
+E       LINE 1: ...lls.last_used_year AS user_skills_last_used_year, user_skill...
+E                                                                    ^
+E       
+E       [SQL: SELECT user_skills.id AS user_skills_id, user_skills.user_id AS user_skills_user_id, user_skills.skill_id AS user_skills_skill_id, user_skills.proficiency_level AS user_skills_proficiency_level, user_skills.confidence_score AS user_skills_confidence_score, user_skills.source_tags AS user_skills_source_tags, user_skills.evidence_snippets AS user_skills_evidence_snippets, user_skills.confirmed_by_user AS user_skills_confirmed_by_user, user_skills.hidden AS user_skills_hidden, user_skills.evidence_source AS user_skills_evidence_source, user_skills.last_used_year AS user_skills_last_used_year, user_skills.created_at AS user_skills_created_at, user_skills.updated_at AS user_skills_updated_at, user_skills.last_updated_at AS user_skills_last_updated_at 
+E       FROM user_skills 
+E       WHERE %(param_1)s::UUID = user_skills.user_id]
+E       [parameters: {'param_1': 'd451d528-f81b-4624-9668-acdc0f798340'}]
+E       (Background on this error at: https://sqlalche.me/e/20/f405)
+
+/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/sqlalchemy/engine/default.py:924: ProgrammingError
+=================================== FAILURES ===================================
+_______________________________ test_skills_flow _______________________________
+
+test_user = <app.models.database.User object at 0x11e622780>
+
+    def test_skills_flow(test_user):
+        # Override auth dependency to return our test user
+        app.dependency_overrides[get_current_user] = lambda: test_user
+    
+        print(f"Testing with user: {test_user.id}")
+    
+        # 1. Add Manual Skills
+        print("Testing manual skills addition...")
+        response = client.post(
+            "/api/profile/skills/manual",
+            json={
+                "skills": [
+                    {"name": "Python", "proficiency_level": "EXPERT"},
+                    {"name": "FastAPI", "proficiency_level": "ADVANCED"}
+                ]
+            }
+        )
+>       assert response.status_code == 200, f"Manual skills failed: {response.text}"
+E       AssertionError: Manual skills failed: {"detail":"Failed to add skills: (psycopg2.errors.UndefinedColumn) column user_skills.created_at does not exist\nLINE 1: ...lls.last_used_year AS user_skills_last_used_year, user_skill...\n                                                             ^\n\n[SQL: SELECT user_skills.id AS user_skills_id, user_skills.user_id AS user_skills_user_id, user_skills.skill_id AS user_skills_skill_id, user_skills.proficiency_level AS user_skills_proficiency_level, user_skills.confidence_score AS user_skills_confidence_score, user_skills.source_tags AS user_skills_source_tags, user_skills.evidence_snippets AS user_skills_evidence_snippets, user_skills.confirmed_by_user AS user_skills_confirmed_by_user, user_skills.hidden AS user_skills_hidden, user_skills.evidence_source AS user_skills_evidence_source, user_skills.last_used_year AS user_skills_last_used_year, user_skills.created_at AS user_skills_created_at, user_skills.updated_at AS user_skills_updated_at, user_skills.last_updated_at AS user_skills_last_updated_at \nFROM user_skills \nWHERE user_skills.user_id = %(user_id_1)s::UUID AND user_skills.skill_id = %(skill_id_1)s::UUID \n LIMIT %(param_1)s]\n[parameters: {'user_id_1': UUID('d451d528-f81b-4624-9668-acdc0f798340'), 'skill_id_1': UUID('08eacd60-ead3-47b7-aea2-28f1cea8cf7e'), 'param_1': 1}]\n(Background on this error at: https://sqlalche.me/e/20/f405)"}
+E       assert 500 == 200
+E        +  where 500 = <Response [500 Internal Server Error]>.status_code
+
+backend/tests/test_skills_e2e.py:76: AssertionError
+=============================== warnings summary ===============================
+backend/app/models/schemas.py:29
+  /Users/hectorgarcia/Desktop/Next-career-intelligence/backend/app/models/schemas.py:29: PydanticDeprecatedSince20: Pydantic V1 style `@validator` validators are deprecated. You should migrate to Pydantic V2 style `@field_validator` validators, see the migration guide for more details. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.7/migration/
+    @validator("skills", pre=True, always=True)
+
+../../../../Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/pydantic/_internal/_config.py:284: 12 warnings
+  /Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/pydantic/_internal/_config.py:284: PydanticDeprecatedSince20: Support for class-based `config` is deprecated, use ConfigDict instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.7/migration/
+    warnings.warn(DEPRECATION_MESSAGE, DeprecationWarning)
+
+backend/app/db/database.py:17
+  /Users/hectorgarcia/Desktop/Next-career-intelligence/backend/app/db/database.py:17: MovedIn20Warning: The ``declarative_base()`` function is now available as sqlalchemy.orm.declarative_base(). (deprecated since: 2.0) (Background on SQLAlchemy 2.0 at: https://sqlalche.me/e/b8d9)
+    Base = declarative_base()
+
+../../../../Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/supabase/__init__.py:1
+  /Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/supabase/__init__.py:1: DeprecationWarning: The `gotrue` package is deprecated, is not going to receive updates in the future. Please, use `supabase_auth` instead.
+    from gotrue.errors import (
+
+backend/app/models/premium_schemas.py:238
+  /Users/hectorgarcia/Desktop/Next-career-intelligence/backend/app/models/premium_schemas.py:238: PydanticDeprecatedSince20: Pydantic V1 style `@validator` validators are deprecated. You should migrate to Pydantic V2 style `@field_validator` validators, see the migration guide for more details. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.7/migration/
+    @validator("user_confirmed")
+
+backend/app/api/auth.py:33
+  /Users/hectorgarcia/Desktop/Next-career-intelligence/backend/app/api/auth.py:33: PydanticDeprecatedSince20: Pydantic V1 style `@validator` validators are deprecated. You should migrate to Pydantic V2 style `@field_validator` validators, see the migration guide for more details. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.7/migration/
+    @validator("password")
+
+backend/app/api/auth.py:42
+  /Users/hectorgarcia/Desktop/Next-career-intelligence/backend/app/api/auth.py:42: PydanticDeprecatedSince20: Pydantic V1 style `@validator` validators are deprecated. You should migrate to Pydantic V2 style `@field_validator` validators, see the migration guide for more details. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.7/migration/
+    @validator("confirm_password")
+
+../../../../Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/pydantic/fields.py:770
+../../../../Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/pydantic/fields.py:770
+../../../../Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/pydantic/fields.py:770
+../../../../Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/pydantic/fields.py:770
+  /Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/pydantic/fields.py:770: PydanticDeprecatedSince20: `min_items` is deprecated and will be removed, use `min_length` instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.7/migration/
+    warn('`min_items` is deprecated and will be removed, use `min_length` instead', DeprecationWarning)
+
+../../../../Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/pydantic/fields.py:776
+../../../../Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/pydantic/fields.py:776
+../../../../Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/pydantic/fields.py:776
+../../../../Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/pydantic/fields.py:776
+  /Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/pydantic/fields.py:776: PydanticDeprecatedSince20: `max_items` is deprecated and will be removed, use `max_length` instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.7/migration/
+    warn('`max_items` is deprecated and will be removed, use `max_length` instead', DeprecationWarning)
+
+backend/app/api/resume_studio.py:74
+  /Users/hectorgarcia/Desktop/Next-career-intelligence/backend/app/api/resume_studio.py:74: PydanticDeprecatedSince20: Pydantic V1 style `@validator` validators are deprecated. You should migrate to Pydantic V2 style `@field_validator` validators, see the migration guide for more details. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.7/migration/
+    @validator("text")
+
+backend/app/api/resume_studio.py:100
+  /Users/hectorgarcia/Desktop/Next-career-intelligence/backend/app/api/resume_studio.py:100: PydanticDeprecatedSince20: Pydantic V1 style `@validator` validators are deprecated. You should migrate to Pydantic V2 style `@field_validator` validators, see the migration guide for more details. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.7/migration/
+    @validator("title", "company")
+
+../../../../Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/pydantic/_internal/_fields.py:160
+  /Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/pydantic/_internal/_fields.py:160: UserWarning: Field "model_output" has conflict with protected namespace "model_".
+  
+  You may be able to resolve this warning by setting `model_config['protected_namespaces'] = ()`.
+    warnings.warn(
+
+tests/test_skills_e2e.py::test_skills_flow
+  /Users/hectorgarcia/Desktop/Next-career-intelligence/backend/tests/test_skills_e2e.py:44: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    account_created_at=datetime.utcnow(),
+
+tests/test_skills_e2e.py::test_skills_flow
+  /Users/hectorgarcia/Desktop/Next-career-intelligence/backend/tests/test_skills_e2e.py:45: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    updated_at=datetime.utcnow()
+
+tests/test_skills_e2e.py::test_skills_flow
+  /Users/hectorgarcia/Desktop/Next-career-intelligence/backend/app/services/skill_service.py:96: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    created_at=datetime.utcnow()
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+
+---------- coverage: platform darwin, python 3.12.8-final-0 ----------
+Name                                                                    Stmts   Miss  Cover   Missing
+-----------------------------------------------------------------------------------------------------
+backend/app/__init__.py                                                     0      0   100%
+backend/app/api/__init__.py                                                 0      0   100%
+backend/app/api/ai_agents.py                                              158     79    50%   108-135, 147-156, 175-199, 222-243, 260-276, 288-303, 316-333, 345-361, 377-395, 407-428, 441-451, 463-479, 493-506, 529-580
+backend/app/api/analyze.py                                                199    179    10%   25-35, 39-45, 49-80, 84-138, 142-239, 243-281, 309-423
+backend/app/api/auth.py                                                   214    148    31%   36-40, 45-47, 105, 110, 115, 120, 125-127, 134-136, 141-146, 165-212, 229-269, 284-323, 338-376, 393-429, 444-488, 503-541
+backend/app/api/career_health.py                                           92     73    21%   26-33, 47-67, 82-135, 145-157, 168-218, 227-236
+backend/app/api/coach.py                                                  103     71    31%   44-101, 111-221, 225-252
+backend/app/api/coach_old.py                                              158    158     0%   6-380
+backend/app/api/elite_auth.py                                              75     47    37%   47-116, 125-140
+backend/app/api/gdpr.py                                                   205    155    24%   77-106, 116-153, 175-206, 221-257, 276-304, 314-336, 341-348, 353-358, 363-368, 373-383, 388-393, 398-418, 423-444, 449-460, 465-525, 531-547
+backend/app/api/health.py                                                  18     10    44%   20-39
+backend/app/api/health_advanced.py                                         97     73    25%   22-34, 39-61, 66-86, 91-116, 125, 139-154, 188, 197-207, 216-233
+backend/app/api/interviewer.py                                            153    128    16%   36-46, 51-68, 82-154, 163-238, 246-327, 333-359, 365-391, 397
+backend/app/api/job_scraper.py                                            120    103    14%   28-120, 136-149, 160-178, 189-206, 219-255
+backend/app/api/jobs.py                                                    29     19    34%   31-41, 56-69
+backend/app/api/jobs_marketplace.py                                       268    210    22%   63-84, 89-100, 122-164, 188-322, 328-350, 359-478, 489-512, 518-539, 545-551, 560-574, 583-592, 613-660, 671
+backend/app/api/marketplace.py                                            209    162    22%   68-99, 117-140, 157-187, 198-212, 223-239, 251-271, 282-297, 307-318, 342-372, 382-391, 402-417, 434-452, 462-467, 478-491, 501-509, 528-539, 554-561, 578-588
+backend/app/api/match.py                                                  137     97    29%   25-27, 62-73, 90-99, 110-122, 133-140, 151-165, 184-209, 229-238, 265-279, 307-323, 342-356
+backend/app/api/onboarding.py                                             171     96    44%   62-73, 95, 106, 165-198, 213-240, 255-282, 298-330, 350-393, 409-443
+backend/app/api/profile.py                                                 96     64    33%   53-56, 76-104, 119-165, 179-183, 198-220, 234-238, 253-266
+backend/app/api/resume_studio.py                                          285    167    41%   76-78, 102-104, 244-250, 255-262, 267-278, 305-328, 333-340, 345-358, 363-384, 394, 406-515, 524-592, 601-648, 657-720, 733-734, 743-762, 768
+backend/app/api/rft.py                                                    109     72    34%   55-91, 109-140, 151-189, 195-211, 217-269, 275-284
+backend/app/api/risk.py                                                    74     59    20%   32, 75-122, 167-287, 306-321
+backend/app/api/roadmap.py                                                 17      9    47%   23-43
+backend/app/api/skills.py                                                  98     65    34%   37-82, 88-111, 117-139, 145-161, 167-181
+backend/app/api/subscriptions.py                                          214    152    29%   137-153, 161-211, 217-264, 270-290, 296-354, 370-416, 428-473, 478-509, 514-530, 535-550
+backend/app/api/talent_graph.py                                           161    136    16%   23-26, 44-88, 106-154, 167-185, 201-220, 231-260, 273-284, 294-295, 300-310, 315-322, 327-331, 336-366
+backend/app/api/two_factor.py                                             176    176     0%   6-382
+backend/app/api/users.py                                                  102     82    20%   23-44, 52-69, 80-105, 116-128, 137-160, 171-212
+backend/app/core/__init__.py                                                0      0   100%
+backend/app/core/auth.py                                                  111     87    22%   24, 29-30, 35-37, 41-45, 66-118, 128-134, 142-187, 195-205, 213-247
+backend/app/core/cache.py                                                 184    144    22%   23-64, 78, 92-109, 125-138, 143-155, 169-186, 205-232, 237-249, 268-294, 305, 310, 315-318, 323, 328, 334-338, 344-351, 356-373
+backend/app/core/circuit_breaker.py                                       106    106     0%   17-309
+backend/app/core/compression.py                                            51     32    37%   28-29, 35-87, 120-121, 147-153
+backend/app/core/config.py                                                 84      1    99%   73
+backend/app/core/database_pool.py                                          61     37    39%   27-38, 48-50, 63-68, 84-92, 96-97, 101, 125-138, 153, 163
+backend/app/core/middleware.py                                             62     62     0%   6-270
+backend/app/core/monitoring.py                                            129     96    26%   40-88, 103-155, 166-172, 184-190, 202-203, 216-217, 231-242, 250-251, 256-263, 268-269, 274-282, 299-306, 318-319, 328-329, 338-339, 348-349, 357, 367, 377, 387, 405
+backend/app/core/neo4j_client.py                                           34     12    65%   25-26, 30, 34, 38, 42, 46, 52, 56, 60, 64, 68
+backend/app/core/rate_limiter.py                                           55     30    45%   24, 51-61, 75-96, 103-105, 126-129, 143-148, 158-159, 164-165, 170, 175, 185-191
+backend/app/core/safety.py                                                187    187     0%   6-646
+backend/app/core/scheduler.py                                              97     68    30%   22, 28, 33, 38, 58-67, 72-106, 110-113, 117-120, 124, 140-147, 152-156, 161-172, 182-202, 210-211
+backend/app/core/security_fixes.py                                        157    121    23%   33-35, 49-53, 81-106, 126-141, 158-174, 190-194, 206-211, 223-228, 238-239, 257-265, 280-282, 295-296, 312-314, 327-340, 352-361, 373-375, 388-403, 419-422, 437-448, 468-489, 505, 519, 529, 543
+backend/app/core/security_middleware.py                                    44     44     0%   15-162
+backend/app/core/stripe_manager.py                                        115     92    20%   72-112, 126-138, 152-195, 202-236, 243-267, 280-293, 307-323
+backend/app/db/__init__.py                                                  0      0   100%
+backend/app/db/database.py                                                 12      0   100%
+backend/app/db/supabase.py                                                 65     43    34%   25-26, 31-33, 42-54, 64-86, 91-103, 108-128
+backend/app/main.py                                                       179    104    42%   44-46, 67-195, 233, 266-283, 350-361, 368, 386-388
+backend/app/models/__init__.py                                              0      0   100%
+backend/app/models/database.py                                            169      1    99%   16
+backend/app/models/job_schemas.py                                         158      0   100%
+backend/app/models/jobs.py                                                 69     69     0%   3-95
+backend/app/models/orchestrator_schemas.py                                 57      0   100%
+backend/app/models/premium_schemas.py                                     270      3    99%   240-242
+backend/app/models/resume_studio.py                                       109    109     0%   6-236
+backend/app/models/schemas.py                                              85      6    93%   32-39
+backend/app/models/skill_schemas.py                                        85      0   100%
+backend/app/models/user_profile.py                                        102      0   100%
+backend/app/scrapers/__init__.py                                            0      0   100%
+backend/app/scrapers/greenhouse_scraper.py                                146    124    15%   43, 51, 64-94, 107-173, 177-189, 193-202, 207-229, 234-255, 260-271, 276-303, 308-311, 315-323, 335-351
+backend/app/scrapers/lever_scraper.py                                     168    145    14%   40, 48, 61-90, 103-179, 183-207, 211-227, 231-240, 244-260, 264-282, 286-296, 300-311, 315-317, 321-327, 339-354
+backend/app/services/__init__.py                                            0      0   100%
+backend/app/services/agents/__init__.py                                     6      0   100%
+backend/app/services/agents/early_warning_agent.py                         89     72    19%   34-35, 53-87, 92-114, 119-150, 155-179, 184-213, 218-235, 242-261
+backend/app/services/agents/gap_agent.py                                   99     83    16%   28-29, 41-48, 55-85, 94-107, 116-129, 136-177, 184-223, 228-250, 255-272
+backend/app/services/agents/market_intel_agent.py                          61     47    23%   27-28, 49-64, 78-105, 110-121, 130-147, 155-168, 177, 185
+backend/app/services/agents/match_agent.py                                152    133    12%   27-28, 41-60, 77-102, 110-142, 147-156, 164-191, 199-210, 219-246, 255-268, 273-302, 307-322, 329-349
+backend/app/services/agents/negotiation_agent.py                           76     60    21%   28-30, 59-89, 99-117, 125-132, 139-150, 157-201, 206-219, 229, 244-254
+backend/app/services/agents/peer_benchmarking_agent.py                    115    101    12%   26, 54-84, 94-139, 144-185, 190-209, 221-240, 246-262, 267
+backend/app/services/agents/profile_agent.py                              153    141     8%   36-37, 44-65, 71-87, 94-183, 190-246, 253-281
+backend/app/services/agents/risk_agent.py                                  60     46    23%   28-29, 39-55, 63-99, 104-135, 144-195, 206-219
+backend/app/services/agents/sentiment_agent.py                             78     66    15%   33-34, 49-62, 67-125, 130-215, 220, 235-269
+backend/app/services/agents/trajectory_agent.py                            64     49    23%   33-34, 60-73, 78-138, 143-162, 167-169, 205-227
+backend/app/services/ai_analyzer.py                                        42     42     0%   5-199
+backend/app/services/ai_coach_service.py                                  125    101    19%   15-17, 45-47, 51-64, 72-117, 125-205, 211-226, 230-249, 253-258
+backend/app/services/ai_matching_service.py                               160    136    15%   32-33, 47-91, 113-194, 214-270, 290-353, 370-405, 419-472
+backend/app/services/ai_service_optimized.py                              110    110     0%   6-260
+backend/app/services/career_health_score.py                               233    206    12%   55-101, 106-139, 158-199, 210-278, 290-338, 349-382, 393-414, 421-453, 461-498, 502-511, 515-524
+backend/app/services/coursera_service.py                                   51     51     0%   5-168
+backend/app/services/email_service.py                                      61     49    20%   18-24, 38-110, 124-200, 213-300, 315-317
+backend/app/services/email_template_renderer.py                            36     36     0%   6-109
+backend/app/services/email_templates_extended.py                          126    126     0%   6-495
+backend/app/services/file_parser.py                                       139    139     0%   6-292
+backend/app/services/foundation/__init__.py                                 1      0   100%
+backend/app/services/foundation/ai/__init__.py                              6      0   100%
+backend/app/services/foundation/ai/guidance.py                            185    154    17%   51-58, 82-120, 128-172, 180-230, 238-299, 307-349, 357-405, 413-471, 483-499
+backend/app/services/foundation/ai/memory.py                              191    162    15%   43-50, 73-74, 93-151, 159-166, 171-222, 227-250, 255-278, 286-297, 302-317, 321-327, 348-388, 400-439, 451-465
+backend/app/services/foundation/ai/predictions.py                         264    213    19%   94-181, 200-217, 231-328, 346-363, 371-421, 435-475, 486-493, 497-516, 520-532
+backend/app/services/foundation/ai/profile_assistant.py                   285    224    21%   83-85, 95-135, 145-177, 187-227, 241-301, 311-326, 333-357, 362-370, 375-392, 402-440, 445-476, 485-516, 521-530, 536-549, 554-570, 575-585, 590-599, 604
+backend/app/services/foundation/ai/recommendations.py                     207    176    15%   37-42, 68-69, 88-134, 148-222, 231-240, 253-283, 292-312, 324-344, 356-365, 370-377, 390-401, 406-420, 428-448, 453-470, 482-522
+backend/app/services/foundation/events/__init__.py                          4      0   100%
+backend/app/services/foundation/events/event_bus.py                       116     84    28%   48-49, 57-59, 63, 80-105, 122-128, 150-220, 237-249, 275-295, 304-327, 344-347, 351, 369-371, 381-384, 398-410, 414-419
+backend/app/services/foundation/events/event_store.py                     130    104    20%   46-70, 83-108, 133-154, 167-180, 199-220, 239-254, 272-288, 308-323, 356-380, 393-421, 435-455
+backend/app/services/foundation/events/event_types.py                     199      3    98%   355-378
+backend/app/services/foundation/journey/__init__.py                         2      0   100%
+backend/app/services/foundation/journey/tracker.py                        148    121    18%   57-83, 96-126, 143-148, 164-197, 206-240, 259-274, 297-345, 374-406, 419-469
+backend/app/services/foundation/orchestration/__init__.py                   2      2     0%   3-9
+backend/app/services/foundation/orchestration/service_orchestrator.py     134    134     0%   12-477
+backend/app/services/foundation/profile/__init__.py                         2      0   100%
+backend/app/services/foundation/profile/unified_profile.py                189    161    15%   50-98, 102-133, 137-173, 177-227, 231-250, 254-270, 274-336, 345-354, 367-376, 380-392, 396-407, 411-420, 428-439, 458-519
+backend/app/services/foundation/risk/__init__.py                            0      0   100%
+backend/app/services/foundation/risk/cache.py                             153    121    21%   33-39, 43-69, 73-77, 91-93, 105-118, 132-142, 146-155, 167-183, 201-207, 217-223, 238-246, 256-264, 275-276, 284-285, 297-302, 311-316, 330-351, 360-387, 401-403
+backend/app/services/foundation/risk/calculators/__init__.py                5      0   100%
+backend/app/services/foundation/risk/calculators/as_calculator.py          67     58    13%   41, 60-116, 138-194, 223-246
+backend/app/services/foundation/risk/calculators/ivs_calculator.py         32     26    19%   29, 49-106, 125-159
+backend/app/services/foundation/risk/calculators/psc_calculator.py         69     60    13%   34-35, 70-125, 137-181, 207-241
+backend/app/services/foundation/risk/calculators/tas_calculator.py         43     36    16%   30-31, 50-111, 129-159
+backend/app/services/foundation/risk/displacement_engine.py               187    163    13%   58-67, 85-206, 228-236, 258-288, 303-324, 338-347, 375-381, 412-436, 457-463, 486-513, 530-559, 575-582, 620-692, 717-774, 795-832, 868-869
+backend/app/services/foundation/risk/models.py                             86      0   100%
+backend/app/services/gemini_analyzer.py                                   183    151    17%   41-46, 50-63, 70-91, 95-117, 130-160, 168-222, 230-255, 268-344, 352-381, 388-445, 464-535, 552-560, 564, 612
+backend/app/services/github_jobs_service.py                               128    128     0%   7-380
+backend/app/services/job_data_quality.py                                  288    288     0%   6-722
+backend/app/services/job_matcher.py                                       319    294     8%   47-96, 104-143, 150-203, 212-241, 250-292, 300-337, 344-375, 386-423, 427-439, 443-456, 470-604, 616-631, 663-749
+backend/app/services/job_seeder.py                                         84     64    24%   79-110, 115-124, 155-225, 230-260, 265-274
+backend/app/services/onet_service.py                                       79     63    20%   17-27, 35-66, 74-109, 114-125, 129-130, 134-135, 139-140, 145, 150-182, 187
+backend/app/services/orchestrator.py                                      118     96    19%   52-67, 87-149, 158-182, 189-207, 220-257, 272-299, 312-336
+backend/app/services/payment_edge_cases.py                                296    296     0%   6-824
+backend/app/services/prompts.py                                            25      7    72%   455-490
+backend/app/services/query_optimizer.py                                   135    135     0%   6-317
+backend/app/services/rft_graders.py                                       161    161     0%   13-398
+backend/app/services/skill_gap_analyzer.py                                106     80    25%   25-27, 89, 93-94, 103-131, 141-212, 229-246, 251-258, 266-287, 292-316, 327-346
+backend/app/services/skill_inference.py                                   117    117     0%   6-582
+backend/app/services/skill_service.py                                     114     61    46%   30-32, 44, 55-61, 65-68, 79, 85-88, 125-158, 178-179, 183-201, 214-227, 231-235, 252-268, 273-290, 298
+backend/app/services/stripe_service.py                                     75     75     0%   6-199
+backend/app/services/supabase_client.py                                   204    175    14%   22-25, 29-42, 46-49, 71-96, 108-120, 132-143, 156-169, 181-197, 210-226, 242-262, 275-302, 314-325, 341-361, 374-401, 413-424, 439-468, 480-492, 508-511, 516
+backend/app/services/two_factor_auth.py                                    68     68     0%   12-212
+backend/app/tasks/ai_jobs.py                                              145    116    20%   40-91, 95-98, 105-148, 155-189, 196-233, 240-273, 280-311, 315-336, 345, 350
+-----------------------------------------------------------------------------------------------------
+TOTAL                                                                   14277  10684    25%
+
+=========================== short test summary info ============================
+FAILED backend/tests/test_skills_e2e.py::test_skills_flow - AssertionError: Manual skills failed: {"detail":"Failed to add skills: (psycopg2.errors.UndefinedColumn) column user_skills.created_at does not exist\nLINE 1: ...lls.last_used_year AS user_skills_last_used_year, user_skill...\n                                                             ^\n\n[SQL: SELECT user_skills.id AS user_skills_id, user_skills.user_id AS user_skills_user_id, user_skills.skill_id AS user_skills_skill_id, user_skills.proficiency_level AS user_skills_proficiency_level, user_skills.confidence_score AS user_skills_confidence_score, user_skills.source_tags AS user_skills_source_tags, user_skills.evidence_snippets AS user_skills_evidence_snippets, user_skills.confirmed_by_user AS user_skills_confirmed_by_user, user_skills.hidden AS user_skills_hidden, user_skills.evidence_source AS user_skills_evidence_source, user_skills.last_used_year AS user_skills_last_used_year, user_skills.created_at AS user_skills_created_at, user_skills.updated_at AS user_skills_updated_at, user_skills.last_updated_at AS user_skills_last_updated_at \nFROM user_skills \nWHERE user_skills.user_id = %(user_id_1)s::UUID AND user_skills.skill_id = %(skill_id_1)s::UUID \n LIMIT %(param_1)s]\n[parameters: {'user_id_1': UUID('d451d528-f81b-4624-9668-acdc0f798340'), 'skill_id_1': UUID('08eacd60-ead3-47b7-aea2-28f1cea8cf7e'), 'param_1': 1}]\n(Background on this error at: https://sqlalche.me/e/20/f405)"}
+assert 500 == 200
+ +  where 500 = <Response [500 Internal Server Error]>.status_code
+ERROR backend/tests/test_skills_e2e.py::test_skills_flow - sqlalchemy.exc.ProgrammingError: (psycopg2.errors.UndefinedColumn) column user_skills.created_at does not exist
+LINE 1: ...lls.last_used_year AS user_skills_last_used_year, user_skill...
+                                                             ^
+
+[SQL: SELECT user_skills.id AS user_skills_id, user_skills.user_id AS user_skills_user_id, user_skills.skill_id AS user_skills_skill_id, user_skills.proficiency_level AS user_skills_proficiency_level, user_skills.confidence_score AS user_skills_confidence_score, user_skills.source_tags AS user_skills_source_tags, user_skills.evidence_snippets AS user_skills_evidence_snippets, user_skills.confirmed_by_user AS user_skills_confirmed_by_user, user_skills.hidden AS user_skills_hidden, user_skills.evidence_source AS user_skills_evidence_source, user_skills.last_used_year AS user_skills_last_used_year, user_skills.created_at AS user_skills_created_at, user_skills.updated_at AS user_skills_updated_at, user_skills.last_updated_at AS user_skills_last_updated_at 
+FROM user_skills 
+WHERE %(param_1)s::UUID = user_skills.user_id]
+[parameters: {'param_1': 'd451d528-f81b-4624-9668-acdc0f798340'}]
+(Background on this error at: https://sqlalche.me/e/20/f405)
+============== 1 failed, 32 warnings, 1 error in 80.25s (0:01:20) ==============

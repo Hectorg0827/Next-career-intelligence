@@ -6,6 +6,7 @@ Measures the market value of a user's current skills.
 from typing import List, Tuple
 import asyncpg
 import math
+from ..cache import get_cache
 
 
 class SkillCurrencyCalculator:
@@ -31,6 +32,7 @@ class SkillCurrencyCalculator:
             db_connection: asyncpg connection or pool
         """
         self.db = db_connection
+        self.cache = get_cache()
     
     async def calculate(
         self,
@@ -131,6 +133,11 @@ class SkillCurrencyCalculator:
             - trend_score
             - complementarity
         """
+        # Check cache first (1 hour TTL)
+        cached = await self.cache.get_skill_demand_data(skill_name, industry)
+        if cached:
+            return cached
+        
         query = """
             SELECT 
                 demand_score,
@@ -159,11 +166,16 @@ class SkillCurrencyCalculator:
             """
             comp_row = await self.db.fetchrow(comp_query, skill_name)
             
-            return {
+            result = {
                 "demand_score": float(row['demand_score']),
                 "trend_score": float(row['trend_score'] or 0.0),
                 "complementarity": float(comp_row['complementarity']) if comp_row else 0.5
             }
+            
+            # Cache the result (1 hour TTL)
+            await self.cache.set_skill_demand_data(skill_name, industry, result)
+            
+            return result
         except Exception as e:
             print(f"Error getting market data for {skill_name}: {e}")
             return {}

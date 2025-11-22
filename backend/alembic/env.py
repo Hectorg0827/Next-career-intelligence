@@ -8,6 +8,7 @@ import os
 from dotenv import load_dotenv
 
 from app.db.database import Base
+import app.models.database  # Register models
 
 # Load environment variables
 load_dotenv()

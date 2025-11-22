@@ -13,8 +13,9 @@ from sqlalchemy import and_
 import google.generativeai as genai
 
 from app.core.config import settings
-from app.models.database import Job, User, JobApplication
+from app.models.database import Job, User, JobApplication, UserSkill, Skill
 from app.models.job_schemas import JobApplicationResponse
+from app.services.skill_service import SkillService
 
 logger = logging.getLogger(__name__)
 
@@ -54,11 +55,11 @@ class AIMatchingService:
 
             # Extract job data
             job_skills = job.required_skills or []
-            job_level = job.experience_level or "mid"
+            job_level = job.seniority or "mid"
             job_salary_min = job.salary_min or 0
             job_salary_max = job.salary_max or 0
             job_location = job.location or ""
-            job_remote = job.remote_type or "on_site"
+            job_remote = job.remote_policy or "on_site"
 
             if self.model:
                 # Use AI for intelligent matching
@@ -288,14 +289,27 @@ Return ONLY valid JSON, no other text."""
             Number of matches calculated
         """
         try:
-            # Get user profile
-            career_profile = db.query(CareerProfile).filter(CareerProfile.user_id == user_id).first()
-
-            if not career_profile:
-                logger.warning(f"No career profile found for user {user_id}")
+            # Get user skills using SkillService
+            skill_service = SkillService()
+            user_skills_response = skill_service.get_user_skills(db, user_id)
+            
+            # Get user details
+            user = db.query(User).filter(User.id == user_id).first()
+            if not user:
+                logger.warning(f"User {user_id} not found")
                 return 0
 
-            profile_data = career_profile.profile_data or {}
+            # Construct profile data
+            # TODO: Fetch experience and goals from user_metadata or separate table
+            user_meta = user.user_metadata or {}
+            
+            profile_data = {
+                "skills": [s.name for s in user_skills_response.skills],
+                "years_of_experience": user_meta.get("years_of_experience", 5),
+                "experience_level": user_meta.get("experience_level", "mid"),
+                "career_goals": user_meta.get("career_goals", []),
+                "current_job_title": user_meta.get("current_job_title", "")
+            }
 
             # Get all active jobs without match scores
             jobs = (
@@ -417,14 +431,26 @@ Return ONLY valid JSON, no other text."""
             Updated match data or None
         """
         try:
-            # Get user profile
-            career_profile = db.query(CareerProfile).filter(CareerProfile.user_id == user_id).first()
-
-            if not career_profile:
-                logger.warning(f"No career profile found for user {user_id}")
+            # Get user skills using SkillService
+            skill_service = SkillService()
+            user_skills_response = skill_service.get_user_skills(db, user_id)
+            
+            # Get user details
+            user = db.query(User).filter(User.id == user_id).first()
+            if not user:
+                logger.warning(f"User {user_id} not found")
                 return None
 
-            profile_data = career_profile.profile_data or {}
+            # Construct profile data
+            user_meta = user.user_metadata or {}
+            
+            profile_data = {
+                "skills": [s.name for s in user_skills_response.skills],
+                "years_of_experience": user_meta.get("years_of_experience", 5),
+                "experience_level": user_meta.get("experience_level", "mid"),
+                "career_goals": user_meta.get("career_goals", []),
+                "current_job_title": user_meta.get("current_job_title", "")
+            }
 
             # Get job
             job = db.query(Job).filter(Job.id == job_id).first()

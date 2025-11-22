@@ -335,9 +335,13 @@ body {
   color: rgb(var(--foreground-rgb));
   background: linear-gradient(180deg, #0f172a 0%, #1e1b4b 50%, #0f172a 100%);
   min-height: 100vh;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', sans-serif;
+  font-family: var(--font-inter), -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3, h4, h5, h6, .font-heading {
+  font-family: var(--font-outfit), var(--font-inter), sans-serif;
 }
 
 @layer utilities {
