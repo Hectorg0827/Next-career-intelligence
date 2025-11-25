@@ -44,7 +44,7 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen gradient-dark-glass relative overflow-hidden">
+    <div className="min-h-screen gradient-dark-glass bg-noise relative overflow-hidden">
       {/* Skip to main content link for keyboard navigation */}
       <a
         href="#main-content"
@@ -115,21 +115,21 @@ export default function Home() {
           </motion.div>
 
           <motion.div
-            className="inline-flex items-center gap-2 px-4 py-2 bg-white/10 backdrop-blur-sm border border-gold-primary/30 rounded-full mb-8"
+            className="inline-flex items-center gap-2 px-4 py-2 bg-white/5 backdrop-blur-md border border-gold-primary/20 rounded-full mb-8 shadow-glass-sm"
             variants={staggerItemVariants}
             role="status"
             aria-label="AI-powered analysis available"
           >
             <Sparkles className="w-4 h-4 text-gold-primary" aria-hidden="true" />
-            <span className="text-white/90 text-sm font-semibold">Powered by AI</span>
+            <span className="text-white/90 text-xs font-bold tracking-widest uppercase">Powered by AI</span>
           </motion.div>
 
           <motion.h1
-            className="text-5xl md:text-7xl font-bold mb-6 leading-tight"
+            className="text-5xl md:text-7xl font-extrabold mb-6 leading-[1.1] tracking-tight"
             variants={staggerItemVariants}
           >
-            <span className="text-white">Is Your Job</span>
-            <span className="block bg-gradient-to-r from-gold-primary via-gold-accent to-gold-hover bg-clip-text text-transparent mt-2">
+            <span className="text-white drop-shadow-xl">Is Your Job</span>
+            <span className="block bg-gradient-to-r from-[#F5D264] via-[#E5B73B] to-[#D49F25] bg-clip-text text-transparent mt-2 drop-shadow-sm pb-2">
               AI-Proof?
             </span>
           </motion.h1>
@@ -301,7 +301,7 @@ export default function Home() {
                     input?.focus();
                   }, 500);
                 }}
-                className="px-8 py-4 bg-gradient-to-r from-gold-primary to-gold-accent hover:from-gold-accent hover:to-gold-hover text-royal-navy font-bold text-lg rounded-xl transition-all shadow-lg hover:shadow-xl inline-flex items-center gap-2 group"
+                className="px-8 py-4 bg-gradient-to-r from-gold-primary to-gold-accent hover:from-gold-accent hover:to-gold-hover text-royal-navy font-bold text-lg rounded-xl transition-all shadow-lg hover:shadow-xl inline-flex items-center gap-2 group btn-premium-shine relative"
                 initial={{ opacity: 0, scale: 0.9 }}
                 whileInView={{ opacity: 1, scale: 1 }}
                 viewport={{ once: true }}
