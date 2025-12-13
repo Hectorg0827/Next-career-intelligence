@@ -95,22 +95,22 @@ export default function SkillGapWidget() {
         <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="bg-white rounded-2xl shadow-xl overflow-hidden"
+            className="glass-card hover-reflect rounded-2xl overflow-hidden backdrop-blur-md"
         >
             {/* Header */}
-            <div className="bg-gradient-to-r from-indigo-600 to-purple-600 p-6 text-white">
-                <h3 className="text-2xl font-bold flex items-center gap-2 mb-2">
-                    <Target className="w-6 h-6" />
+            <div className="bg-gradient-to-r from-royal-blue-deep/50 to-purple-900/50 p-6 border-b border-white/10">
+                <h3 className="text-xl font-bold flex items-center gap-2 mb-2 text-white">
+                    <Target className="w-6 h-6 text-gold-primary" />
                     Skill Gap Analyzer
                 </h3>
-                <p className="text-indigo-100">
+                <p className="text-white/70 text-sm">
                     Discover what you need to reach your target role
                 </p>
             </div>
 
             {/* Input Section */}
-            <div className="p-6 border-b border-slate-200">
-                <label className="block text-sm font-medium text-slate-700 mb-2">
+            <div className="p-6 border-b border-white/5">
+                <label className="block text-sm font-medium text-white/80 mb-2">
                     Target Role
                 </label>
                 <div className="flex gap-3">
@@ -120,16 +120,16 @@ export default function SkillGapWidget() {
                         onChange={(e) => setTargetRole(e.target.value)}
                         onKeyPress={(e) => e.key === 'Enter' && analyzeGap()}
                         placeholder="e.g., Data Analyst, Software Engineer..."
-                        className="flex-1 px-4 py-3 rounded-xl border-2 border-slate-200 focus:border-indigo-500 focus:outline-none"
+                        className="flex-1 input-glass"
                     />
                     <button
                         onClick={analyzeGap}
                         disabled={isLoading || !targetRole.trim()}
-                        className="px-6 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-xl font-medium hover:shadow-lg transition-all disabled:opacity-50 flex items-center gap-2"
+                        className="px-6 py-3 bg-gradient-to-r from-gold-primary to-gold-accent text-royal-navy rounded-xl font-bold hover:shadow-lg transition-all disabled:opacity-50 flex items-center gap-2 hover:scale-[1.02] active:scale-[0.98]"
                     >
                         {isLoading ? (
                             <>
-                                <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                                <div className="w-4 h-4 border-2 border-royal-navy border-t-transparent rounded-full animate-spin" />
                                 Analyzing...
                             </>
                         ) : (
@@ -152,47 +152,50 @@ export default function SkillGapWidget() {
                         className="p-6 space-y-6"
                     >
                         {/* Fit Score */}
-                        <div className="text-center">
-                            <div className="inline-flex items-center justify-center w-32 h-32 rounded-full bg-gradient-to-br from-slate-100 to-slate-200 mb-4">
-                                <div className="text-5xl font-bold bg-gradient-to-r ${getFitColor(analysis.role_fit_score)} bg-clip-text text-transparent">
+                        <div className="text-center relative">
+                            {/* Glow effect behind score */}
+                            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-32 h-32 bg-gold-primary/20 blur-3xl rounded-full pointer-events-none" />
+
+                            <div className="inline-flex items-center justify-center w-32 h-32 rounded-full border border-white/10 bg-white/5 mb-4 backdrop-blur-sm relative z-10">
+                                <div className={`text-5xl font-bold bg-gradient-to-r ${getFitColor(analysis.role_fit_score)} bg-clip-text text-transparent`}>
                                     {Math.round(analysis.role_fit_score)}%
                                 </div>
                             </div>
-                            <h4 className="text-xl font-bold text-slate-900 mb-2">{analysis.title}</h4>
-                            <p className="text-slate-600 max-w-2xl mx-auto">{analysis.summary}</p>
+                            <h4 className="text-xl font-bold text-white mb-2">{analysis.title}</h4>
+                            <p className="text-white/60 max-w-2xl mx-auto text-sm leading-relaxed">{analysis.summary}</p>
                         </div>
 
                         {/* Quick Stats */}
                         <div className="grid grid-cols-2 gap-4">
-                            <div className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-xl p-4 border border-green-200">
+                            <div className="bg-gradient-to-br from-green-500/10 to-emerald-500/10 rounded-xl p-4 border border-green-500/20 backdrop-blur-sm">
                                 <div className="flex items-center gap-2 mb-1">
-                                    <TrendingUp className="w-5 h-5 text-green-600" />
-                                    <span className="text-sm font-medium text-green-900">Matched Skills</span>
+                                    <TrendingUp className="w-4 h-4 text-green-400" />
+                                    <span className="text-xs font-semibold uppercase tracking-wider text-green-400">Matched</span>
                                 </div>
-                                <div className="text-3xl font-bold text-green-700">{analysis.matched_count}</div>
+                                <div className="text-3xl font-bold text-white">{analysis.matched_count}</div>
                             </div>
-                            <div className="bg-gradient-to-br from-orange-50 to-red-50 rounded-xl p-4 border border-orange-200">
+                            <div className="bg-gradient-to-br from-orange-500/10 to-red-500/10 rounded-xl p-4 border border-orange-500/20 backdrop-blur-sm">
                                 <div className="flex items-center gap-2 mb-1">
-                                    <AlertCircle className="w-5 h-5 text-orange-600" />
-                                    <span className="text-sm font-medium text-orange-900">Gap Skills</span>
+                                    <AlertCircle className="w-4 h-4 text-orange-400" />
+                                    <span className="text-xs font-semibold uppercase tracking-wider text-orange-400">Missing</span>
                                 </div>
-                                <div className="text-3xl font-bold text-orange-700">{analysis.gap_count}</div>
+                                <div className="text-3xl font-bold text-white">{analysis.gap_count}</div>
                             </div>
                         </div>
 
                         {/* Toggle Details */}
                         <button
                             onClick={() => setShowDetails(!showDetails)}
-                            className="w-full py-3 bg-slate-100 hover:bg-slate-200 rounded-xl font-medium text-slate-700 flex items-center justify-center gap-2 transition-all"
+                            className="w-full py-3 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl font-medium text-white/80 flex items-center justify-center gap-2 transition-all group"
                         >
                             {showDetails ? (
                                 <>
-                                    <ChevronUp className="w-4 h-4" />
+                                    <ChevronUp className="w-4 h-4 group-hover:-translate-y-0.5 transition-transform" />
                                     Hide Details
                                 </>
                             ) : (
                                 <>
-                                    <ChevronDown className="w-4 h-4" />
+                                    <ChevronDown className="w-4 h-4 group-hover:translate-y-0.5 transition-transform" />
                                     Show Detailed Analysis
                                 </>
                             )}
@@ -210,15 +213,15 @@ export default function SkillGapWidget() {
                                     {/* Matched Skills */}
                                     {analysis.matched_skills.length > 0 && (
                                         <div>
-                                            <h5 className="font-bold text-slate-900 mb-3 flex items-center gap-2">
-                                                <TrendingUp className="w-4 h-4 text-green-600" />
-                                                Your Strengths ({analysis.matched_skills.length})
+                                            <h5 className="font-bold text-white mb-3 flex items-center gap-2 text-sm uppercase tracking-wider">
+                                                <TrendingUp className="w-4 h-4 text-green-400" />
+                                                Your Strengths <span className="text-white/40">({analysis.matched_skills.length})</span>
                                             </h5>
                                             <div className="space-y-2">
                                                 {analysis.matched_skills.slice(0, 5).map((skill, i) => (
-                                                    <div key={i} className="flex items-center justify-between p-3 bg-green-50 rounded-lg border border-green-200">
-                                                        <span className="font-medium text-green-900">{skill.name}</span>
-                                                        <span className="text-sm text-green-600">{Math.round(skill.relevance_score)}% match</span>
+                                                    <div key={i} className="flex items-center justify-between p-3 bg-green-500/5 rounded-lg border border-green-500/10 hover:bg-green-500/10 transition-colors">
+                                                        <span className="font-medium text-white/90 text-sm">{skill.name}</span>
+                                                        <span className="text-xs font-semibold text-green-400 bg-green-500/10 px-2 py-1 rounded">{Math.round(skill.relevance_score)}%</span>
                                                     </div>
                                                 ))}
                                             </div>
@@ -228,22 +231,22 @@ export default function SkillGapWidget() {
                                     {/* Gap Skills */}
                                     {analysis.gap_skills.length > 0 && (
                                         <div>
-                                            <h5 className="font-bold text-slate-900 mb-3 flex items-center gap-2">
-                                                <AlertCircle className="w-4 h-4 text-orange-600" />
-                                                Skills to Develop ({analysis.gap_skills.length})
+                                            <h5 className="font-bold text-white mb-3 flex items-center gap-2 text-sm uppercase tracking-wider">
+                                                <AlertCircle className="w-4 h-4 text-orange-400" />
+                                                Skills to Develop <span className="text-white/40">({analysis.gap_skills.length})</span>
                                             </h5>
                                             <div className="space-y-3">
                                                 {analysis.gap_skills.map((skill, i) => (
-                                                    <div key={i} className="p-4 bg-slate-50 rounded-lg border border-slate-200">
+                                                    <div key={i} className="p-4 bg-white/5 rounded-lg border border-white/10 hover:border-gold-primary/30 transition-colors">
                                                         <div className="flex items-center justify-between mb-2">
-                                                            <span className="font-semibold text-slate-900">{skill.name}</span>
-                                                            <span className={`text-xs px-2 py-1 rounded-full border ${getImportanceColor(skill.importance)}`}>
+                                                            <span className="font-semibold text-white">{skill.name}</span>
+                                                            <span className={`text-[10px] uppercase font-bold px-2 py-0.5 rounded-full border ${getImportanceColor(skill.importance)}`}>
                                                                 {skill.importance}
                                                             </span>
                                                         </div>
                                                         {skill.estimated_time_to_learn && (
-                                                            <div className="text-sm text-slate-600">
-                                                                ⏱️ Est. time: {skill.estimated_time_to_learn}
+                                                            <div className="text-sm text-white/50 flex items-center gap-1.5">
+                                                                <span className="text-xs">⏱️</span> Est. time: {skill.estimated_time_to_learn}
                                                             </div>
                                                         )}
                                                     </div>
@@ -255,29 +258,32 @@ export default function SkillGapWidget() {
                                     {/* Learning Clusters */}
                                     {analysis.suggested_learning_clusters.length > 0 && (
                                         <div>
-                                            <h5 className="font-bold text-slate-900 mb-3 flex items-center gap-2">
-                                                <BookOpen className="w-4 h-4 text-blue-600" />
+                                            <h5 className="font-bold text-white mb-3 flex items-center gap-2 text-sm uppercase tracking-wider">
+                                                <BookOpen className="w-4 h-4 text-blue-400" />
                                                 Suggested Learning Path
                                             </h5>
                                             <div className="space-y-3">
                                                 {analysis.suggested_learning_clusters.map((cluster, i) => (
-                                                    <div key={i} className="p-4 rounded-xl border-2 border-slate-200 bg-gradient-to-br from-white to-slate-50">
-                                                        <div className="flex items-center justify-between mb-3">
-                                                            <h6 className="font-bold text-slate-900">{cluster.cluster_name}</h6>
-                                                            <span className={`text-xs px-3 py-1 rounded-full bg-gradient-to-r ${getPriorityColor(cluster.priority)} text-white font-medium`}>
+                                                    <div key={i} className="p-4 rounded-xl border border-white/10 bg-gradient-to-br from-white/5 to-transparent relative overflow-hidden group">
+                                                        {/* Hover glow */}
+                                                        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
+
+                                                        <div className="flex items-center justify-between mb-3 relative z-10">
+                                                            <h6 className="font-bold text-white">{cluster.cluster_name}</h6>
+                                                            <span className={`text-[10px] uppercase tracking-wide px-2 py-0.5 rounded-full bg-gradient-to-r ${getPriorityColor(cluster.priority)} text-white font-bold shadow-lg`}>
                                                                 {cluster.priority} Priority
                                                             </span>
                                                         </div>
-                                                        <div className="flex flex-wrap gap-2 mb-2">
+                                                        <div className="flex flex-wrap gap-2 mb-2 relative z-10">
                                                             {cluster.skills.map((skill, j) => (
-                                                                <span key={j} className="px-3 py-1 bg-indigo-100 text-indigo-700 rounded-full text-sm">
+                                                                <span key={j} className="px-2.5 py-1 bg-royal-blue/30 text-blue-200 border border-blue-500/20 rounded-md text-xs font-medium">
                                                                     {skill}
                                                                 </span>
                                                             ))}
                                                         </div>
                                                         {cluster.estimated_time && (
-                                                            <div className="text-sm text-slate-600">
-                                                                📅 Timeline: {cluster.estimated_time}
+                                                            <div className="text-xs text-white/40 mt-3 border-t border-white/5 pt-2 flex items-center gap-1.5">
+                                                                <span>📅</span> Timeline: {cluster.estimated_time}
                                                             </div>
                                                         )}
                                                     </div>
@@ -295,9 +301,11 @@ export default function SkillGapWidget() {
             {/* Empty State */}
             {!analysis && !isLoading && (
                 <div className="p-12 text-center">
-                    <Target className="w-16 h-16 text-slate-300 mx-auto mb-4" />
-                    <p className="text-slate-500">
-                        Enter a target role above to see your skill gap analysis
+                    <div className="w-20 h-20 bg-white/5 rounded-full flex items-center justify-center mx-auto mb-6 border border-white/10">
+                        <Target className="w-10 h-10 text-white/20" />
+                    </div>
+                    <p className="text-white/50 text-sm max-w-xs mx-auto">
+                        Enter a target role above (e.g., "Product Manager") to see AI-powered skill gap analysis.
                     </p>
                 </div>
             )}
