@@ -7,19 +7,24 @@ interface LogoProps {
   linkTo?: string;
 }
 
-const sizeMap = {
-  sm: 'h-8 md:h-10',     // Reduced for cleaner navbar
-  md: 'h-14 md:h-16',    // Medium size
-  lg: 'h-20 md:h-24',    // Large for landing page
-  xl: 'h-24 md:h-28'     // Extra large
+const sizeConfig = {
+  sm: { height: 32, width: 108, className: 'h-8 md:h-10' },   // Reduced for cleaner navbar
+  md: { height: 56, width: 189, className: 'h-14 md:h-16' },  // Medium size
+  lg: { height: 80, width: 270, className: 'h-20 md:h-24' },  // Large for landing page
+  xl: { height: 96, width: 324, className: 'h-24 md:h-28' }   // Extra large
 };
 
 export default function Logo({ size = 'md', className = '', linkTo = '/' }: LogoProps) {
+  const config = sizeConfig[size];
+
   const logo = (
-    <img
+    <Image
       src="/images/Next Logo.png"
       alt="NEXT - Career Intelligence"
-      className={`${sizeMap[size]} w-auto ${className}`}
+      width={config.width}
+      height={config.height}
+      className={`w-auto ${config.className} ${className}`}
+      priority={size === 'lg' || size === 'xl'} // Priority loading for large hero logos
     />
   );
 
