@@ -106,13 +106,7 @@ export default function Home() {
             </motion.div>
           )}
 
-          {/* NEXT Logo */}
-          <motion.div
-            className="mb-8"
-            variants={scaleInVariants}
-          >
-            <Logo size="lg" linkTo={undefined} className="mx-auto" />
-          </motion.div>
+
 
           <motion.div
             className="inline-flex items-center gap-2 px-4 py-2 bg-white/10 backdrop-blur-sm border border-gold-primary/30 rounded-full mb-8"
