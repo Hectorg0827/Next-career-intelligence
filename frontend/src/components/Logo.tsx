@@ -8,7 +8,7 @@ interface LogoProps {
 }
 
 const sizeMap = {
-  sm: 'h-10 md:h-12',    // Increased for navbar
+  sm: 'h-8 md:h-10',     // Reduced for cleaner navbar
   md: 'h-14 md:h-16',    // Medium size
   lg: 'h-20 md:h-24',    // Large for landing page
   xl: 'h-24 md:h-28'     // Extra large
@@ -16,9 +16,9 @@ const sizeMap = {
 
 export default function Logo({ size = 'md', className = '', linkTo = '/' }: LogoProps) {
   const logo = (
-    <img 
-      src="/images/Next Logo.png" 
-      alt="NEXT - Career Intelligence" 
+    <img
+      src="/images/Next Logo.png"
+      alt="NEXT - Career Intelligence"
       className={`${sizeMap[size]} w-auto ${className}`}
     />
   );
