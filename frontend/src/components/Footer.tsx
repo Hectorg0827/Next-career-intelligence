@@ -42,19 +42,25 @@ export default function Footer() {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="bg-gradient-to-br from-royal-navy via-royal-blue-deep to-royal-navy border-t border-white/10">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <footer className="relative mt-20 border-t border-white/5 bg-black/40 backdrop-blur-xl">
+      {/* Background Glow */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute bottom-0 left-1/4 w-[500px] h-[500px] bg-royal-blue/10 rounded-full blur-[100px]" />
+        <div className="absolute top-0 right-1/4 w-[500px] h-[500px] bg-gold-primary/5 rounded-full blur-[100px]" />
+      </div>
+
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         {/* Main Footer Content */}
-        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8 mb-12">
+        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-12 mb-16">
           {/* Brand Column */}
-          <div className="col-span-2 md:col-span-4 lg:col-span-1">
+          <div className="col-span-2 md:col-span-4 lg:col-span-1 space-y-6">
             <Logo size="md" linkTo="/" />
-            <p className="mt-4 text-white/70 text-sm leading-relaxed">
-              AI-powered career intelligence platform helping professionals future-proof their careers.
+            <p className="text-white/60 text-sm leading-relaxed max-w-xs">
+              AI-powered career intelligence platform helping professionals future-proof their careers in the age of automation.
             </p>
-            
+
             {/* Social Links */}
-            <div className="flex items-center gap-4 mt-6">
+            <div className="flex items-center gap-4">
               {socialLinks.map((social) => {
                 const Icon = social.icon;
                 return (
@@ -63,7 +69,7 @@ export default function Footer() {
                     href={social.href}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className={`text-white/60 ${social.color} transition-colors`}
+                    className={`p-2 rounded-lg bg-white/5 hover:bg-white/10 text-white/60 ${social.color} transition-all duration-300 hover:scale-110`}
                     aria-label={social.name}
                   >
                     <Icon className="w-5 h-5" />
@@ -75,14 +81,15 @@ export default function Footer() {
 
           {/* Product Links */}
           <div>
-            <h3 className="text-white font-semibold mb-4 text-sm uppercase tracking-wider">Product</h3>
-            <ul className="space-y-3">
+            <h3 className="text-white font-semibold mb-6 text-sm uppercase tracking-widest text-transparent bg-clip-text bg-gradient-to-r from-white to-white/70">Product</h3>
+            <ul className="space-y-4">
               {footerLinks.product.map((link) => (
                 <li key={link.name}>
                   <Link
                     href={link.href}
-                    className="text-white/70 hover:text-gold-primary transition-colors text-sm"
+                    className="text-white/60 hover:text-gold-primary transition-colors text-sm font-medium flex items-center gap-2 group"
                   >
+                    <span className="w-1.5 h-1.5 rounded-full bg-gold-primary/0 group-hover:bg-gold-primary transition-all duration-300" />
                     {link.name}
                   </Link>
                 </li>
@@ -92,14 +99,15 @@ export default function Footer() {
 
           {/* Company Links */}
           <div>
-            <h3 className="text-white font-semibold mb-4 text-sm uppercase tracking-wider">Company</h3>
-            <ul className="space-y-3">
+            <h3 className="text-white font-semibold mb-6 text-sm uppercase tracking-widest text-transparent bg-clip-text bg-gradient-to-r from-white to-white/70">Company</h3>
+            <ul className="space-y-4">
               {footerLinks.company.map((link) => (
                 <li key={link.name}>
                   <Link
                     href={link.href}
-                    className="text-white/70 hover:text-gold-primary transition-colors text-sm"
+                    className="text-white/60 hover:text-gold-primary transition-colors text-sm font-medium flex items-center gap-2 group"
                   >
+                    <span className="w-1.5 h-1.5 rounded-full bg-gold-primary/0 group-hover:bg-gold-primary transition-all duration-300" />
                     {link.name}
                   </Link>
                 </li>
@@ -109,14 +117,15 @@ export default function Footer() {
 
           {/* Resources Links */}
           <div>
-            <h3 className="text-white font-semibold mb-4 text-sm uppercase tracking-wider">Resources</h3>
-            <ul className="space-y-3">
+            <h3 className="text-white font-semibold mb-6 text-sm uppercase tracking-widest text-transparent bg-clip-text bg-gradient-to-r from-white to-white/70">Resources</h3>
+            <ul className="space-y-4">
               {footerLinks.resources.map((link) => (
                 <li key={link.name}>
                   <Link
                     href={link.href}
-                    className="text-white/70 hover:text-gold-primary transition-colors text-sm"
+                    className="text-white/60 hover:text-gold-primary transition-colors text-sm font-medium flex items-center gap-2 group"
                   >
+                    <span className="w-1.5 h-1.5 rounded-full bg-gold-primary/0 group-hover:bg-gold-primary transition-all duration-300" />
                     {link.name}
                   </Link>
                 </li>
@@ -126,14 +135,15 @@ export default function Footer() {
 
           {/* Legal Links */}
           <div>
-            <h3 className="text-white font-semibold mb-4 text-sm uppercase tracking-wider">Legal</h3>
-            <ul className="space-y-3">
+            <h3 className="text-white font-semibold mb-6 text-sm uppercase tracking-widest text-transparent bg-clip-text bg-gradient-to-r from-white to-white/70">Legal</h3>
+            <ul className="space-y-4">
               {footerLinks.legal.map((link) => (
                 <li key={link.name}>
                   <Link
                     href={link.href}
-                    className="text-white/70 hover:text-gold-primary transition-colors text-sm"
+                    className="text-white/60 hover:text-gold-primary transition-colors text-sm font-medium flex items-center gap-2 group"
                   >
+                    <span className="w-1.5 h-1.5 rounded-full bg-gold-primary/0 group-hover:bg-gold-primary transition-all duration-300" />
                     {link.name}
                   </Link>
                 </li>
@@ -144,21 +154,23 @@ export default function Footer() {
 
         {/* Bottom Bar */}
         <div className="pt-8 border-t border-white/10">
-          <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+          <div className="flex flex-col md:flex-row justify-between items-center gap-6">
             {/* Copyright */}
-            <p className="text-white/60 text-sm">
+            <p className="text-white/40 text-sm font-medium">
               © {currentYear} NEXT Career Intelligence. All rights reserved.
             </p>
 
             {/* Built with Love */}
-            <p className="text-white/60 text-sm flex items-center gap-2">
-              Built with <span className="text-red-400">❤️</span> for career resilience
-            </p>
+            <div className="flex items-center gap-6">
+              <p className="text-white/40 text-sm font-medium flex items-center gap-2">
+                Built for <span className="text-gold-primary">career resilience</span>
+              </p>
 
-            {/* Trust Badge */}
-            <div className="flex items-center gap-2 text-white/60 text-xs">
-              <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
-              <span>Trusted by 15,000+ professionals</span>
+              {/* Trust Badge */}
+              <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-green-500/10 border border-green-500/20 text-green-400 text-xs font-medium">
+                <div className="w-1.5 h-1.5 bg-green-400 rounded-full animate-pulse" />
+                <span>Systems Operational</span>
+              </div>
             </div>
           </div>
         </div>
