@@ -304,7 +304,7 @@ export const OnboardingSequence = () => {
               </p>
             </div>
 
-            <div className="space-y-6 bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-8">
+            <div className="space-y-6 bg-slate-800 border border-slate-700 rounded-2xl p-8">
               <div className="space-y-3">
                 {[
                   { goal: 'Get promoted', icon: Target },
@@ -372,7 +372,7 @@ export const OnboardingSequence = () => {
               </p>
             </div>
 
-            <div className="space-y-6 bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-8">
+            <div className="space-y-6 bg-slate-800 border border-slate-700 rounded-2xl p-8">
               <div className="space-y-3">
                 {[
                   { style: 'videos' as const, label: 'Video Tutorials', desc: 'Learn through interactive videos' },

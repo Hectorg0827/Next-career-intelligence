@@ -9,7 +9,7 @@ interface PremiumContentOverlayProps {
 
 export default function PremiumContentOverlay({ onUnlock, feature }: PremiumContentOverlayProps) {
   return (
-    <div className="absolute inset-0 bg-gradient-to-b from-transparent via-royal-navy/95 to-royal-navy rounded-2xl flex items-center justify-center backdrop-blur-sm z-10">
+    <div className="absolute inset-0 bg-gradient-to-b from-slate-900/80 via-slate-900/95 to-slate-900 rounded-2xl flex items-center justify-center z-10">
       <div className="text-center px-6 py-8 max-w-md">
         {/* Lock Icon */}
         <div className="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-gold-primary to-gold-accent rounded-full flex items-center justify-center shadow-gold">

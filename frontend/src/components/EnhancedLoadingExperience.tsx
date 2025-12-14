@@ -202,7 +202,7 @@ export default function EnhancedLoadingExperience({ jobTitle }: EnhancedLoadingE
       <div className="max-w-3xl w-full relative z-10">
         {/* Header */}
         <div className="text-center mb-12 animate-fade-in">
-          <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/10 backdrop-blur-sm border border-gold-primary/30 rounded-full mb-6">
+          <div className="inline-flex items-center gap-2 px-4 py-2 bg-slate-800 border border-gold-primary/30 rounded-full mb-6">
             <Sparkles className="w-4 h-4 text-gold-primary animate-pulse" />
             <span className="text-white/90 text-sm font-medium">AI Analysis In Progress</span>
           </div>

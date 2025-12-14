@@ -62,7 +62,7 @@ export default function ComingSoonPage({ feature }: ComingSoonPageProps) {
           {/* Back Button */}
           <motion.button
             onClick={() => router.push('/')}
-            className="mb-8 px-4 py-2 bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/20 rounded-lg text-white/70 hover:text-white transition-all flex items-center gap-2"
+            className="mb-8 px-4 py-2 bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded-lg text-white/70 hover:text-white transition-all flex items-center gap-2"
             whileHover={{ scale: 1.02, x: -4 }}
             whileTap={{ scale: 0.98 }}
           >
@@ -71,7 +71,7 @@ export default function ComingSoonPage({ feature }: ComingSoonPageProps) {
 
           {/* Main Card */}
           <motion.div 
-            className="bg-white/5 backdrop-blur-md border border-white/10 rounded-3xl p-8 md:p-12 shadow-2xl"
+            className="bg-slate-800 border border-slate-700 rounded-3xl p-8 md:p-12 shadow-2xl"
             variants={cardVariants}
             initial="initial"
             whileHover="hover"
@@ -321,8 +321,8 @@ export default function ComingSoonPage({ feature }: ComingSoonPageProps) {
               </p>
               <motion.button
                 onClick={() => router.push('/analyze?job=Software Engineer')}
-                className="px-6 py-3 bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/20 rounded-xl text-white/90 hover:text-white transition-all inline-flex items-center gap-2"
-                whileHover={{ scale: 1.02, backgroundColor: "rgba(255, 255, 255, 0.15)" }}
+                className="px-6 py-3 bg-slate-700 hover:bg-slate-600 border border-slate-600 rounded-xl text-white/90 hover:text-white transition-all inline-flex items-center gap-2"
+                whileHover={{ scale: 1.02, backgroundColor: "#475569" }}
                 whileTap={{ scale: 0.98 }}
               >
                 <Sparkles className="w-5 h-5" />

@@ -95,7 +95,7 @@ export default function SkillGapWidget() {
         <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="glass-card hover-reflect rounded-2xl overflow-hidden backdrop-blur-md"
+            className="bg-slate-800 border border-slate-700 rounded-2xl overflow-hidden"
         >
             {/* Header */}
             <div className="bg-gradient-to-r from-royal-blue-deep/50 to-purple-900/50 p-6 border-b border-white/10">
@@ -156,7 +156,7 @@ export default function SkillGapWidget() {
                             {/* Glow effect behind score */}
                             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-32 h-32 bg-gold-primary/20 blur-3xl rounded-full pointer-events-none" />
 
-                            <div className="inline-flex items-center justify-center w-32 h-32 rounded-full border border-white/10 bg-white/5 mb-4 backdrop-blur-sm relative z-10">
+                            <div className="inline-flex items-center justify-center w-32 h-32 rounded-full border border-slate-600 bg-slate-700 mb-4 relative z-10">
                                 <div className={`text-5xl font-bold bg-gradient-to-r ${getFitColor(analysis.role_fit_score)} bg-clip-text text-transparent`}>
                                     {Math.round(analysis.role_fit_score)}%
                                 </div>
@@ -167,14 +167,14 @@ export default function SkillGapWidget() {
 
                         {/* Quick Stats */}
                         <div className="grid grid-cols-2 gap-4">
-                            <div className="bg-gradient-to-br from-green-500/10 to-emerald-500/10 rounded-xl p-4 border border-green-500/20 backdrop-blur-sm">
+                            <div className="bg-gradient-to-br from-green-900/30 to-emerald-900/30 rounded-xl p-4 border border-green-500/20">
                                 <div className="flex items-center gap-2 mb-1">
                                     <TrendingUp className="w-4 h-4 text-green-400" />
                                     <span className="text-xs font-semibold uppercase tracking-wider text-green-400">Matched</span>
                                 </div>
                                 <div className="text-3xl font-bold text-white">{analysis.matched_count}</div>
                             </div>
-                            <div className="bg-gradient-to-br from-orange-500/10 to-red-500/10 rounded-xl p-4 border border-orange-500/20 backdrop-blur-sm">
+                            <div className="bg-gradient-to-br from-orange-900/30 to-red-900/30 rounded-xl p-4 border border-orange-500/20">
                                 <div className="flex items-center gap-2 mb-1">
                                     <AlertCircle className="w-4 h-4 text-orange-400" />
                                     <span className="text-xs font-semibold uppercase tracking-wider text-orange-400">Missing</span>

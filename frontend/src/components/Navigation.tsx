@@ -81,7 +81,7 @@ export default function Navigation() {
             {isAuthenticated && user ? (
               <>
                 {/* User Info */}
-                <div className="flex items-center gap-2.5 px-5 py-2.5 bg-white/10 backdrop-blur-md rounded-full border border-white/20 shadow-lg">
+                <div className="flex items-center gap-2.5 px-5 py-2.5 bg-slate-800 rounded-full border border-slate-700 shadow-lg">
                   <User className="w-4.5 h-4.5 text-primary-500" />
                   <span className="text-white text-sm font-medium max-w-[160px] truncate">
                     {user.name || user.email}
@@ -92,7 +92,7 @@ export default function Navigation() {
                 {/* Logout Button */}
                 <button
                   onClick={handleLogout}
-                  className="flex items-center gap-2 px-5 py-2.5 bg-white/10 hover:bg-white/15 backdrop-blur-md rounded-full border border-white/20 transition-all duration-200 group shadow-lg hover:shadow-xl"
+                  className="flex items-center gap-2 px-5 py-2.5 bg-slate-800 hover:bg-slate-700 rounded-full border border-slate-700 transition-all duration-200 group shadow-lg hover:shadow-xl"
                   aria-label="Log out"
                 >
                   <LogOut className="w-4.5 h-4.5 text-white/70 group-hover:text-white transition-colors" />
