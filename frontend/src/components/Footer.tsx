@@ -42,7 +42,7 @@ export default function Footer() {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="relative mt-20 border-t border-white/5 bg-black/40 backdrop-blur-xl">
+    <footer className="relative mt-20 border-t border-slate-800 bg-slate-950">
       {/* Background Glow */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute bottom-0 left-1/4 w-[500px] h-[500px] bg-royal-blue/10 rounded-full blur-[100px]" />

@@ -54,7 +54,7 @@ export function ProgressTracker({ currentXP, level, nextLevelXP }: ProgressTrack
   const progress = (currentXP / nextLevelXP) * 100;
 
   return (
-    <div className="bg-white/10 backdrop-blur-md border border-white/20 rounded-xl p-4">
+    <div className="bg-slate-800 border border-slate-700 rounded-xl p-4">
       <div className="flex items-center justify-between mb-2">
         <div className="flex items-center gap-2">
           <Star className="w-5 h-5 text-gold-primary" />
@@ -107,7 +107,7 @@ export function FirstTaskSuggestion({ jobTitle }: FirstTaskSuggestionProps) {
   const Icon = selectedTask.icon;
 
   return (
-    <div className="bg-gradient-to-r from-purple-500/20 to-blue-500/20 backdrop-blur-md border border-purple-400/30 rounded-2xl p-6">
+    <div className="bg-gradient-to-r from-slate-800 to-slate-900 border border-purple-500/30 rounded-2xl p-6">
       <div className="flex items-start gap-4">
         <div className="p-3 bg-purple-500/20 rounded-xl">
           <Icon className="w-6 h-6 text-purple-300" />

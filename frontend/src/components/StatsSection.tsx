@@ -128,15 +128,15 @@ export default function StatsSection() {
 
                 {/* Value */}
                 <div className={`text-4xl md:text-5xl font-bold ${stat.color} mb-2`}>
-                  <AnimatedNumber 
-                    value={stat.value} 
+                  <AnimatedNumber
+                    value={stat.value}
                     suffix={stat.suffix}
                     prefix={stat.prefix}
                   />
                 </div>
 
                 {/* Label */}
-                <div className="text-white/70 text-sm md:text-base font-medium">
+                <div className="text-gray-300 text-sm md:text-base font-medium">
                   {stat.label}
                 </div>
               </div>

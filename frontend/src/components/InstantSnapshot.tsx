@@ -52,7 +52,7 @@ export default function InstantSnapshot({ jobTitle }: InstantSnapshotProps) {
   return (
     <div className="space-y-6">
       {/* Instant Value - Show Immediately */}
-      <div className="bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-6 animate-fade-in">
+      <div className="bg-slate-800 border border-slate-700 rounded-2xl p-6 animate-fade-in">
         <div className="flex items-center gap-3 mb-4">
           <div className="p-2 bg-gold-primary/20 rounded-lg">
             <Sparkles className="w-5 h-5 text-gold-primary" />
@@ -78,7 +78,7 @@ export default function InstantSnapshot({ jobTitle }: InstantSnapshotProps) {
       </div>
 
       {/* Progressive Reveal - Analysis Phases */}
-      <div className="bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-6">
+      <div className="bg-slate-800 border border-slate-700 rounded-2xl p-6">
         <h4 className="text-white font-semibold mb-4 flex items-center gap-2">
           <span className="relative flex h-3 w-3">
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-gold-primary opacity-75"></span>
@@ -145,7 +145,7 @@ export default function InstantSnapshot({ jobTitle }: InstantSnapshotProps) {
       </div>
 
       {/* Engagement Section - Tips while waiting */}
-      <div className="bg-gradient-to-r from-gold-primary/10 to-gold-accent/10 backdrop-blur-md border border-gold-primary/20 rounded-2xl p-6">
+      <div className="bg-gradient-to-r from-slate-800 to-slate-900 border border-gold-primary/20 rounded-2xl p-6">
         <h4 className="text-white font-semibold mb-3 flex items-center gap-2">
           <Award className="w-5 h-5 text-gold-primary" />
           Did You Know?

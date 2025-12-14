@@ -76,7 +76,7 @@ export class ErrorBoundary extends Component<Props, State> {
       // Default error UI
       return (
         <div className="min-h-screen bg-gradient-to-br from-royal-navy via-royal-blue to-royal-blue-deep flex items-center justify-center px-4">
-          <div className="max-w-2xl w-full bg-white/5 backdrop-blur-md border border-white/10 rounded-3xl p-8 md:p-12 shadow-2xl">
+          <div className="max-w-2xl w-full bg-slate-800 border border-slate-700 rounded-3xl p-8 md:p-12 shadow-2xl">
             {/* Error Icon */}
             <div className="flex justify-center mb-6">
               <div className="p-4 bg-red-500/20 rounded-full">
@@ -121,7 +121,7 @@ export class ErrorBoundary extends Component<Props, State> {
               </button>
               <button
                 onClick={this.handleGoHome}
-                className="px-6 py-3 bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/20 rounded-xl text-white font-semibold transition-all flex items-center justify-center gap-2"
+                className="px-6 py-3 bg-slate-700 hover:bg-slate-600 border border-slate-600 rounded-xl text-white font-semibold transition-all flex items-center justify-center gap-2"
                 aria-label="Go to homepage"
               >
                 <Home className="w-5 h-5" />

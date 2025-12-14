@@ -52,7 +52,7 @@ export default function Navigation() {
           </div>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center gap-2">
+          <div className="hidden md:flex items-center gap-6">
             {navItems.map((item) => {
               const isActive = pathname === item.href;
               const Icon = item.icon;
@@ -61,11 +61,10 @@ export default function Navigation() {
                 <Link
                   key={item.name}
                   href={item.href}
-                  className={`px-5 py-2.5 rounded-xl font-medium transition-all duration-200 flex items-center gap-2 group relative ${
-                    isActive
+                  className={`px-5 py-2.5 rounded-xl font-medium transition-all duration-200 flex items-center gap-2 group relative ${isActive
                       ? 'bg-white/15 text-white shadow-lg'
                       : 'text-white/70 hover:text-white hover:bg-white/10'
-                  }`}
+                    }`}
                 >
                   <Icon className="w-4.5 h-4.5 transition-transform group-hover:scale-110" />
                   <span className="text-sm">{item.name}</span>
@@ -141,11 +140,10 @@ export default function Navigation() {
                 <button
                   key={item.name}
                   onClick={() => handleNavClick(item.href)}
-                  className={`w-full px-5 py-3.5 rounded-xl font-medium transition-all duration-200 flex items-center gap-3 ${
-                    isActive
+                  className={`w-full px-5 py-3.5 rounded-xl font-medium transition-all duration-200 flex items-center gap-3 ${isActive
                       ? 'bg-white/15 text-white shadow-lg'
                       : 'text-white/70 hover:text-white hover:bg-white/10'
-                  }`}
+                    }`}
                 >
                   <Icon className="w-5 h-5" />
                   <span className="flex-1 text-left">{item.name}</span>

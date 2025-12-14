@@ -35,7 +35,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`${inter.variable} ${outfit.variable}`}>
-      <body className="font-sans bg-dark min-h-screen flex flex-col">
+      <body className="font-sans bg-dark text-white min-h-screen flex flex-col">
         <ErrorBoundary>
           <Providers>
             <AuthProvider>

@@ -58,7 +58,7 @@ export default function TestimonialsCarousel() {
   // Auto-advance carousel
   useEffect(() => {
     if (!isAutoPlaying) return;
-    
+
     const interval = setInterval(() => {
       setCurrentIndex((prev) => (prev + 1) % testimonials.length);
     }, 5000);
@@ -124,7 +124,7 @@ export default function TestimonialsCarousel() {
               </div>
 
               {/* Testimonial Text */}
-              <blockquote className="text-xl md:text-2xl text-white/90 font-medium leading-relaxed mb-8">
+              <blockquote className="text-xl md:text-2xl text-white font-medium leading-relaxed mb-8">
                 &quot;{currentTestimonial.text}&quot;
               </blockquote>
 
@@ -136,10 +136,10 @@ export default function TestimonialsCarousel() {
                   </div>
                   <div>
                     <div className="text-white font-semibold text-lg">{currentTestimonial.name}</div>
-                    <div className="text-white/60 text-sm">{currentTestimonial.role} at {currentTestimonial.company}</div>
+                    <div className="text-gray-300 text-sm">{currentTestimonial.role} at {currentTestimonial.company}</div>
                   </div>
                 </div>
-                
+
                 {/* Outcome Badge */}
                 <div className="px-4 py-2 bg-gradient-to-r from-gold-primary/20 to-gold-accent/20 border border-gold-primary/30 rounded-full">
                   <span className="text-gold-primary font-semibold text-sm">✨ {currentTestimonial.outcome}</span>
@@ -159,7 +159,7 @@ export default function TestimonialsCarousel() {
           >
             <ChevronLeft className="w-6 h-6 text-white/70 group-hover:text-white" />
           </button>
-          
+
           <button
             onClick={goToNext}
             className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-16 w-12 h-12 bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/20 rounded-full items-center justify-center transition-all group hover:scale-110 hidden md:flex"
@@ -192,11 +192,10 @@ export default function TestimonialsCarousel() {
               <button
                 key={index}
                 onClick={() => goToSlide(index)}
-                className={`h-2 rounded-full transition-all ${
-                  index === currentIndex 
-                    ? 'w-8 bg-gold-primary' 
+                className={`h-2 rounded-full transition-all ${index === currentIndex
+                    ? 'w-8 bg-gold-primary'
                     : 'w-2 bg-white/30 hover:bg-white/50'
-                }`}
+                  }`}
                 aria-label={`Go to testimonial ${index + 1}`}
               />
             ))}

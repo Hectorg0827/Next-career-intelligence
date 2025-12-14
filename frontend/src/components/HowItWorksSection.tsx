@@ -82,7 +82,7 @@ export default function HowItWorksSection() {
                 <h3 className="text-2xl font-bold text-white mb-3 group-hover:text-gold-primary transition-colors">
                   {step.title}
                 </h3>
-                <p className="text-white/70 leading-relaxed">
+                <p className="text-gray-300 leading-relaxed">
                   {step.description}
                 </p>
 

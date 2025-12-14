@@ -122,7 +122,7 @@ export const OnboardingSequence = () => {
               </p>
             </div>
 
-            <div className="space-y-6 bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-8">
+            <div className="space-y-6 bg-slate-800 border border-slate-700 rounded-2xl p-8">
               <div>
                 <label className="block text-white font-semibold mb-3">
                   What&apos;s your current role?
@@ -233,7 +233,7 @@ export const OnboardingSequence = () => {
               </p>
             </div>
 
-            <div className="space-y-6 bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-8">
+            <div className="space-y-6 bg-slate-800 border border-slate-700 rounded-2xl p-8">
               <div className="grid grid-cols-2 gap-3">
                 {[
                   'Leadership',
