@@ -315,6 +315,3 @@ export default function EnhancedLoadingExperience({ jobTitle }: EnhancedLoadingE
     </div>
   );
 }
-    </div>
-  );
-}

@@ -1,8 +1,9 @@
 'use client';
 
 import { useState } from 'react';
-import { Check, Sparkles, Zap, Crown, ArrowRight, Loader2 } from 'lucide-react';
+import { Check, Sparkles, Zap, Crown, ArrowRight, Loader2, ShieldCheck, Star } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import { motion } from 'framer-motion';
 import apiClient from '@/lib/api';
 
 export default function PricingPage() {
@@ -239,5 +240,4 @@ export default function PricingPage() {
       </motion.div>
     </div>
   );
-}
 }

@@ -308,14 +308,3 @@ export default function AnalyzePage() {
     </div>
   );
 }
-
-      {/* Signup Modal */}
-      <SignupModal
-        isOpen={showSignupModal}
-        onClose={() => setShowSignupModal(false)}
-        jobTitle={jobTitle}
-        analysisData={analysis}
-      />
-    </div>
-  );
-}

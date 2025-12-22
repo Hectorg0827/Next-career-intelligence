@@ -193,6 +193,3 @@ export default function SignupModal({ isOpen, onClose, jobTitle }: SignupModalPr
     </div>
   );
 }
-    </div>
-  );
-}

@@ -65,3 +65,5 @@ coverage/
 .temp
 tmp/
 import.env
+.vercel
+.env*.local
