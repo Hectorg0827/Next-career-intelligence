@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter, Outfit } from "next/font/google";
+import { Inter, Outfit, Crimson_Pro, DM_Sans } from "next/font/google";
 import "./globals.css";
 import Navigation from "@/components/Navigation";
 import BottomNav from "@/components/BottomNav";
@@ -22,10 +22,22 @@ const outfit = Outfit({
   display: 'swap',
 });
 
+const crimsonPro = Crimson_Pro({
+  subsets: ["latin"],
+  variable: '--font-crimson-pro',
+  display: 'swap',
+});
+
+const dmSans = DM_Sans({
+  subsets: ["latin"],
+  variable: '--font-dm-sans',
+  display: 'swap',
+});
+
 export const metadata: Metadata = {
-  title: "NEXT | Adaptive Career Intelligence",
-  description: "AI-powered career resilience platform - Analyze your AI displacement risk and discover future-proof career pathways",
-  keywords: ["career", "AI", "automation", "jobs", "reskilling", "career transition"],
+  title: "NextCI | AI-Powered Career Intelligence Platform",
+  description: "Enterprise-grade AI career analysis platform. Get data-driven insights on automation risk, skill gaps, and career trajectory.",
+  keywords: ["career", "AI", "automation", "jobs", "reskilling", "career transition", "career intelligence"],
 };
 
 export default function RootLayout({
@@ -34,7 +46,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${inter.variable} ${outfit.variable}`}>
+    <html lang="en" className={`${inter.variable} ${outfit.variable} ${crimsonPro.variable} ${dmSans.variable}`}>
       <body className="font-sans bg-dark min-h-screen flex flex-col">
         <ErrorBoundary>
           <Providers>

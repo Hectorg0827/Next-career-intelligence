@@ -5,27 +5,33 @@ interface LogoProps {
   size?: 'sm' | 'md' | 'lg' | 'xl';
   className?: string;
   linkTo?: string;
+  variant?: 'image' | 'text';
 }
 
 const sizeMap = {
-  sm: 'h-10 md:h-12',    // Increased for navbar
-  md: 'h-14 md:h-16',    // Medium size
-  lg: 'h-20 md:h-24',    // Large for landing page
-  xl: 'h-24 md:h-28'     // Extra large
+  sm: 'text-2xl',
+  md: 'text-3xl',
+  lg: 'text-5xl',
+  xl: 'text-6xl'
 };
 
-export default function Logo({ size = 'md', className = '', linkTo = '/' }: LogoProps) {
-  const logo = (
+export default function Logo({ size = 'md', className = '', linkTo = '/', variant = 'text' }: LogoProps) {
+  const logo = variant === 'image' ? (
     <img 
       src="/images/Next Logo.png" 
-      alt="NEXT - Career Intelligence" 
-      className={`${sizeMap[size]} w-auto ${className}`}
+      alt="NextCI - Career Intelligence" 
+      className={`h-auto w-auto ${className}`}
+      style={{ height: size === 'sm' ? '40px' : size === 'md' ? '60px' : '100px' }}
     />
+  ) : (
+    <span className={`font-serif font-bold tracking-tight text-premium-accent ${sizeMap[size]} ${className}`}>
+      NextCI
+    </span>
   );
 
   if (linkTo) {
     return (
-      <Link href={linkTo} className="inline-block">
+      <Link href={linkTo} className="inline-block hover:opacity-90 transition-opacity">
         {logo}
       </Link>
     );

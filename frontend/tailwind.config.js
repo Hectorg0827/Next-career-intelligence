@@ -57,9 +57,28 @@ module.exports = {
   darkMode: 'class', // Enable dark mode via class
   theme: {
     extend: {
+      fontFamily: {
+        sans: ['var(--font-dm-sans)', 'var(--font-inter)', 'sans-serif'],
+        serif: ['var(--font-crimson-pro)', 'serif'],
+        outfit: ['var(--font-outfit)', 'sans-serif'],
+        crimson: ['var(--font-crimson-pro)', 'serif'],
+        'dm-sans': ['var(--font-dm-sans)', 'sans-serif'],
+      },
       colors: {
         background: "var(--background)",
         foreground: "var(--foreground)",
+        
+        // New Premium Design Colors
+        'premium-bg': '#060814',
+        'premium-primary': '#0A0E27',
+        'premium-secondary': '#1A1F4A',
+        'premium-accent': '#00D9FF',
+        'premium-accent-warm': '#FF6B35',
+        'premium-text': '#E8E9F3',
+        'premium-text-muted': '#9CA3C3',
+        'premium-success': '#00FF94',
+        'premium-warning': '#FFB800',
+        'premium-danger': '#FF3366',
 
         // Liquid Glass Design System - Ink Colors (main palette)
         ink: {

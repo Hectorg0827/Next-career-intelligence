@@ -19,69 +19,64 @@ export default function PricingPage() {
 
   const plans = [
     {
-      name: 'Free',
+      name: 'Explorer',
       price: 0,
       period: 'forever',
-      description: 'Perfect for exploring career options',
+      description: 'Essential tools for career discovery.',
       features: [
-        '2 free career analyses',
-        'Basic job search',
-        'Community access',
-        'Career resources',
-        'Email support'
+        '2 AI Career Analyses',
+        'Basic Market Insights',
+        'Public Talent Graph',
+        'Standard Support'
       ],
-      cta: 'Get Started Free',
+      cta: 'Start Free',
       popular: false,
       icon: Sparkles
     },
     {
-      name: 'Pro',
-      price: billingCycle === 'monthly' ? 29 : 290,
-      period: billingCycle === 'monthly' ? 'month' : 'year',
-      description: 'For serious career advancement',
+      name: 'Professional',
+      price: billingCycle === 'monthly' ? 49 : 39,
+      period: 'month',
+      description: 'The complete career intelligence suite.',
       features: [
-        'Unlimited AI career analyses',
-        'AI Coach - 24/7 personalized guidance',
-        'AI Interview Practice - unlimited sessions',
-        'Advanced job matching',
-        'Resume optimization tools',
-        'Salary negotiation guides',
-        'Priority support',
-        'Monthly skill assessments'
+        'Unlimited AI Analyses',
+        '24/7 AI Career Coach',
+        'Unlimited Interview Prep',
+        'Resume Intelligence Engine',
+        'Salary Negotiation AI',
+        'Priority Support'
       ],
-      cta: 'Start Pro Trial',
+      cta: 'Get Pro Access',
       popular: true,
       icon: Zap,
-      badge: 'Most Popular'
+      badge: 'Recommended'
     },
     {
-      name: 'Enterprise',
-      price: null,
-      period: 'custom',
-      description: 'For teams and organizations',
+      name: 'Elite',
+      price: billingCycle === 'monthly' ? 199 : 159,
+      period: 'month',
+      description: 'For high-impact leaders and executives.',
       features: [
         'Everything in Pro',
-        'Team management dashboard',
-        'Custom training programs',
-        'Dedicated account manager',
-        'API access',
-        'Advanced analytics',
-        'SSO & security controls',
-        '24/7 phone support'
+        'Executive Brand Strategy',
+        'Board Seat Intelligence',
+        'Private Network Access',
+        'Dedicated Career Strategist',
+        'White-glove Support'
       ],
-      cta: 'Contact Sales',
+      cta: 'Go Elite',
       popular: false,
       icon: Crown
     }
   ];
 
   const handleSelectPlan = async (planName: string) => {
-    if (planName === 'Free') {
+    if (planName === 'Explorer') {
       router.push('/auth/signup');
       return;
     } 
     
-    if (planName === 'Enterprise') {
+    if (planName === 'Elite') {
       router.push('/contact');
       return;
     }
@@ -109,186 +104,140 @@ export default function PricingPage() {
   };
 
   return (
-    <div className="min-h-screen gradient-dark-glass py-12 px-4 relative overflow-hidden">
-      {/* Animated Background */}
-      <div className="absolute inset-0 overflow-hidden opacity-30">
-        <div className="absolute top-20 left-10 w-72 h-72 bg-accent-500 rounded-full blur-3xl animate-pulse"></div>
-        <div className="absolute bottom-20 right-10 w-96 h-96 bg-accent-500/60 rounded-full blur-3xl animate-pulse"></div>
-        <div className="absolute top-1/2 left-1/2 w-64 h-64 bg-accent-400/40 rounded-full blur-3xl animate-pulse"></div>
+    <div className="min-h-screen bg-premium-bg pt-32 pb-20 px-6">
+      {/* Header */}
+      <div className="max-w-4xl mx-auto text-center mb-16">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-premium-accent/10 border border-premium-accent/20 text-premium-accent text-sm font-bold mb-6"
+        >
+          <Star className="w-4 h-4 fill-premium-accent" />
+          <span>Investment in your future</span>
+        </motion.div>
+        
+        <motion.h1 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.1 }}
+          className="text-5xl md:text-6xl font-serif text-white mb-6"
+        >
+          Choose Your <span className="italic text-premium-accent">Trajectory</span>
+        </motion.h1>
+        
+        <motion.p 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2 }}
+          className="text-xl text-premium-text-muted mb-10"
+        >
+          Unlock the full power of AI-driven career intelligence.
+        </motion.p>
+
+        {/* Billing Toggle */}
+        <motion.div 
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.3 }}
+          className="flex items-center justify-center gap-4"
+        >
+          <span className={`text-sm font-medium ${billingCycle === 'monthly' ? 'text-white' : 'text-premium-text-muted'}`}>Monthly</span>
+          <button 
+            onClick={() => setBillingCycle(billingCycle === 'monthly' ? 'yearly' : 'monthly')}
+            className="w-14 h-7 rounded-full bg-white/10 p-1 relative transition-colors hover:bg-white/20"
+          >
+            <div className={`w-5 h-5 rounded-full bg-premium-accent transition-all duration-300 ${billingCycle === 'yearly' ? 'translate-x-7' : 'translate-x-0'}`} />
+          </button>
+          <span className={`text-sm font-medium ${billingCycle === 'yearly' ? 'text-white' : 'text-premium-text-muted'}`}>
+            Yearly <span className="text-premium-accent ml-1">(Save 20%)</span>
+          </span>
+        </motion.div>
       </div>
 
-      <div className="relative z-10 max-w-7xl mx-auto">
-        {/* Error Message */}
-        {error && (
-          <div className="mb-6 max-w-2xl mx-auto glass-card p-4 bg-red-500/10 border border-red-400/50 rounded-xl text-red-300 text-center">
-            {error}
-          </div>
-        )}
-
-        {/* Header */}
-        <div className="text-center mb-12">
-          <h1 className="text-5xl md:text-6xl font-bold text-white mb-4">
-            Choose Your Path to
-            <span className="block bg-gradient-to-r from-accent-500 via-accent-400 to-accent-500 bg-clip-text text-transparent">
-              Career Success
-            </span>
-          </h1>
-          <p className="text-xl text-ink-200 max-w-2xl mx-auto mb-8">
-            Unlock AI-powered career guidance and future-proof your professional journey
-          </p>
-
-          {/* Billing Toggle */}
-          <div className="inline-flex items-center gap-4 glass-card p-2 rounded-full">
-            <button
-              onClick={() => setBillingCycle('monthly')}
-              className={`px-6 py-2 rounded-full font-medium transition-all ${
-                billingCycle === 'monthly'
-                  ? 'bg-gradient-to-r from-accent-500 to-accent-400 text-white'
-                  : 'text-white hover:text-ink-200'
-              }`}
-            >
-              Monthly
-            </button>
-            <button
-              onClick={() => setBillingCycle('yearly')}
-              className={`px-6 py-2 rounded-full font-medium transition-all ${
-                billingCycle === 'yearly'
-                  ? 'bg-gradient-to-r from-accent-500 to-accent-400 text-white'
-                  : 'text-white hover:text-ink-200'
-              }`}
-            >
-              Yearly
-              <span className="ml-2 text-sm text-green-400">Save 17%</span>
-            </button>
-          </div>
+      {error && (
+        <div className="max-w-md mx-auto mb-8 p-4 bg-red-500/10 border border-red-500/20 rounded-xl text-red-400 text-center">
+          {error}
         </div>
+      )}
 
-        {/* Pricing Cards */}
-        <div className="grid md:grid-cols-3 gap-8 mb-12">
-          {plans.map((plan) => {
-            const Icon = plan.icon;
-            return (
-              <div
-                key={plan.name}
-                className={`relative glass-card hover-reflect rounded-2xl p-8 transition-all hover:scale-105 ${
-                  plan.popular
-                    ? 'border-accent-400/50 shadow-glass-xl shadow-accent-400/20'
-                    : 'border-glass-line'
-                }`}
-              >
-                {/* Popular Badge */}
-                {plan.badge && (
-                  <div className="absolute -top-4 left-1/2 -translate-x-1/2">
-                    <div className="bg-gradient-to-r from-accent-500 to-accent-400 text-white px-4 py-1 rounded-full text-sm font-bold shadow-glass-md">
-                      {plan.badge}
-                    </div>
-                  </div>
-                )}
-
-                {/* Plan Header */}
-                <div className="text-center mb-6">
-                  <Icon className="w-12 h-12 text-accent-400 mx-auto mb-4" />
-                  <h3 className="text-2xl font-bold text-white mb-2">{plan.name}</h3>
-                  <p className="text-ink-300 text-sm mb-4">{plan.description}</p>
-                  
-                  {/* Price */}
-                  <div className="mb-4">
-                    {plan.price !== null ? (
-                      <>
-                        <span className="text-5xl font-bold text-white">${plan.price}</span>
-                        <span className="text-ink-400 ml-2">/{plan.period}</span>
-                        {billingCycle === 'yearly' && plan.price > 0 && (
-                          <div className="text-sm text-green-400 mt-1">
-                            ${Math.round(plan.price / 12)}/month billed annually
-                          </div>
-                        )}
-                      </>
-                    ) : (
-                      <span className="text-4xl font-bold text-white">Custom</span>
-                    )}
-                  </div>
-                </div>
-
-                {/* Features */}
-                <div className="space-y-3 mb-8">
-                  {plan.features.map((feature, idx) => (
-                    <div key={idx} className="flex items-start gap-3">
-                      <Check className="w-5 h-5 text-green-400 flex-shrink-0 mt-0.5" />
-                      <span className="text-ink-200 text-sm">{feature}</span>
-                    </div>
-                  ))}
-                </div>
-
-                {/* CTA Button */}
-                <button
-                  onClick={() => handleSelectPlan(plan.name)}
-                  disabled={loading === plan.name}
-                  className={`w-full py-4 rounded-xl font-semibold transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed ${
-                    plan.popular
-                      ? 'primary-btn hover:shadow-glass-xl'
-                      : 'glass-card text-white hover:bg-glass-edge border border-glass-line'
-                  }`}
-                >
-                  {loading === plan.name ? (
-                    <>
-                      <Loader2 className="w-5 h-5 animate-spin" />
-                      Loading...
-                    </>
-                  ) : (
-                    <>
-                      {plan.cta}
-                      <ArrowRight className="w-5 h-5" />
-                    </>
-                  )}
-                </button>
+      {/* Pricing Cards */}
+      <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">
+        {plans.map((plan, index) => (
+          <motion.div
+            key={plan.name}
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1 * index }}
+            className={`premium-card p-8 flex flex-col relative ${plan.popular ? 'border-premium-accent/40 shadow-[0_0_40px_rgba(0,217,255,0.1)]' : ''}`}
+          >
+            {plan.popular && (
+              <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-premium-accent text-premium-primary px-4 py-1 rounded-full text-xs font-bold uppercase tracking-widest">
+                {plan.badge}
               </div>
-            );
-          })}
-        </div>
+            )}
 
-        {/* FAQ Section */}
-        <div className="max-w-3xl mx-auto glass-card hover-reflect rounded-2xl shadow-glass-lg p-8">
-          <h2 className="text-3xl font-bold text-white text-center mb-8">
-            Frequently Asked Questions
-          </h2>
-          <div className="space-y-6">
-            <div>
-              <h3 className="text-lg font-semibold text-white mb-2">
-                Can I switch plans anytime?
-              </h3>
-              <p className="text-ink-200">
-                Yes! You can upgrade, downgrade, or cancel your subscription at any time. Changes take effect at the end of your billing period.
-              </p>
+            <div className="mb-8">
+              <plan.icon className={`w-10 h-10 mb-6 ${plan.popular ? 'text-premium-accent' : 'text-white/40'}`} />
+              <h3 className="text-2xl font-bold text-white mb-2">{plan.name}</h3>
+              <p className="text-premium-text-muted text-sm leading-relaxed">{plan.description}</p>
             </div>
-            <div>
-              <h3 className="text-lg font-semibold text-white mb-2">
-                What payment methods do you accept?
-              </h3>
-              <p className="text-ink-200">
-                We accept all major credit cards (Visa, MasterCard, American Express) and digital payments through Stripe.
-              </p>
-            </div>
-            <div>
-              <h3 className="text-lg font-semibold text-white mb-2">
-                Is there a free trial for Pro?
-              </h3>
-              <p className="text-ink-200">
-                Yes! All new Pro subscribers get a 7-day free trial. Cancel anytime during the trial and you won't be charged.
-              </p>
-            </div>
-          </div>
-        </div>
 
-        {/* Trust Indicators */}
-        <div className="text-center mt-12">
-          <p className="text-ink-400 text-sm mb-4">Trusted by 10,000+ professionals worldwide</p>
-          <div className="flex items-center justify-center gap-8 flex-wrap text-ink-300 text-sm">
-            <span>🔒 Secure Payments</span>
-            <span>✓ Cancel Anytime</span>
-            <span>💳 Money-back Guarantee</span>
-          </div>
-        </div>
+            <div className="mb-8">
+              <div className="flex items-baseline gap-1">
+                <span className="text-4xl font-bold text-white">${plan.price}</span>
+                {plan.price !== null && (
+                  <span className="text-premium-text-muted">/{plan.period}</span>
+                )}
+              </div>
+            </div>
+
+            <ul className="space-y-4 mb-10 flex-1">
+              {plan.features.map((feature) => (
+                <li key={feature} className="flex items-start gap-3 text-sm text-premium-text">
+                  <Check className="w-5 h-5 text-premium-accent shrink-0" />
+                  <span>{feature}</span>
+                </li>
+              ))}
+            </ul>
+
+            <button 
+              onClick={() => handleSelectPlan(plan.name)}
+              disabled={loading !== null}
+              className={`w-full py-4 rounded-xl font-bold transition-all flex items-center justify-center gap-2 ${
+                plan.popular 
+                ? 'bg-premium-accent text-premium-primary hover:shadow-[0_10px_30px_rgba(0,217,255,0.3)] hover:-translate-y-1' 
+                : 'bg-white/5 text-white border border-white/10 hover:bg-white/10'
+              }`}
+            >
+              {loading === plan.name ? (
+                <Loader2 className="w-5 h-5 animate-spin" />
+              ) : (
+                <>
+                  {plan.cta}
+                  <ArrowRight className="w-5 h-5" />
+                </>
+              )}
+            </button>
+          </motion.div>
+        ))}
       </div>
+
+      {/* Trust Section */}
+      <motion.div 
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.6 }}
+        className="max-w-4xl mx-auto mt-20 text-center"
+      >
+        <div className="flex items-center justify-center gap-8 opacity-50 grayscale">
+          <ShieldCheck className="w-12 h-12 text-white" />
+          <span className="text-white font-serif text-2xl italic">Enterprise Grade Security</span>
+        </div>
+        <p className="mt-6 text-premium-text-muted text-sm">
+          All plans include 256-bit encryption and GDPR compliance. Cancel anytime.
+        </p>
+      </motion.div>
     </div>
   );
+}
 }

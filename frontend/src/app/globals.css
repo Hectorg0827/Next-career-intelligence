@@ -52,12 +52,86 @@ html {
   --shadow-lg: 0 10px 15px rgba(17, 80, 163, 0.2);
   --shadow-xl: 0 20px 25px rgba(17, 80, 163, 0.25);
   --shadow-gold: 0 4px 20px rgba(229, 183, 59, 0.4);
+
+  /* === PREMIUM DESIGN SYSTEM === */
+  --premium-primary: #0A0E27;
+  --premium-secondary: #1A1F4A;
+  --premium-accent: #00D9FF;
+  --premium-accent-warm: #FF6B35;
+  --premium-text: #E8E9F3;
+  --premium-text-muted: #9CA3C3;
+  --premium-bg: #060814;
+  --premium-card-bg: rgba(26, 31, 74, 0.4);
+  --premium-success: #00FF94;
+  --premium-warning: #FFB800;
+  --premium-danger: #FF3366;
   
   /* === LEGACY COLORS (for backward compatibility) === */
   --next-deep-blue: #0B1D45;
   --next-royal-blue: #1E3C78;
   --next-gold: #CBA135;
   --next-gradient: linear-gradient(135deg, #1E3C78, #0B1D45);
+}
+
+@layer components {
+  .premium-bg-gradient {
+    @apply fixed inset-0 -z-10;
+    background: 
+      radial-gradient(ellipse at 20% 10%, rgba(0, 217, 255, 0.15) 0%, transparent 50%),
+      radial-gradient(ellipse at 80% 90%, rgba(255, 107, 53, 0.1) 0%, transparent 50%),
+      var(--premium-bg);
+  }
+
+  .premium-grid-overlay {
+    @apply fixed inset-0 -z-10 opacity-50;
+    background-image: 
+      linear-gradient(rgba(0, 217, 255, 0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0, 217, 255, 0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+  }
+
+  .premium-card {
+    @apply bg-premium-secondary/40 backdrop-blur-xl border border-premium-accent/20 rounded-[20px] shadow-2xl;
+  }
+
+  .premium-btn-primary {
+    @apply bg-gradient-to-br from-premium-accent to-[#0099CC] text-premium-primary px-10 py-5 rounded-xl font-bold text-lg transition-all hover:-translate-y-1 hover:shadow-[0_15px_40px_rgba(0,217,255,0.4)];
+  }
+
+  .premium-btn-secondary {
+    @apply bg-transparent text-premium-text px-10 py-5 rounded-xl font-semibold text-lg border-2 border-white/20 transition-all hover:bg-white/5 hover:border-premium-accent;
+  }
+
+  .premium-heading {
+    @apply font-serif font-bold leading-[1.1] bg-gradient-to-br from-white to-premium-accent bg-clip-text text-transparent;
+  }
+}
+
+@keyframes fillRisk {
+  from { width: 0; }
+  to { width: 67%; }
+}
+
+.animate-fill-risk {
+  animation: fillRisk 2s ease-out forwards;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-20px); }
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+@keyframes rotate-slow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.animate-rotate-slow {
+  animation: rotate-slow 20s linear infinite;
 }
 
 /* Loading Animation for X Logo */

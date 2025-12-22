@@ -1,25 +1,38 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { motion } from 'framer-motion';
-import { ArrowRight, Sparkles, TrendingUp, Shield, Brain, LogOut, User, Crown, Zap } from 'lucide-react';
+import { motion, useScroll, useTransform } from 'framer-motion';
+import { 
+  ArrowRight, 
+  Sparkles, 
+  TrendingUp, 
+  Shield, 
+  Brain, 
+  Crown, 
+  Zap, 
+  CheckCircle2, 
+  BarChart3, 
+  Users, 
+  Target, 
+  Briefcase,
+  Cpu,
+  LineChart,
+  Map,
+  Quote
+} from 'lucide-react';
 import Logo from '@/components/Logo';
-import HowItWorksSection from '@/components/HowItWorksSection';
-import TestimonialsCarousel from '@/components/TestimonialsCarousel';
-import StatsSection from '@/components/StatsSection';
 import { useAuth } from '@/contexts/AuthContext';
 import {
   staggerContainerVariants,
   staggerItemVariants,
-  buttonVariants,
   fadeInUpVariants,
   scaleInVariants,
 } from '@/lib/animations';
 
 export default function Home() {
   const router = useRouter();
-  const { user, isAuthenticated, hasPremiumAccess, logout, isLoading } = useAuth();
+  const { user, isAuthenticated, hasPremiumAccess, isLoading } = useAuth();
   const [jobTitle, setJobTitle] = useState('');
   const [isAnalyzing, setIsAnalyzing] = useState(false);
 
@@ -31,300 +44,398 @@ export default function Home() {
     router.push(`/analyze?job=${encodeURIComponent(jobTitle)}`);
   };
 
-  const handleLogout = async () => {
-    try {
-      await logout();
-    } catch (error) {
-      console.error('Logout failed:', error);
-    }
-  };
-
   const handleSubscriberAccess = () => {
     router.push('/dashboard');
   };
 
   return (
-    <div className="min-h-screen gradient-dark-glass bg-noise relative overflow-hidden">
-      {/* Skip to main content link for keyboard navigation */}
-      <a
-        href="#main-content"
-        className="skip-to-main"
-        aria-label="Skip to main content"
-      >
-        Skip to main content
-      </a>
+    <div className="min-h-screen bg-premium-bg text-premium-text font-sans selection:bg-premium-accent/30 selection:text-premium-accent">
+      {/* Background Effects */}
+      <div className="premium-bg-gradient" />
+      <div className="premium-grid-overlay" />
 
-      {/* Animated Background */}
-      <div className="absolute inset-0 overflow-hidden opacity-30">
-        <div className="absolute top-20 left-10 w-72 h-72 bg-accent-500 rounded-full blur-3xl animate-pulse"></div>
-        <div className="absolute bottom-20 right-10 w-96 h-96 bg-accent-500/60 rounded-full blur-3xl animate-pulse"></div>
-        <div className="absolute top-1/2 left-1/2 w-64 h-64 bg-accent-400/40 rounded-full blur-3xl animate-pulse"></div>
-      </div>
-
-      <main id="main-content" className="relative z-10 flex flex-col items-center justify-center min-h-screen px-4 py-12">
-        <motion.div
-          className="max-w-4xl w-full text-center"
-          variants={staggerContainerVariants}
-          initial="initial"
-          animate="animate"
-          role="region"
-          aria-label="Hero section"
-        >
-          {/* Subscriber Quick Access Section */}
-          {!isLoading && hasPremiumAccess && (
-            <motion.div
-              className="mb-8"
-              variants={fadeInUpVariants}
-            >
-              <div className="glass-card hover-reflect p-6 shadow-glass-lg border-gold-primary/30">
-                <div className="flex items-center justify-between flex-wrap gap-4">
-                  <div className="flex items-center gap-3">
-                    <motion.div
-                      className="p-3 bg-gradient-to-br from-gold-primary/20 to-gold-accent/20 rounded-full"
-                      whileHover={{ rotate: [0, -10, 10, -10, 0], transition: { duration: 0.5 } }}
-                    >
-                      <Crown className="w-6 h-6 text-gold-primary" />
-                    </motion.div>
-                    <div className="text-left">
-                      <h3 className="text-white font-bold text-xl">Welcome back, {user?.name || 'Subscriber'}!</h3>
-                      <p className="text-white/70 text-sm font-medium">Access your premium features</p>
-                    </div>
+      {/* Hero Section */}
+      <section className="relative pt-32 pb-20 px-4 overflow-hidden">
+        <div className="max-w-7xl mx-auto grid lg:grid-cols-[1.2fr_1fr] gap-12 items-center">
+          <motion.div
+            variants={staggerContainerVariants}
+            initial="initial"
+            animate="animate"
+            className="relative z-10"
+          >
+            {/* Premium Badge */}
+            {!isLoading && hasPremiumAccess && (
+              <motion.div
+                variants={fadeInUpVariants}
+                className="mb-8 inline-block"
+              >
+                <div className="premium-card p-4 border-premium-accent/40 bg-premium-accent/5 flex items-center gap-4">
+                  <div className="p-2 bg-premium-accent/20 rounded-full">
+                    <Crown className="w-5 h-5 text-premium-accent" />
                   </div>
-                  <motion.button
-                    onClick={handleSubscriberAccess}
-                    className="px-6 py-3 bg-gradient-to-r from-gold-primary to-gold-accent hover:from-gold-accent hover:to-gold-hover text-royal-navy font-bold rounded-xl transition-all shadow-lg hover:shadow-xl flex items-center gap-2"
-                    variants={buttonVariants}
-                    whileHover="hover"
-                    whileTap="tap"
-                  >
-                    <Zap className="w-5 h-5" />
-                    Go to Dashboard
-                    <ArrowRight className="w-5 h-5" />
-                  </motion.button>
+                  <div>
+                    <p className="text-sm font-bold text-white">Welcome back, {user?.name || 'Subscriber'}!</p>
+                    <button 
+                      onClick={handleSubscriberAccess}
+                      className="text-xs text-premium-accent hover:underline font-medium flex items-center gap-1"
+                    >
+                      Go to Premium Dashboard <ArrowRight className="w-3 h-3" />
+                    </button>
+                  </div>
                 </div>
-              </div>
+              </motion.div>
+            )}
+
+            <motion.div variants={fadeInUpVariants} className="inline-flex items-center gap-2 px-4 py-2 bg-premium-accent/10 border border-premium-accent/20 rounded-full mb-6">
+              <Sparkles className="w-4 h-4 text-premium-accent" />
+              <span className="text-[10px] font-bold tracking-[0.2em] uppercase text-premium-accent">Enterprise-Grade Career Intelligence</span>
             </motion.div>
-          )}
 
-          {/* NEXT Logo */}
-          <motion.div
-            className="mb-8"
-            variants={scaleInVariants}
-          >
-            <Logo size="lg" linkTo={undefined} className="mx-auto" />
-          </motion.div>
+            <motion.h1 
+              variants={fadeInUpVariants}
+              className="premium-heading text-5xl md:text-7xl mb-6"
+            >
+              Navigate Your Career <br />
+              <span className="text-white">in the Age of AI</span>
+            </motion.h1>
 
-          <motion.div
-            className="inline-flex items-center gap-2 px-4 py-2 bg-white/5 backdrop-blur-md border border-gold-primary/20 rounded-full mb-8 shadow-glass-sm"
-            variants={staggerItemVariants}
-            role="status"
-            aria-label="AI-powered analysis available"
-          >
-            <Sparkles className="w-4 h-4 text-gold-primary" aria-hidden="true" />
-            <span className="text-white/90 text-xs font-bold tracking-widest uppercase">Powered by AI</span>
-          </motion.div>
+            <motion.p 
+              variants={fadeInUpVariants}
+              className="text-xl text-premium-text-muted mb-10 max-w-2xl leading-relaxed"
+            >
+              Enterprise-grade career intelligence powered by adaptive AI. Get data-driven insights on automation risk, skill gaps, and strategic career moves.
+            </motion.p>
 
-          <motion.h1
-            className="text-5xl md:text-7xl font-extrabold mb-6 leading-[1.1] tracking-tight"
-            variants={staggerItemVariants}
-          >
-            <span className="text-white drop-shadow-xl">Is Your Job</span>
-            <span className="block bg-gradient-to-r from-[#F5D264] via-[#E5B73B] to-[#D49F25] bg-clip-text text-transparent mt-2 drop-shadow-sm pb-2">
-              AI-Proof?
-            </span>
-          </motion.h1>
+            <motion.div variants={fadeInUpVariants} className="flex flex-wrap gap-4 mb-10">
+              {[
+                { icon: Shield, text: 'Enterprise Security' },
+                { icon: CheckCircle2, text: 'Research-Backed' },
+                { icon: Brain, text: 'Privacy First' }
+              ].map((badge, i) => (
+                <div key={i} className="flex items-center gap-2 bg-premium-accent/5 border border-premium-accent/10 px-4 py-2 rounded-full">
+                  <badge.icon className="w-4 h-4 text-premium-accent" />
+                  <span className="text-sm font-medium text-premium-text-muted">{badge.text}</span>
+                </div>
+              ))}
+            </motion.div>
 
-          <motion.p
-            className="text-xl md:text-2xl text-white/80 mb-12 max-w-2xl mx-auto leading-relaxed font-medium"
-            variants={staggerItemVariants}
-          >
-            Get a free AI-powered analysis of your career&apos;s automation risk and discover skills that future-proof your career
-          </motion.p>
-
-          <motion.form
-            onSubmit={handleAnalyze}
-            className="max-w-2xl mx-auto mb-8"
-            variants={staggerItemVariants}
-            role="search"
-            aria-label="Career analysis search"
-          >
-            <div className="glass-card flex flex-col sm:flex-row gap-4 p-3 shadow-glass-xl hover:border-gold-primary/30 transition-all">
-              <motion.input
+            <motion.form 
+              variants={fadeInUpVariants}
+              onSubmit={handleAnalyze}
+              className="flex flex-col sm:flex-row gap-4 max-w-xl"
+            >
+              <input 
                 type="text"
                 value={jobTitle}
                 onChange={(e) => setJobTitle(e.target.value)}
-                placeholder="Enter your job title (e.g., Software Engineer)"
-                className="input-glass flex-1 text-lg text-white placeholder:text-white/50 font-medium"
-                disabled={isAnalyzing}
-                whileFocus={{ scale: 1.01 }}
-                transition={{ duration: 0.2 }}
-                aria-label="Job title input"
-                aria-required="true"
-                aria-invalid={!jobTitle.trim() && "true"}
-                id="job-title-input"
-                name="jobTitle"
-                autoComplete="organization-title"
+                placeholder="Enter your job title..."
+                className="flex-1 bg-premium-secondary/40 border border-premium-accent/20 rounded-xl px-6 py-4 text-white placeholder:text-premium-text-muted focus:outline-none focus:border-premium-accent transition-all"
               />
-              <motion.button
+              <button 
                 type="submit"
-                disabled={!jobTitle.trim() || isAnalyzing}
-                className="px-8 py-4 bg-gradient-to-r from-gold-primary to-gold-accent hover:from-gold-accent hover:to-gold-hover text-royal-navy font-bold text-lg rounded-xl transition-all shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 whitespace-nowrap"
-                variants={buttonVariants}
-                whileHover="hover"
-                whileTap="tap"
-                aria-label={isAnalyzing ? 'Analyzing your career' : 'Start free career analysis'}
-                aria-disabled={!jobTitle.trim() || isAnalyzing}
+                disabled={isAnalyzing || !jobTitle.trim()}
+                className="premium-btn-primary flex items-center justify-center gap-2 whitespace-nowrap disabled:opacity-50"
               >
-                {isAnalyzing ? 'Analyzing...' : 'Analyze Free'}
-                {!isAnalyzing && <ArrowRight className="w-5 h-5" aria-hidden="true" />}
-              </motion.button>
-            </div>
-          </motion.form>
-
-          <motion.div
-            className="flex flex-wrap items-center justify-center gap-8 text-white/70 text-sm mb-16 font-medium"
-            variants={staggerItemVariants}
-            role="list"
-            aria-label="Key features"
-          >
-            <motion.div
-              className="flex items-center gap-2 hover:text-white transition-colors"
-              whileHover={{ scale: 1.05 }}
-              role="listitem"
-            >
-              <Shield className="w-5 h-5 text-gold-primary" aria-hidden="true" />
-              <span>100% Free Analysis</span>
-            </motion.div>
-            <motion.div
-              className="flex items-center gap-2 hover:text-white transition-colors"
-              whileHover={{ scale: 1.05 }}
-              role="listitem"
-            >
-              <Brain className="w-5 h-5 text-gold-primary" aria-hidden="true" />
-              <span>AI-Powered Insights</span>
-            </motion.div>
-            <motion.div
-              className="flex items-center gap-2 hover:text-white transition-colors"
-              whileHover={{ scale: 1.05 }}
-              role="listitem"
-            >
-              <TrendingUp className="w-5 h-5 text-gold-primary" aria-hidden="true" />
-              <span>Personalized Roadmap</span>
-            </motion.div>
+                {isAnalyzing ? 'Analyzing...' : 'Get Free Analysis'}
+                {!isAnalyzing && <ArrowRight className="w-5 h-5" />}
+              </button>
+            </motion.form>
           </motion.div>
 
-        </motion.div>
-
-        <motion.nav
-          className="mt-16 text-center"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.8, duration: 0.5 }}
-          aria-label="Secondary navigation"
-        >
-          <p className="text-white/60 text-base mb-4 font-medium">
-            Join thousands of professionals taking control of their careers
-          </p>
-          <div className="flex items-center justify-center gap-4 flex-wrap">
-            <motion.button
-              onClick={() => {
-                const section = document.getElementById('how-it-works');
-                section?.scrollIntoView({ behavior: 'smooth' });
-              }}
-              className="text-white/70 hover:text-gold-primary text-sm font-medium transition-colors cursor-pointer"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              aria-label="Scroll to How It Works section"
-            >
-              How It Works
-            </motion.button>
-            <span className="text-white/30" aria-hidden="true">•</span>
-            <motion.button
-              onClick={() => router.push('/login')}
-              className="text-white/70 hover:text-gold-primary text-sm font-medium transition-colors cursor-pointer"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              aria-label="Navigate to sign in page"
-            >
-              Sign In
-            </motion.button>
-          </div>
-        </motion.nav>
-      </main>
-
-      {/* How It Works Section */}
-      <HowItWorksSection />
-
-      {/* Stats Section */}
-      <StatsSection />
-
-      {/* Testimonials Section */}
-      <TestimonialsCarousel />
-
-      {/* Final CTA Section */}
-      <section className="py-24 px-4">
-        <div className="max-w-4xl mx-auto text-center">
+          {/* Analysis Card Preview */}
           <motion.div
-            className="glass-card hover-reflect rounded-3xl p-12 relative overflow-hidden shadow-glass-xl"
-            initial={{ opacity: 0, y: 40 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-100px" }}
-            transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+            initial={{ opacity: 0, x: 50 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 1, delay: 0.5 }}
+            className="relative hidden lg:block"
           >
-            {/* Background Glow */}
-            <div className="absolute inset-0 bg-gradient-to-br from-accent-500/10 to-transparent opacity-50"></div>
+            <div className="premium-card p-8 animate-float relative z-10">
+              <div className="flex justify-between items-center mb-8">
+                <h3 className="font-serif text-2xl text-premium-accent">Live Career Analysis</h3>
+                <div className="px-3 py-1 bg-premium-accent/10 border border-premium-accent/20 rounded-full text-[10px] font-bold text-premium-accent uppercase tracking-wider">Real-time Data</div>
+              </div>
 
-            <div className="relative z-10">
-              <motion.h2
-                className="text-3xl md:text-5xl font-bold text-white mb-6"
+              <div className="mb-8">
+                <div className="flex justify-between text-sm mb-3">
+                  <span className="text-premium-text-muted">Automation Risk Assessment</span>
+                  <span className="font-bold text-premium-warning">67% Medium Risk</span>
+                </div>
+                <div className="h-3 bg-white/5 rounded-full overflow-hidden">
+                  <div className="h-full bg-gradient-to-r from-premium-success via-premium-warning to-premium-danger animate-fill-risk" />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                {[
+                  { label: 'Skills at Risk', value: '8', color: 'text-premium-danger' },
+                  { label: 'Growth Skills', value: '12', color: 'text-premium-success' },
+                  { label: 'Salary Potential', value: '+35%', color: 'text-premium-accent' },
+                  { label: 'Years to Master', value: '4.2', color: 'text-premium-text' }
+                ].map((stat, i) => (
+                  <div key={i} className="bg-premium-accent/5 border border-premium-accent/10 p-4 rounded-xl">
+                    <div className={`font-serif text-3xl font-bold ${stat.color} mb-1`}>{stat.value}</div>
+                    <div className="text-xs text-premium-text-muted uppercase tracking-wider">{stat.label}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Decorative elements */}
+            <div className="absolute -top-10 -right-10 w-40 h-40 bg-premium-accent/20 rounded-full blur-[80px]" />
+            <div className="absolute -bottom-10 -left-10 w-40 h-40 bg-premium-accent-warm/10 rounded-full blur-[80px]" />
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Features Section */}
+      <section id="features" className="py-32 px-4 relative">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center max-w-3xl mx-auto mb-20">
+            <motion.h2 
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="premium-heading text-4xl md:text-6xl mb-6"
+            >
+              Career Intelligence <br />
+              <span className="text-white">That Adapts</span>
+            </motion.h2>
+            <motion.p 
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.2 }}
+              className="text-xl text-premium-text-muted"
+            >
+              Our multi-agent AI system analyzes thousands of labor market signals, automation trends, and skill dynamics to deliver actionable career intelligence.
+            </motion.p>
+          </div>
+
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {[
+              {
+                icon: Cpu,
+                title: 'Automation Risk Scoring',
+                desc: 'Proprietary algorithms analyze your role against 15,000+ automation patterns. Get granular task-level risk assessment.'
+              },
+              {
+                icon: Target,
+                title: 'Skill Gap Analysis',
+                desc: 'Real-time comparison of your skillset against emerging market demands. Prioritized learning paths with ROI calculations.'
+              },
+              {
+                icon: Map,
+                title: 'Career Path Simulation',
+                desc: 'Model different career trajectories with salary projections, stability scores, and market demand forecasts.'
+              },
+              {
+                icon: LineChart,
+                title: 'Market Intelligence',
+                desc: 'Live tracking of 2.3M+ job postings, salary trends, and skill demand shifts across all major industries.'
+              },
+              {
+                icon: Brain,
+                title: 'AI Skills Optimization',
+                desc: 'Learn which AI tools amplify your role vs. automate it. Personalized recommendations on AI literacy.'
+              },
+              {
+                icon: Zap,
+                title: 'Personalized Roadmaps',
+                desc: '90-day action plans with concrete milestones, resource recommendations, and progress tracking.'
+              }
+            ].map((feature, i) => (
+              <motion.div
+                key={i}
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ delay: 0.2, duration: 0.5 }}
+                transition={{ delay: i * 0.1 }}
+                className="premium-card p-8 group hover:border-premium-accent transition-all duration-500"
               >
-                Ready to Future-Proof Your Career?
-              </motion.h2>
-              <motion.p
-                className="text-xl md:text-2xl text-white/80 mb-8 max-w-2xl mx-auto leading-relaxed font-medium"
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: 0.3, duration: 0.5 }}
-              >
-                Get your free AI-powered career analysis now. No credit card required.
-              </motion.p>
-              <motion.button
-                onClick={() => {
-                  window.scrollTo({ top: 0, behavior: 'smooth' });
-                  setTimeout(() => {
-                    const input = document.querySelector('input[type="text"]') as HTMLInputElement;
-                    input?.focus();
-                  }, 500);
-                }}
-                className="px-8 py-4 bg-gradient-to-r from-gold-primary to-gold-accent hover:from-gold-accent hover:to-gold-hover text-royal-navy font-bold text-lg rounded-xl transition-all shadow-lg hover:shadow-xl inline-flex items-center gap-2 group btn-premium-shine relative"
+                <div className="w-14 h-14 bg-gradient-to-br from-premium-accent to-[#0099CC] rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-500">
+                  <feature.icon className="w-7 h-7 text-premium-primary" />
+                </div>
+                <h3 className="font-serif text-2xl mb-4 text-white">{feature.title}</h3>
+                <p className="text-premium-text-muted leading-relaxed">{feature.desc}</p>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* How It Works */}
+      <section id="how-it-works" className="py-32 px-4 bg-premium-primary/30 relative overflow-hidden">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center max-w-3xl mx-auto mb-20">
+            <h2 className="premium-heading text-4xl md:text-6xl mb-6">From Analysis to Action</h2>
+            <p className="text-xl text-premium-text-muted">Our multi-agent system delivers comprehensive career intelligence in minutes, not months.</p>
+          </div>
+
+          <div className="relative max-w-4xl mx-auto">
+            {/* Timeline Line */}
+            <div className="absolute left-1/2 -translate-x-1/2 top-0 bottom-0 w-px bg-gradient-to-b from-transparent via-premium-accent to-transparent hidden md:block" />
+
+            {[
+              {
+                step: '1',
+                title: 'Role Analysis Agent',
+                desc: 'Input your job title and industry. Our system decomposes your role into 50+ discrete tasks, analyzing each for automation susceptibility.'
+              },
+              {
+                step: '2',
+                title: 'Market Intelligence Agent',
+                desc: 'Real-time scanning of job market dynamics, salary trajectories, and skill demand signals across 2.3M+ active postings.'
+              },
+              {
+                step: '3',
+                title: 'Skills Assessment Agent',
+                desc: 'Identifies critical skill gaps and growth opportunities. Calculates ROI for each learning path based on market value.'
+              },
+              {
+                step: '4',
+                title: 'Strategic Planning Agent',
+                desc: 'Synthesizes insights into actionable roadmaps. Generates multiple career scenarios with probability-weighted outcomes.'
+              }
+            ].map((item, i) => (
+              <div key={i} className={`flex flex-col md:flex-row items-center gap-8 mb-16 ${i % 2 === 0 ? 'md:flex-row' : 'md:flex-row-reverse'}`}>
+                <div className="flex-1 w-full">
+                  <motion.div 
+                    initial={{ opacity: 0, x: i % 2 === 0 ? -50 : 50 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    viewport={{ once: true }}
+                    className="premium-card p-8"
+                  >
+                    <h3 className="font-serif text-2xl text-premium-accent mb-4">{item.title}</h3>
+                    <p className="text-premium-text-muted leading-relaxed">{item.desc}</p>
+                  </motion.div>
+                </div>
+                <div className="relative z-10">
+                  <div className="w-16 h-16 bg-gradient-to-br from-premium-accent to-[#0099CC] rounded-full flex items-center justify-center font-serif text-2xl font-bold text-premium-primary shadow-[0_0_30px_rgba(0,217,255,0.3)]">
+                    {item.step}
+                  </div>
+                </div>
+                <div className="flex-1 hidden md:block" />
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Social Proof */}
+      <section className="py-32 px-4">
+        <div className="max-w-7xl mx-auto">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
+            {[
+              { label: 'Careers Analyzed', value: '47K+' },
+              { label: 'Identify New Opportunities', value: '92%' },
+              { label: 'Average Salary Increase', value: '+28%' },
+              { label: 'Platform Rating', value: '4.8/5' }
+            ].map((stat, i) => (
+              <motion.div
+                key={i}
                 initial={{ opacity: 0, scale: 0.9 }}
                 whileInView={{ opacity: 1, scale: 1 }}
                 viewport={{ once: true }}
-                transition={{ delay: 0.4, duration: 0.5 }}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.98 }}
+                transition={{ delay: i * 0.1 }}
+                className="premium-card p-8 text-center"
               >
-                <motion.div
-                  animate={{
-                    rotate: [0, 10, -10, 10, 0],
-                    scale: [1, 1.1, 1, 1.1, 1]
-                  }}
-                  transition={{
-                    duration: 2,
-                    repeat: Infinity,
-                    repeatDelay: 1
-                  }}
-                >
-                  <Sparkles className="w-5 h-5" />
-                </motion.div>
-                <span>Start Your Free Analysis</span>
-                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-              </motion.button>
+                <div className="font-serif text-4xl md:text-5xl font-bold bg-gradient-to-br from-premium-accent to-premium-accent-warm bg-clip-text text-transparent mb-2">
+                  {stat.value}
+                </div>
+                <div className="text-sm text-premium-text-muted uppercase tracking-widest font-medium">
+                  {stat.label}
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Testimonials */}
+      <section id="testimonials" className="py-32 px-4 bg-premium-primary/30">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center max-w-3xl mx-auto mb-20">
+            <h2 className="premium-heading text-4xl md:text-6xl mb-6">Real Impact, Real Careers</h2>
+            <p className="text-xl text-premium-text-muted">See how professionals are using NextCI to stay ahead.</p>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-8">
+            {[
+              {
+                quote: "NextCI's automation risk analysis was eye-opening. I pivoted to ML engineering before my data analyst role became commoditized.",
+                author: "Sarah Chen",
+                role: "ML Engineer, Tech Corp",
+                initials: "SC"
+              },
+              {
+                quote: "The skill gap analysis was incredibly precise. Instead of random courses, I focused on high-ROI skills. Transitioned in 8 months.",
+                author: "Marcus Rodriguez",
+                role: "Growth Strategist, Startup",
+                initials: "MR"
+              },
+              {
+                quote: "As a finance professional, I was skeptical about AI impact. NextCI showed me exactly which tasks were at risk. Game changer.",
+                author: "Aisha Patel",
+                role: "Senior Financial Analyst",
+                initials: "AP"
+              }
+            ].map((t, i) => (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.1 }}
+                className="premium-card p-8 relative"
+              >
+                <Quote className="w-12 h-12 text-premium-accent opacity-20 mb-4" />
+                <p className="text-lg text-white mb-8 leading-relaxed italic">"{t.quote}"</p>
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 bg-gradient-to-br from-premium-accent to-premium-accent-warm rounded-full flex items-center justify-center font-bold text-premium-primary">
+                    {t.initials}
+                  </div>
+                  <div>
+                    <div className="font-bold text-white">{t.author}</div>
+                    <div className="text-sm text-premium-text-muted">{t.role}</div>
+                  </div>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Final CTA */}
+      <section id="analyze" className="py-32 px-4">
+        <div className="max-w-5xl mx-auto">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
+            className="premium-card p-12 md:p-20 text-center relative overflow-hidden border-2 border-premium-accent"
+          >
+            {/* Rotating background glow */}
+            <div className="absolute inset-0 -z-10 animate-rotate-slow opacity-20">
+              <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle,rgba(0,217,255,0.3)_0%,transparent_70%)]" />
+            </div>
+
+            <h2 className="premium-heading text-4xl md:text-6xl mb-8">Start Your Career <br /> Intelligence Analysis</h2>
+            <p className="text-xl text-premium-text-muted mb-12 max-w-2xl mx-auto">
+              Get a comprehensive report on automation risk, skill gaps, and strategic career moves. No credit card required.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-6 justify-center">
+              <button 
+                onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+                className="premium-btn-primary"
+              >
+                Analyze My Career Free
+              </button>
+              <button 
+                onClick={() => router.push('/pricing')}
+                className="premium-btn-secondary"
+              >
+                View Enterprise Plans
+              </button>
             </div>
           </motion.div>
         </div>

@@ -24,7 +24,7 @@ const loadingContent: LoadingContent[] = [
       icon: Brain,
       title: 'Profile Agent',
       text: 'Analyzing your career background and experience level...',
-      color: 'text-gold-primary'
+      color: 'text-premium-accent'
     }
   },
   {
@@ -33,7 +33,7 @@ const loadingContent: LoadingContent[] = [
       icon: Shield,
       title: 'Risk Agent',
       text: 'Evaluating AI displacement probability and automation risks...',
-      color: 'text-red-400'
+      color: 'text-premium-accent'
     }
   },
   {
@@ -42,7 +42,7 @@ const loadingContent: LoadingContent[] = [
       icon: Target,
       title: 'Match Agent',
       text: 'Calculating compatibility with emerging career opportunities...',
-      color: 'text-royal-blue-light'
+      color: 'text-premium-accent'
     }
   },
   {
@@ -51,7 +51,7 @@ const loadingContent: LoadingContent[] = [
       icon: TrendingUp,
       title: 'Gap Agent',
       text: 'Identifying critical skill gaps and training opportunities...',
-      color: 'text-gold-accent'
+      color: 'text-premium-accent'
     }
   },
   {
@@ -60,7 +60,7 @@ const loadingContent: LoadingContent[] = [
       icon: Lightbulb,
       title: 'Trajectory Agent',
       text: 'Forecasting your 5-year career path and growth potential...',
-      color: 'text-gold-primary'
+      color: 'text-premium-accent'
     }
   },
   {
@@ -69,7 +69,7 @@ const loadingContent: LoadingContent[] = [
       icon: Zap,
       title: 'Orchestrator',
       text: 'Synthesizing insights from all 9 specialized AI agents...',
-      color: 'text-gold-primary'
+      color: 'text-premium-accent'
     }
   },
   // Stats
@@ -79,7 +79,7 @@ const loadingContent: LoadingContent[] = [
       icon: Users,
       metric: '15,000+',
       text: 'professionals have discovered their AI-proof career path with NEXT',
-      color: 'text-gold-primary'
+      color: 'text-premium-accent'
     }
   },
   {
@@ -88,7 +88,7 @@ const loadingContent: LoadingContent[] = [
       icon: Award,
       metric: '89%',
       text: 'of users found new opportunities they never knew existed',
-      color: 'text-royal-blue-light'
+      color: 'text-premium-accent'
     }
   },
   {
@@ -97,7 +97,7 @@ const loadingContent: LoadingContent[] = [
       icon: TrendingUp,
       metric: '95%',
       text: 'reported increased confidence in their career direction',
-      color: 'text-gold-accent'
+      color: 'text-premium-accent'
     }
   },
   // Testimonials
@@ -132,7 +132,7 @@ const loadingContent: LoadingContent[] = [
       icon: Rocket,
       title: 'Did you know?',
       text: 'The average analysis reveals 3-5 high-impact skills that can be learned in under 6 months',
-      color: 'text-gold-primary'
+      color: 'text-premium-accent'
     }
   },
   {
@@ -141,7 +141,7 @@ const loadingContent: LoadingContent[] = [
       icon: Sparkles,
       title: 'AI Insight',
       text: 'Roles combining human creativity with AI tools are growing 3x faster than traditional positions',
-      color: 'text-royal-blue-light'
+      color: 'text-premium-accent'
     }
   },
   {
@@ -150,7 +150,7 @@ const loadingContent: LoadingContent[] = [
       icon: TrendingUp,
       title: 'Career Tip',
       text: 'Focus on skills that complement AI rather than compete with it - collaboration is key',
-      color: 'text-gold-accent'
+      color: 'text-premium-accent'
     }
   }
 ];
@@ -192,89 +192,85 @@ export default function EnhancedLoadingExperience({ jobTitle }: EnhancedLoadingE
   const currentContent = loadingContent[currentIndex];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-royal-navy via-royal-navy to-blue-900 py-12 px-4 flex items-center justify-center">
-      {/* Background Animation */}
-      <div className="absolute inset-0 overflow-hidden opacity-20">
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-gold-primary rounded-full blur-3xl animate-pulse-slow"></div>
-        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-royal-blue rounded-full blur-3xl animate-pulse-slow"></div>
-      </div>
+    <div className="min-h-screen bg-premium-bg py-24 px-4 flex items-center justify-center relative overflow-hidden">
+      <div className="absolute inset-0 premium-bg-gradient opacity-50" />
 
       <div className="max-w-3xl w-full relative z-10">
         {/* Header */}
-        <div className="text-center mb-12 animate-fade-in">
-          <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/10 backdrop-blur-sm border border-gold-primary/30 rounded-full mb-6">
-            <Sparkles className="w-4 h-4 text-gold-primary animate-pulse" />
-            <span className="text-white/90 text-sm font-medium">AI Analysis In Progress</span>
+        <div className="text-center mb-16 animate-fade-in">
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-premium-accent/10 border border-premium-accent/20 rounded-full mb-8">
+            <Sparkles className="w-3.5 h-3.5 text-premium-accent animate-pulse" />
+            <span className="text-premium-accent text-[10px] font-medium tracking-[0.2em] uppercase">Intelligence Engine Active</span>
           </div>
-          <h1 className="text-3xl md:text-4xl font-bold text-white mb-3">
-            Analyzing <span className="text-gold-primary">{jobTitle}</span>
+          <h1 className="text-4xl md:text-5xl font-serif italic text-white mb-4">
+            Analyzing <span className="text-premium-accent">{jobTitle}</span>
           </h1>
-          <p className="text-white/70 text-lg">
-            Our 9 specialized AI agents are working together to create your personalized career intelligence report
+          <p className="text-premium-text-muted text-lg max-w-xl mx-auto">
+            Our 9 specialized AI agents are synthesizing real-time market data to architect your career strategy.
           </p>
         </div>
 
         {/* Progress Bar */}
-        <div className="mb-12">
-          <div className="flex justify-between items-center mb-3">
-            <span className="text-white/70 text-sm font-medium">Analysis Progress</span>
-            <span className="text-gold-primary text-sm font-bold">{Math.round(progress)}%</span>
+        <div className="mb-20 max-w-md mx-auto">
+          <div className="flex justify-between items-center mb-4">
+            <span className="text-premium-text-muted/60 text-[10px] uppercase tracking-widest font-medium">System Progress</span>
+            <span className="text-premium-accent text-sm font-serif italic">{Math.round(progress)}%</span>
           </div>
-          <div className="h-3 bg-white/10 rounded-full overflow-hidden backdrop-blur-sm">
+          <div className="h-1 w-full bg-white/5 rounded-full overflow-hidden">
             <div 
-              className="h-full bg-gradient-to-r from-gold-primary via-gold-accent to-gold-hover rounded-full transition-all duration-500 ease-out relative"
+              className="h-full bg-premium-accent transition-all duration-500 ease-out relative"
               style={{ width: `${progress}%` }}
             >
-              <div className="absolute inset-0 bg-white/30 animate-pulse"></div>
+              <div className="absolute inset-0 bg-white/20 animate-pulse"></div>
             </div>
           </div>
         </div>
 
         {/* Rotating Content Card */}
         <div 
-          className={`bg-white/5 backdrop-blur-md border border-white/10 rounded-3xl p-8 md:p-12 min-h-[280px] flex items-center justify-center transition-all duration-300 ${
-            isVisible ? 'opacity-100 scale-100' : 'opacity-0 scale-95'
+          className={`premium-card p-10 md:p-16 min-h-[320px] flex items-center justify-center transition-all duration-500 ${
+            isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
           }`}
         >
           {currentContent.type === 'agent' && (
             <div className="text-center">
-              <div className={`w-20 h-20 mx-auto mb-6 bg-white/10 rounded-2xl flex items-center justify-center`}>
+              <div className="w-20 h-20 mx-auto mb-8 bg-premium-accent/5 border border-premium-accent/10 rounded-2xl flex items-center justify-center">
                 {currentContent.content.icon && (
                   <currentContent.content.icon className={`w-10 h-10 ${currentContent.content.color}`} />
                 )}
               </div>
-              <h3 className="text-2xl font-bold text-white mb-3">{currentContent.content.title}</h3>
-              <p className="text-white/80 text-lg">{currentContent.content.text}</p>
+              <h3 className="text-2xl font-serif italic text-white mb-4">{currentContent.content.title}</h3>
+              <p className="text-premium-text-muted text-lg leading-relaxed">{currentContent.content.text}</p>
             </div>
           )}
 
           {currentContent.type === 'stat' && (
             <div className="text-center">
-              <div className="w-16 h-16 mx-auto mb-4 bg-white/10 rounded-2xl flex items-center justify-center">
+              <div className="w-16 h-16 mx-auto mb-6 bg-premium-accent/5 border border-premium-accent/10 rounded-2xl flex items-center justify-center">
                 {currentContent.content.icon && (
                   <currentContent.content.icon className={`w-8 h-8 ${currentContent.content.color}`} />
                 )}
               </div>
-              <div className={`text-5xl font-bold ${currentContent.content.color} mb-4`}>
+              <div className={`text-6xl font-serif italic ${currentContent.content.color} mb-6`}>
                 {currentContent.content.metric}
               </div>
-              <p className="text-white/80 text-lg max-w-xl mx-auto">{currentContent.content.text}</p>
+              <p className="text-premium-text-muted text-lg max-w-xl mx-auto leading-relaxed">{currentContent.content.text}</p>
             </div>
           )}
 
           {currentContent.type === 'testimonial' && (
             <div className="text-center">
-              <div className="text-6xl mb-6 opacity-30">&ldquo;</div>
-              <blockquote className="text-xl md:text-2xl text-white/90 font-medium mb-6 leading-relaxed">
+              <div className="text-6xl font-serif text-premium-accent/20 mb-4 leading-none">&ldquo;</div>
+              <blockquote className="text-xl md:text-2xl text-white font-serif italic mb-8 leading-relaxed">
                 {currentContent.content.text}
               </blockquote>
-              <div className="flex items-center justify-center gap-3">
-                <div className="w-12 h-12 rounded-full bg-gradient-to-br from-gold-primary to-gold-accent flex items-center justify-center text-xl">
+              <div className="flex items-center justify-center gap-4">
+                <div className="w-12 h-12 rounded-full bg-premium-accent/10 border border-premium-accent/20 flex items-center justify-center text-premium-accent font-serif italic text-xl">
                   {currentContent.content.author?.charAt(0)}
                 </div>
                 <div className="text-left">
-                  <div className="text-white font-semibold">{currentContent.content.author}</div>
-                  <div className="text-white/60 text-sm">{currentContent.content.role}</div>
+                  <div className="text-white font-medium">{currentContent.content.author}</div>
+                  <div className="text-premium-text-muted/60 text-xs uppercase tracking-widest">{currentContent.content.role}</div>
                 </div>
               </div>
             </div>
@@ -282,15 +278,15 @@ export default function EnhancedLoadingExperience({ jobTitle }: EnhancedLoadingE
 
           {currentContent.type === 'insight' && (
             <div className="text-center">
-              <div className="w-16 h-16 mx-auto mb-6 bg-white/10 rounded-2xl flex items-center justify-center">
+              <div className="w-16 h-16 mx-auto mb-8 bg-premium-accent/5 border border-premium-accent/10 rounded-2xl flex items-center justify-center">
                 {currentContent.content.icon && (
                   <currentContent.content.icon className={`w-8 h-8 ${currentContent.content.color}`} />
                 )}
               </div>
-              <h3 className={`text-xl font-bold ${currentContent.content.color} mb-4`}>
+              <h3 className={`text-xl font-serif italic text-white mb-4`}>
                 {currentContent.content.title}
               </h3>
-              <p className="text-white/80 text-lg leading-relaxed max-w-xl mx-auto">
+              <p className="text-premium-text-muted text-lg leading-relaxed max-w-xl mx-auto">
                 {currentContent.content.text}
               </p>
             </div>
@@ -298,24 +294,27 @@ export default function EnhancedLoadingExperience({ jobTitle }: EnhancedLoadingE
         </div>
 
         {/* Content Type Indicators */}
-        <div className="flex justify-center gap-2 mt-8">
+        <div className="flex justify-center gap-3 mt-12">
           {loadingContent.map((_, index) => (
             <div
               key={index}
-              className={`h-1.5 rounded-full transition-all ${
+              className={`h-1 rounded-full transition-all duration-500 ${
                 index === currentIndex 
-                  ? 'w-8 bg-gold-primary' 
-                  : 'w-1.5 bg-white/30'
+                  ? 'w-12 bg-premium-accent' 
+                  : 'w-2 bg-white/10'
               }`}
             />
           ))}
         </div>
 
         {/* Footer Message */}
-        <p className="text-center text-white/50 text-sm mt-12 animate-pulse">
-          This usually takes 30-60 seconds. Hang tight! 🚀
+        <p className="text-center text-premium-text-muted/30 text-[10px] uppercase tracking-[0.3em] mt-16 animate-pulse">
+          Synthesizing Intelligence...
         </p>
       </div>
+    </div>
+  );
+}
     </div>
   );
 }

@@ -1,88 +1,65 @@
 'use client';
 
 import Link from 'next/link';
-import { Github, Twitter, Linkedin, Mail } from 'lucide-react';
+import { Github, Twitter, Linkedin, Mail, ArrowRight } from 'lucide-react';
 import Logo from '@/components/Logo';
 
 const footerLinks = {
-  product: [
-    { name: 'Career Analysis', href: '/' },
-    { name: 'Dashboard', href: '/dashboard' },
-    { name: 'AI Coach', href: '/coach/chat' },
-    { name: 'Interview Prep', href: '/interviewer/practice' },
+  platform: [
+    { name: 'Career Analysis', href: '/#analyze' },
+    { name: 'Market Intelligence', href: '/dashboard' },
+    { name: 'AI Career Coach', href: '/coach/chat' },
+    { name: 'Skill Gap Analysis', href: '/dashboard' },
   ],
   company: [
-    { name: 'About Us', href: '/about' },
-    { name: 'How It Works', href: '/#how-it-works' },
-    { name: 'Success Stories', href: '/success-stories' },
+    { name: 'About NextCI', href: '/about' },
+    { name: 'Methodology', href: '/methodology' },
+    { name: 'Success Stories', href: '/#testimonials' },
     { name: 'Pricing', href: '/pricing' },
-  ],
-  resources: [
-    { name: 'Blog', href: '/blog' },
-    { name: 'Career Guides', href: '/guides' },
-    { name: 'API Documentation', href: '/docs' },
-    { name: 'Help Center', href: '/help' },
   ],
   legal: [
     { name: 'Privacy Policy', href: '/privacy' },
     { name: 'Terms of Service', href: '/terms' },
-    { name: 'Cookie Policy', href: '/cookies' },
-    { name: 'GDPR', href: '/gdpr' },
+    { name: 'Security', href: '/security' },
   ],
 };
-
-const socialLinks = [
-  { name: 'Twitter', icon: Twitter, href: 'https://twitter.com/nextci', color: 'hover:text-blue-400' },
-  { name: 'LinkedIn', icon: Linkedin, href: 'https://linkedin.com/company/nextci', color: 'hover:text-blue-600' },
-  { name: 'GitHub', icon: Github, href: 'https://github.com/nextci', color: 'hover:text-gray-400' },
-  { name: 'Email', icon: Mail, href: 'mailto:hello@nextci.net', color: 'hover:text-gold-primary' },
-];
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="bg-gradient-to-br from-royal-navy via-royal-blue-deep to-royal-navy border-t border-white/10">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        {/* Main Footer Content */}
-        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8 mb-12">
-          {/* Brand Column */}
-          <div className="col-span-2 md:col-span-4 lg:col-span-1">
+    <footer className="bg-premium-bg border-t border-premium-accent/10 pt-20 pb-10">
+      <div className="max-w-7xl mx-auto px-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-12 mb-20">
+          {/* Brand & Newsletter */}
+          <div className="lg:col-span-2">
             <Logo size="md" linkTo="/" />
-            <p className="mt-4 text-white/70 text-sm leading-relaxed">
-              AI-powered career intelligence platform helping professionals future-proof their careers.
+            <p className="mt-6 text-premium-text-muted max-w-sm leading-relaxed">
+              The world's first AI-driven career intelligence engine. We help elite professionals navigate the future of work with precision and data-backed confidence.
             </p>
             
-            {/* Social Links */}
-            <div className="flex items-center gap-4 mt-6">
-              {socialLinks.map((social) => {
-                const Icon = social.icon;
-                return (
-                  <a
-                    key={social.name}
-                    href={social.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className={`text-white/60 ${social.color} transition-colors`}
-                    aria-label={social.name}
-                  >
-                    <Icon className="w-5 h-5" />
-                  </a>
-                );
-              })}
+            <div className="mt-8">
+              <h4 className="text-white font-bold mb-4">Stay ahead of the curve</h4>
+              <div className="flex gap-2 max-w-md">
+                <input 
+                  type="email" 
+                  placeholder="Email address" 
+                  className="bg-white/5 border border-white/10 rounded-lg px-4 py-2 flex-1 text-sm focus:outline-none focus:border-premium-accent transition-colors"
+                />
+                <button className="bg-premium-accent text-premium-primary px-4 py-2 rounded-lg font-bold text-sm hover:bg-white transition-colors">
+                  Join
+                </button>
+              </div>
             </div>
           </div>
 
-          {/* Product Links */}
+          {/* Links */}
           <div>
-            <h3 className="text-white font-semibold mb-4 text-sm uppercase tracking-wider">Product</h3>
-            <ul className="space-y-3">
-              {footerLinks.product.map((link) => (
+            <h4 className="text-white font-bold mb-6">Platform</h4>
+            <ul className="space-y-4">
+              {footerLinks.platform.map((link) => (
                 <li key={link.name}>
-                  <Link
-                    href={link.href}
-                    className="text-white/70 hover:text-gold-primary transition-colors text-sm"
-                  >
+                  <Link href={link.href} className="text-premium-text-muted hover:text-premium-accent transition-colors text-sm">
                     {link.name}
                   </Link>
                 </li>
@@ -90,16 +67,12 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Company Links */}
           <div>
-            <h3 className="text-white font-semibold mb-4 text-sm uppercase tracking-wider">Company</h3>
-            <ul className="space-y-3">
+            <h4 className="text-white font-bold mb-6">Company</h4>
+            <ul className="space-y-4">
               {footerLinks.company.map((link) => (
                 <li key={link.name}>
-                  <Link
-                    href={link.href}
-                    className="text-white/70 hover:text-gold-primary transition-colors text-sm"
-                  >
+                  <Link href={link.href} className="text-premium-text-muted hover:text-premium-accent transition-colors text-sm">
                     {link.name}
                   </Link>
                 </li>
@@ -107,33 +80,12 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Resources Links */}
           <div>
-            <h3 className="text-white font-semibold mb-4 text-sm uppercase tracking-wider">Resources</h3>
-            <ul className="space-y-3">
-              {footerLinks.resources.map((link) => (
-                <li key={link.name}>
-                  <Link
-                    href={link.href}
-                    className="text-white/70 hover:text-gold-primary transition-colors text-sm"
-                  >
-                    {link.name}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Legal Links */}
-          <div>
-            <h3 className="text-white font-semibold mb-4 text-sm uppercase tracking-wider">Legal</h3>
-            <ul className="space-y-3">
+            <h4 className="text-white font-bold mb-6">Legal</h4>
+            <ul className="space-y-4">
               {footerLinks.legal.map((link) => (
                 <li key={link.name}>
-                  <Link
-                    href={link.href}
-                    className="text-white/70 hover:text-gold-primary transition-colors text-sm"
-                  >
+                  <Link href={link.href} className="text-premium-text-muted hover:text-premium-accent transition-colors text-sm">
                     {link.name}
                   </Link>
                 </li>
@@ -143,23 +95,21 @@ export default function Footer() {
         </div>
 
         {/* Bottom Bar */}
-        <div className="pt-8 border-t border-white/10">
-          <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-            {/* Copyright */}
-            <p className="text-white/60 text-sm">
-              © {currentYear} NEXT Career Intelligence. All rights reserved.
-            </p>
-
-            {/* Built with Love */}
-            <p className="text-white/60 text-sm flex items-center gap-2">
-              Built with <span className="text-red-400">❤️</span> for career resilience
-            </p>
-
-            {/* Trust Badge */}
-            <div className="flex items-center gap-2 text-white/60 text-xs">
-              <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
-              <span>Trusted by 15,000+ professionals</span>
-            </div>
+        <div className="pt-10 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-6">
+          <p className="text-premium-text-muted text-xs">
+            © {currentYear} NextCI Intelligence Systems. All rights reserved.
+          </p>
+          
+          <div className="flex items-center gap-6">
+            <a href="#" className="text-premium-text-muted hover:text-white transition-colors">
+              <Twitter className="w-5 h-5" />
+            </a>
+            <a href="#" className="text-premium-text-muted hover:text-white transition-colors">
+              <Linkedin className="w-5 h-5" />
+            </a>
+            <a href="#" className="text-premium-text-muted hover:text-white transition-colors">
+              <Github className="w-5 h-5" />
+            </a>
           </div>
         </div>
       </div>
