@@ -6,6 +6,7 @@ import { motion } from 'framer-motion';
 import { ArrowRight, Sparkles, TrendingUp, Shield, Brain, LogOut, User, Crown, Zap } from 'lucide-react';
 import Logo from '@/components/Logo';
 import HowItWorksSection from '@/components/HowItWorksSection';
+import BenefitsSection from '@/components/BenefitsSection';
 import TestimonialsCarousel from '@/components/TestimonialsCarousel';
 import StatsSection from '@/components/StatsSection';
 import { useAuth } from '@/contexts/AuthContext';
@@ -158,62 +159,92 @@ export default function Home() {
             <span className="text-white/90 text-sm font-semibold">Powered by AI</span>
           </motion.div>
 
-          <motion.h1 
-            className="text-5xl md:text-7xl font-bold mb-6 leading-tight"
+          <motion.h1
+            className="text-4xl md:text-6xl font-bold mb-6 leading-tight"
             variants={staggerItemVariants}
           >
-            <span className="text-white">Is Your Job</span>
-            <span className="block bg-gradient-to-r from-gold-primary via-gold-accent to-gold-hover bg-clip-text text-transparent mt-2">
-              AI-Proof?
+            <span className="text-white">Know Your Next Move</span>
+            <span className="block text-white mt-2">
+              Before You Make It
             </span>
           </motion.h1>
 
           <motion.p
-            className="text-xl md:text-2xl text-white/80 mb-12 max-w-2xl mx-auto leading-relaxed font-medium"
+            className="text-lg md:text-xl text-white/70 mb-12 max-w-2xl mx-auto leading-relaxed font-normal"
             variants={staggerItemVariants}
           >
-            Get a free AI-powered analysis of your career&apos;s automation risk and discover skills that future-proof your career
+            Your AI-powered career companion
           </motion.p>
 
-          <motion.form 
-            onSubmit={handleAnalyze} 
-            className="max-w-2xl mx-auto mb-8"
+          <motion.form
+            onSubmit={handleAnalyze}
+            className="max-w-2xl mx-auto mb-4"
             variants={staggerItemVariants}
             role="search"
             aria-label="Career analysis search"
           >
-            <div className="glass-card flex flex-col sm:flex-row gap-4 p-3 shadow-glass-xl hover:border-gold-primary/30 transition-all">
-              <motion.input
-                type="text"
-                value={jobTitle}
-                onChange={(e) => setJobTitle(e.target.value)}
-                placeholder="Enter your job title (e.g., Software Engineer)"
-                className="input-glass flex-1 text-lg text-white placeholder:text-white/50 font-medium"
-                disabled={isAnalyzing}
-                whileFocus={{ scale: 1.01 }}
-                transition={{ duration: 0.2 }}
-                aria-label="Job title input"
-                aria-required="true"
-                aria-invalid={!jobTitle.trim() && "true"}
-                id="job-title-input"
-                name="jobTitle"
-                autoComplete="organization-title"
-              />
-              <motion.button
-                type="submit"
-                disabled={!jobTitle.trim() || isAnalyzing}
-                className="px-8 py-4 bg-gradient-to-r from-gold-primary to-gold-accent hover:from-gold-accent hover:to-gold-hover text-royal-navy font-bold text-lg rounded-xl transition-all shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 whitespace-nowrap"
-                variants={buttonVariants}
-                whileHover="hover"
-                whileTap="tap"
-                aria-label={isAnalyzing ? 'Analyzing your career' : 'Start free career analysis'}
-                aria-disabled={!jobTitle.trim() || isAnalyzing}
-              >
-                {isAnalyzing ? 'Analyzing...' : 'Analyze Free'}
-                {!isAnalyzing && <ArrowRight className="w-5 h-5" aria-hidden="true" />}
-              </motion.button>
+            <div className="relative group">
+              {/* Google-style search bar */}
+              <div className="bg-white rounded-full flex items-center px-6 py-4 shadow-md hover:shadow-lg transition-all duration-300 border border-gray-200">
+                {/* Search Icon */}
+                <svg className="w-5 h-5 text-gray-400 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+
+                {/* Input */}
+                <input
+                  type="text"
+                  value={jobTitle}
+                  onChange={(e) => setJobTitle(e.target.value)}
+                  placeholder="Describe your career move or upload resume..."
+                  className="flex-1 text-base text-gray-700 placeholder:text-gray-500 bg-transparent outline-none"
+                  disabled={isAnalyzing}
+                  aria-label="Job title or career query input"
+                  aria-required="true"
+                  id="job-title-input"
+                  name="jobTitle"
+                  autoComplete="off"
+                />
+
+                {/* Upload Button */}
+                <button
+                  type="button"
+                  className="ml-3 w-10 h-10 rounded-full hover:bg-gray-100 flex items-center justify-center transition-all duration-200 group/upload"
+                  aria-label="Upload resume"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    // TODO: Implement upload functionality
+                  }}
+                >
+                  <svg className="w-5 h-5 text-gray-500 group-hover/upload:text-blue-600 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13" />
+                  </svg>
+                </button>
+
+                {/* Submit on Enter - hidden button */}
+                <button type="submit" className="hidden" disabled={!jobTitle.trim() || isAnalyzing}>
+                  Submit
+                </button>
+              </div>
             </div>
           </motion.form>
+
+          {/* Example Searches */}
+          <motion.div
+            className="max-w-2xl mx-auto mb-12 text-center"
+            variants={staggerItemVariants}
+          >
+            <span className="text-white/60 text-sm mr-3">Try:</span>
+            {['Software engineer to product manager', 'Should I pursue an MBA?', 'Pivot from finance to tech'].map((example, idx) => (
+              <button
+                key={idx}
+                onClick={() => setJobTitle(example)}
+                className="inline-block bg-white/10 hover:bg-white/20 text-white/80 hover:text-white text-sm px-4 py-1.5 rounded-full mr-2 mb-2 transition-all duration-200"
+              >
+                {example}
+              </button>
+            ))}
+          </motion.div>
 
           <motion.div
             className="flex flex-wrap items-center justify-center gap-8 text-white/70 text-sm mb-16 font-medium"
@@ -289,8 +320,8 @@ export default function Home() {
       {/* How It Works Section */}
       <HowItWorksSection />
 
-      {/* Stats Section - Hidden until we have real user-generated data */}
-      {/* <StatsSection /> */}
+      {/* Benefits Section */}
+      <BenefitsSection />
 
       {/* Testimonials Section */}
       <TestimonialsCarousel />
@@ -299,33 +330,30 @@ export default function Home() {
       <section className="py-24 px-4">
         <div className="max-w-4xl mx-auto text-center">
           <motion.div
-            className="glass-card hover-reflect rounded-3xl p-12 relative overflow-hidden shadow-glass-xl"
+            className="p-12"
             initial={{ opacity: 0, y: 40 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-100px" }}
             transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
           >
-            {/* Background Glow */}
-            <div className="absolute inset-0 bg-gradient-to-br from-accent-500/10 to-transparent opacity-50"></div>
-
             <div className="relative z-10">
               <motion.h2
-                className="text-3xl md:text-5xl font-bold text-white mb-6"
+                className="text-3xl md:text-4xl font-bold text-white mb-4"
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: 0.2, duration: 0.5 }}
               >
-                Ready to Future-Proof Your Career?
+                Ready to Make Your Next Move?
               </motion.h2>
               <motion.p
-                className="text-xl md:text-2xl text-white/80 mb-8 max-w-2xl mx-auto leading-relaxed font-medium"
+                className="text-lg md:text-xl text-white/70 mb-8 max-w-2xl mx-auto"
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: 0.3, duration: 0.5 }}
               >
-                Get your free AI-powered career analysis now. No credit card required.
+                Get your free career analysis in under 60 seconds
               </motion.p>
               <motion.button
                 onClick={() => {
@@ -335,28 +363,16 @@ export default function Home() {
                     input?.focus();
                   }, 500);
                 }}
-                className="px-8 py-4 bg-gradient-to-r from-gold-primary to-gold-accent hover:from-gold-accent hover:to-gold-hover text-royal-navy font-bold text-lg rounded-xl transition-all shadow-lg hover:shadow-xl inline-flex items-center gap-2 group"
+                className="px-10 py-4 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-semibold text-lg rounded-xl transition-all shadow-lg hover:shadow-xl inline-flex items-center gap-2 group hover:-translate-y-0.5"
                 initial={{ opacity: 0, scale: 0.9 }}
                 whileInView={{ opacity: 1, scale: 1 }}
                 viewport={{ once: true }}
                 transition={{ delay: 0.4, duration: 0.5 }}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.98 }}
+                style={{ boxShadow: '0 4px 14px rgba(59, 130, 246, 0.4)' }}
               >
-                <motion.div
-                  animate={{
-                    rotate: [0, 10, -10, 10, 0],
-                    scale: [1, 1.1, 1, 1.1, 1]
-                  }}
-                  transition={{
-                    duration: 2,
-                    repeat: Infinity,
-                    repeatDelay: 1
-                  }}
-                >
-                  <Sparkles className="w-5 h-5" />
-                </motion.div>
-                <span>Start Your Free Analysis</span>
+                <span>Get Started Free</span>
                 <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </motion.button>
             </div>
