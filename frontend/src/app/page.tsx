@@ -289,8 +289,8 @@ export default function Home() {
       {/* How It Works Section */}
       <HowItWorksSection />
 
-      {/* Stats Section */}
-      <StatsSection />
+      {/* Stats Section - Hidden until we have real user-generated data */}
+      {/* <StatsSection /> */}
 
       {/* Testimonials Section */}
       <TestimonialsCarousel />

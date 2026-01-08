@@ -107,8 +107,8 @@ export default function TestimonialsCarousel() {
 
         {/* Carousel */}
         <div className="relative">
-          {/* Main Card */}
-          <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-3xl p-8 md:p-12 relative overflow-hidden group">
+          {/* Main Card - Modern design: No borders, enhanced shadows */}
+          <div className="bg-white/5 backdrop-blur-md rounded-3xl p-8 md:p-12 relative overflow-hidden group shadow-[0_8px_30px_rgba(0,0,0,0.2)] hover:shadow-[0_12px_40px_rgba(229,183,59,0.15)] transition-shadow duration-300">
             {/* Quote Icon */}
             <div className="absolute top-8 right-8 opacity-10">
               <Quote className="w-24 h-24 text-gold-primary" />

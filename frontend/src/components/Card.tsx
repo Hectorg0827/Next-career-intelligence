@@ -7,9 +7,10 @@ interface CardProps {
 }
 
 export const Card = ({ children, className = '', padding = true }: CardProps) => {
-  const baseClasses = 'rounded-xl border border-white/10 bg-white/5 backdrop-blur-md shadow-glass';
+  // Modern design: No borders, just subtle shadows for depth
+  const baseClasses = 'rounded-xl bg-white/5 backdrop-blur-md shadow-[0_4px_20px_rgba(0,0,0,0.15)] hover:shadow-[0_8px_30px_rgba(0,0,0,0.2)] transition-shadow duration-300';
   const paddingClass = padding ? 'p-6' : '';
-  
+
   return (
     <div className={`${baseClasses} ${className}`.trim()}>
       {padding ? (
