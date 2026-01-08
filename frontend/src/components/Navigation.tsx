@@ -45,14 +45,14 @@ export default function Navigation() {
   return (
     <nav className="nav-glass sticky top-0 z-50">
       <div className="max-w-container container-padding">
-        <div className="flex justify-between items-center h-20">
+        <div className="flex justify-between items-center py-5">
           {/* Logo */}
           <div className="flex-shrink-0">
-            <Logo size="sm" linkTo="/" />
+            <Logo size="md" linkTo="/" />
           </div>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center gap-6">
+          <div className="hidden md:flex items-center gap-8">
             {navItems.map((item) => {
               const isActive = pathname === item.href;
               const Icon = item.icon;
@@ -63,11 +63,11 @@ export default function Navigation() {
                   href={item.href}
                   className={`px-5 py-2.5 rounded-xl font-medium transition-all duration-200 flex items-center gap-2 group relative ${isActive
                       ? 'bg-white/15 text-white shadow-lg'
-                      : 'text-white/70 hover:text-white hover:bg-white/10'
+                      : 'text-white/70 hover:text-blue-400 hover:bg-white/10'
                     }`}
                 >
                   <Icon className="w-4.5 h-4.5 transition-transform group-hover:scale-110" />
-                  <span className="text-sm">{item.name}</span>
+                  <span className="text-base font-medium">{item.name}</span>
                   {item.isPremium && !hasPremiumAccess && (
                     <Crown className="w-3.5 h-3.5 text-gold-primary animate-pulse" />
                   )}
@@ -102,10 +102,11 @@ export default function Navigation() {
             ) : (
               <Link
                 href="/login"
-                className="btn-primary flex items-center gap-2"
+                className="flex items-center gap-2.5 px-8 py-3.5 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-semibold rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl hover:-translate-y-0.5"
+                style={{ boxShadow: '0 4px 14px rgba(59, 130, 246, 0.4)' }}
               >
-                <User className="w-4.5 h-4.5" />
-                <span>Sign In</span>
+                <User className="w-5 h-5" />
+                <span className="text-base">Sign In</span>
               </Link>
             )}
           </div>
