@@ -422,9 +422,9 @@ body {
   /* Modern Card - Clean solid background with subtle border */
   .glass-card {
     background: #1e293b; /* Slate 800 */
-    border: 1px solid #334155; /* Slate 700 */
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-    transition: all 0.2s ease-in-out;
+    /* Modern design: No borders, just subtle shadows */
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    transition: all 0.3s ease-in-out;
     /* Performance optimizations */
     will-change: transform, box-shadow;
     transform: translateZ(0);
@@ -432,8 +432,7 @@ body {
 
   .glass-card:hover {
     background: #25354c; /* Slightly lighter Slate 800 */
-    border-color: #475569; /* Slate 600 */
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
     transform: translateY(-2px);
   }
 
@@ -739,16 +738,15 @@ h3, .h3 {
   /* Updated card with better aesthetics */
   .glass-card-enhanced {
     background: #1e293b; /* Slate 800 */
-    border: 1px solid #334155; /* Slate 700 */
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    /* Modern design: No borders, enhanced shadows */
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
     border-radius: 1.5rem;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
-  
+
   .glass-card-enhanced:hover {
     background: #25354c; /* Slightly lighter Slate 800 */
-    border-color: #475569; /* Slate 600 */
-    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.25);
     transform: translateY(-2px);
   }
   

@@ -54,11 +54,11 @@ export default function HowItWorksSection() {
         </div>
 
         {/* Steps Grid */}
-        <div className="grid md:grid-cols-3 gap-8 mb-12">
+        <div className="grid md:grid-cols-3 gap-8 mb-12 md:items-stretch">
           {steps.map((step, index) => (
             <div
               key={index}
-              className="group relative animate-fade-in"
+              className="group relative animate-fade-in flex"
               style={{ animationDelay: `${index * 150}ms` }}
             >
               {/* Connection Line (desktop only) */}
@@ -66,12 +66,23 @@ export default function HowItWorksSection() {
                 <div className="hidden md:block absolute top-20 left-[calc(50%+2rem)] w-[calc(100%-2rem)] h-0.5 bg-gradient-to-r from-gold-primary/50 to-transparent z-0" />
               )}
 
-              {/* Card */}
-              <div className="relative bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-8 hover:border-gold-primary/50 transition-all duration-300 hover:shadow-gold hover:-translate-y-2 h-full">
+              {/* Card - No borders, enhanced shadows, middle card highlighted */}
+              <div className={`relative bg-white/5 backdrop-blur-md rounded-2xl p-8 transition-all duration-300 hover:-translate-y-2 flex-1 ${
+                index === 1
+                  ? 'bg-gradient-to-br from-royal-blue/20 to-royal-blue-dark/10 shadow-[0_8px_30px_rgba(17,80,163,0.3)] md:scale-105 hover:shadow-[0_12px_40px_rgba(17,80,163,0.4)]'
+                  : 'shadow-[0_4px_20px_rgba(0,0,0,0.15)] hover:shadow-[0_8px_30px_rgba(229,183,59,0.2)]'
+              }`}>
                 {/* Step Number */}
                 <div className={`absolute -top-4 -right-4 w-12 h-12 bg-gradient-to-br ${step.color} rounded-full flex items-center justify-center font-bold text-royal-navy text-lg shadow-lg`}>
                   {step.number}
                 </div>
+
+                {/* Popular Badge for middle card */}
+                {index === 1 && (
+                  <div className="absolute -top-3 -left-3 px-3 py-1 bg-gradient-to-r from-gold-primary to-gold-accent rounded-full text-royal-navy text-xs font-bold shadow-lg">
+                    ⭐ Core Feature
+                  </div>
+                )}
 
                 {/* Icon */}
                 <div className={`w-16 h-16 ${step.bgGlow} rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform`}>
