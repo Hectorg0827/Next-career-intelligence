@@ -1,22 +1,22 @@
 'use client';
 
-import { Sparkles, Brain, Target, Rocket } from 'lucide-react';
+import { FileText, Brain, LayoutDashboard } from 'lucide-react';
 
 const steps = [
   {
-    emoji: '📝',
+    icon: FileText,
     number: '1',
     title: 'Share Your Goals',
     description: 'Type your career question or upload your resume. Takes 30 seconds.',
   },
   {
-    emoji: '🤖',
+    icon: Brain,
     number: '2',
     title: 'AI Analysis',
     description: 'Our AI evaluates opportunities, risks, and market trends specific to you.',
   },
   {
-    emoji: '📊',
+    icon: LayoutDashboard,
     number: '3',
     title: 'Get Your Plan',
     description: 'Receive actionable insights and next steps tailored to your situation.',
@@ -25,36 +25,47 @@ const steps = [
 
 export default function HowItWorksSection() {
   return (
-    <section className="py-24 px-4 relative bg-white/5" id="how-it-works">
+    <section className="py-32 px-4 relative bg-slate-900/20" id="how-it-works">
       <div className="max-w-6xl mx-auto relative z-10">
         {/* Section Header */}
-        <div className="text-center mb-16">
-          <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
+        <div className="text-center mb-20">
+          <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
             How It Works
           </h2>
+          <p className="text-lg text-white/60 max-w-2xl mx-auto">
+            From confusion to clarity in three simple steps.
+          </p>
         </div>
 
         {/* Steps Grid - Clean 3 columns */}
-        <div className="grid md:grid-cols-3 gap-8 md:gap-12">
-          {steps.map((step, index) => (
-            <div
-              key={index}
-              className="text-center max-w-[280px] mx-auto group"
-            >
-              {/* Emoji Icon */}
-              <div className="w-16 h-16 sm:w-20 sm:h-20 mx-auto mb-4 sm:mb-6 text-5xl sm:text-6xl flex items-center justify-center bg-gradient-to-br from-blue-600/20 to-blue-700/20 rounded-full transition-all duration-300 group-hover:scale-110 group-hover:from-blue-600/30 group-hover:to-blue-700/30">
-                {step.emoji}
-              </div>
+        <div className="grid md:grid-cols-3 gap-12 md:gap-16">
+          {steps.map((step, index) => {
+            const Icon = step.icon;
+            return (
+              <div
+                key={index}
+                className="text-center max-w-[320px] mx-auto group"
+              >
+                {/* Icon */}
+                <div className="w-20 h-20 mx-auto mb-8 flex items-center justify-center bg-slate-800 rounded-2xl shadow-lg border border-slate-700/50 group-hover:border-blue-500/50 group-hover:scale-110 transition-all duration-300">
+                  <Icon className="w-10 h-10 text-blue-400 group-hover:text-blue-300 transition-colors" />
+                </div>
 
-              {/* Content */}
-              <h3 className="text-lg sm:text-xl font-semibold text-white mb-2 sm:mb-3 transition-colors duration-300 group-hover:text-blue-400">
-                {step.number}. {step.title}
-              </h3>
-              <p className="text-sm sm:text-base text-white/70 leading-relaxed">
-                {step.description}
-              </p>
-            </div>
-          ))}
+                {/* Content */}
+                <div className="relative">
+                  <span className="absolute -top-4 left-1/2 -translate-x-1/2 text-6xl font-bold text-slate-800/50 -z-10 select-none">
+                    {step.number}
+                  </span>
+                  <h3 className="text-xl font-bold text-white mb-4 group-hover:text-blue-400 transition-colors">
+                    {step.title}
+                  </h3>
+                  <p className="text-base text-white/70 leading-relaxed font-medium">
+                    {step.description}
+                  </p>
+                </div>
+              </div>
+            );
+          })}
         </div>
       </div>
     </section>

@@ -3,12 +3,11 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
-import { ArrowRight, Sparkles, TrendingUp, Shield, Brain, LogOut, User, Crown, Zap } from 'lucide-react';
+import { ArrowRight, Sparkles, TrendingUp, Shield, Brain, User, Crown, Zap, Search, Upload } from 'lucide-react';
 import Logo from '@/components/Logo';
 import HowItWorksSection from '@/components/HowItWorksSection';
 import BenefitsSection from '@/components/BenefitsSection';
 import TestimonialsCarousel from '@/components/TestimonialsCarousel';
-import StatsSection from '@/components/StatsSection';
 import { useAuth } from '@/contexts/AuthContext';
 import {
   staggerContainerVariants,
@@ -24,6 +23,7 @@ export default function Home() {
   const [jobTitle, setJobTitle] = useState('');
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [uploadError, setUploadError] = useState('');
+  const [isFocused, setIsFocused] = useState(false);
 
   const handleAnalyze = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -78,20 +78,12 @@ export default function Home() {
     }
   };
 
-  const handleLogout = async () => {
-    try {
-      await logout();
-    } catch (error) {
-      console.error('Logout failed:', error);
-    }
-  };
-
   const handleSubscriberAccess = () => {
     router.push('/dashboard');
   };
 
   return (
-    <div className="min-h-screen gradient-dark-glass relative overflow-hidden">
+    <div className="min-h-screen bg-slate-900 relative overflow-hidden">
       {/* Skip to main content link for keyboard navigation */}
       <a
         href="#main-content"
@@ -101,49 +93,14 @@ export default function Home() {
         Skip to main content
       </a>
 
-      {/* Top Right - Login/Logout */}
-      <nav className="absolute top-6 right-6 z-20 flex items-center gap-4" aria-label="User account navigation">
-        {!isLoading && isAuthenticated && user ? (
-          <>
-            <div
-              className="px-4 py-2 bg-slate-800 border border-slate-700 rounded-full"
-              role="status"
-              aria-label={`Logged in as ${user.email}${hasPremiumAccess ? ', Premium subscriber' : ''}`}
-            >
-              <User className="w-4 h-4 text-gold-primary inline mr-2" aria-hidden="true" />
-              <span className="text-white text-sm font-semibold">{user.email}</span>
-              {hasPremiumAccess && <Crown className="w-4 h-4 text-gold-primary inline ml-2" aria-label="Premium subscriber" />}
-            </div>
-            <button
-              onClick={handleLogout}
-              className="px-4 py-2 bg-slate-800 border border-slate-700 rounded-full hover:bg-slate-700 hover:border-gold-primary/50 transition-all group"
-              aria-label="Log out of your account"
-            >
-              <LogOut className="w-4 h-4 text-white/70 group-hover:text-white inline mr-2" aria-hidden="true" />
-              <span className="text-white/70 group-hover:text-white text-sm font-semibold">Logout</span>
-            </button>
-          </>
-        ) : !isLoading ? (
-          <button
-            onClick={() => router.push('/login')}
-            className="px-6 py-3 bg-gradient-to-r from-gold-primary to-gold-accent hover:from-gold-accent hover:to-gold-hover text-royal-navy font-bold rounded-xl transition-all shadow-lg hover:shadow-xl flex items-center gap-2"
-            aria-label="Sign in to your account"
-          >
-            <User className="w-5 h-5" aria-hidden="true" />
-            <span>Sign In</span>
-          </button>
-        ) : null}
-      </nav>
-
       {/* Animated Background */}
-      <div className="absolute inset-0 overflow-hidden opacity-30">
-        <div className="absolute top-20 left-10 w-72 h-72 bg-accent-500 rounded-full blur-3xl animate-pulse"></div>
-        <div className="absolute bottom-20 right-10 w-96 h-96 bg-accent-500/60 rounded-full blur-3xl animate-pulse"></div>
-        <div className="absolute top-1/2 left-1/2 w-64 h-64 bg-accent-400/40 rounded-full blur-3xl animate-pulse"></div>
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-blue-600/10 rounded-full blur-[120px] animate-pulse"></div>
+        <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-purple-600/10 rounded-full blur-[120px] animate-pulse"></div>
       </div>
 
-      <main id="main-content" className="relative z-10 flex flex-col items-center justify-center min-h-screen px-4 py-12">
-        <motion.div 
+      <main id="main-content" className="relative z-10 flex flex-col items-center justify-center min-h-screen px-4 pt-32 pb-20">
+        <motion.div
           className="max-w-4xl w-full text-center"
           variants={staggerContainerVariants}
           initial="initial"
@@ -154,142 +111,126 @@ export default function Home() {
           {/* Subscriber Quick Access Section */}
           {!isLoading && hasPremiumAccess && (
             <motion.div
-              className="mb-8"
+              className="mb-12 inline-flex"
               variants={fadeInUpVariants}
             >
-              <div className="glass-card hover-reflect p-6 shadow-glass-lg border-gold-primary/30">
-                <div className="flex items-center justify-between flex-wrap gap-4">
-                  <div className="flex items-center gap-3">
-                    <motion.div
-                      className="p-3 bg-gradient-to-br from-gold-primary/20 to-gold-accent/20 rounded-full"
-                      whileHover={{ rotate: [0, -10, 10, -10, 0], transition: { duration: 0.5 } }}
-                    >
-                      <Crown className="w-6 h-6 text-gold-primary" />
-                    </motion.div>
-                    <div className="text-left">
-                      <h3 className="text-white font-bold text-xl">Welcome back, {user?.name || 'Subscriber'}!</h3>
-                      <p className="text-white/70 text-sm font-medium">Access your premium features</p>
-                    </div>
-                  </div>
-                  <motion.button
-                    onClick={handleSubscriberAccess}
-                    className="px-6 py-3 bg-gradient-to-r from-gold-primary to-gold-accent hover:from-gold-accent hover:to-gold-hover text-royal-navy font-bold rounded-xl transition-all shadow-lg hover:shadow-xl flex items-center gap-2"
-                    variants={buttonVariants}
-                    whileHover="hover"
-                    whileTap="tap"
-                  >
-                    <Zap className="w-5 h-5" />
-                    Go to Dashboard
-                    <ArrowRight className="w-5 h-5" />
-                  </motion.button>
+              <div
+                onClick={handleSubscriberAccess}
+                className="cursor-pointer group flex items-center gap-4 px-6 py-3 bg-slate-800/50 hover:bg-slate-800 backdrop-blur-md border border-white/5 rounded-full hover:border-blue-500/30 transition-all duration-300"
+              >
+                <div className="p-1.5 bg-gradient-to-br from-amber-400 to-amber-600 rounded-full shadow-lg">
+                  <Crown className="w-4 h-4 text-white" />
                 </div>
+                <div className="text-left">
+                  <p className="text-white font-semibold text-sm group-hover:text-blue-200 transition-colors">
+                    Welcome back, {user?.name || 'Subscriber'}
+                  </p>
+                </div>
+                <ArrowRight className="w-4 h-4 text-white/50 group-hover:text-white group-hover:translate-x-1 transition-all" />
               </div>
             </motion.div>
           )}
 
-          {/* NEXT Logo */}
-          <motion.div 
-            className="mb-8"
-            variants={scaleInVariants}
-          >
-            <Logo size="lg" linkTo={undefined} className="mx-auto" />
-          </motion.div>
-
-          <motion.div
-            className="inline-flex items-center gap-2 px-4 py-2 bg-slate-800 border border-gold-primary/30 rounded-full mb-8"
-            variants={staggerItemVariants}
-            role="status"
-            aria-label="AI-powered analysis available"
-          >
-            <Sparkles className="w-4 h-4 text-gold-primary" aria-hidden="true" />
-            <span className="text-white/90 text-sm font-semibold">Powered by AI</span>
-          </motion.div>
+          {/* Tagline Badge */}
+          {!hasPremiumAccess && (
+            <motion.div
+              className="inline-flex items-center gap-2 px-4 py-2 bg-slate-800/80 backdrop-blur-sm border border-slate-700/50 rounded-full mb-12 shadow-lg"
+              variants={staggerItemVariants}
+            >
+              <Sparkles className="w-4 h-4 text-amber-400 fill-amber-400" />
+              <span className="text-slate-200 text-sm font-medium">AI-Powered Career Intelligence</span>
+            </motion.div>
+          )}
 
           <motion.h1
-            className="text-3xl sm:text-4xl md:text-6xl font-bold mb-4 sm:mb-6 leading-tight px-4"
+            className="text-5xl sm:text-6xl md:text-7xl font-bold mb-8 leading-tight tracking-tight px-4"
             variants={staggerItemVariants}
           >
-            <span className="text-white">Know Your Next Move</span>
-            <span className="block text-white mt-2">
+            <span className="text-white drop-shadow-xl">Know Your Next Move</span>
+            <span className="block text-white/40 mt-2 font-semibold text-4xl sm:text-5xl md:text-6xl">
               Before You Make It
             </span>
           </motion.h1>
 
           <motion.p
-            className="text-base sm:text-lg md:text-xl text-white/70 mb-8 sm:mb-12 max-w-2xl mx-auto leading-relaxed font-normal px-4"
+            className="text-lg sm:text-xl text-white/60 mb-16 max-w-2xl mx-auto leading-relaxed font-normal px-4"
             variants={staggerItemVariants}
           >
-            Your AI-powered career companion
+            Join thousands of professionals using AI to predict career risks, discover hidden opportunities, and build future-proof roadmaps.
           </motion.p>
 
           <motion.form
             onSubmit={handleAnalyze}
-            className="max-w-2xl mx-auto mb-2 px-4"
+            className="max-w-3xl mx-auto mb-6 px-4 relative z-20"
             variants={staggerItemVariants}
             role="search"
-            aria-label="Career analysis search"
           >
-            <div className="relative group">
+            <div className={`relative group transition-all duration-300 ${isFocused ? 'scale-[1.02]' : ''}`}>
               {/* Google-style search bar */}
-              <div className="bg-white rounded-full flex items-center px-4 sm:px-6 py-3 sm:py-4 shadow-md hover:shadow-lg transition-all duration-300 border border-gray-200">
+              <div
+                className={`
+                  bg-white rounded-full flex items-center px-6 py-5 shadow-2xl transition-all duration-300
+                  ${isFocused ? 'shadow-blue-500/20 ring-4 ring-blue-500/10' : 'shadow-black/20'}
+                `}
+              >
                 {/* Search Icon */}
-                <svg className="w-4 h-4 sm:w-5 sm:h-5 text-gray-400 mr-2 sm:mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                </svg>
+                <Search className={`w-6 h-6 mr-4 transition-colors ${isFocused ? 'text-blue-600' : 'text-slate-400'}`} />
 
                 {/* Input */}
                 <input
                   type="text"
                   value={jobTitle}
                   onChange={(e) => setJobTitle(e.target.value)}
-                  placeholder={isAnalyzing ? 'Analyzing...' : 'Describe your career move...'}
-                  className="flex-1 text-sm sm:text-base text-gray-700 placeholder:text-gray-500 bg-transparent outline-none disabled:opacity-50 min-w-0"
+                  onFocus={() => setIsFocused(true)}
+                  onBlur={() => setIsFocused(false)}
+                  placeholder={isAnalyzing ? 'Analyzing...' : 'Enter your job title or career goal...'}
+                  className="flex-1 text-lg text-slate-800 placeholder:text-slate-400 bg-transparent outline-none disabled:opacity-50 min-w-0 font-medium"
                   disabled={isAnalyzing}
-                  aria-label="Job title or career query input"
-                  aria-required="true"
-                  id="job-title-input"
-                  name="jobTitle"
                   autoComplete="off"
                 />
 
                 {/* Loading Spinner */}
                 {isAnalyzing && (
-                  <div className="mr-2 sm:mr-3 flex-shrink-0">
-                    <svg className="animate-spin h-4 w-4 sm:h-5 sm:w-5 text-blue-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                    </svg>
+                  <div className="mr-4 animate-spin">
+                    <div className="w-6 h-6 border-2 border-blue-600 border-t-transparent rounded-full"></div>
                   </div>
                 )}
 
-                {/* Upload Button */}
-                <input
-                  type="file"
-                  id="resume-upload"
-                  className="hidden"
-                  accept=".pdf,.doc,.docx,.txt"
-                  onChange={handleFileUpload}
-                  disabled={isAnalyzing}
-                />
-                <label
-                  htmlFor="resume-upload"
-                  className={`ml-2 sm:ml-3 w-8 h-8 sm:w-10 sm:h-10 rounded-full hover:bg-gray-100 flex items-center justify-center transition-all duration-200 group/upload flex-shrink-0 ${isAnalyzing ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
-                  aria-label="Upload resume"
-                >
-                  <svg className="w-4 h-4 sm:w-5 sm:h-5 text-gray-500 group-hover/upload:text-blue-600 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13" />
-                  </svg>
-                </label>
+                {/* Divider */}
+                <div className="w-px h-8 bg-slate-200 mx-2 hidden sm:block"></div>
 
-                {/* Submit on Enter - hidden button */}
-                <button type="submit" className="hidden" disabled={!jobTitle.trim() || isAnalyzing}>
-                  Submit
-                </button>
+                {/* Upload Button */}
+                <div className="hidden sm:flex items-center pl-2">
+                  <input
+                    type="file"
+                    id="resume-upload"
+                    className="hidden"
+                    accept=".pdf,.doc,.docx,.txt"
+                    onChange={handleFileUpload}
+                    disabled={isAnalyzing}
+                  />
+                  <label
+                    htmlFor="resume-upload"
+                    className="cursor-pointer group/upload flex items-center gap-2 px-4 py-2 hover:bg-slate-100 rounded-xl transition-all"
+                  >
+                    <div className="p-1.5 bg-slate-100 group-hover/upload:bg-white rounded-lg group-hover/upload:shadow-sm border border-transparent group-hover/upload:border-slate-200 transition-all">
+                      <Upload className="w-5 h-5 text-slate-500 group-hover/upload:text-blue-600" />
+                    </div>
+                    <span className="text-sm font-semibold text-slate-500 group-hover/upload:text-slate-800">Upload Resume</span>
+                  </label>
+                </div>
+              </div>
+
+              {/* Mobile Upload Button (below search on tiny screens) */}
+              <div className="sm:hidden absolute top-1/2 right-4 -translate-y-1/2">
+                <label htmlFor="resume-upload" className="p-2">
+                  <Upload className="w-6 h-6 text-slate-400" />
+                </label>
               </div>
 
               {/* Error Message */}
               {uploadError && (
-                <div className="absolute top-full left-0 right-0 mt-2 px-4 py-2 bg-red-50 text-red-600 text-sm rounded-lg border border-red-200">
+                <div className="absolute top-full left-0 right-0 mt-4 mx-4 p-4 bg-red-500/10 border border-red-500/20 text-red-200 text-sm rounded-xl text-center backdrop-blur-md">
                   {uploadError}
                 </div>
               )}
@@ -298,19 +239,16 @@ export default function Home() {
 
           {/* Example Searches */}
           <motion.div
-            className="max-w-2xl mx-auto mb-12 text-center px-4"
+            className="max-w-2xl mx-auto mb-20 text-center px-4"
             variants={staggerItemVariants}
           >
-            <div className="flex flex-wrap items-center justify-center gap-2">
-              <span className="text-white/60 text-xs sm:text-sm">Try:</span>
-              {['Software engineer to PM', 'Should I pursue an MBA?', 'Finance to tech'].map((example, idx) => (
+            <div className="flex flex-wrap items-center justify-center gap-3">
+              <span className="text-white/40 text-sm font-medium">Try:</span>
+              {['Software Engineer', 'Product Manager', 'Marketing Director', 'Pivot to Tech'].map((example, idx) => (
                 <button
                   key={idx}
-                  onClick={() => {
-                    const fullExamples = ['Software engineer to product manager', 'Should I pursue an MBA?', 'Pivot from finance to tech'];
-                    setJobTitle(fullExamples[idx]);
-                  }}
-                  className="inline-block bg-white/10 hover:bg-white/20 text-white/80 hover:text-white text-xs sm:text-sm px-3 sm:px-4 py-1.5 rounded-full transition-all duration-200 hover:scale-105 active:scale-95"
+                  onClick={() => setJobTitle(example)}
+                  className="bg-white/5 hover:bg-white/10 text-white/60 hover:text-white text-sm px-4 py-2 rounded-lg transition-all duration-200 border border-white/5 hover:border-white/10"
                   disabled={isAnalyzing}
                 >
                   {example}
@@ -319,136 +257,66 @@ export default function Home() {
             </div>
           </motion.div>
 
+          {/* Trust/Social Proof - Simple 3 items */}
           <motion.div
-            className="flex flex-wrap items-center justify-center gap-8 text-white/70 text-sm mb-16 font-medium"
+            className="flex flex-wrap items-center justify-center gap-12 text-white/50 text-sm font-medium"
             variants={staggerItemVariants}
-            role="list"
-            aria-label="Key features"
           >
-            <motion.div
-              className="flex items-center gap-2 hover:text-white transition-colors"
-              whileHover={{ scale: 1.05 }}
-              role="listitem"
-            >
-              <Shield className="w-5 h-5 text-gold-primary" aria-hidden="true" />
-              <span>100% Free Analysis</span>
-            </motion.div>
-            <motion.div
-              className="flex items-center gap-2 hover:text-white transition-colors"
-              whileHover={{ scale: 1.05 }}
-              role="listitem"
-            >
-              <Brain className="w-5 h-5 text-gold-primary" aria-hidden="true" />
-              <span>AI-Powered Insights</span>
-            </motion.div>
-            <motion.div
-              className="flex items-center gap-2 hover:text-white transition-colors"
-              whileHover={{ scale: 1.05 }}
-              role="listitem"
-            >
-              <TrendingUp className="w-5 h-5 text-gold-primary" aria-hidden="true" />
-              <span>Personalized Roadmap</span>
-            </motion.div>
+            <div className="flex items-center gap-2">
+              <Shield className="w-5 h-5 text-emerald-400" />
+              <span>Private & Secure</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <Brain className="w-5 h-5 text-blue-400" />
+              <span>DeepSeek R1 Engine</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <TrendingUp className="w-5 h-5 text-amber-400" />
+              <span>Real-time Data</span>
+            </div>
           </motion.div>
 
         </motion.div>
-
-        <motion.nav 
-          className="mt-16 text-center"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.8, duration: 0.5 }}
-          aria-label="Secondary navigation"
-        >
-          <p className="text-white/60 text-base mb-4 font-medium">
-            Join thousands of professionals taking control of their careers
-          </p>
-          <div className="flex items-center justify-center gap-4 flex-wrap">
-            <motion.button
-              onClick={() => {
-                const section = document.getElementById('how-it-works');
-                section?.scrollIntoView({ behavior: 'smooth' });
-              }}
-              className="text-white/70 hover:text-gold-primary text-sm font-medium transition-colors cursor-pointer"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              aria-label="Scroll to How It Works section"
-            >
-              How It Works
-            </motion.button>
-            <span className="text-white/30" aria-hidden="true">•</span>
-            <motion.button
-              onClick={() => router.push('/login')}
-              className="text-white/70 hover:text-gold-primary text-sm font-medium transition-colors cursor-pointer"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              aria-label="Navigate to sign in page"
-            >
-              Sign In
-            </motion.button>
-          </div>
-        </motion.nav>
       </main>
 
-      {/* How It Works Section */}
+      {/* Spacious Sections */}
       <HowItWorksSection />
-
-      {/* Benefits Section */}
       <BenefitsSection />
-
-      {/* Testimonials Section */}
       <TestimonialsCarousel />
 
       {/* Final CTA Section */}
-      <section className="py-24 px-4">
-        <div className="max-w-4xl mx-auto text-center">
+      <section className="py-32 px-4 relative overflow-hidden">
+        {/* Background Glow */}
+        <div className="absolute inset-0 bg-blue-900/10 pointer-events-none"></div>
+        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-blue-600/20 rounded-full blur-[100px] pointer-events-none"></div>
+
+        <div className="max-w-4xl mx-auto text-center relative z-10">
           <motion.div
-            className="p-12"
             initial={{ opacity: 0, y: 40 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-100px" }}
-            transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+            transition={{ duration: 0.8 }}
           >
-            <div className="relative z-10">
-              <motion.h2
-                className="text-3xl md:text-4xl font-bold text-white mb-4"
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: 0.2, duration: 0.5 }}
-              >
-                Ready to Make Your Next Move?
-              </motion.h2>
-              <motion.p
-                className="text-lg md:text-xl text-white/70 mb-8 max-w-2xl mx-auto"
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: 0.3, duration: 0.5 }}
-              >
-                Get your free career analysis in under 60 seconds
-              </motion.p>
-              <motion.button
-                onClick={() => {
-                  window.scrollTo({ top: 0, behavior: 'smooth' });
-                  setTimeout(() => {
-                    const input = document.querySelector('input[type="text"]') as HTMLInputElement;
-                    input?.focus();
-                  }, 500);
-                }}
-                className="px-10 py-4 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-semibold text-lg rounded-xl transition-all shadow-lg hover:shadow-xl inline-flex items-center gap-2 group hover:-translate-y-0.5"
-                initial={{ opacity: 0, scale: 0.9 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                viewport={{ once: true }}
-                transition={{ delay: 0.4, duration: 0.5 }}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.98 }}
-                style={{ boxShadow: '0 4px 14px rgba(59, 130, 246, 0.4)' }}
-              >
-                <span>Get Started Free</span>
-                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-              </motion.button>
-            </div>
+            <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
+              Ready to Future-Proof Your Career?
+            </h2>
+            <p className="text-xl text-white/60 mb-10 max-w-2xl mx-auto">
+              Get your personalized career analysis and roadmap in under 60 seconds.
+            </p>
+
+            <button
+              onClick={() => {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+                setTimeout(() => {
+                  const input = document.querySelector('input[type="text"]') as HTMLInputElement;
+                  input?.focus();
+                }, 800);
+              }}
+              className="px-12 py-5 bg-white text-slate-900 font-bold text-lg rounded-full transition-all shadow-xl hover:shadow-2xl hover:scale-105 hover:bg-blue-50 flex items-center gap-2 mx-auto"
+            >
+              <span>Get Started for Free</span>
+              <ArrowRight className="w-5 h-5" />
+            </button>
           </motion.div>
         </div>
       </section>
