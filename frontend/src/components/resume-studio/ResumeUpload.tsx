@@ -7,15 +7,29 @@ import { ResumeStudioAPI } from '@/lib/api/premiumAPI';
 interface ResumeUploadProps {
   userId: string;
   onSuccess?: (profileId: string) => void;
+  initialFile?: File | null;
 }
 
-export default function ResumeUpload({ userId, onSuccess }: ResumeUploadProps) {
+export default function ResumeUpload({ userId, onSuccess, initialFile }: ResumeUploadProps) {
   const [state, setState] = useState<ResumeUploadState>({
     step: 'upload',
     uploadProgress: 0,
   });
   const [isDragging, setIsDragging] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Handle initial file from homepage
+  React.useEffect(() => {
+    if (initialFile) {
+      handleFileSelect(initialFile);
+      // Auto-trigger upload after a short delay for better UX
+      setTimeout(() => {
+        if (initialFile) {
+          setState((prev) => ({ ...prev, file: initialFile }));
+        }
+      }, 500);
+    }
+  }, [initialFile]);
 
   // Handle file selection
   const handleFileSelect = (file: File) => {

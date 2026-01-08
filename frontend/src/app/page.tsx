@@ -57,9 +57,25 @@ export default function Home() {
     setUploadError('');
     setIsAnalyzing(true);
 
-    // TODO: Implement actual resume parsing
-    // For now, redirect to resume studio
-    router.push('/resume-studio/upload');
+    // Store file in sessionStorage for Resume Studio to pick up
+    try {
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        const fileData = {
+          name: file.name,
+          type: file.type,
+          size: file.size,
+          content: event.target?.result, // Base64 encoded content
+          lastModified: file.lastModified,
+        };
+        sessionStorage.setItem('pendingResumeUpload', JSON.stringify(fileData));
+        router.push('/resume-studio/upload');
+      };
+      reader.readAsDataURL(file); // Convert to base64
+    } catch (error) {
+      setUploadError('Failed to process file. Please try again.');
+      setIsAnalyzing(false);
+    }
   };
 
   const handleLogout = async () => {
