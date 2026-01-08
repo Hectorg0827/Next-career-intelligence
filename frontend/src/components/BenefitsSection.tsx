@@ -35,20 +35,20 @@ export default function BenefitsSection() {
         </div>
 
         {/* Benefits Grid - 2x2 */}
-        <div className="grid md:grid-cols-2 gap-8">
+        <div className="grid sm:grid-cols-2 gap-6 md:gap-8">
           {benefits.map((benefit, index) => (
             <div
               key={index}
-              className="bg-slate-800/50 p-8 rounded-xl hover:bg-slate-800/70 transition-all duration-300 hover:-translate-y-1 shadow-lg hover:shadow-xl"
+              className="bg-slate-800/50 p-6 sm:p-8 rounded-xl hover:bg-slate-800/70 transition-all duration-300 hover:-translate-y-1 shadow-lg hover:shadow-xl"
             >
               {/* Icon */}
-              <div className="text-5xl mb-4">{benefit.emoji}</div>
+              <div className="text-4xl sm:text-5xl mb-3 sm:mb-4">{benefit.emoji}</div>
 
               {/* Content */}
-              <h3 className="text-2xl font-semibold text-white mb-3">
+              <h3 className="text-xl sm:text-2xl font-semibold text-white mb-2 sm:mb-3">
                 {benefit.title}
               </h3>
-              <p className="text-white/70 leading-relaxed">
+              <p className="text-sm sm:text-base text-white/70 leading-relaxed">
                 {benefit.description}
               </p>
             </div>

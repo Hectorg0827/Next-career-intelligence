@@ -23,13 +23,43 @@ export default function Home() {
   const { user, isAuthenticated, hasPremiumAccess, logout, isLoading } = useAuth();
   const [jobTitle, setJobTitle] = useState('');
   const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [uploadError, setUploadError] = useState('');
 
   const handleAnalyze = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!jobTitle.trim()) return;
 
     setIsAnalyzing(true);
+    setUploadError('');
+
+    // Simulate network delay for better UX
+    await new Promise(resolve => setTimeout(resolve, 300));
     router.push(`/analyze?job=${encodeURIComponent(jobTitle)}`);
+  };
+
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    // Validate file type
+    const validTypes = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'text/plain'];
+    if (!validTypes.includes(file.type)) {
+      setUploadError('Please upload a PDF, DOC, DOCX, or TXT file');
+      return;
+    }
+
+    // Validate file size (5MB max)
+    if (file.size > 5 * 1024 * 1024) {
+      setUploadError('File size must be less than 5MB');
+      return;
+    }
+
+    setUploadError('');
+    setIsAnalyzing(true);
+
+    // TODO: Implement actual resume parsing
+    // For now, redirect to resume studio
+    router.push('/resume-studio/upload');
   };
 
   const handleLogout = async () => {
@@ -160,7 +190,7 @@ export default function Home() {
           </motion.div>
 
           <motion.h1
-            className="text-4xl md:text-6xl font-bold mb-6 leading-tight"
+            className="text-3xl sm:text-4xl md:text-6xl font-bold mb-4 sm:mb-6 leading-tight px-4"
             variants={staggerItemVariants}
           >
             <span className="text-white">Know Your Next Move</span>
@@ -170,7 +200,7 @@ export default function Home() {
           </motion.h1>
 
           <motion.p
-            className="text-lg md:text-xl text-white/70 mb-12 max-w-2xl mx-auto leading-relaxed font-normal"
+            className="text-base sm:text-lg md:text-xl text-white/70 mb-8 sm:mb-12 max-w-2xl mx-auto leading-relaxed font-normal px-4"
             variants={staggerItemVariants}
           >
             Your AI-powered career companion
@@ -178,16 +208,16 @@ export default function Home() {
 
           <motion.form
             onSubmit={handleAnalyze}
-            className="max-w-2xl mx-auto mb-4"
+            className="max-w-2xl mx-auto mb-2 px-4"
             variants={staggerItemVariants}
             role="search"
             aria-label="Career analysis search"
           >
             <div className="relative group">
               {/* Google-style search bar */}
-              <div className="bg-white rounded-full flex items-center px-6 py-4 shadow-md hover:shadow-lg transition-all duration-300 border border-gray-200">
+              <div className="bg-white rounded-full flex items-center px-4 sm:px-6 py-3 sm:py-4 shadow-md hover:shadow-lg transition-all duration-300 border border-gray-200">
                 {/* Search Icon */}
-                <svg className="w-5 h-5 text-gray-400 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-4 h-4 sm:w-5 sm:h-5 text-gray-400 mr-2 sm:mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                 </svg>
 
@@ -196,8 +226,8 @@ export default function Home() {
                   type="text"
                   value={jobTitle}
                   onChange={(e) => setJobTitle(e.target.value)}
-                  placeholder="Describe your career move or upload resume..."
-                  className="flex-1 text-base text-gray-700 placeholder:text-gray-500 bg-transparent outline-none"
+                  placeholder={isAnalyzing ? 'Analyzing...' : 'Describe your career move...'}
+                  className="flex-1 text-sm sm:text-base text-gray-700 placeholder:text-gray-500 bg-transparent outline-none disabled:opacity-50 min-w-0"
                   disabled={isAnalyzing}
                   aria-label="Job title or career query input"
                   aria-required="true"
@@ -206,44 +236,71 @@ export default function Home() {
                   autoComplete="off"
                 />
 
+                {/* Loading Spinner */}
+                {isAnalyzing && (
+                  <div className="mr-2 sm:mr-3 flex-shrink-0">
+                    <svg className="animate-spin h-4 w-4 sm:h-5 sm:w-5 text-blue-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                  </div>
+                )}
+
                 {/* Upload Button */}
-                <button
-                  type="button"
-                  className="ml-3 w-10 h-10 rounded-full hover:bg-gray-100 flex items-center justify-center transition-all duration-200 group/upload"
+                <input
+                  type="file"
+                  id="resume-upload"
+                  className="hidden"
+                  accept=".pdf,.doc,.docx,.txt"
+                  onChange={handleFileUpload}
+                  disabled={isAnalyzing}
+                />
+                <label
+                  htmlFor="resume-upload"
+                  className={`ml-2 sm:ml-3 w-8 h-8 sm:w-10 sm:h-10 rounded-full hover:bg-gray-100 flex items-center justify-center transition-all duration-200 group/upload flex-shrink-0 ${isAnalyzing ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
                   aria-label="Upload resume"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    // TODO: Implement upload functionality
-                  }}
                 >
-                  <svg className="w-5 h-5 text-gray-500 group-hover/upload:text-blue-600 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-4 h-4 sm:w-5 sm:h-5 text-gray-500 group-hover/upload:text-blue-600 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13" />
                   </svg>
-                </button>
+                </label>
 
                 {/* Submit on Enter - hidden button */}
                 <button type="submit" className="hidden" disabled={!jobTitle.trim() || isAnalyzing}>
                   Submit
                 </button>
               </div>
+
+              {/* Error Message */}
+              {uploadError && (
+                <div className="absolute top-full left-0 right-0 mt-2 px-4 py-2 bg-red-50 text-red-600 text-sm rounded-lg border border-red-200">
+                  {uploadError}
+                </div>
+              )}
             </div>
           </motion.form>
 
           {/* Example Searches */}
           <motion.div
-            className="max-w-2xl mx-auto mb-12 text-center"
+            className="max-w-2xl mx-auto mb-12 text-center px-4"
             variants={staggerItemVariants}
           >
-            <span className="text-white/60 text-sm mr-3">Try:</span>
-            {['Software engineer to product manager', 'Should I pursue an MBA?', 'Pivot from finance to tech'].map((example, idx) => (
-              <button
-                key={idx}
-                onClick={() => setJobTitle(example)}
-                className="inline-block bg-white/10 hover:bg-white/20 text-white/80 hover:text-white text-sm px-4 py-1.5 rounded-full mr-2 mb-2 transition-all duration-200"
-              >
-                {example}
-              </button>
-            ))}
+            <div className="flex flex-wrap items-center justify-center gap-2">
+              <span className="text-white/60 text-xs sm:text-sm">Try:</span>
+              {['Software engineer to PM', 'Should I pursue an MBA?', 'Finance to tech'].map((example, idx) => (
+                <button
+                  key={idx}
+                  onClick={() => {
+                    const fullExamples = ['Software engineer to product manager', 'Should I pursue an MBA?', 'Pivot from finance to tech'];
+                    setJobTitle(fullExamples[idx]);
+                  }}
+                  className="inline-block bg-white/10 hover:bg-white/20 text-white/80 hover:text-white text-xs sm:text-sm px-3 sm:px-4 py-1.5 rounded-full transition-all duration-200 hover:scale-105 active:scale-95"
+                  disabled={isAnalyzing}
+                >
+                  {example}
+                </button>
+              ))}
+            </div>
           </motion.div>
 
           <motion.div

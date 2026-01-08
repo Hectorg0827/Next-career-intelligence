@@ -35,22 +35,22 @@ export default function HowItWorksSection() {
         </div>
 
         {/* Steps Grid - Clean 3 columns */}
-        <div className="grid md:grid-cols-3 gap-12">
+        <div className="grid md:grid-cols-3 gap-8 md:gap-12">
           {steps.map((step, index) => (
             <div
               key={index}
-              className="text-center max-w-[280px] mx-auto"
+              className="text-center max-w-[280px] mx-auto group"
             >
               {/* Emoji Icon */}
-              <div className="w-20 h-20 mx-auto mb-6 text-6xl flex items-center justify-center bg-gradient-to-br from-blue-600/20 to-blue-700/20 rounded-full">
+              <div className="w-16 h-16 sm:w-20 sm:h-20 mx-auto mb-4 sm:mb-6 text-5xl sm:text-6xl flex items-center justify-center bg-gradient-to-br from-blue-600/20 to-blue-700/20 rounded-full transition-all duration-300 group-hover:scale-110 group-hover:from-blue-600/30 group-hover:to-blue-700/30">
                 {step.emoji}
               </div>
 
               {/* Content */}
-              <h3 className="text-xl font-semibold text-white mb-3">
+              <h3 className="text-lg sm:text-xl font-semibold text-white mb-2 sm:mb-3 transition-colors duration-300 group-hover:text-blue-400">
                 {step.number}. {step.title}
               </h3>
-              <p className="text-white/70 leading-relaxed">
+              <p className="text-sm sm:text-base text-white/70 leading-relaxed">
                 {step.description}
               </p>
             </div>
