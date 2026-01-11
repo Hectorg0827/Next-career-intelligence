@@ -4,7 +4,7 @@ Handles resume parsing, tailoring, and suggestion management
 WITH ENHANCED SAFETY, PRIVACY & GUARDRAILS
 """
 
-from fastapi import APIRouter, HTTPException, Depends, UploadFile, File, Request
+from fastapi import APIRouter, HTTPException, Depends, UploadFile, File, Request, Form
 from sqlalchemy.orm import Session
 from pydantic import BaseModel, Field, validator
 from typing import Optional, List, Dict, Any
@@ -12,6 +12,7 @@ from datetime import datetime
 from loguru import logger
 import re
 import hashlib
+import json
 
 from app.db.supabase import get_supabase_client
 from app.services.gemini_analyzer import GeminiAnalyzer
@@ -398,12 +399,18 @@ async def check_rate_limit(request: Request):
 
 
 @router.post("/ingest", response_model=IngestResponse, dependencies=[Depends(check_rate_limit)])
-async def ingest_resume(request: IngestRequest, file: Optional[UploadFile] = File(None)):
+async def ingest_resume(request_data: str = Form(...), file: Optional[UploadFile] = File(None)):
     """
     Parse resume/LinkedIn text into normalized career_profile.
     WITH SAFETY & PRIVACY GUARDRAILS
     """
     try:
+        # Parse JSON payload manually since we're using Multipart/Form-Data
+        try:
+            req_dict = json.loads(request_data)
+            request = IngestRequest(**req_dict)
+        except Exception as e:
+            raise HTTPException(422, f"Invalid request_data JSON: {str(e)}")
         # 1. VERIFY CONSENT
         consent_valid, consent_error = PrivacyFilter.verify_consent(request.privacy_consent, "ingest")
         if not consent_valid:

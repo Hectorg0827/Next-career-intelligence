@@ -43,11 +43,9 @@ export const ResumeStudioAPI = {
     user_id: string;
   }) {
     const formData = new FormData();
-    if (data.file) {
-      formData.append('file', data.file);
-    }
 
-    const body = {
+    // Construct the request payload
+    const payload = {
       text: data.text,
       user_id: data.user_id,
       privacy_consent: {
@@ -58,10 +56,18 @@ export const ResumeStudioAPI = {
       user_region: 'US',
     };
 
+    // Append payload as JSON string
+    formData.append('request_data', JSON.stringify(payload));
+
+    // Append file if present
+    if (data.file) {
+      formData.append('file', data.file);
+    }
+
     return fetchWithAuth(`${API_BASE}/resume-studio/ingest`, {
       method: 'POST',
-      body: data.file ? formData : JSON.stringify(body),
-      ...(data.file && { headers: {} }), // Let browser set Content-Type for FormData
+      body: formData,
+      // fetchWithAuth will handle headers. for FormData, we let browser set Content-Type
     });
   },
 

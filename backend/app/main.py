@@ -318,8 +318,7 @@ app.include_router(users.router, prefix="/api", tags=["Users"])
 app.include_router(resume_studio.router, prefix="/api", tags=["Resume Studio"])
 
 # Premium feature routers
-if resume_studio:
-    app.include_router(resume_studio.router, prefix="/api", tags=["Resume Studio - Premium"])
+
 app.include_router(coach.router, prefix="/api", tags=["Career Coach - Premium"])
 app.include_router(interviewer.router, prefix="/api", tags=["Interviewer AI - Premium"])
 app.include_router(skills.router, prefix="/api", tags=["Skills - AI Coach 2.0"])
