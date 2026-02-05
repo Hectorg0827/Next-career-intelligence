@@ -142,12 +142,12 @@ export default function AIGuidancePanel({
 
   if (messages.length === 0) {
     return (
-      <div className="glass-card p-6 text-center">
+      <div className="bg-white rounded-lg border border-slate-200 shadow-sm hover:shadow-md transition-all duration-200 p-6 text-center">
         <CheckCircle className="w-12 h-12 text-green-500 mx-auto mb-3" />
-        <h3 className="text-lg font-semibold text-white mb-2">
+        <h3 className="text-lg font-semibold text-slate-800 mb-2">
           You're All Set! 🎉
         </h3>
-        <p className="text-ink-300">
+        <p className="text-slate-700">
           No guidance needed right now. Keep up the great work!
         </p>
       </div>

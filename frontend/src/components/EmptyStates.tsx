@@ -26,19 +26,19 @@ export default function EmptyState({ type, title, description, actionLabel, onAc
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4 }}
-      className="glass-card rounded-2xl p-12 text-center"
+      className="bg-white rounded-lg border border-slate-200 shadow-sm hover:shadow-md transition-all duration-200 p-12 text-center"
     >
       <div className={`w-16 h-16 ${config.bg} rounded-full flex items-center justify-center mx-auto mb-4`}>
         <Icon className={`w-8 h-8 ${config.color}`} />
       </div>
 
-      <h3 className="text-xl font-semibold text-white mb-2">{title}</h3>
-      <p className="text-ink-300 max-w-md mx-auto mb-6">{description}</p>
+      <h3 className="text-xl font-semibold text-slate-800 mb-2">{title}</h3>
+      <p className="text-slate-700 max-w-md mx-auto mb-6">{description}</p>
 
       {actionLabel && onAction && (
         <button
           onClick={onAction}
-          className="px-6 py-3 bg-primary-500 hover:bg-primary-600 text-white font-semibold rounded-xl transition-colors"
+          className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl transition-colors"
         >
           {actionLabel}
         </button>

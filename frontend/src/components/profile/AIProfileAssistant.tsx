@@ -147,9 +147,9 @@ export default function AIProfileAssistant({
 
   if (loading) {
     return (
-      <div className="glass-card p-6">
+      <div className="bg-white rounded-lg border border-slate-200 shadow-sm hover:shadow-md transition-all duration-200 p-6">
         <div className="flex items-center justify-center py-8">
-          <Loader2 className="w-8 h-8 animate-spin text-primary-500" />
+          <Loader2 className="w-8 h-8 animate-spin text-blue-500" />
         </div>
       </div>
     );
@@ -157,8 +157,8 @@ export default function AIProfileAssistant({
 
   if (!analysis) {
     return (
-      <div className="glass-card p-6">
-        <p className="text-center text-ink-300">
+      <div className="bg-white rounded-lg border border-slate-200 shadow-sm hover:shadow-md transition-all duration-200 p-6">
+        <p className="text-center text-slate-500">
           Unable to load profile analysis
         </p>
       </div>
@@ -169,11 +169,11 @@ export default function AIProfileAssistant({
 
   if (compact) {
     return (
-      <div className="glass-card p-4">
+      <div className="bg-white rounded-lg border border-slate-200 shadow-sm hover:shadow-md transition-all duration-200 p-4">
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
-            <Sparkles className="w-5 h-5 text-primary-500" />
-            <h3 className="font-semibold text-white">Profile Strength</h3>
+            <Sparkles className="w-5 h-5 text-blue-500" />
+            <h3 className="font-semibold text-slate-800">Profile Strength</h3>
           </div>
           <span className={`text-2xl font-bold ${getLevelColor(analysis.completeness_level)}`}>
             {percentage}%
@@ -190,7 +190,7 @@ export default function AIProfileAssistant({
         {analysis.suggestions_count > 0 && (
           <button
             onClick={() => router.push('/profile')}
-            className="w-full text-sm text-primary-500 hover:text-primary-400 font-medium flex items-center justify-center gap-1"
+            className="w-full text-sm text-blue-600 hover:text-blue-700 font-medium flex items-center justify-center gap-1"
           >
             {analysis.suggestions_count} Improvements Available
             <ChevronRight className="w-4 h-4" />
@@ -203,10 +203,10 @@ export default function AIProfileAssistant({
   return (
     <div className="space-y-6">
       {/* Completeness Score Card */}
-      <div className="glass-card p-6">
+      <div className="bg-white rounded-lg border border-slate-200 shadow-sm hover:shadow-md transition-all duration-200 p-6">
         <div className="flex items-center gap-3 mb-4">
-          <Sparkles className="w-6 h-6 text-primary-500" />
-          <h3 className="text-xl font-semibold text-white">
+          <Sparkles className="w-6 h-6 text-blue-500" />
+          <h3 className="text-xl font-semibold text-slate-800">
             Profile Intelligence
           </h3>
         </div>
@@ -214,7 +214,7 @@ export default function AIProfileAssistant({
         {/* Progress Bar */}
         <div className="mb-6">
           <div className="flex justify-between items-baseline mb-2">
-            <span className="text-3xl font-bold text-white">{percentage}%</span>
+            <span className="text-3xl font-bold text-slate-800">{percentage}%</span>
             <span className={`text-lg font-semibold ${getLevelColor(analysis.completeness_level)}`}>
               {analysis.completeness_level.charAt(0).toUpperCase() + analysis.completeness_level.slice(1)}
             </span>
@@ -237,7 +237,7 @@ export default function AIProfileAssistant({
             </h4>
             <ul className="space-y-1">
               {analysis.strengths.map((strength, idx) => (
-                <li key={idx} className="text-sm text-ink-200 pl-6">
+                <li key={idx} className="text-sm text-slate-700 pl-6">
                   • {strength}
                 </li>
               ))}
@@ -254,7 +254,7 @@ export default function AIProfileAssistant({
             </h4>
             <ul className="space-y-1">
               {analysis.weaknesses.map((weakness, idx) => (
-                <li key={idx} className="text-sm text-ink-200 pl-6">
+                <li key={idx} className="text-sm text-slate-700 pl-6">
                   • {weakness}
                 </li>
               ))}
@@ -267,7 +267,7 @@ export default function AIProfileAssistant({
           <button
             onClick={handleInferData}
             disabled={inferring}
-            className="flex-1 px-4 py-2 bg-primary-500 hover:bg-primary-600 text-white rounded-lg font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+            className="flex-1 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
           >
             {inferring ? (
               <>
@@ -276,7 +276,7 @@ export default function AIProfileAssistant({
               </>
             ) : (
               <>
-                <Sparkles className="w-4 h-4" />
+                <Sparkles className="w-4 h-4 text-white" />
                 Quick Fill Profile
               </>
             )}
@@ -285,7 +285,7 @@ export default function AIProfileAssistant({
           <button
             onClick={handleGenerateSummary}
             disabled={generating}
-            className="flex-1 px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+            className="flex-1 px-4 py-2 text-slate-600 hover:text-slate-900 rounded-lg font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
           >
             {generating ? (
               <>
@@ -304,8 +304,8 @@ export default function AIProfileAssistant({
 
       {/* AI Suggestions */}
       {suggestions.length > 0 && (
-        <div className="glass-card p-6">
-          <h3 className="text-lg font-semibold text-white mb-4">
+        <div className="bg-white rounded-lg border border-slate-200 shadow-sm hover:shadow-md transition-all duration-200 p-6">
+          <h3 className="text-lg font-semibold text-slate-800 mb-4">
             AI Suggestions ({suggestions.length})
           </h3>
           
@@ -313,7 +313,7 @@ export default function AIProfileAssistant({
             {suggestions.map((suggestion, idx) => (
               <div 
                 key={idx}
-                className="p-4 bg-white/5 rounded-lg border border-white/10 hover:border-primary-500/50 transition-colors"
+                className="p-4 bg-gray-50 rounded-lg border border-gray-200 hover:border-blue-500 transition-colors"
               >
                 <div className="flex items-start justify-between mb-2">
                   <div className="flex items-center gap-2">
@@ -335,12 +335,12 @@ export default function AIProfileAssistant({
                   </span>
                 </div>
                 
-                <p className="text-sm text-ink-200 mb-2">
+                <p className="text-sm text-slate-700 mb-2">
                   {suggestion.reasoning}
                 </p>
                 
                 {suggestion.suggested_value && (
-                  <div className="text-xs text-primary-400 bg-primary-500/10 px-3 py-2 rounded">
+                  <div className="text-xs text-blue-600 bg-blue-50/50 px-3 py-2 rounded">
                     💡 Suggestion: {suggestion.suggested_value}
                   </div>
                 )}
@@ -351,7 +351,7 @@ export default function AIProfileAssistant({
           {analysis.suggestions_count > suggestions.length && (
             <button
               onClick={() => router.push('/profile')}
-              className="w-full mt-4 text-sm text-primary-500 hover:text-primary-400 font-medium flex items-center justify-center gap-1"
+              className="w-full mt-4 text-sm text-blue-600 hover:text-blue-700 font-medium flex items-center justify-center gap-1"
             >
               View All {analysis.suggestions_count} Suggestions
               <ChevronRight className="w-4 h-4" />
@@ -362,18 +362,18 @@ export default function AIProfileAssistant({
 
       {/* Inferred Skills */}
       {showInferredSkills && analysis.inferred_skills.length > 0 && (
-        <div className="glass-card p-6">
-          <h3 className="text-lg font-semibold text-white mb-4">
+        <div className="bg-white rounded-lg border border-slate-200 shadow-sm hover:shadow-md transition-all duration-200 p-6">
+          <h3 className="text-lg font-semibold text-slate-800 mb-4">
             AI Detected Skills
           </h3>
-          <p className="text-sm text-ink-300 mb-3">
+          <p className="text-sm text-slate-700 mb-3">
             Based on your experience, we found these skills:
           </p>
           <div className="flex flex-wrap gap-2">
             {analysis.inferred_skills.map((skill, idx) => (
               <span 
                 key={idx}
-                className="px-3 py-1 bg-primary-500/20 text-primary-300 text-sm rounded-full border border-primary-500/30"
+                className="px-3 py-1 bg-blue-50/50 text-blue-700 text-sm rounded-full border border-blue-200"
               >
                 {skill}
               </span>

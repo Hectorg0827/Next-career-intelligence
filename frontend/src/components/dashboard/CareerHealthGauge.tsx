@@ -22,9 +22,9 @@ export default function CareerHealthGauge({ score, trend, onViewReport }: Career
       initial={{ opacity: 0, scale: 0.9 }}
       animate={{ opacity: 1, scale: 1 }}
       transition={{ duration: 0.5 }}
-      className="glass-card-enhanced hover-reflect card-padding-lg"
+      className="bg-white rounded-lg border border-slate-200 shadow-sm hover:shadow-md transition-all duration-200 p-8"
     >
-      <h2 className="heading-sm text-primary-white mb-8 text-center">Career Health Score</h2>
+      <h2 className="text-xl font-semibold text-slate-800 mb-8 text-center">Career Health Score</h2>
 
       <div className="w-52 h-52 mx-auto">
         <CircularProgressbar
@@ -43,10 +43,10 @@ export default function CareerHealthGauge({ score, trend, onViewReport }: Career
 
       {trend !== undefined && (
         <div className="mt-8 text-center">
-          <span className={`text-3xl font-bold ${trend > 0 ? 'text-ios-green' : 'text-ios-red'}`}>
+          <span className={`text-3xl font-bold ${trend > 0 ? 'text-green-600' : 'text-red-600'}`}>
             {trend > 0 ? '↑' : '↓'} {Math.abs(trend)}
           </span>
-          <span className="ml-3 body-md text-secondary-white">
+          <span className="ml-3 text-base text-slate-600">
             points this week
           </span>
         </div>
@@ -55,9 +55,9 @@ export default function CareerHealthGauge({ score, trend, onViewReport }: Career
       {onViewReport && (
         <button
           onClick={onViewReport}
-          className="w-full mt-8 py-3.5 btn-secondary hover:bg-white/15"
+          className="w-full mt-8 py-3.5 text-blue-600 hover:text-blue-700 font-medium"
         >
-          <span className="text-primary-white">View Full Report →</span>
+          <span className="text-blue-600">View Full Report →</span>
         </button>
       )}
     </motion.div>

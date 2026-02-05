@@ -45,7 +45,7 @@ export default function PriorityActionCard({
       initial={{ opacity: 0, x: -20 }}
       animate={{ opacity: 1, x: 0 }}
       transition={{ duration: 0.4 }}
-      className="glass-card hover-reflect rounded-2xl p-6"
+      className="bg-white rounded-lg border border-slate-200 shadow-sm hover:shadow-md transition-all duration-200 p-6"
     >
       <div className="flex items-start space-x-4">
         <div className={`w-12 h-12 rounded-full ${style.bg} flex items-center justify-center flex-shrink-0`}>
@@ -61,11 +61,11 @@ export default function PriorityActionCard({
             </span>
           )}
 
-          <h3 className="text-lg font-semibold text-white">
+          <h3 className="text-lg font-semibold text-slate-800">
             {title}
           </h3>
 
-          <p className="mt-2 text-sm text-ink-300">
+          <p className="mt-2 text-sm text-slate-700">
             {description}
           </p>
         </div>
@@ -75,7 +75,7 @@ export default function PriorityActionCard({
         {onAction && (
           <button
             onClick={onAction}
-            className="flex-1 py-2.5 px-4 bg-primary-500 hover:bg-primary-600 text-white font-medium rounded-xl transition-colors"
+            className="flex-1 py-2.5 px-4 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-xl transition-colors"
           >
             Take Action
           </button>
@@ -84,7 +84,7 @@ export default function PriorityActionCard({
         {onDismiss && (
           <button
             onClick={onDismiss}
-            className="px-4 py-2.5 text-ink-400 hover:text-white transition-colors"
+            className="px-4 py-2.5 text-slate-600 hover:text-slate-900 font-medium rounded-xl transition-colors"
           >
             Dismiss
           </button>

@@ -30,28 +30,28 @@ export default function JobMatchCard({ job, matchScore, onApply }: JobMatchCardP
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4 }}
-      className="glass-card hover-reflect rounded-2xl p-6"
+      className="bg-white rounded-lg border border-slate-200 shadow-sm hover:shadow-md transition-all duration-200 p-6"
     >
       <div className={`inline-flex px-3 py-1.5 rounded-full text-sm font-semibold mb-4 ${getMatchColor(matchScore)}`}>
         {matchScore}% Match
       </div>
 
-      <h3 className="text-xl font-bold text-white mb-2">
+      <h3 className="text-xl font-bold text-slate-800 mb-2">
         {job.title}
       </h3>
 
-      <p className="text-base text-ink-200 font-medium mb-4">
+      <p className="text-base text-slate-700 font-medium mb-4">
         {job.company}
       </p>
 
       <div className="space-y-2 mb-4">
-        <div className="flex items-center text-sm text-ink-300">
+        <div className="flex items-center text-sm text-slate-600">
           <MapPinIcon className="w-4 h-4 mr-2" />
           {job.location} {job.isRemote && '• Remote'}
         </div>
 
         {job.salaryMin && job.salaryMax && (
-          <div className="flex items-center text-sm text-ink-300">
+          <div className="flex items-center text-sm text-slate-600">
             <CurrencyDollarIcon className="w-4 h-4 mr-2" />
             ${job.salaryMin?.toLocaleString()} - ${job.salaryMax?.toLocaleString()}
           </div>
@@ -61,20 +61,20 @@ export default function JobMatchCard({ job, matchScore, onApply }: JobMatchCardP
       <div className="mb-4 space-y-1.5">
         <div className="flex items-start text-sm">
           <span className="text-success-500 mr-2">✓</span>
-          <span className="text-ink-200">
+          <span className="text-slate-700">
             10/12 required skills
           </span>
         </div>
         <div className="flex items-start text-sm">
           <span className="text-success-500 mr-2">✓</span>
-          <span className="text-ink-200">
+          <span className="text-slate-700">
             Aligns with your career goals
           </span>
         </div>
         {job.gaps && job.gaps.length > 0 && (
           <div className="flex items-start text-sm">
             <span className="text-warning-500 mr-2">⚠</span>
-            <span className="text-ink-200">
+            <span className="text-slate-700">
               Missing: {job.gaps.join(', ')}
             </span>
           </div>
@@ -84,7 +84,7 @@ export default function JobMatchCard({ job, matchScore, onApply }: JobMatchCardP
       {onApply && (
         <button
           onClick={onApply}
-          className="w-full py-3 bg-primary-500 hover:bg-primary-600 text-white font-semibold rounded-xl transition-colors"
+          className="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl transition-colors"
         >
           Quick Apply
         </button>

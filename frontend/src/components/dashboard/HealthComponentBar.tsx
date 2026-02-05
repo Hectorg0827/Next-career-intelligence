@@ -20,15 +20,15 @@ export default function HealthComponentBar({ name, score, description, onClick }
     <motion.div
       whileHover={{ scale: 1.01 }}
       onClick={onClick}
-      className={`glass-card hover-reflect rounded-xl p-5 ${onClick ? 'cursor-pointer' : ''}`}
+      className={`bg-white rounded-lg border border-slate-200 shadow-sm hover:shadow-md transition-all duration-200 p-5 ${onClick ? 'cursor-pointer' : ''}`}
     >
       <div className="flex items-center justify-between mb-3">
-        <h4 className="text-base font-semibold text-white">
+        <h4 className="text-base font-semibold text-slate-800">
           {name}
         </h4>
         <div className="flex items-center space-x-2">
-          <span className="text-2xl font-bold text-white">{score}</span>
-          <span className="text-sm text-ink-500">/100</span>
+          <span className="text-2xl font-bold text-slate-800">{score}</span>
+          <span className="text-sm text-slate-500">/100</span>
         </div>
       </div>
 
@@ -41,7 +41,7 @@ export default function HealthComponentBar({ name, score, description, onClick }
         />
       </div>
 
-      <p className="text-sm text-ink-300">{description}</p>
+      <p className="text-sm text-slate-700">{description}</p>
     </motion.div>
   );
 }

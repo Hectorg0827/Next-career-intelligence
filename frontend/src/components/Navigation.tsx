@@ -43,7 +43,7 @@ export default function Navigation() {
   };
 
   return (
-    <nav className="nav-glass sticky top-0 z-50">
+    <nav className="bg-white/80 backdrop-blur-md border-b border-gray-100 sticky top-0 z-50">
       <div className="max-w-container container-padding">
         <div className="flex justify-between items-center py-5">
           {/* Logo */}
@@ -61,15 +61,15 @@ export default function Navigation() {
                 <Link
                   key={item.name}
                   href={item.href}
-                  className={`px-5 py-2.5 rounded-xl font-medium transition-all duration-200 flex items-center gap-2 group relative ${isActive
-                      ? 'bg-white/15 text-white shadow-lg'
-                      : 'text-white/70 hover:text-blue-400 hover:bg-white/10'
+                  className={`px-5 py-2.5 rounded-xl font-medium transition-colors duration-200 flex items-center gap-2 group relative ${isActive
+                      ? 'text-blue-600'
+                      : 'text-slate-600 hover:text-slate-900'
                     }`}
                 >
                   <Icon className="w-4.5 h-4.5 transition-transform group-hover:scale-110" />
                   <span className="text-base font-medium">{item.name}</span>
                   {item.isPremium && !hasPremiumAccess && (
-                    <Crown className="w-3.5 h-3.5 text-gold-primary animate-pulse" />
+                    <Crown className="w-3.5 h-3.5 text-blue-500" />
                   )}
                 </Link>
               );
@@ -81,31 +81,30 @@ export default function Navigation() {
             {isAuthenticated && user ? (
               <>
                 {/* User Info */}
-                <div className="flex items-center gap-2.5 px-5 py-2.5 bg-slate-800 rounded-full border border-slate-700 shadow-lg">
-                  <User className="w-4.5 h-4.5 text-primary-500" />
+                <div className="flex items-center gap-2.5 px-5 py-2.5 text-slate-700">
+                  <User className="w-4.5 h-4.5 text-slate-500" />
                   <span className="text-white text-sm font-medium max-w-[160px] truncate">
                     {user.name || user.email}
                   </span>
-                  {hasPremiumAccess && <Crown className="w-4 h-4 text-gold-primary animate-pulse" />}
+                  {hasPremiumAccess && <Crown className="w-4 h-4 text-blue-500" />}
                 </div>
 
                 {/* Logout Button */}
                 <button
                   onClick={handleLogout}
-                  className="flex items-center gap-2 px-5 py-2.5 bg-slate-800 hover:bg-slate-700 rounded-full border border-slate-700 transition-all duration-200 group shadow-lg hover:shadow-xl"
+                  className="flex items-center gap-2 px-5 py-2.5 text-slate-600 hover:text-slate-900 transition-colors duration-200 group"
                   aria-label="Log out"
                 >
-                  <LogOut className="w-4.5 h-4.5 text-white/70 group-hover:text-white transition-colors" />
-                  <span className="text-white/70 group-hover:text-white text-sm font-medium transition-colors">Logout</span>
+                  <LogOut className="w-4.5 h-4.5 group-hover:text-slate-900 transition-colors" />
+                  <span className="group-hover:text-slate-900 text-sm font-medium transition-colors">Logout</span>
                 </button>
               </>
             ) : (
               <Link
                 href="/login"
-                className="flex items-center gap-2.5 px-8 py-3.5 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-semibold rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl hover:-translate-y-0.5"
-                style={{ boxShadow: '0 4px 14px rgba(59, 130, 246, 0.4)' }}
+                className="flex items-center gap-2.5 px-8 py-3.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl transition-all duration-200 shadow-md hover:shadow-lg"
               >
-                <User className="w-5 h-5" />
+                <User className="w-5 h-5 text-white" />
                 <span className="text-base">Sign In</span>
               </Link>
             )}
@@ -130,7 +129,7 @@ export default function Navigation() {
 
       {/* Mobile Menu */}
       {isMobileMenuOpen && (
-        <div className="md:hidden border-t border-glass nav-glass animate-fade-in-up">
+        <div className="md:hidden border-t border-gray-100 bg-white animate-fade-in-up">
           <div className="container-padding py-6 space-y-3">
             {/* Navigation Items */}
             {navItems.map((item) => {
@@ -141,41 +140,41 @@ export default function Navigation() {
                 <button
                   key={item.name}
                   onClick={() => handleNavClick(item.href)}
-                  className={`w-full px-5 py-3.5 rounded-xl font-medium transition-all duration-200 flex items-center gap-3 ${isActive
-                      ? 'bg-white/15 text-white shadow-lg'
-                      : 'text-white/70 hover:text-white hover:bg-white/10'
+                  className={`w-full px-5 py-3.5 rounded-xl font-medium transition-colors duration-200 flex items-center gap-3 ${isActive
+                      ? 'text-blue-600'
+                      : 'text-slate-600 hover:text-slate-900'
                     }`}
                 >
                   <Icon className="w-5 h-5" />
                   <span className="flex-1 text-left">{item.name}</span>
                   {item.isPremium && !hasPremiumAccess && (
-                    <Crown className="w-4.5 h-4.5 text-gold-primary animate-pulse" />
+                    <Crown className="w-4.5 h-4.5 text-blue-500" />
                   )}
                 </button>
               );
             })}
 
             {/* Divider */}
-            <div className="glass-divider my-4"></div>
+            <div className="border-t border-gray-100 my-4"></div>
 
             {/* User Section */}
             {isAuthenticated && user ? (
               <>
-                <div className="px-5 py-3.5 glass-card-enhanced">
+                <div className="bg-white rounded-lg border border-slate-200 shadow-sm p-5">
                   <div className="flex items-center gap-2.5 mb-1.5">
-                    <User className="w-4.5 h-4.5 text-primary-500" />
-                    <span className="text-white text-sm font-medium truncate flex-1">
+                    <User className="w-4.5 h-4.5 text-slate-500" />
+                    <span className="text-slate-700 text-sm font-medium truncate flex-1">
                       {user.name || user.email}
                     </span>
-                    {hasPremiumAccess && <Crown className="w-4.5 h-4.5 text-gold-primary animate-pulse" />}
+                    {hasPremiumAccess && <Crown className="w-4.5 h-4.5 text-blue-500" />}
                   </div>
                   {hasPremiumAccess && (
-                    <p className="text-xs text-white/60 ml-7">Premium Member</p>
+                    <p className="text-xs text-slate-500 ml-7">Premium Member</p>
                   )}
                 </div>
                 <button
                   onClick={handleLogout}
-                  className="w-full px-5 py-3.5 btn-secondary flex items-center gap-3 justify-center"
+                  className="w-full px-5 py-3.5 text-slate-600 hover:text-slate-900 flex items-center gap-3 justify-center transition-colors duration-200"
                   aria-label="Log out"
                 >
                   <LogOut className="w-5 h-5" />
@@ -185,9 +184,9 @@ export default function Navigation() {
             ) : (
               <button
                 onClick={() => handleNavClick('/login')}
-                className="w-full btn-primary flex items-center justify-center gap-2.5"
+                className="w-full px-8 py-3.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl shadow-md hover:shadow-lg flex items-center justify-center gap-2.5 transition-all duration-200"
               >
-                <User className="w-5 h-5" />
+                <User className="w-5 h-5 text-white" />
                 <span>Sign In</span>
               </button>
             )}
