@@ -1,93 +1,75 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import Link from 'next/link';
-import { Sparkles, ArrowRight, TrendingUp, Shield, Brain, Zap } from 'lucide-react';
+import { ArrowRight, Sparkles, TrendingUp, ShieldCheck } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 export const EnhancedHeroSection = () => {
-  const [scrollY, setScrollY] = useState(0);
-
-  useEffect(() => {
-    const handleScroll = () => setScrollY(window.scrollY);
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
   return (
-    <section className="relative min-h-screen bg-white flex items-center justify-center overflow-hidden pt-20 pb-20">
-
-      <div className="container mx-auto px-4 max-w-6xl relative z-10">
-        <div className="grid lg:grid-cols-2 gap-12 items-center">
-          {/* Left column: Text & CTAs */}
-          <div className="space-y-8">
-            {/* Badge */}
-            <div className="inline-flex items-center gap-2 px-4 py-2 bg-gray-100 border border-gray-200 rounded-full text-slate-700 transition-shadow">
-              <Sparkles className="w-4 h-4 text-blue-500" />
-              <span className="text-sm">Powered by Advanced AI Intelligence</span>
-            </div>
-
-            {/* Main headline */}
-            <div>
-              <h1 className="text-5xl font-bold tracking-tight text-slate-900 mb-4">
-                AI won&apos;t replace you — if you evolve with it
-              </h1>
-              
-              <p className="text-xl text-slate-600 max-w-2xl mx-auto">
-                Next analyzes your career path, detects automation risks, and builds a custom roadmap to your next opportunity.
-              </p>
-            </div>
-
-            {/* Trust indicators */}
-            <div className="space-y-3 bg-white border border-gray-200 rounded-xl p-6">
-              <p className="text-sm text-slate-700">✓ Free AI Career Risk Scan</p>
-              <p className="text-sm text-slate-700">✓ Personalized job recommendations</p>
-              <p className="text-sm text-slate-700">✓ Real-time market intelligence</p>
-            </div>
-
-            {/* CTA Buttons */}
-            <div className="flex flex-col sm:flex-row gap-4 pt-4">
-              <Link 
-                href="/dashboard" 
-                className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-lg font-semibold transition-all shadow-md hover:shadow-lg"
-              >
-                Find My Future
-                <ArrowRight className="w-5 h-5" />
-              </Link>
-              
-              <Link 
-                href="/voice-coach" 
-                className="inline-flex items-center justify-center gap-2 px-8 py-4 text-slate-600 hover:text-slate-900 rounded-lg text-lg font-semibold transition-colors"
-              >
-                Try AI Coach
-              </Link>
-            </div>
+    <div className="relative overflow-hidden bg-white dark:bg-slate-950 pt-24 pb-32">
+      {/* Subtle Background Pattern (Optional, keeps it clean) */}
+      <div className="absolute inset-0 -z-10 h-full w-full bg-[linear-gradient(to_right,#f0f0f0_1px,transparent_1px),linear-gradient(to_bottom,#f0f0f0_1px,transparent_1px)] bg-[size:6rem_4rem] opacity-[0.4] dark:opacity-[0.1]" />
+      
+      <div className="container px-4 md:px-6 mx-auto max-w-6xl">
+        <div className="flex flex-col items-center text-center space-y-8">
+          
+          {/* Badge */}
+          <div className="inline-flex items-center rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-sm font-medium text-slate-800 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-200">
+            <span className="flex h-2 w-2 rounded-full bg-blue-600 mr-2"></span>
+            Now with AI Agent Support
           </div>
 
+          {/* Headline - Clean & Huge */}
+          <h1 className="text-4xl font-bold tracking-tight text-slate-900 sm:text-6xl dark:text-white max-w-4xl">
+            Master Your Career <br className="hidden md:block" />
+            <span className="text-blue-600">With Real-Time Intelligence</span>
+          </h1>
 
-        </div>
-
-        {/* Bottom social proof */}
-        <div className="mt-20 pt-12 border-t border-gray-200">
-          <p className="text-center text-sm text-slate-500 mb-8">
-            Trusted by professionals from leading companies:
+          {/* Subheadline - Readable Gray */}
+          <p className="max-w-2xl text-xl text-slate-600 dark:text-slate-400">
+            Stop guessing. NextCI analyzes real-time market data to protect your role, predict trends, and guide your next promotion.
           </p>
-          <div className="flex justify-center items-center gap-8 flex-wrap">
-            {[
-              { name: 'Google' },
-              { name: 'Amazon' },
-              { name: 'Deloitte' },
-              { name: 'Microsoft' }
-            ].map((company) => (
-              <div 
-                key={company.name}
-                className="text-slate-400 font-semibold text-sm hover:text-slate-700 transition-colors"
-              >
-                {company.name}
-              </div>
-            ))}
+
+          {/* Action Buttons - Solid Colors */}
+          <div className="flex flex-col sm:flex-row gap-4 w-full justify-center pt-4">
+            <Link href="/auth/signup">
+              <Button size="lg" className="w-full sm:w-auto h-12 px-8 text-base bg-blue-600 hover:bg-blue-700 text-white shadow-lg shadow-blue-600/20">
+                Get Started Free <ArrowRight className="ml-2 h-4 w-4" />
+              </Button>
+            </Link>
+            <Link href="/about">
+              <Button variant="outline" size="lg" className="w-full sm:w-auto h-12 px-8 text-base border-slate-200 hover:bg-slate-50">
+                View Live Demo
+              </Button>
+            </Link>
           </div>
+
+          {/* Social Proof / Stats - Clean Row */}
+          <div className="pt-12 grid grid-cols-1 gap-8 sm:grid-cols-3 text-left w-full max-w-3xl border-t border-slate-100 mt-12 dark:border-slate-800">
+            <div className="flex items-center gap-4">
+              <div className="p-2 bg-blue-50 rounded-lg text-blue-600 dark:bg-blue-900/20"><TrendingUp size={24} /></div>
+              <div>
+                <p className="font-bold text-2xl text-slate-900 dark:text-white">94%</p>
+                <p className="text-sm text-slate-500">Accuracy Rate</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-4">
+              <div className="p-2 bg-purple-50 rounded-lg text-purple-600 dark:bg-purple-900/20"><Sparkles size={24} /></div>
+              <div>
+                <p className="font-bold text-2xl text-slate-900 dark:text-white">24/7</p>
+                <p className="text-sm text-slate-500">AI Career Monitoring</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-4">
+              <div className="p-2 bg-green-50 rounded-lg text-green-600 dark:bg-green-900/20"><ShieldCheck size={24} /></div>
+              <div>
+                <p className="font-bold text-2xl text-slate-900 dark:text-white">100k+</p>
+                <p className="text-sm text-slate-500">Jobs Analyzed</p>
+              </div>
+            </div>
+          </div>
+
         </div>
       </div>
-    </section>
+    </div>
   );
 };
-
-export default EnhancedHeroSection;
