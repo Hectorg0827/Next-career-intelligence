@@ -1,83 +1,31 @@
-/**
- * NEXT Career Intelligence - Glass Card Component
- * Liquid Glass Design System
- *
- * Frosted glass morphism card with subtle borders and backdrop blur.
- * Perfect for modern, polished UI with depth and elegance.
- */
-
-'use client';
-
 import React from 'react';
-import { motion, HTMLMotionProps } from 'framer-motion';
+import { cn } from '@/lib/utils';
 
-export interface GlassCardProps extends Omit<HTMLMotionProps<'div'>, 'className'> {
-  /** Additional CSS classes */
-  className?: string;
-  /** Children elements */
-  children: React.ReactNode;
-  /** Enable hover effect */
-  hover?: boolean;
-  /** Enable reflection effect on hover */
-  reflection?: boolean;
-  /** Padding size */
-  padding?: 'none' | 'sm' | 'md' | 'lg' | 'xl';
-  /** Border radius size */
-  rounded?: 'sm' | 'md' | 'lg' | 'xl' | '2xl';
+interface GlassCardProps extends React.HTMLAttributes<HTMLDivElement> {
+  variant?: 'default' | 'hover' | 'interactive';
 }
 
-const paddingClasses = {
-  none: '',
-  sm: 'p-3',
-  md: 'p-4',
-  lg: 'p-6',
-  xl: 'p-8',
-};
+export const GlassCard = React.forwardRef<HTMLDivElement, GlassCardProps>(
+  ({ className, variant = 'default', children, ...props }, ref) => {
+    return (
+      <div
+        ref={ref}
+        className={cn(
+          // Base styles: Solid white, subtle border, no blur
+          "bg-card text-card-foreground rounded-xl border border-border shadow-sm",
+          // Hover effects (only if requested)
+          variant === 'hover' && "transition-shadow duration-200 hover:shadow-md",
+          variant === 'interactive' && "cursor-pointer transition-all duration-200 hover:shadow-md hover:border-primary/20 hover:-translate-y-0.5",
+          className
+        )}
+        {...props}
+      >
+        {children}
+      </div>
+    );
+  }
+);
 
-const roundedClasses = {
-  sm: 'rounded-lg',
-  md: 'rounded-xl',
-  lg: 'rounded-2xl',
-  xl: 'rounded-3xl',
-  '2xl': 'rounded-[2rem]',
-};
-
-/**
- * Glass Card Component
- *
- * @example
- * ```tsx
- * <GlassCard padding="lg" hover reflection>
- *   <h2 className="text-xl font-bold text-white mb-2">Card Title</h2>
- *   <p className="text-ink-300">Card content goes here</p>
- * </GlassCard>
- * ```
- */
-export const GlassCard: React.FC<GlassCardProps> = ({
-  className = '',
-  children,
-  hover = true,
-  reflection = false,
-  padding = 'lg',
-  rounded = 'xl',
-  ...motionProps
-}) => {
-  const baseClasses = 'glass-card';
-  const reflectionClass = reflection ? 'hover-reflect' : '';
-  const paddingClass = paddingClasses[padding];
-  const roundedClass = roundedClasses[rounded];
-
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.4, ease: [0.4, 0, 0.2, 1] }}
-      className={`${baseClasses} ${paddingClass} ${roundedClass} ${reflectionClass} ${className}`}
-      {...motionProps}
-    >
-      {children}
-    </motion.div>
-  );
-};
+GlassCard.displayName = "GlassCard";
 
 export default GlassCard;
