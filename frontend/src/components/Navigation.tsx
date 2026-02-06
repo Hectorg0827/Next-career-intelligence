@@ -43,16 +43,16 @@ export default function Navigation() {
   };
 
   return (
-    <nav className="nav-glass sticky top-0 z-50">
-      <div className="max-w-container container-padding">
-        <div className="flex justify-between items-center h-20">
+    <nav className="fixed top-0 left-0 right-0 z-50 h-16 nav-glass">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex justify-between items-center h-16">
           {/* Logo */}
           <div className="flex-shrink-0">
             <Logo size="sm" linkTo="/" />
           </div>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center gap-6">
+          <div className="hidden md:flex items-center gap-2">
             {navItems.map((item) => {
               const isActive = pathname === item.href;
               const Icon = item.icon;
@@ -61,15 +61,16 @@ export default function Navigation() {
                 <Link
                   key={item.name}
                   href={item.href}
-                  className={`px-5 py-2.5 rounded-xl font-medium transition-all duration-200 flex items-center gap-2 group relative ${isActive
-                      ? 'bg-white/15 text-white shadow-lg'
-                      : 'text-white/70 hover:text-white hover:bg-white/10'
-                    }`}
+                  className={`px-4 py-2 rounded-xl font-medium transition-all duration-200 flex items-center gap-2 text-[13px] group ${
+                    isActive
+                      ? 'bg-nci-primary-dim text-nci-primary'
+                      : 'text-g-400 hover:text-white hover:bg-white/5'
+                  }`}
                 >
-                  <Icon className="w-4.5 h-4.5 transition-transform group-hover:scale-110" />
-                  <span className="text-sm">{item.name}</span>
+                  <Icon className="w-4 h-4 transition-transform group-hover:scale-110" />
+                  <span>{item.name}</span>
                   {item.isPremium && !hasPremiumAccess && (
-                    <Crown className="w-3.5 h-3.5 text-gold-primary animate-pulse" />
+                    <Crown className="w-3 h-3 text-nci-amber animate-pulse" />
                   )}
                 </Link>
               );
@@ -80,33 +81,29 @@ export default function Navigation() {
           <div className="hidden md:flex items-center gap-3">
             {isAuthenticated && user ? (
               <>
-                {/* User Info */}
-                <div className="flex items-center gap-2.5 px-5 py-2.5 bg-slate-800 rounded-full border border-slate-700 shadow-lg">
-                  <User className="w-4.5 h-4.5 text-primary-500" />
-                  <span className="text-white text-sm font-medium max-w-[160px] truncate">
+                <div className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white/[0.04] border border-nci-border">
+                  <User className="w-4 h-4 text-nci-primary" />
+                  <span className="text-g-300 text-[13px] font-medium max-w-[140px] truncate">
                     {user.name || user.email}
                   </span>
-                  {hasPremiumAccess && <Crown className="w-4 h-4 text-gold-primary animate-pulse" />}
+                  {hasPremiumAccess && <Crown className="w-3.5 h-3.5 text-nci-amber" />}
                 </div>
-
-                {/* Logout Button */}
                 <button
                   onClick={handleLogout}
-                  className="flex items-center gap-2 px-5 py-2.5 bg-slate-800 hover:bg-slate-700 rounded-full border border-slate-700 transition-all duration-200 group shadow-lg hover:shadow-xl"
+                  className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white/[0.04] border border-nci-border hover:border-nci-border-hover transition-all duration-200 group"
                   aria-label="Log out"
                 >
-                  <LogOut className="w-4.5 h-4.5 text-white/70 group-hover:text-white transition-colors" />
-                  <span className="text-white/70 group-hover:text-white text-sm font-medium transition-colors">Logout</span>
+                  <LogOut className="w-4 h-4 text-g-400 group-hover:text-white transition-colors" />
+                  <span className="text-g-400 group-hover:text-white text-[13px] font-medium transition-colors">Logout</span>
                 </button>
               </>
             ) : (
-              <Link
-                href="/login"
-                className="btn-primary flex items-center gap-2"
+              <button
+                onClick={() => router.push('/login')}
+                className="px-5 py-2 rounded-xl bg-nci-primary text-white text-[13px] font-semibold shadow-glow-blue hover:bg-primary-600 transition-all duration-200"
               >
-                <User className="w-4.5 h-4.5" />
-                <span>Sign In</span>
-              </Link>
+                Get Started →
+              </button>
             )}
           </div>
 
@@ -114,7 +111,7 @@ export default function Navigation() {
           <div className="md:hidden">
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="p-2.5 rounded-xl text-white/70 hover:text-white hover:bg-white/10 transition-all duration-200"
+              className="p-2 rounded-xl text-g-400 hover:text-white hover:bg-white/5 transition-all duration-200"
               aria-label="Toggle menu"
             >
               {isMobileMenuOpen ? (
@@ -129,9 +126,8 @@ export default function Navigation() {
 
       {/* Mobile Menu */}
       {isMobileMenuOpen && (
-        <div className="md:hidden border-t border-glass nav-glass animate-fade-in-up">
-          <div className="container-padding py-6 space-y-3">
-            {/* Navigation Items */}
+        <div className="md:hidden border-t border-nci-border nav-glass animate-fade-in-up">
+          <div className="px-4 py-6 space-y-2">
             {navItems.map((item) => {
               const isActive = pathname === item.href;
               const Icon = item.icon;
@@ -140,41 +136,40 @@ export default function Navigation() {
                 <button
                   key={item.name}
                   onClick={() => handleNavClick(item.href)}
-                  className={`w-full px-5 py-3.5 rounded-xl font-medium transition-all duration-200 flex items-center gap-3 ${isActive
-                      ? 'bg-white/15 text-white shadow-lg'
-                      : 'text-white/70 hover:text-white hover:bg-white/10'
-                    }`}
+                  className={`w-full px-4 py-3 rounded-xl font-medium transition-all duration-200 flex items-center gap-3 ${
+                    isActive
+                      ? 'bg-nci-primary-dim text-nci-primary'
+                      : 'text-g-400 hover:text-white hover:bg-white/5'
+                  }`}
                 >
                   <Icon className="w-5 h-5" />
                   <span className="flex-1 text-left">{item.name}</span>
                   {item.isPremium && !hasPremiumAccess && (
-                    <Crown className="w-4.5 h-4.5 text-gold-primary animate-pulse" />
+                    <Crown className="w-4 h-4 text-nci-amber animate-pulse" />
                   )}
                 </button>
               );
             })}
 
-            {/* Divider */}
             <div className="glass-divider my-4"></div>
 
-            {/* User Section */}
             {isAuthenticated && user ? (
               <>
-                <div className="px-5 py-3.5 glass-card-enhanced">
-                  <div className="flex items-center gap-2.5 mb-1.5">
-                    <User className="w-4.5 h-4.5 text-primary-500" />
+                <div className="px-4 py-3 glass-card-enhanced">
+                  <div className="flex items-center gap-2 mb-1">
+                    <User className="w-4 h-4 text-nci-primary" />
                     <span className="text-white text-sm font-medium truncate flex-1">
                       {user.name || user.email}
                     </span>
-                    {hasPremiumAccess && <Crown className="w-4.5 h-4.5 text-gold-primary animate-pulse" />}
+                    {hasPremiumAccess && <Crown className="w-4 h-4 text-nci-amber" />}
                   </div>
                   {hasPremiumAccess && (
-                    <p className="text-xs text-white/60 ml-7">Premium Member</p>
+                    <p className="text-xs text-g-500 ml-6">Premium Member</p>
                   )}
                 </div>
                 <button
                   onClick={handleLogout}
-                  className="w-full px-5 py-3.5 btn-secondary flex items-center gap-3 justify-center"
+                  className="w-full px-4 py-3 btn-secondary flex items-center gap-3 justify-center"
                   aria-label="Log out"
                 >
                   <LogOut className="w-5 h-5" />
@@ -184,10 +179,10 @@ export default function Navigation() {
             ) : (
               <button
                 onClick={() => handleNavClick('/login')}
-                className="w-full btn-primary flex items-center justify-center gap-2.5"
+                className="w-full btn-primary flex items-center justify-center gap-2"
               >
                 <User className="w-5 h-5" />
-                <span>Sign In</span>
+                <span>Get Started</span>
               </button>
             )}
           </div>

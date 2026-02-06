@@ -2,9 +2,8 @@
 module.exports = {
   content: [
     "./src/**/*.{js,ts,jsx,tsx,mdx}",
-    "./components/**/*.{js,ts,jsx,tsx,mdx}", // Root components if any
+    "./components/**/*.{js,ts,jsx,tsx,mdx}",
   ],
-  // Safelist: Protect critical custom classes from being purged
   safelist: [
     'glass-card',
     'glass-pill',
@@ -14,107 +13,83 @@ module.exports = {
     'glass-divider',
     'hover-reflect',
     'skeleton-glass',
-    'text-gold-primary',
+    'text-nci-white',
     'text-white/80',
     'text-white/70',
     'text-white/60',
     'bg-gradient-to-r',
-    'from-gold-primary',
-    'to-gold-accent',
-    'hover:from-gold-accent',
-    'hover:to-gold-hover',
-    // Glass colors and utilities
-    'glass-line',
-    'glass-edge',
-    'glass-white',
-    // Glass shadows
     'shadow-glass-sm',
     'shadow-glass-md',
     'shadow-glass-lg',
     'shadow-glass-xl',
-    // Hover states
-    'hover:bg-glass-edge',
-    'hover:shadow-glass-xl',
-    'hover:border-gold-primary/30',
-    // Border utilities
-    'border-glass-line',
-    'border-gold-primary/30',
-    // Background utilities
-    'bg-glass-white',
-    'bg-gradient-to-br',
-    // Text utilities
-    'text-accent-400',
-    'text-ink-200',
-    // Layout utilities
-    'rounded-none',
-    'cursor-pointer',
-    // Animation utilities
     'transition-all',
     'duration-300',
   ],
-  darkMode: 'class', // Enable dark mode via class
+  darkMode: 'class',
   theme: {
     extend: {
       colors: {
         background: "var(--background)",
         foreground: "var(--foreground)",
 
-        // Liquid Glass Design System - Ink Colors (main palette)
-        ink: {
-          900: '#0a0a0f',    // Almost black
-          800: '#1a1a2e',    // Deep navy
-          700: '#2d2d44',    // Dark slate
-          600: '#4a4a66',    // Medium slate
-          500: '#6b6b88',    // Light slate
-          400: '#9090aa',    // Muted purple-gray
-          300: '#b5b5cc',    // Light gray-purple
-          200: '#d4d4e4',    // Very light gray
-          100: '#ebebf5',    // Near white
+        // New Design System - Core Palette
+        nci: {
+          bg: '#0F1115',
+          surface: '#1A1D21',
+          'surface-hover': '#22252B',
+          primary: '#2D7FF9',
+          'primary-dim': 'rgba(45,127,249,0.12)',
+          accent: '#00D2B6',
+          'accent-dim': 'rgba(0,210,182,0.12)',
+          amber: '#FFB547',
+          'amber-dim': 'rgba(255,181,71,0.10)',
+          red: '#FF4D6A',
+          'red-dim': 'rgba(255,77,106,0.10)',
+          white: '#F0F1F5',
+          border: 'rgba(255,255,255,0.07)',
+          'border-hover': 'rgba(255,255,255,0.14)',
+          glass: 'rgba(26,29,33,0.55)',
         },
 
-        // Liquid Glass Design System - Glass Effect Colors
-        glass: {
-          white: 'rgba(255, 255, 255, 0.03)',  // Subtle white glass
-          edge: 'rgba(255, 255, 255, 0.15)',   // Edge highlight
-          line: 'rgba(255, 255, 255, 0.1)',    // Border line
+        // Gray scale
+        g: {
+          300: '#C0C2CC',
+          400: '#8B8DA0',
+          500: '#6B6D80',
+          600: '#4A4C5E',
+          700: '#33354A',
         },
 
-        // Liquid Glass Design System - Accent Colors
-        accent: {
-          500: '#8b5cf6',    // Vibrant purple
-          400: '#a78bfa',    // Light purple
-        },
-
-        // Premium Design System - Primary Colors (iOS-style)
+        // Primary Brand Colors
         primary: {
           50: 'var(--color-primary-50)',
           100: 'var(--color-primary-100)',
           200: 'var(--color-primary-200)',
           300: 'var(--color-primary-300)',
           400: 'var(--color-primary-400)',
-          500: '#007AFF',  // iOS Blue
-          600: '#0051D5',  // iOS Blue Dark
+          500: '#2D7FF9',
+          600: '#2466c7',
           700: 'var(--color-primary-700)',
           800: 'var(--color-primary-800)',
           900: 'var(--color-primary-900)',
           950: 'var(--color-primary-950)',
         },
 
-        // Premium Design System - Secondary Colors
+        // Secondary Colors
         secondary: {
           50: 'var(--color-secondary-50)',
           100: 'var(--color-secondary-100)',
           200: 'var(--color-secondary-200)',
           300: 'var(--color-secondary-300)',
           400: 'var(--color-secondary-400)',
-          500: 'var(--color-secondary-500)',
+          500: '#00D2B6',
           600: 'var(--color-secondary-600)',
           700: 'var(--color-secondary-700)',
           800: 'var(--color-secondary-800)',
           900: 'var(--color-secondary-900)',
         },
 
-        // Premium Design System - Gray Scale
+        // Gray Scale
         gray: {
           50: 'var(--color-gray-50)',
           100: 'var(--color-gray-100)',
@@ -129,70 +104,81 @@ module.exports = {
           950: 'var(--color-gray-950)',
         },
 
-        // Premium Design System - Accent Colors
+        // Accent Colors
         accent: {
+          500: '#00D2B6',
+          400: '#33d7b7',
           cyan: 'var(--color-accent-cyan)',
-          teal: 'var(--color-accent-teal)',
+          teal: '#00D2B6',
           emerald: 'var(--color-accent-emerald)',
-          amber: 'var(--color-accent-amber)',
-          rose: 'var(--color-accent-rose)',
+          amber: '#FFB547',
+          rose: '#FF4D6A',
         },
 
-        // Premium Design System - Semantic Colors (iOS-style)
+        // Semantic Colors
         success: {
-          500: '#34C759',  // iOS Green
-          DEFAULT: '#34C759',
+          500: '#00D2B6',
+          DEFAULT: '#00D2B6',
         },
         warning: {
-          500: '#FF9500',  // iOS Orange
-          DEFAULT: '#FF9500',
+          500: '#FFB547',
+          DEFAULT: '#FFB547',
         },
         danger: {
-          500: '#FF3B30',  // iOS Red
-          DEFAULT: '#FF3B30',
+          500: '#FF4D6A',
+          DEFAULT: '#FF4D6A',
         },
         error: 'var(--color-error)',
         info: 'var(--color-info)',
 
-        // Premium Design System - Premium Gold
+        // Premium
         premium: {
-          gold: 'var(--color-premium-gold)',
-          'gold-light': 'var(--color-premium-gold-light)',
-          'gold-dark': 'var(--color-premium-gold-dark)',
+          gold: '#FFB547',
+          'gold-light': 'rgba(255,181,71,0.10)',
+          'gold-dark': '#e6a23f',
         },
 
-        // NEXT Royal Prestige Palette - Official Brand Colors (Legacy)
-        'royal': {
-          'blue': '#1150A3',
-          'blue-deep': '#103D86',
-          'blue-gradient-start': '#1150A3',
-          'blue-gradient-end': '#0B2C6B',
-          'navy': '#0A1F5A',
-        },
+        // Legacy colors preserved for backward compatibility
         'gold': {
-          'primary': '#E5B73B',
-          'accent': '#D49F25',
-          'hover': '#F5D264',
+          'primary': '#FFB547',
+          'accent': '#e6a23f',
+          'hover': '#ffc76a',
+        },
+        'royal': {
+          'blue': '#2D7FF9',
+          'navy': '#0F1115',
         },
         'silver': {
-          'light': '#E6E6E6',
-          'dark': '#A7A7A7',
-          'soft': '#D9D9D9',
+          'light': '#C0C2CC',
+          'dark': '#8B8DA0',
+          'soft': '#6B6D80',
         },
         'supporting': {
-          'charcoal': '#121212',
-          'steel-blue': '#1E3F73',
+          'charcoal': '#0F1115',
+          'steel-blue': '#1A1D21',
         },
-        // Legacy NEXT colors (for backward compatibility)
-        'next-deep-blue': '#0B1D45',
-        'next-royal-blue': '#1E3C78',
-        'next-gold': '#CBA135',
-        'next-gold-light': '#E5C158',
-        'next-bg-light': '#F4F6F8',
-        'next-bg-dark': '#081835',
-        'next-text-muted': '#B0B6C1',
+
+        // Glass effect colors
+        glass: {
+          white: 'rgba(255, 255, 255, 0.03)',
+          edge: 'rgba(255, 255, 255, 0.15)',
+          line: 'rgba(255, 255, 255, 0.07)',
+        },
+
+        // Ink colors
+        ink: {
+          900: '#0F1115',
+          800: '#1A1D21',
+          700: '#22252B',
+          600: '#4A4C5E',
+          500: '#6B6D80',
+          400: '#8B8DA0',
+          300: '#C0C2CC',
+          200: '#F0F1F5',
+          100: '#F0F1F5',
+        },
       },
-      // Premium Design System - Spacing
+
       spacing: {
         0: 'var(--space-0)',
         1: 'var(--space-1)',
@@ -210,7 +196,6 @@ module.exports = {
         32: 'var(--space-32)',
       },
 
-      // Premium Design System - Typography
       fontSize: {
         xs: 'var(--text-xs)',
         sm: 'var(--text-sm)',
@@ -226,12 +211,12 @@ module.exports = {
       },
 
       fontFamily: {
-        'sans': 'var(--font-sans)',
-        'display': 'var(--font-display)',
-        'mono': 'var(--font-mono)',
-        // Legacy fonts (backward compatibility)
-        'heading': ['Poppins', 'sans-serif'],
-        'body': ['Inter', 'sans-serif'],
+        'sans': ['Outfit', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+        'serif': ['Instrument Serif', 'Georgia', 'serif'],
+        'display': ['Instrument Serif', 'Georgia', 'serif'],
+        'mono': ['JetBrains Mono', 'Fira Code', 'monospace'],
+        'heading': ['Instrument Serif', 'Georgia', 'serif'],
+        'body': ['Outfit', '-apple-system', 'sans-serif'],
       },
 
       fontWeight: {
@@ -262,28 +247,21 @@ module.exports = {
       },
 
       backgroundImage: {
-        // Premium Design System - Gradients
-        'gradient-primary': 'var(--gradient-primary)',
-        'gradient-primary-intense': 'var(--gradient-primary-intense)',
-        'gradient-primary-subtle': 'var(--gradient-primary-subtle)',
-        'gradient-royal': 'var(--gradient-royal)',
-        'gradient-sunset': 'var(--gradient-sunset)',
-        'gradient-ocean': 'var(--gradient-ocean)',
-        'gradient-forest': 'var(--gradient-forest)',
-        'gradient-premium': 'var(--gradient-premium)',
-        'gradient-premium-dark': 'var(--gradient-premium-dark)',
-        'gradient-dark-subtle': 'var(--gradient-dark-subtle)',
-        // Legacy gradients (backward compatibility)
-        'gradient-next': 'linear-gradient(135deg, #1E3C78, #0B1D45)',
-        'gradient-next-gold': 'linear-gradient(135deg, #CBA135, #E5C158)',
-        'gradient-next-hero': 'linear-gradient(180deg, #0B1D45 0%, #1E3C78 100%)',
-        'gradient-gold': 'linear-gradient(135deg, #E5B73B, #D49F25)',
-        'gradient-silver': 'linear-gradient(135deg, #E6E6E6, #A7A7A7)',
-        'gradient-gold-hover': 'linear-gradient(135deg, #E5B73B, #F5D264)',
+        'gradient-primary': 'linear-gradient(135deg, #2D7FF9, #00D2B6)',
+        'gradient-primary-intense': 'linear-gradient(135deg, #2D7FF9 0%, #00D2B6 100%)',
+        'gradient-primary-subtle': 'linear-gradient(135deg, rgba(45,127,249,0.12), rgba(0,210,182,0.12))',
+        'gradient-royal': 'linear-gradient(135deg, #2D7FF9 0%, #00D2B6 100%)',
+        'gradient-sunset': 'linear-gradient(135deg, #FF4D6A 0%, #FFB547 100%)',
+        'gradient-ocean': 'linear-gradient(135deg, #2D7FF9 0%, #00D2B6 100%)',
+        'gradient-forest': 'linear-gradient(135deg, #00D2B6 0%, #10b981 100%)',
+        'gradient-premium': 'linear-gradient(135deg, #FFB547 0%, #FF4D6A 100%)',
+        'gradient-premium-dark': 'linear-gradient(135deg, #FFB547 0%, #e6a23f 100%)',
+        'gradient-dark-subtle': 'linear-gradient(135deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02))',
+        'gradient-gold': 'linear-gradient(135deg, #FFB547, #e6a23f)',
+        'gradient-gold-hover': 'linear-gradient(135deg, #FFB547, #ffc76a)',
       },
 
       boxShadow: {
-        // Premium Design System - Shadows
         sm: 'var(--shadow-sm)',
         base: 'var(--shadow-base)',
         md: 'var(--shadow-md)',
@@ -293,19 +271,13 @@ module.exports = {
         inner: 'var(--shadow-inner)',
         premium: 'var(--shadow-premium)',
         primary: 'var(--shadow-primary)',
-        // Liquid Glass Design System - Glass Shadows
-        'glass-sm': '0 4px 16px rgba(0, 0, 0, 0.15)',
-        'glass-md': '0 8px 32px rgba(0, 0, 0, 0.2)',
-        'glass-lg': '0 12px 48px rgba(0, 0, 0, 0.25)',
-        'glass-xl': '0 20px 64px rgba(0, 0, 0, 0.3)',
-        // Legacy shadows (backward compatibility)
-        'next-sm': '0 2px 4px rgba(11, 29, 69, 0.1)',
-        'next-md': '0 4px 6px rgba(11, 29, 69, 0.15)',
-        'next-lg': '0 10px 15px rgba(11, 29, 69, 0.2)',
-        'next-xl': '0 20px 25px rgba(11, 29, 69, 0.25)',
-        'next-gold': '0 4px 20px rgba(203, 161, 53, 0.3)',
-        'focus-royal': '0 0 0 3px rgba(17, 80, 163, 0.5)',
-        'focus-gold': '0 0 0 3px rgba(229, 183, 59, 0.5)',
+        'glass-sm': '0 4px 16px rgba(0, 0, 0, 0.25)',
+        'glass-md': '0 8px 32px rgba(0, 0, 0, 0.3)',
+        'glass-lg': '0 12px 48px rgba(0, 0, 0, 0.35)',
+        'glass-xl': '0 20px 80px rgba(0, 0, 0, 0.5)',
+        'glow-blue': '0 0 20px rgba(45,127,249,0.3)',
+        'glow-accent': '0 0 20px rgba(0,210,182,0.3)',
+        'glow-amber': '0 0 20px rgba(255,181,71,0.3)',
       },
 
       borderRadius: {
@@ -336,6 +308,7 @@ module.exports = {
         md: '8px',
         lg: '12px',
         xl: '16px',
+        '2xl': '24px',
       },
 
       opacity: {
@@ -390,15 +363,11 @@ module.exports = {
       },
 
       animation: {
-        // Premium Design System - Animations
         shimmer: 'shimmer 2s ease-in-out infinite',
         float: 'float 3s ease-in-out infinite',
         'pulse-glow': 'pulse-glow 2s ease-in-out infinite',
-        // Legacy animations (backward compatibility)
         'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-        'pulse-gold': 'pulse-gold 2s ease-in-out infinite',
-        'rotate-slow': 'rotate-slow 3s linear infinite',
-        'swoosh': 'swoosh-slide 1.2s ease-out forwards',
+        'ticker-scroll': 'tickerScroll 25s linear infinite',
       },
 
       keyframes: {
@@ -411,12 +380,15 @@ module.exports = {
           '50%': { transform: 'translateY(-10px)' },
         },
         'pulse-glow': {
-          '0%, 100%': { boxShadow: '0 0 20px rgba(99, 102, 241, 0.4)' },
-          '50%': { boxShadow: '0 0 40px rgba(99, 102, 241, 0.6)' },
+          '0%, 100%': { boxShadow: '0 0 20px rgba(45, 127, 249, 0.4)' },
+          '50%': { boxShadow: '0 0 40px rgba(45, 127, 249, 0.6)' },
+        },
+        tickerScroll: {
+          '0%': { transform: 'translateX(0)' },
+          '100%': { transform: 'translateX(-50%)' },
         },
       },
 
-      // Premium Design System - Containers
       maxWidth: {
         sm: 'var(--container-sm)',
         md: 'var(--container-md)',

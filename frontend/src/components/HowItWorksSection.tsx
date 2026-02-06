@@ -8,24 +8,27 @@ const steps = [
     number: '01',
     title: 'Enter Your Job Title',
     description: 'Tell us what you do. Our AI instantly begins analyzing thousands of data points about your role.',
-    color: 'from-gold-primary to-gold-accent',
-    bgGlow: 'bg-gold-primary/20'
+    color: 'text-nci-accent',
+    bgGlow: 'bg-nci-accent-dim',
+    borderColor: 'border-l-nci-accent',
   },
   {
     icon: Brain,
     number: '02',
     title: 'AI Multi-Agent Analysis',
     description: 'Our specialized AI agents collaborate to assess automation risk, skill gaps, and career opportunities.',
-    color: 'from-royal-blue to-royal-blue-light',
-    bgGlow: 'bg-royal-blue/20'
+    color: 'text-nci-primary',
+    bgGlow: 'bg-nci-primary-dim',
+    borderColor: 'border-l-nci-primary',
   },
   {
     icon: Target,
     number: '03',
     title: 'Get Your Personalized Report',
     description: 'Receive actionable insights, skill recommendations, and a tailored roadmap to future-proof your career.',
-    color: 'from-gold-accent to-gold-hover',
-    bgGlow: 'bg-gold-accent/20'
+    color: 'text-nci-amber',
+    bgGlow: 'bg-nci-amber-dim',
+    borderColor: 'border-l-nci-amber',
   }
 ];
 
@@ -33,72 +36,52 @@ export default function HowItWorksSection() {
   return (
     <section className="py-24 px-4 relative" id="how-it-works">
       {/* Background Glow */}
-      <div className="absolute inset-0 overflow-hidden opacity-10">
-        <div className="absolute top-1/2 left-1/4 w-96 h-96 bg-gold-primary rounded-full blur-3xl animate-pulse-slow"></div>
-        <div className="absolute top-1/2 right-1/4 w-96 h-96 bg-royal-blue rounded-full blur-3xl animate-pulse-slow"></div>
+      <div className="absolute inset-0 overflow-hidden opacity-30 pointer-events-none">
+        <div className="absolute top-1/2 left-1/4 w-96 h-96 rounded-full animate-pulse-slow" style={{ background: 'radial-gradient(circle, rgba(45,127,249,0.15), transparent 70%)', filter: 'blur(80px)' }} />
+        <div className="absolute top-1/2 right-1/4 w-96 h-96 rounded-full animate-pulse-slow" style={{ background: 'radial-gradient(circle, rgba(0,210,182,0.12), transparent 70%)', filter: 'blur(80px)' }} />
       </div>
 
       <div className="max-w-7xl mx-auto relative z-10">
         {/* Section Header */}
         <div className="text-center mb-16 animate-fade-in">
-          <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/10 backdrop-blur-sm border border-gold-primary/30 rounded-full mb-6">
-            <Rocket className="w-4 h-4 text-gold-primary" />
-            <span className="text-white/90 text-sm font-medium">Simple Process</span>
-          </div>
-          <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
+          <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-nci-primary-dim border border-nci-primary/20 text-[11px] font-semibold text-nci-primary uppercase tracking-wide font-mono mb-6">
+            <Rocket className="w-3.5 h-3.5" />
+            Simple Process
+          </span>
+          <h2 className="text-4xl md:text-5xl font-bold text-white mb-4 font-serif">
             How It Works
           </h2>
-          <p className="text-xl text-white/70 max-w-2xl mx-auto">
+          <p className="text-lg text-g-400 max-w-2xl mx-auto font-light">
             From job title to career clarity in 60 seconds
           </p>
         </div>
 
         {/* Steps Grid */}
-        <div className="grid md:grid-cols-3 gap-8 mb-12 md:items-stretch">
+        <div className="grid md:grid-cols-3 gap-4 mb-12 md:items-stretch">
           {steps.map((step, index) => (
             <div
               key={index}
               className="group relative animate-fade-in flex"
               style={{ animationDelay: `${index * 150}ms` }}
             >
-              {/* Connection Line (desktop only) */}
-              {index < steps.length - 1 && (
-                <div className="hidden md:block absolute top-20 left-[calc(50%+2rem)] w-[calc(100%-2rem)] h-0.5 bg-gradient-to-r from-gold-primary/50 to-transparent z-0" />
-              )}
-
-              {/* Card - No borders, enhanced shadows, middle card highlighted */}
-              <div className={`relative bg-white/5 backdrop-blur-md rounded-2xl p-8 transition-all duration-300 hover:-translate-y-2 flex-1 ${
-                index === 1
-                  ? 'bg-gradient-to-br from-royal-blue/20 to-royal-blue-dark/10 shadow-[0_8px_30px_rgba(17,80,163,0.3)] md:scale-105 hover:shadow-[0_12px_40px_rgba(17,80,163,0.4)]'
-                  : 'shadow-[0_4px_20px_rgba(0,0,0,0.15)] hover:shadow-[0_8px_30px_rgba(229,183,59,0.2)]'
-              }`}>
+              <div className={`relative glass-card border-l-[3px] ${step.borderColor} p-8 transition-all duration-300 hover:-translate-y-1 flex-1`}>
                 {/* Step Number */}
-                <div className={`absolute -top-4 -right-4 w-12 h-12 bg-gradient-to-br ${step.color} rounded-full flex items-center justify-center font-bold text-royal-navy text-lg shadow-lg`}>
+                <div className={`absolute top-6 right-6 ${step.bgGlow} w-10 h-10 rounded-lg flex items-center justify-center font-bold font-mono text-sm ${step.color}`}>
                   {step.number}
                 </div>
 
-                {/* Popular Badge for middle card */}
-                {index === 1 && (
-                  <div className="absolute -top-3 -left-3 px-3 py-1 bg-gradient-to-r from-gold-primary to-gold-accent rounded-full text-royal-navy text-xs font-bold shadow-lg">
-                    ⭐ Core Feature
-                  </div>
-                )}
-
                 {/* Icon */}
-                <div className={`w-16 h-16 ${step.bgGlow} rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform`}>
-                  <step.icon className={`w-8 h-8 bg-gradient-to-br ${step.color} bg-clip-text text-transparent`} strokeWidth={2.5} />
+                <div className={`w-14 h-14 ${step.bgGlow} rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform`}>
+                  <step.icon className={`w-7 h-7 ${step.color}`} strokeWidth={2} />
                 </div>
 
                 {/* Content */}
-                <h3 className="text-2xl font-bold text-white mb-3 group-hover:text-gold-primary transition-colors">
+                <h3 className="text-xl font-bold text-white mb-3 group-hover:text-nci-primary transition-colors">
                   {step.title}
                 </h3>
-                <p className="text-gray-300 leading-relaxed">
+                <p className="text-g-400 leading-relaxed text-sm">
                   {step.description}
                 </p>
-
-                {/* Hover Glow Effect */}
-                <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-gold-primary/0 to-gold-primary/0 group-hover:from-gold-primary/10 group-hover:to-transparent transition-all duration-300 pointer-events-none" />
               </div>
             </div>
           ))}
@@ -113,7 +96,7 @@ export default function HowItWorksSection() {
               const input = form?.querySelector('input');
               input?.focus();
             }}
-            className="px-8 py-4 bg-gradient-to-r from-gold-primary to-gold-accent hover:from-gold-accent hover:to-gold-hover text-royal-navy font-semibold rounded-xl transition-all shadow-lg hover:shadow-xl inline-flex items-center gap-2 group"
+            className="px-8 py-4 bg-white text-nci-bg font-bold rounded-xl transition-all shadow-glass-lg hover:shadow-glass-xl inline-flex items-center gap-2 group"
           >
             <span>Start Your Free Analysis</span>
             <Sparkles className="w-5 h-5 group-hover:rotate-12 transition-transform" />
