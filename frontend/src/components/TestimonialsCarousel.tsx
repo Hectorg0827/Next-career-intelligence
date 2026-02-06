@@ -55,14 +55,11 @@ export default function TestimonialsCarousel() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
 
-  // Auto-advance carousel
   useEffect(() => {
     if (!isAutoPlaying) return;
-
     const interval = setInterval(() => {
       setCurrentIndex((prev) => (prev + 1) % testimonials.length);
     }, 5000);
-
     return () => clearInterval(interval);
   }, [isAutoPlaying]);
 
@@ -86,40 +83,39 @@ export default function TestimonialsCarousel() {
   return (
     <section className="py-24 px-4 relative">
       {/* Background Glow */}
-      <div className="absolute inset-0 overflow-hidden opacity-10">
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-gold-primary rounded-full blur-3xl animate-pulse-slow"></div>
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full animate-pulse-slow" style={{ background: 'radial-gradient(circle, rgba(45,127,249,0.1), transparent 70%)', filter: 'blur(100px)' }} />
       </div>
 
       <div className="max-w-5xl mx-auto relative z-10">
         {/* Section Header */}
         <div className="text-center mb-16 animate-fade-in">
-          <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/10 backdrop-blur-sm border border-gold-primary/30 rounded-full mb-6">
-            <Star className="w-4 h-4 text-gold-primary fill-gold-primary" />
-            <span className="text-white/90 text-sm font-medium">Success Stories</span>
-          </div>
-          <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
+          <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-nci-accent-dim border border-nci-accent/20 text-[11px] font-semibold text-nci-accent uppercase tracking-wide font-mono mb-6">
+            <Star className="w-3.5 h-3.5 fill-nci-accent" />
+            Success Stories
+          </span>
+          <h2 className="text-4xl md:text-5xl font-bold text-white mb-4 font-serif">
             Trusted by Professionals
           </h2>
-          <p className="text-xl text-white/70 max-w-2xl mx-auto">
+          <p className="text-lg text-g-400 max-w-2xl mx-auto font-light">
             Real people, real career transformations
           </p>
         </div>
 
         {/* Carousel */}
         <div className="relative">
-          {/* Main Card - Modern design: No borders, enhanced shadows */}
-          <div className="bg-white/5 backdrop-blur-md rounded-3xl p-8 md:p-12 relative overflow-hidden group shadow-[0_8px_30px_rgba(0,0,0,0.2)] hover:shadow-[0_12px_40px_rgba(229,183,59,0.15)] transition-shadow duration-300">
+          {/* Main Card */}
+          <div className="glass-card rounded-3xl p-8 md:p-12 relative overflow-hidden group">
             {/* Quote Icon */}
-            <div className="absolute top-8 right-8 opacity-10">
-              <Quote className="w-24 h-24 text-gold-primary" />
+            <div className="absolute top-8 right-8 opacity-[0.06]">
+              <Quote className="w-24 h-24 text-nci-primary" />
             </div>
 
-            {/* Content */}
             <div className="relative z-10">
               {/* Rating */}
               <div className="flex gap-1 mb-6">
                 {[...Array(currentTestimonial.rating)].map((_, i) => (
-                  <Star key={i} className="w-5 h-5 text-gold-primary fill-gold-primary" />
+                  <Star key={i} className="w-5 h-5 text-nci-amber fill-nci-amber" />
                 ))}
               </div>
 
@@ -131,58 +127,55 @@ export default function TestimonialsCarousel() {
               {/* Author */}
               <div className="flex items-center justify-between flex-wrap gap-4">
                 <div className="flex items-center gap-4">
-                  <div className="w-16 h-16 rounded-full bg-gradient-to-br from-gold-primary to-gold-accent flex items-center justify-center text-3xl shadow-lg">
+                  <div className="w-14 h-14 rounded-full bg-gradient-primary flex items-center justify-center text-2xl shadow-glow-blue">
                     {currentTestimonial.image}
                   </div>
                   <div>
                     <div className="text-white font-semibold text-lg">{currentTestimonial.name}</div>
-                    <div className="text-gray-300 text-sm">{currentTestimonial.role} at {currentTestimonial.company}</div>
+                    <div className="text-g-400 text-sm">{currentTestimonial.role} at {currentTestimonial.company}</div>
                   </div>
                 </div>
 
                 {/* Outcome Badge */}
-                <div className="px-4 py-2 bg-gradient-to-r from-gold-primary/20 to-gold-accent/20 border border-gold-primary/30 rounded-full">
-                  <span className="text-gold-primary font-semibold text-sm">✨ {currentTestimonial.outcome}</span>
+                <div className="px-4 py-2 bg-nci-accent-dim border border-nci-accent/20 rounded-full">
+                  <span className="text-nci-accent font-semibold text-sm">✨ {currentTestimonial.outcome}</span>
                 </div>
               </div>
             </div>
-
-            {/* Hover Glow */}
-            <div className="absolute inset-0 bg-gradient-to-br from-gold-primary/0 to-gold-primary/0 group-hover:from-gold-primary/5 group-hover:to-transparent transition-all duration-300 pointer-events-none rounded-3xl" />
           </div>
 
           {/* Navigation Arrows */}
           <button
             onClick={goToPrevious}
-            className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-16 w-12 h-12 bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/20 rounded-full items-center justify-center transition-all group hover:scale-110 hidden md:flex"
+            className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-16 w-12 h-12 bg-white/[0.06] hover:bg-white/10 backdrop-blur-md border border-nci-border rounded-full items-center justify-center transition-all group hover:scale-110 hidden md:flex"
             aria-label="Previous testimonial"
           >
-            <ChevronLeft className="w-6 h-6 text-white/70 group-hover:text-white" />
+            <ChevronLeft className="w-6 h-6 text-g-400 group-hover:text-white" />
           </button>
 
           <button
             onClick={goToNext}
-            className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-16 w-12 h-12 bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/20 rounded-full items-center justify-center transition-all group hover:scale-110 hidden md:flex"
+            className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-16 w-12 h-12 bg-white/[0.06] hover:bg-white/10 backdrop-blur-md border border-nci-border rounded-full items-center justify-center transition-all group hover:scale-110 hidden md:flex"
             aria-label="Next testimonial"
           >
-            <ChevronRight className="w-6 h-6 text-white/70 group-hover:text-white" />
+            <ChevronRight className="w-6 h-6 text-g-400 group-hover:text-white" />
           </button>
 
           {/* Mobile Navigation */}
           <div className="flex md:hidden justify-center gap-4 mt-6">
             <button
               onClick={goToPrevious}
-              className="w-12 h-12 bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/20 rounded-full flex items-center justify-center transition-all"
+              className="w-12 h-12 bg-white/[0.06] hover:bg-white/10 border border-nci-border rounded-full flex items-center justify-center transition-all"
               aria-label="Previous testimonial"
             >
-              <ChevronLeft className="w-6 h-6 text-white/70" />
+              <ChevronLeft className="w-6 h-6 text-g-400" />
             </button>
             <button
               onClick={goToNext}
-              className="w-12 h-12 bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/20 rounded-full flex items-center justify-center transition-all"
+              className="w-12 h-12 bg-white/[0.06] hover:bg-white/10 border border-nci-border rounded-full flex items-center justify-center transition-all"
               aria-label="Next testimonial"
             >
-              <ChevronRight className="w-6 h-6 text-white/70" />
+              <ChevronRight className="w-6 h-6 text-g-400" />
             </button>
           </div>
 
@@ -192,10 +185,11 @@ export default function TestimonialsCarousel() {
               <button
                 key={index}
                 onClick={() => goToSlide(index)}
-                className={`h-2 rounded-full transition-all ${index === currentIndex
-                    ? 'w-8 bg-gold-primary'
-                    : 'w-2 bg-white/30 hover:bg-white/50'
-                  }`}
+                className={`h-2 rounded-full transition-all ${
+                  index === currentIndex
+                    ? 'w-8 bg-nci-primary'
+                    : 'w-2 bg-g-600 hover:bg-g-500'
+                }`}
                 aria-label={`Go to testimonial ${index + 1}`}
               />
             ))}

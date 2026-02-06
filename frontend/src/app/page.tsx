@@ -1,13 +1,13 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { ArrowRight, Sparkles, TrendingUp, Shield, Brain, LogOut, User, Crown, Zap } from 'lucide-react';
+import { AreaChart, Area, ResponsiveContainer } from 'recharts';
 import Logo from '@/components/Logo';
 import HowItWorksSection from '@/components/HowItWorksSection';
 import TestimonialsCarousel from '@/components/TestimonialsCarousel';
-import StatsSection from '@/components/StatsSection';
 import { useAuth } from '@/contexts/AuthContext';
 import {
   staggerContainerVariants,
@@ -17,16 +17,46 @@ import {
   scaleInVariants,
 } from '@/lib/animations';
 
+const marketPreviewData = [
+  { month: 'Aug', value: 138 },
+  { month: 'Sep', value: 142 },
+  { month: 'Oct', value: 139 },
+  { month: 'Nov', value: 151 },
+  { month: 'Dec', value: 158 },
+  { month: 'Jan', value: 167 },
+  { month: 'Feb', value: 185 },
+];
+
+const tickerItems = [
+  '47K+ careers analyzed',
+  '92% match accuracy',
+  '+28% avg salary increase',
+  'GDPR compliant',
+  '500+ company job feeds',
+  '3-Layer AI intelligence',
+  '47K+ careers analyzed',
+  '92% match accuracy',
+  '+28% avg salary increase',
+  'GDPR compliant',
+  '500+ company job feeds',
+  '3-Layer AI intelligence',
+];
+
 export default function Home() {
   const router = useRouter();
   const { user, isAuthenticated, hasPremiumAccess, logout, isLoading } = useAuth();
   const [jobTitle, setJobTitle] = useState('');
   const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [vis, setVis] = useState(false);
+
+  useEffect(() => {
+    const t = setTimeout(() => setVis(true), 100);
+    return () => clearTimeout(t);
+  }, []);
 
   const handleAnalyze = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!jobTitle.trim()) return;
-
     setIsAnalyzing(true);
     router.push(`/analyze?job=${encodeURIComponent(jobTitle)}`);
   };
@@ -43,254 +73,205 @@ export default function Home() {
     router.push('/dashboard');
   };
 
+  const makeFade = (d: number) => ({
+    opacity: vis ? 1 : 0,
+    transform: vis ? 'translateY(0)' : 'translateY(28px)',
+    transition: `all 0.8s cubic-bezier(0.16,1,0.3,1) ${d}s`,
+  });
+
   return (
-    <div className="min-h-screen gradient-dark-glass relative overflow-hidden">
-      {/* Skip to main content link for keyboard navigation */}
-      <a
-        href="#main-content"
-        className="skip-to-main"
-        aria-label="Skip to main content"
-      >
+    <div className="min-h-screen bg-nci-bg text-white relative overflow-hidden">
+      {/* Skip to main content */}
+      <a href="#main-content" className="skip-to-main" aria-label="Skip to main content">
         Skip to main content
       </a>
 
-      {/* Top Right - Login/Logout */}
-      <nav className="absolute top-6 right-6 z-20 flex items-center gap-4" aria-label="User account navigation">
-        {!isLoading && isAuthenticated && user ? (
-          <>
-            <div
-              className="px-4 py-2 bg-slate-800 border border-slate-700 rounded-full"
-              role="status"
-              aria-label={`Logged in as ${user.email}${hasPremiumAccess ? ', Premium subscriber' : ''}`}
-            >
-              <User className="w-4 h-4 text-gold-primary inline mr-2" aria-hidden="true" />
-              <span className="text-white text-sm font-semibold">{user.email}</span>
-              {hasPremiumAccess && <Crown className="w-4 h-4 text-gold-primary inline ml-2" aria-label="Premium subscriber" />}
-            </div>
-            <button
-              onClick={handleLogout}
-              className="px-4 py-2 bg-slate-800 border border-slate-700 rounded-full hover:bg-slate-700 hover:border-gold-primary/50 transition-all group"
-              aria-label="Log out of your account"
-            >
-              <LogOut className="w-4 h-4 text-white/70 group-hover:text-white inline mr-2" aria-hidden="true" />
-              <span className="text-white/70 group-hover:text-white text-sm font-semibold">Logout</span>
-            </button>
-          </>
-        ) : !isLoading ? (
-          <button
-            onClick={() => router.push('/login')}
-            className="px-6 py-3 bg-gradient-to-r from-gold-primary to-gold-accent hover:from-gold-accent hover:to-gold-hover text-royal-navy font-bold rounded-xl transition-all shadow-lg hover:shadow-xl flex items-center gap-2"
-            aria-label="Sign in to your account"
-          >
-            <User className="w-5 h-5" aria-hidden="true" />
-            <span>Sign In</span>
-          </button>
-        ) : null}
-      </nav>
+      {/* Glow Orbs */}
+      <div className="absolute -top-[15%] -left-[10%] w-[700px] h-[700px] rounded-full pointer-events-none"
+        style={{ background: 'radial-gradient(circle, rgba(45,127,249,0.2), transparent 70%)', filter: 'blur(100px)' }} />
+      <div className="absolute top-[60%] left-[70%] w-[500px] h-[500px] rounded-full pointer-events-none"
+        style={{ background: 'radial-gradient(circle, rgba(0,210,182,0.15), transparent 70%)', filter: 'blur(100px)' }} />
 
-      {/* Animated Background */}
-      <div className="absolute inset-0 overflow-hidden opacity-30">
-        <div className="absolute top-20 left-10 w-72 h-72 bg-accent-500 rounded-full blur-3xl animate-pulse"></div>
-        <div className="absolute bottom-20 right-10 w-96 h-96 bg-accent-500/60 rounded-full blur-3xl animate-pulse"></div>
-        <div className="absolute top-1/2 left-1/2 w-64 h-64 bg-accent-400/40 rounded-full blur-3xl animate-pulse"></div>
-      </div>
+      {/* Grid Background */}
+      <div className="absolute inset-0 opacity-[0.015] pointer-events-none"
+        style={{ backgroundImage: 'linear-gradient(rgba(74,76,94,1) 1px, transparent 1px), linear-gradient(90deg, rgba(74,76,94,1) 1px, transparent 1px)', backgroundSize: '60px 60px' }} />
 
-      <main id="main-content" className="relative z-10 flex flex-col items-center justify-center min-h-screen px-4 py-12">
-        <motion.div 
-          className="max-w-4xl w-full text-center"
-          variants={staggerContainerVariants}
-          initial="initial"
-          animate="animate"
-          role="region"
-          aria-label="Hero section"
-        >
-          {/* Subscriber Quick Access Section */}
-          {!isLoading && hasPremiumAccess && (
-            <motion.div
-              className="mb-8"
-              variants={fadeInUpVariants}
-            >
-              <div className="glass-card hover-reflect p-6 shadow-glass-lg border-gold-primary/30">
-                <div className="flex items-center justify-between flex-wrap gap-4">
-                  <div className="flex items-center gap-3">
-                    <motion.div
-                      className="p-3 bg-gradient-to-br from-gold-primary/20 to-gold-accent/20 rounded-full"
-                      whileHover={{ rotate: [0, -10, 10, -10, 0], transition: { duration: 0.5 } }}
-                    >
-                      <Crown className="w-6 h-6 text-gold-primary" />
-                    </motion.div>
-                    <div className="text-left">
-                      <h3 className="text-white font-bold text-xl">Welcome back, {user?.name || 'Subscriber'}!</h3>
-                      <p className="text-white/70 text-sm font-medium">Access your premium features</p>
-                    </div>
+      {/* Hero */}
+      <main id="main-content" className="relative z-10 pt-32 pb-20 max-w-[1200px] mx-auto px-4 sm:px-8">
+        {/* Subscriber Quick Access */}
+        {!isLoading && hasPremiumAccess && (
+          <motion.div className="mb-10" variants={fadeInUpVariants} initial="initial" animate="animate">
+            <div className="glass-card p-6">
+              <div className="flex items-center justify-between flex-wrap gap-4">
+                <div className="flex items-center gap-3">
+                  <div className="p-3 rounded-full bg-nci-accent-dim">
+                    <Crown className="w-6 h-6 text-nci-accent" />
                   </div>
-                  <motion.button
-                    onClick={handleSubscriberAccess}
-                    className="px-6 py-3 bg-gradient-to-r from-gold-primary to-gold-accent hover:from-gold-accent hover:to-gold-hover text-royal-navy font-bold rounded-xl transition-all shadow-lg hover:shadow-xl flex items-center gap-2"
-                    variants={buttonVariants}
-                    whileHover="hover"
-                    whileTap="tap"
-                  >
-                    <Zap className="w-5 h-5" />
-                    Go to Dashboard
-                    <ArrowRight className="w-5 h-5" />
-                  </motion.button>
+                  <div>
+                    <h3 className="text-white font-bold text-xl">Welcome back, {user?.name || 'Subscriber'}!</h3>
+                    <p className="text-g-400 text-sm font-medium">Access your premium features</p>
+                  </div>
+                </div>
+                <button
+                  onClick={handleSubscriberAccess}
+                  className="px-6 py-3 bg-white text-nci-bg font-bold rounded-xl transition-all flex items-center gap-2 hover:shadow-glass-lg"
+                >
+                  <Zap className="w-5 h-5" />
+                  Go to Dashboard
+                  <ArrowRight className="w-5 h-5" />
+                </button>
+              </div>
+            </div>
+          </motion.div>
+        )}
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-[72px] items-center">
+          {/* Left Column */}
+          <div>
+            {/* Badge */}
+            <div style={makeFade(0.1)}>
+              <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-nci-primary-dim border border-nci-primary/20 text-[11px] font-semibold text-nci-primary uppercase tracking-wide font-mono">
+                <span className="w-1.5 h-1.5 rounded-full bg-nci-primary inline-block" />
+                Live Market Intelligence
+              </span>
+            </div>
+
+            {/* Logo */}
+            <div style={makeFade(0.15)} className="mt-6 mb-4">
+              <Logo size="lg" linkTo={undefined} className="" />
+            </div>
+
+            {/* Headline */}
+            <h1 style={makeFade(0.2)} className="font-serif text-[clamp(2.5rem,5vw,3.625rem)] leading-[1.08] tracking-tight mb-6 font-normal">
+              Your Career<br />is a Product.<br />
+              <em className="italic text-gradient-primary">Manage It Like One.</em>
+            </h1>
+
+            {/* Subheadline */}
+            <p style={makeFade(0.3)} className="text-[17px] leading-relaxed text-g-400 max-w-[460px] mb-9 font-light">
+              Real-time market valuation, AI displacement analysis, and intelligent career matching — powered by data from 2.3M+ job postings.
+            </p>
+
+            {/* Search Form */}
+            <form onSubmit={handleAnalyze} style={makeFade(0.35)} className="mb-8" role="search" aria-label="Career analysis search">
+              <div className="glass-card flex flex-col sm:flex-row gap-3 p-3">
+                <input
+                  type="text"
+                  value={jobTitle}
+                  onChange={(e) => setJobTitle(e.target.value)}
+                  placeholder="Enter your job title (e.g., Software Engineer)"
+                  className="input-glass flex-1 text-base"
+                  disabled={isAnalyzing}
+                  aria-label="Job title input"
+                  aria-required="true"
+                  id="job-title-input"
+                  name="jobTitle"
+                  autoComplete="organization-title"
+                />
+                <button
+                  type="submit"
+                  disabled={!jobTitle.trim() || isAnalyzing}
+                  className="h-12 px-7 rounded-xl bg-white text-nci-bg font-bold text-sm transition-all hover:shadow-glass-lg disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 whitespace-nowrap"
+                  aria-label={isAnalyzing ? 'Analyzing your career' : 'Calculate your market value'}
+                >
+                  {isAnalyzing ? 'Analyzing...' : 'Calculate Market Value'}
+                  {!isAnalyzing && <ArrowRight className="w-4 h-4" />}
+                </button>
+              </div>
+            </form>
+
+            {/* CTA Buttons */}
+            <div style={makeFade(0.4)} className="flex flex-wrap gap-3">
+              <button
+                onClick={() => {
+                  const section = document.getElementById('how-it-works');
+                  section?.scrollIntoView({ behavior: 'smooth' });
+                }}
+                className="h-12 px-6 rounded-xl bg-transparent text-g-300 border border-nci-border text-sm font-medium transition-all flex items-center gap-2 hover:border-nci-border-hover"
+              >
+                <span className="text-nci-accent">⚡</span> View Demo
+              </button>
+            </div>
+
+            {/* Feature badges */}
+            <div style={makeFade(0.45)} className="flex flex-wrap items-center gap-6 mt-8 text-g-400 text-sm">
+              <div className="flex items-center gap-2 hover:text-white transition-colors">
+                <Shield className="w-4 h-4 text-nci-accent" />
+                <span>100% Free Analysis</span>
+              </div>
+              <div className="flex items-center gap-2 hover:text-white transition-colors">
+                <Brain className="w-4 h-4 text-nci-primary" />
+                <span>AI-Powered</span>
+              </div>
+              <div className="flex items-center gap-2 hover:text-white transition-colors">
+                <TrendingUp className="w-4 h-4 text-nci-amber" />
+                <span>Personalized Roadmap</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Right Column - Preview Card */}
+          <div style={makeFade(0.35)} className="hidden lg:block">
+            <div className="glass-card overflow-hidden shadow-glass-xl">
+              {/* Browser dots */}
+              <div className="h-10 border-b border-nci-border bg-nci-bg/60 flex items-center px-3.5 gap-1.5">
+                <div className="w-2.5 h-2.5 rounded-full bg-nci-red/40" />
+                <div className="w-2.5 h-2.5 rounded-full bg-nci-amber/40" />
+                <div className="w-2.5 h-2.5 rounded-full bg-nci-accent/40" />
+                <span className="ml-3 text-[11px] text-g-600 font-mono">nextci.net/dashboard</span>
+              </div>
+              <div className="p-5">
+                <div className="flex justify-between items-center mb-4">
+                  <div>
+                    <div className="text-[13px] font-semibold text-white">Market Value Pulse</div>
+                    <div className="text-[11px] text-g-500">Real-time estimation</div>
+                  </div>
+                  <span className="text-[11px] font-semibold text-nci-accent bg-nci-accent-dim px-2.5 py-1 rounded-md">+31% Potential</span>
+                </div>
+                <div className="h-[140px]">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <AreaChart data={marketPreviewData}>
+                      <defs>
+                        <linearGradient id="heroG" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="0%" stopColor="#2D7FF9" stopOpacity={0.35} />
+                          <stop offset="100%" stopColor="#2D7FF9" stopOpacity={0} />
+                        </linearGradient>
+                      </defs>
+                      <Area type="monotone" dataKey="value" stroke="#2D7FF9" strokeWidth={2.5} fill="url(#heroG)" dot={false} />
+                    </AreaChart>
+                  </ResponsiveContainer>
+                </div>
+                <div className="grid grid-cols-3 gap-2.5 mt-3">
+                  <div className="bg-white/[0.03] rounded-lg p-2.5">
+                    <div className="text-[10px] text-g-500 mb-1">Market Value</div>
+                    <div className="text-base font-bold font-mono text-nci-accent">$185K</div>
+                  </div>
+                  <div className="bg-white/[0.03] rounded-lg p-2.5">
+                    <div className="text-[10px] text-g-500 mb-1">AI Risk</div>
+                    <div className="text-base font-bold font-mono text-nci-accent">Low 18%</div>
+                  </div>
+                  <div className="bg-white/[0.03] rounded-lg p-2.5">
+                    <div className="text-[10px] text-g-500 mb-1">Top Match</div>
+                    <div className="text-base font-bold font-mono text-nci-primary">96%</div>
+                  </div>
                 </div>
               </div>
-            </motion.div>
-          )}
-
-          {/* NEXT Logo */}
-          <motion.div 
-            className="mb-8"
-            variants={scaleInVariants}
-          >
-            <Logo size="lg" linkTo={undefined} className="mx-auto" />
-          </motion.div>
-
-          <motion.div
-            className="inline-flex items-center gap-2 px-4 py-2 bg-slate-800 border border-gold-primary/30 rounded-full mb-8"
-            variants={staggerItemVariants}
-            role="status"
-            aria-label="AI-powered analysis available"
-          >
-            <Sparkles className="w-4 h-4 text-gold-primary" aria-hidden="true" />
-            <span className="text-white/90 text-sm font-semibold">Powered by AI</span>
-          </motion.div>
-
-          <motion.h1 
-            className="text-5xl md:text-7xl font-bold mb-6 leading-tight"
-            variants={staggerItemVariants}
-          >
-            <span className="text-white">Is Your Job</span>
-            <span className="block bg-gradient-to-r from-gold-primary via-gold-accent to-gold-hover bg-clip-text text-transparent mt-2">
-              AI-Proof?
-            </span>
-          </motion.h1>
-
-          <motion.p
-            className="text-xl md:text-2xl text-white/80 mb-12 max-w-2xl mx-auto leading-relaxed font-medium"
-            variants={staggerItemVariants}
-          >
-            Get a free AI-powered analysis of your career&apos;s automation risk and discover skills that future-proof your career
-          </motion.p>
-
-          <motion.form 
-            onSubmit={handleAnalyze} 
-            className="max-w-2xl mx-auto mb-8"
-            variants={staggerItemVariants}
-            role="search"
-            aria-label="Career analysis search"
-          >
-            <div className="glass-card flex flex-col sm:flex-row gap-4 p-3 shadow-glass-xl hover:border-gold-primary/30 transition-all">
-              <motion.input
-                type="text"
-                value={jobTitle}
-                onChange={(e) => setJobTitle(e.target.value)}
-                placeholder="Enter your job title (e.g., Software Engineer)"
-                className="input-glass flex-1 text-lg text-white placeholder:text-white/50 font-medium"
-                disabled={isAnalyzing}
-                whileFocus={{ scale: 1.01 }}
-                transition={{ duration: 0.2 }}
-                aria-label="Job title input"
-                aria-required="true"
-                aria-invalid={!jobTitle.trim() && "true"}
-                id="job-title-input"
-                name="jobTitle"
-                autoComplete="organization-title"
-              />
-              <motion.button
-                type="submit"
-                disabled={!jobTitle.trim() || isAnalyzing}
-                className="px-8 py-4 bg-gradient-to-r from-gold-primary to-gold-accent hover:from-gold-accent hover:to-gold-hover text-royal-navy font-bold text-lg rounded-xl transition-all shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 whitespace-nowrap"
-                variants={buttonVariants}
-                whileHover="hover"
-                whileTap="tap"
-                aria-label={isAnalyzing ? 'Analyzing your career' : 'Start free career analysis'}
-                aria-disabled={!jobTitle.trim() || isAnalyzing}
-              >
-                {isAnalyzing ? 'Analyzing...' : 'Analyze Free'}
-                {!isAnalyzing && <ArrowRight className="w-5 h-5" aria-hidden="true" />}
-              </motion.button>
             </div>
-          </motion.form>
-
-          <motion.div
-            className="flex flex-wrap items-center justify-center gap-8 text-white/70 text-sm mb-16 font-medium"
-            variants={staggerItemVariants}
-            role="list"
-            aria-label="Key features"
-          >
-            <motion.div
-              className="flex items-center gap-2 hover:text-white transition-colors"
-              whileHover={{ scale: 1.05 }}
-              role="listitem"
-            >
-              <Shield className="w-5 h-5 text-gold-primary" aria-hidden="true" />
-              <span>100% Free Analysis</span>
-            </motion.div>
-            <motion.div
-              className="flex items-center gap-2 hover:text-white transition-colors"
-              whileHover={{ scale: 1.05 }}
-              role="listitem"
-            >
-              <Brain className="w-5 h-5 text-gold-primary" aria-hidden="true" />
-              <span>AI-Powered Insights</span>
-            </motion.div>
-            <motion.div
-              className="flex items-center gap-2 hover:text-white transition-colors"
-              whileHover={{ scale: 1.05 }}
-              role="listitem"
-            >
-              <TrendingUp className="w-5 h-5 text-gold-primary" aria-hidden="true" />
-              <span>Personalized Roadmap</span>
-            </motion.div>
-          </motion.div>
-
-        </motion.div>
-
-        <motion.nav 
-          className="mt-16 text-center"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.8, duration: 0.5 }}
-          aria-label="Secondary navigation"
-        >
-          <p className="text-white/60 text-base mb-4 font-medium">
-            Join thousands of professionals taking control of their careers
-          </p>
-          <div className="flex items-center justify-center gap-4 flex-wrap">
-            <motion.button
-              onClick={() => {
-                const section = document.getElementById('how-it-works');
-                section?.scrollIntoView({ behavior: 'smooth' });
-              }}
-              className="text-white/70 hover:text-gold-primary text-sm font-medium transition-colors cursor-pointer"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              aria-label="Scroll to How It Works section"
-            >
-              How It Works
-            </motion.button>
-            <span className="text-white/30" aria-hidden="true">•</span>
-            <motion.button
-              onClick={() => router.push('/login')}
-              className="text-white/70 hover:text-gold-primary text-sm font-medium transition-colors cursor-pointer"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              aria-label="Navigate to sign in page"
-            >
-              Sign In
-            </motion.button>
           </div>
-        </motion.nav>
+        </div>
+
+        {/* Ticker */}
+        <div className="mt-20 border-t border-b border-nci-border py-5 overflow-hidden">
+          <div className="flex gap-12 animate-ticker-scroll whitespace-nowrap">
+            {tickerItems.map((t, i) => (
+              <span key={i} className="text-[13px] text-g-500 flex-shrink-0">{t}</span>
+            ))}
+          </div>
+        </div>
       </main>
 
       {/* How It Works Section */}
       <HowItWorksSection />
-
-      {/* Stats Section - Hidden until we have real user-generated data */}
-      {/* <StatsSection /> */}
 
       {/* Testimonials Section */}
       <TestimonialsCarousel />
@@ -298,36 +279,16 @@ export default function Home() {
       {/* Final CTA Section */}
       <section className="py-24 px-4">
         <div className="max-w-4xl mx-auto text-center">
-          <motion.div
-            className="glass-card hover-reflect rounded-3xl p-12 relative overflow-hidden shadow-glass-xl"
-            initial={{ opacity: 0, y: 40 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-100px" }}
-            transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-          >
-            {/* Background Glow */}
-            <div className="absolute inset-0 bg-gradient-to-br from-accent-500/10 to-transparent opacity-50"></div>
-
+          <div className="glass-card hover-reflect rounded-3xl p-12 relative overflow-hidden shadow-glass-xl">
+            <div className="absolute inset-0 bg-gradient-to-br from-nci-primary/10 to-transparent opacity-50" />
             <div className="relative z-10">
-              <motion.h2
-                className="text-3xl md:text-5xl font-bold text-white mb-6"
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: 0.2, duration: 0.5 }}
-              >
+              <h2 className="text-3xl md:text-5xl font-bold text-white mb-6 font-serif">
                 Ready to Future-Proof Your Career?
-              </motion.h2>
-              <motion.p
-                className="text-xl md:text-2xl text-white/80 mb-8 max-w-2xl mx-auto leading-relaxed font-medium"
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: 0.3, duration: 0.5 }}
-              >
+              </h2>
+              <p className="text-xl md:text-2xl text-g-300 mb-8 max-w-2xl mx-auto leading-relaxed font-light">
                 Get your free AI-powered career analysis now. No credit card required.
-              </motion.p>
-              <motion.button
+              </p>
+              <button
                 onClick={() => {
                   window.scrollTo({ top: 0, behavior: 'smooth' });
                   setTimeout(() => {
@@ -335,32 +296,14 @@ export default function Home() {
                     input?.focus();
                   }, 500);
                 }}
-                className="px-8 py-4 bg-gradient-to-r from-gold-primary to-gold-accent hover:from-gold-accent hover:to-gold-hover text-royal-navy font-bold text-lg rounded-xl transition-all shadow-lg hover:shadow-xl inline-flex items-center gap-2 group"
-                initial={{ opacity: 0, scale: 0.9 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                viewport={{ once: true }}
-                transition={{ delay: 0.4, duration: 0.5 }}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.98 }}
+                className="px-8 py-4 bg-white text-nci-bg font-bold text-lg rounded-xl transition-all shadow-glass-lg hover:shadow-glass-xl inline-flex items-center gap-2 group"
               >
-                <motion.div
-                  animate={{
-                    rotate: [0, 10, -10, 10, 0],
-                    scale: [1, 1.1, 1, 1.1, 1]
-                  }}
-                  transition={{
-                    duration: 2,
-                    repeat: Infinity,
-                    repeatDelay: 1
-                  }}
-                >
-                  <Sparkles className="w-5 h-5" />
-                </motion.div>
+                <Sparkles className="w-5 h-5" />
                 <span>Start Your Free Analysis</span>
                 <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-              </motion.button>
+              </button>
             </div>
-          </motion.div>
+          </div>
         </div>
       </section>
     </div>
