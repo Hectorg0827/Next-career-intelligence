@@ -20,6 +20,7 @@ import Logo from '@/components/Logo';
 import { useAuth } from '@/contexts/AuthContext';
 import ParticleBackground from '@/components/ParticleBackground';
 import { fadeInUpVariants } from '@/lib/animations';
+import ResumeUpload from '@/components/ResumeUpload';
 
 const marketPreviewData = [
   { month: 'Aug', value: 138 },
@@ -47,6 +48,7 @@ export default function Home() {
   const { user, isAuthenticated, hasPremiumAccess, logout, isLoading } = useAuth();
   const [jobTitle, setJobTitle] = useState('');
   const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [showUpload, setShowUpload] = useState(false);
 
   const handleAnalyze = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -263,29 +265,57 @@ export default function Home() {
           </h2>
           <p className="text-g-400 text-xl mb-12 font-light">Join 50,000+ professionals using NextCI to outpace the AI revolution.</p>
 
-          <div className="glass-card p-12 relative overflow-hidden">
+          <div className="glass-card p-12 relative overflow-hidden transition-all duration-500">
             <div className="absolute inset-0 bg-gradient-to-br from-nci-primary/5 to-transparent pointer-events-none" />
             <div className="relative z-10">
               <h3 className="text-2xl font-bold mb-2">Calculate Your Risk Score</h3>
-              <p className="text-g-500 mb-8">Enter your current role to begin your intelligence report.</p>
+              <p className="text-g-500 mb-8">Enter your current role or upload your resume to begin.</p>
 
-              <form onSubmit={handleAnalyze} className="flex flex-col sm:flex-row gap-4 max-w-2xl mx-auto">
-                <input
-                  id="job-title-input"
-                  type="text"
-                  value={jobTitle}
-                  onChange={(e) => setJobTitle(e.target.value)}
-                  placeholder="e.g. Senior Product Manager"
-                  className="flex-1 bg-white/5 rounded-xl px-6 py-4 text-white focus:outline-none focus:ring-2 focus:ring-nci-primary/50 transition-all"
-                />
+              <div className="flex justify-center gap-4 mb-8">
                 <button
-                  type="submit"
-                  disabled={!jobTitle.trim() || isAnalyzing}
-                  className="px-10 py-4 bg-nci-primary text-white font-bold rounded-xl transition-all hover:shadow-glow-blue disabled:opacity-50"
+                  onClick={() => setShowUpload(false)}
+                  className={`px-6 py-2 rounded-full text-sm font-medium transition-all ${!showUpload ? 'bg-nci-primary text-white shadow-lg' : 'bg-white/5 text-g-400 hover:bg-white/10'}`}
                 >
-                  {isAnalyzing ? 'Analyzing...' : 'Analyze Now'}
+                  Enter Job Title
                 </button>
-              </form>
+                <button
+                  onClick={() => setShowUpload(true)}
+                  className={`px-6 py-2 rounded-full text-sm font-medium transition-all ${showUpload ? 'bg-nci-primary text-white shadow-lg' : 'bg-white/5 text-g-400 hover:bg-white/10'}`}
+                >
+                  Upload Resume
+                </button>
+              </div>
+
+              {showUpload ? (
+                <div className="max-w-xl mx-auto animate-in fade-in zoom-in duration-300">
+                  <ResumeUpload
+                    onUploadStart={() => setIsAnalyzing(true)}
+                    onUploadComplete={(detectedTitle) => {
+                      setIsAnalyzing(false);
+                      router.push(`/analyze?job=${encodeURIComponent(detectedTitle)}`);
+                    }}
+                    onError={() => setIsAnalyzing(false)}
+                  />
+                </div>
+              ) : (
+                <form onSubmit={handleAnalyze} className="flex flex-col sm:flex-row gap-4 max-w-2xl mx-auto animate-in fade-in zoom-in duration-300">
+                  <input
+                    id="job-title-input"
+                    type="text"
+                    value={jobTitle}
+                    onChange={(e) => setJobTitle(e.target.value)}
+                    placeholder="e.g. Senior Product Manager"
+                    className="flex-1 bg-white/5 rounded-xl px-6 py-4 text-white focus:outline-none focus:ring-2 focus:ring-nci-primary/50 transition-all"
+                  />
+                  <button
+                    type="submit"
+                    disabled={!jobTitle.trim() || isAnalyzing}
+                    className="px-10 py-4 bg-nci-primary text-white font-bold rounded-xl transition-all hover:shadow-glow-blue disabled:opacity-50"
+                  >
+                    {isAnalyzing ? 'Analyzing...' : 'Analyze Now'}
+                  </button>
+                </form>
+              )}
             </div>
           </div>
         </div>
