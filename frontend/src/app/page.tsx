@@ -81,7 +81,7 @@ export default function Home() {
                 <Logo size="md" linkTo={undefined} className="opacity-90" />
               </div>
 
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-nci-primary-dim border border-nci-primary/20 text-[11px] font-bold text-nci-primary uppercase tracking-widest mb-8">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-nci-primary-dim text-[11px] font-bold text-nci-primary uppercase tracking-widest mb-8">
                 <span className="w-1 h-1 rounded-full bg-nci-primary animate-pulse" />
                 AI Career Intelligence 2.0
               </div>
@@ -103,7 +103,7 @@ export default function Home() {
                   Calculate My Risk — Free
                   <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                 </button>
-                <button className="px-8 py-4 bg-white/5 border border-white/10 text-white font-bold rounded-xl transition-all hover:bg-white/10 flex items-center gap-2">
+                <button className="px-8 py-4 bg-white/5 text-white font-bold rounded-xl transition-all hover:bg-white/10 flex items-center gap-2">
                   <Zap className="w-5 h-5 text-nci-amber" />
                   Watch Demo
                 </button>
@@ -116,7 +116,7 @@ export default function Home() {
               transition={{ duration: 1, delay: 0.2 }}
               className="relative hidden lg:block"
             >
-              <div className="glass-card p-2 border-white/10 shadow-glass-xl overflow-hidden group">
+              <div className="glass-card p-2 shadow-glass-xl overflow-hidden group">
                 <div className="absolute inset-0 bg-gradient-to-br from-nci-primary/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
                 <img
                   src="/nextci_dashboard_mockup_1770496376961.png"
@@ -129,7 +129,7 @@ export default function Home() {
               <motion.div
                 animate={{ y: [0, -10, 0] }}
                 transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-                className="absolute -bottom-6 -left-6 glass-card p-4 border-nci-accent/20 bg-nci-bg/80 backdrop-blur-xl"
+                className="absolute -bottom-6 -left-6 glass-card p-4 bg-nci-bg/80 backdrop-blur-xl"
               >
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-lg bg-nci-accent-dim flex items-center justify-center">
@@ -176,7 +176,7 @@ export default function Home() {
               <motion.div
                 key={i}
                 whileHover={{ y: -5 }}
-                className="glass-card p-10 flex flex-col items-center text-center border-t border-white/10"
+                className="glass-card p-10 flex flex-col items-center text-center"
               >
                 <div className="font-serif text-6xl font-bold mb-4">{stat.val}</div>
                 <div className="text-nci-primary font-bold mb-3">{stat.label}</div>
@@ -206,7 +206,7 @@ export default function Home() {
                 ))}
               </ul>
             </div>
-            <div className="glass-card p-4 border-white/10 rotate-2 hover:rotate-0 transition-transform duration-500">
+            <div className="glass-card p-4 rotate-2 hover:rotate-0 transition-transform duration-500">
               <img src="/nextci_risk_meter_1770496391987.png" alt="Risk Meter" className="rounded-xl shadow-2xl" />
             </div>
           </div>
@@ -223,7 +223,7 @@ export default function Home() {
                   { title: 'AI Operations Lead', co: 'Stripe', pay: '$180k - $240k', score: 98 },
                   { title: 'Automation Strategist', co: 'Scale AI', pay: '$165k - $210k', score: 94 }
                 ].map((job, i) => (
-                  <div key={i} className="flex items-center gap-6 p-4 rounded-xl bg-white/5 border border-white/5">
+                  <div key={i} className="flex items-center gap-6 p-4 rounded-xl bg-white/5">
                     <div className="w-14 h-14 rounded-xl bg-nci-accent/10 flex items-center justify-center font-bold text-nci-accent text-xl">
                       {job.score}
                     </div>
@@ -276,7 +276,7 @@ export default function Home() {
                   value={jobTitle}
                   onChange={(e) => setJobTitle(e.target.value)}
                   placeholder="e.g. Senior Product Manager"
-                  className="flex-1 bg-white/5 border border-white/10 rounded-xl px-6 py-4 text-white focus:outline-none focus:border-nci-primary transition-colors"
+                  className="flex-1 bg-white/5 rounded-xl px-6 py-4 text-white focus:outline-none focus:ring-2 focus:ring-nci-primary/50 transition-all"
                 />
                 <button
                   type="submit"

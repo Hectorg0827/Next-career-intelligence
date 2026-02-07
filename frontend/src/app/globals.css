@@ -77,16 +77,16 @@
 /* Glass Effect - Clear & Premium */
 .glass-panel,
 .glass-card {
-  @apply bg-white/5 backdrop-blur-md border border-white/10 shadow-lg rounded-2xl transition-all duration-300;
+  @apply bg-gradient-to-br from-white/10 to-transparent backdrop-blur-xl shadow-2xl rounded-2xl transition-all duration-300;
 }
 
 .glass-panel:hover,
 .glass-card:hover {
-  @apply bg-white/10 border-white/20 shadow-xl transform -translate-y-1;
+  @apply bg-white/10 shadow-xl transform -translate-y-1;
 }
 
 /* Dark mode specific adjustments if needed, though the above works well for dark themes */
 .dark .glass-panel,
 .dark .glass-card {
-  @apply bg-black/40 border-white/10;
+  @apply bg-black/40;
 }
