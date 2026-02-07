@@ -2,20 +2,24 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { motion } from 'framer-motion';
-import { ArrowRight, Sparkles, TrendingUp, Shield, Brain, LogOut, User, Crown, Zap } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import {
+  ArrowRight,
+  Sparkles,
+  TrendingUp,
+  Shield,
+  Brain,
+  LogOut,
+  User,
+  Crown,
+  Zap,
+  CheckCircle2
+} from 'lucide-react';
 import { AreaChart, Area, ResponsiveContainer } from 'recharts';
 import Logo from '@/components/Logo';
-import HowItWorksSection from '@/components/HowItWorksSection';
-import TestimonialsCarousel from '@/components/TestimonialsCarousel';
 import { useAuth } from '@/contexts/AuthContext';
-import {
-  staggerContainerVariants,
-  staggerItemVariants,
-  buttonVariants,
-  fadeInUpVariants,
-  scaleInVariants,
-} from '@/lib/animations';
+import ParticleBackground from '@/components/ParticleBackground';
+import { fadeInUpVariants } from '@/lib/animations';
 
 const marketPreviewData = [
   { month: 'Aug', value: 138 },
@@ -28,18 +32,14 @@ const marketPreviewData = [
 ];
 
 const tickerItems = [
-  '47K+ careers analyzed',
-  '92% match accuracy',
-  '+28% avg salary increase',
-  'GDPR compliant',
-  '500+ company job feeds',
-  '3-Layer AI intelligence',
-  '47K+ careers analyzed',
-  '92% match accuracy',
-  '+28% avg salary increase',
-  'GDPR compliant',
-  '500+ company job feeds',
-  '3-Layer AI intelligence',
+  '300M+ Jobs impacted by 2030',
+  '44% Core skills disrupted',
+  '$15.7T AI Economic contribution',
+  '85% of 2030 jobs don\'t exist yet',
+  '300M+ Jobs impacted by 2030',
+  '44% Core skills disrupted',
+  '$15.7T AI Economic contribution',
+  '85% of 2030 jobs don\'t exist yet',
 ];
 
 export default function Home() {
@@ -47,12 +47,6 @@ export default function Home() {
   const { user, isAuthenticated, hasPremiumAccess, logout, isLoading } = useAuth();
   const [jobTitle, setJobTitle] = useState('');
   const [isAnalyzing, setIsAnalyzing] = useState(false);
-  const [vis, setVis] = useState(false);
-
-  useEffect(() => {
-    const t = setTimeout(() => setVis(true), 100);
-    return () => clearTimeout(t);
-  }, []);
 
   const handleAnalyze = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -61,251 +55,245 @@ export default function Home() {
     router.push(`/analyze?job=${encodeURIComponent(jobTitle)}`);
   };
 
-  const handleLogout = async () => {
-    try {
-      await logout();
-    } catch (error) {
-      console.error('Logout failed:', error);
-    }
+  const scrollToFunnel = () => {
+    const input = document.getElementById('job-title-input');
+    input?.focus();
+    input?.scrollIntoView({ behavior: 'smooth', block: 'center' });
   };
-
-  const handleSubscriberAccess = () => {
-    router.push('/dashboard');
-  };
-
-  const makeFade = (d: number) => ({
-    opacity: vis ? 1 : 0,
-    transform: vis ? 'translateY(0)' : 'translateY(28px)',
-    transition: `all 0.8s cubic-bezier(0.16,1,0.3,1) ${d}s`,
-  });
 
   return (
-    <div className="min-h-screen bg-nci-bg text-white relative overflow-hidden">
-      {/* Skip to main content */}
-      <a href="#main-content" className="skip-to-main" aria-label="Skip to main content">
-        Skip to main content
-      </a>
+    <div className="min-h-screen bg-nci-bg text-white relative selection:bg-nci-primary/30">
+      {/* Hero Section */}
+      <section className="relative min-h-[90vh] flex items-center pt-24 overflow-hidden">
+        <ParticleBackground />
 
-      {/* Glow Orbs */}
-      <div className="absolute -top-[15%] -left-[10%] w-[700px] h-[700px] rounded-full pointer-events-none"
-        style={{ background: 'radial-gradient(circle, rgba(45,127,249,0.2), transparent 70%)', filter: 'blur(100px)' }} />
-      <div className="absolute top-[60%] left-[70%] w-[500px] h-[500px] rounded-full pointer-events-none"
-        style={{ background: 'radial-gradient(circle, rgba(0,210,182,0.15), transparent 70%)', filter: 'blur(100px)' }} />
+        {/* Ambient Glows */}
+        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-full max-w-4xl h-96 bg-nci-primary/10 blur-[120px] rounded-full pointer-events-none" />
 
-      {/* Grid Background */}
-      <div className="absolute inset-0 opacity-[0.015] pointer-events-none"
-        style={{ backgroundImage: 'linear-gradient(rgba(74,76,94,1) 1px, transparent 1px), linear-gradient(90deg, rgba(74,76,94,1) 1px, transparent 1px)', backgroundSize: '60px 60px' }} />
+        <div className="container relative z-10 mx-auto px-6">
+          <div className="grid lg:grid-cols-2 gap-16 items-center">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8 }}
+            >
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-nci-primary-dim border border-nci-primary/20 text-[11px] font-bold text-nci-primary uppercase tracking-widest mb-8">
+                <span className="w-1 h-1 rounded-full bg-nci-primary animate-pulse" />
+                AI Career Intelligence 2.0
+              </div>
 
-      {/* Hero */}
-      <main id="main-content" className="relative z-10 pt-32 pb-20 max-w-[1200px] mx-auto px-4 sm:px-8">
-        {/* Subscriber Quick Access */}
-        {!isLoading && hasPremiumAccess && (
-          <motion.div className="mb-10" variants={fadeInUpVariants} initial="initial" animate="animate">
-            <div className="glass-card p-6">
-              <div className="flex items-center justify-between flex-wrap gap-4">
-                <div className="flex items-center gap-3">
-                  <div className="p-3 rounded-full bg-nci-accent-dim">
-                    <Crown className="w-6 h-6 text-nci-accent" />
-                  </div>
-                  <div>
-                    <h3 className="text-white font-bold text-xl">Welcome back, {user?.name || 'Subscriber'}!</h3>
-                    <p className="text-g-400 text-sm font-medium">Access your premium features</p>
-                  </div>
-                </div>
+              <h1 className="font-serif text-[clamp(3.5rem,6vw,5rem)] leading-[0.95] mb-8 tracking-tighter">
+                The Future of Work is Already Here. <br />
+                <span className="italic text-gradient-primary">Master It.</span>
+              </h1>
+
+              <p className="text-g-400 text-lg md:text-xl max-w-lg mb-10 font-light leading-relaxed">
+                AI is redefining 1.28B roles globally. Don't just watch it happen. Get your displacement risk score and build your data-driven roadmap to the top.
+              </p>
+
+              <div className="flex flex-wrap gap-4">
                 <button
-                  onClick={handleSubscriberAccess}
-                  className="px-6 py-3 bg-white text-nci-bg font-bold rounded-xl transition-all flex items-center gap-2 hover:shadow-glass-lg"
+                  onClick={scrollToFunnel}
+                  className="px-8 py-4 bg-nci-primary text-white font-bold rounded-xl transition-all hover:scale-[1.02] hover:shadow-glow-blue flex items-center gap-2 group"
                 >
-                  <Zap className="w-5 h-5" />
-                  Go to Dashboard
-                  <ArrowRight className="w-5 h-5" />
+                  Calculate My Risk — Free
+                  <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                </button>
+                <button className="px-8 py-4 bg-white/5 border border-white/10 text-white font-bold rounded-xl transition-all hover:bg-white/10 flex items-center gap-2">
+                  <Zap className="w-5 h-5 text-nci-amber" />
+                  Watch Demo
                 </button>
               </div>
-            </div>
-          </motion.div>
-        )}
+            </motion.div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-[72px] items-center">
-          {/* Left Column */}
-          <div>
-            {/* Badge */}
-            <div style={makeFade(0.1)}>
-              <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-nci-primary-dim border border-nci-primary/20 text-[11px] font-semibold text-nci-primary uppercase tracking-wide font-mono">
-                <span className="w-1.5 h-1.5 rounded-full bg-nci-primary inline-block" />
-                Live Market Intelligence
-              </span>
-            </div>
-
-            {/* Logo */}
-            <div style={makeFade(0.15)} className="mt-6 mb-4">
-              <Logo size="lg" linkTo={undefined} className="" />
-            </div>
-
-            {/* Headline */}
-            <h1 style={makeFade(0.2)} className="font-serif text-[clamp(2.5rem,5vw,3.625rem)] leading-[1.08] tracking-tight mb-6 font-normal">
-              Your Career<br />is a Product.<br />
-              <em className="italic text-gradient-primary">Manage It Like One.</em>
-            </h1>
-
-            {/* Subheadline */}
-            <p style={makeFade(0.3)} className="text-[17px] leading-relaxed text-g-400 max-w-[460px] mb-9 font-light">
-              Real-time market valuation, AI displacement analysis, and intelligent career matching — powered by data from 2.3M+ job postings.
-            </p>
-
-            {/* Search Form */}
-            <form onSubmit={handleAnalyze} style={makeFade(0.35)} className="mb-8" role="search" aria-label="Career analysis search">
-              <div className="glass-card flex flex-col sm:flex-row gap-3 p-3">
-                <input
-                  type="text"
-                  value={jobTitle}
-                  onChange={(e) => setJobTitle(e.target.value)}
-                  placeholder="Enter your job title (e.g., Software Engineer)"
-                  className="input-glass flex-1 text-base"
-                  disabled={isAnalyzing}
-                  aria-label="Job title input"
-                  aria-required="true"
-                  id="job-title-input"
-                  name="jobTitle"
-                  autoComplete="organization-title"
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, rotateY: 10 }}
+              animate={{ opacity: 1, scale: 1, rotateY: 0 }}
+              transition={{ duration: 1, delay: 0.2 }}
+              className="relative hidden lg:block"
+            >
+              <div className="glass-card p-2 border-white/10 shadow-glass-xl overflow-hidden group">
+                <div className="absolute inset-0 bg-gradient-to-br from-nci-primary/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+                <img
+                  src="/nextci_dashboard_mockup_1770496376961.png"
+                  alt="NextCI Dashboard"
+                  className="rounded-lg shadow-2xl relative z-10"
                 />
-                <button
-                  type="submit"
-                  disabled={!jobTitle.trim() || isAnalyzing}
-                  className="h-12 px-7 rounded-xl bg-white text-nci-bg font-bold text-sm transition-all hover:shadow-glass-lg disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 whitespace-nowrap"
-                  aria-label={isAnalyzing ? 'Analyzing your career' : 'Calculate your market value'}
-                >
-                  {isAnalyzing ? 'Analyzing...' : 'Calculate Market Value'}
-                  {!isAnalyzing && <ArrowRight className="w-4 h-4" />}
-                </button>
               </div>
-            </form>
 
-            {/* CTA Buttons */}
-            <div style={makeFade(0.4)} className="flex flex-wrap gap-3">
-              <button
-                onClick={() => {
-                  const section = document.getElementById('how-it-works');
-                  section?.scrollIntoView({ behavior: 'smooth' });
-                }}
-                className="h-12 px-6 rounded-xl bg-transparent text-g-300 border border-nci-border text-sm font-medium transition-all flex items-center gap-2 hover:border-nci-border-hover"
+              {/* Floating Stat Card */}
+              <motion.div
+                animate={{ y: [0, -10, 0] }}
+                transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+                className="absolute -bottom-6 -left-6 glass-card p-4 border-nci-accent/20 bg-nci-bg/80 backdrop-blur-xl"
               >
-                <span className="text-nci-accent">⚡</span> View Demo
-              </button>
-            </div>
-
-            {/* Feature badges */}
-            <div style={makeFade(0.45)} className="flex flex-wrap items-center gap-6 mt-8 text-g-400 text-sm">
-              <div className="flex items-center gap-2 hover:text-white transition-colors">
-                <Shield className="w-4 h-4 text-nci-accent" />
-                <span>100% Free Analysis</span>
-              </div>
-              <div className="flex items-center gap-2 hover:text-white transition-colors">
-                <Brain className="w-4 h-4 text-nci-primary" />
-                <span>AI-Powered</span>
-              </div>
-              <div className="flex items-center gap-2 hover:text-white transition-colors">
-                <TrendingUp className="w-4 h-4 text-nci-amber" />
-                <span>Personalized Roadmap</span>
-              </div>
-            </div>
-          </div>
-
-          {/* Right Column - Preview Card */}
-          <div style={makeFade(0.35)} className="hidden lg:block">
-            <div className="glass-card overflow-hidden shadow-glass-xl">
-              {/* Browser dots */}
-              <div className="h-10 border-b border-nci-border bg-nci-bg/60 flex items-center px-3.5 gap-1.5">
-                <div className="w-2.5 h-2.5 rounded-full bg-nci-red/40" />
-                <div className="w-2.5 h-2.5 rounded-full bg-nci-amber/40" />
-                <div className="w-2.5 h-2.5 rounded-full bg-nci-accent/40" />
-                <span className="ml-3 text-[11px] text-g-600 font-mono">nextci.net/dashboard</span>
-              </div>
-              <div className="p-5">
-                <div className="flex justify-between items-center mb-4">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-lg bg-nci-accent-dim flex items-center justify-center">
+                    <TrendingUp className="w-5 h-5 text-nci-accent" />
+                  </div>
                   <div>
-                    <div className="text-[13px] font-semibold text-white">Market Value Pulse</div>
-                    <div className="text-[11px] text-g-500">Real-time estimation</div>
-                  </div>
-                  <span className="text-[11px] font-semibold text-nci-accent bg-nci-accent-dim px-2.5 py-1 rounded-md">+31% Potential</span>
-                </div>
-                <div className="h-[140px]">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <AreaChart data={marketPreviewData}>
-                      <defs>
-                        <linearGradient id="heroG" x1="0" y1="0" x2="0" y2="1">
-                          <stop offset="0%" stopColor="#2D7FF9" stopOpacity={0.35} />
-                          <stop offset="100%" stopColor="#2D7FF9" stopOpacity={0} />
-                        </linearGradient>
-                      </defs>
-                      <Area type="monotone" dataKey="value" stroke="#2D7FF9" strokeWidth={2.5} fill="url(#heroG)" dot={false} />
-                    </AreaChart>
-                  </ResponsiveContainer>
-                </div>
-                <div className="grid grid-cols-3 gap-2.5 mt-3">
-                  <div className="bg-white/[0.03] rounded-lg p-2.5">
-                    <div className="text-[10px] text-g-500 mb-1">Market Value</div>
-                    <div className="text-base font-bold font-mono text-nci-accent">$185K</div>
-                  </div>
-                  <div className="bg-white/[0.03] rounded-lg p-2.5">
-                    <div className="text-[10px] text-g-500 mb-1">AI Risk</div>
-                    <div className="text-base font-bold font-mono text-nci-accent">Low 18%</div>
-                  </div>
-                  <div className="bg-white/[0.03] rounded-lg p-2.5">
-                    <div className="text-[10px] text-g-500 mb-1">Top Match</div>
-                    <div className="text-base font-bold font-mono text-nci-primary">96%</div>
+                    <div className="text-[10px] text-g-500 font-bold uppercase tracking-wider">Market Value</div>
+                    <div className="text-lg font-bold font-mono">$185,000</div>
                   </div>
                 </div>
-              </div>
-            </div>
+              </motion.div>
+            </motion.div>
           </div>
         </div>
+      </section>
 
-        {/* Ticker */}
-        <div className="mt-20 border-t border-b border-nci-border py-5 overflow-hidden">
-          <div className="flex gap-12 animate-ticker-scroll whitespace-nowrap">
-            {tickerItems.map((t, i) => (
-              <span key={i} className="text-[13px] text-g-500 flex-shrink-0">{t}</span>
+      {/* Ticker */}
+      <div className="border-t border-b border-nci-border py-4 bg-nci-surface/30 backdrop-blur-sm overflow-hidden">
+        <div className="flex gap-12 animate-ticker-scroll whitespace-nowrap px-4">
+          {tickerItems.map((item, i) => (
+            <div key={i} className="flex items-center gap-3 text-[13px] font-medium text-g-400">
+              <span className="w-1 h-1 rounded-full bg-nci-accent" />
+              {item}
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Data Section */}
+      <section className="py-32 px-6">
+        <div className="container mx-auto max-w-6xl">
+          <div className="text-center mb-20">
+            <span className="text-nci-primary font-bold uppercase tracking-[0.2em] text-xs mb-4 block">The Global Shift</span>
+            <h2 className="font-serif text-5xl md:text-6xl mb-6">Data-Driven Career Protection</h2>
+            <p className="text-g-400 text-lg max-w-2xl mx-auto font-light">We aggregate labor market data to give you the most accurate career forecast available.</p>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-8">
+            {[
+              { val: '300', label: 'Million Jobs Exposed', sub: 'Roles vulnerable to automation by 2030.' },
+              { val: '97', label: 'Million New Roles', sub: 'Opportunities emerging for AI careers.' },
+              { val: '12', label: 'Months to Upskill', sub: 'The critical window for future-proofing.' }
+            ].map((stat, i) => (
+              <motion.div
+                key={i}
+                whileHover={{ y: -5 }}
+                className="glass-card p-8 border-white/5 hover:border-nci-primary/30 transition-colors"
+              >
+                <div className="font-serif text-6xl font-bold mb-4">{stat.val}</div>
+                <div className="text-nci-primary font-bold mb-3">{stat.label}</div>
+                <p className="text-g-500 text-sm font-light leading-relaxed">{stat.sub}</p>
+              </motion.div>
             ))}
           </div>
         </div>
-      </main>
+      </section>
 
-      {/* How It Works Section */}
-      <HowItWorksSection />
-
-      {/* Testimonials Section */}
-      <TestimonialsCarousel />
-
-      {/* Final CTA Section */}
-      <section className="py-24 px-4">
-        <div className="max-w-4xl mx-auto text-center">
-          <div className="glass-card hover-reflect rounded-3xl p-12 relative overflow-hidden shadow-glass-xl">
-            <div className="absolute inset-0 bg-gradient-to-br from-nci-primary/10 to-transparent opacity-50" />
-            <div className="relative z-10">
-              <h2 className="text-3xl md:text-5xl font-bold text-white mb-6 font-serif">
-                Ready to Future-Proof Your Career?
-              </h2>
-              <p className="text-xl md:text-2xl text-g-300 mb-8 max-w-2xl mx-auto leading-relaxed font-light">
-                Get your free AI-powered career analysis now. No credit card required.
+      {/* Tool Row 1 */}
+      <section className="py-24 px-6 overflow-hidden">
+        <div className="container mx-auto max-w-6xl">
+          <div className="grid lg:grid-cols-2 gap-20 items-center">
+            <div>
+              <span className="text-nci-accent font-bold text-xs tracking-widest uppercase mb-4 block">Tool 01</span>
+              <h3 className="font-serif text-4xl md:text-5xl mb-6">AI Displacement Risk Engine</h3>
+              <p className="text-g-400 text-lg mb-8 font-light leading-relaxed">
+                Understand exactly which parts of your role are at risk. Our engine breaks down your job into 15+ core competencies and evaluates them against AI capabilities.
               </p>
-              <button
-                onClick={() => {
-                  window.scrollTo({ top: 0, behavior: 'smooth' });
-                  setTimeout(() => {
-                    const input = document.querySelector('input[type="text"]') as HTMLInputElement;
-                    input?.focus();
-                  }, 500);
-                }}
-                className="px-8 py-4 bg-white text-nci-bg font-bold text-lg rounded-xl transition-all shadow-glass-lg hover:shadow-glass-xl inline-flex items-center gap-2 group"
-              >
-                <Sparkles className="w-5 h-5" />
-                <span>Start Your Free Analysis</span>
-                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-              </button>
+              <ul className="space-y-4">
+                {['Task-level exposure analysis', 'Industry benchmarking', 'Real-time risk monitoring'].map((feat, i) => (
+                  <li key={i} className="flex items-center gap-3 text-g-300">
+                    <CheckCircle2 className="w-5 h-5 text-nci-accent" />
+                    {feat}
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div className="glass-card p-4 border-white/10 rotate-2 hover:rotate-0 transition-transform duration-500">
+              <img src="/nextci_risk_meter_1770496391987.png" alt="Risk Meter" className="rounded-xl shadow-2xl" />
             </div>
           </div>
         </div>
       </section>
+
+      {/* Tool Row 2 (Job Matching) */}
+      <section className="py-24 px-6 bg-nci-surface/20">
+        <div className="container mx-auto max-w-6xl">
+          <div className="grid lg:grid-cols-2 gap-20 items-center">
+            <div className="order-2 lg:order-1">
+              <div className="glass-card p-8 space-y-4 -rotate-2 hover:rotate-0 transition-transform duration-500">
+                {[
+                  { title: 'AI Operations Lead', co: 'Stripe', pay: '$180k - $240k', score: 98 },
+                  { title: 'Automation Strategist', co: 'Scale AI', pay: '$165k - $210k', score: 94 }
+                ].map((job, i) => (
+                  <div key={i} className="flex items-center gap-6 p-4 rounded-xl bg-white/5 border border-white/5">
+                    <div className="w-14 h-14 rounded-xl bg-nci-accent/10 flex items-center justify-center font-bold text-nci-accent text-xl">
+                      {job.score}
+                    </div>
+                    <div>
+                      <h4 className="font-bold text-white">{job.title}</h4>
+                      <p className="text-g-500 text-sm">{job.co} · {job.pay}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div className="order-1 lg:order-2">
+              <span className="text-nci-primary font-bold text-xs tracking-widest uppercase mb-4 block">Tool 02</span>
+              <h3 className="font-serif text-4xl md:text-5xl mb-6">Smart Job Matching</h3>
+              <p className="text-g-400 text-lg mb-8 font-light leading-relaxed">
+                Stop applying to the past. Find roles designed for the future. Our matching engine prioritizes AI-augmented roles with long-term stability.
+              </p>
+              <ul className="space-y-4">
+                {['Future-proof stability scoring', 'Hidden market intelligence', 'Salary trajectory forecasting'].map((feat, i) => (
+                  <li key={i} className="flex items-center gap-3 text-g-300">
+                    <CheckCircle2 className="w-5 h-5 text-nci-primary" />
+                    {feat}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Final Funnel Section */}
+      <section className="py-40 px-6">
+        <div className="container mx-auto max-w-4xl text-center">
+          <h2 className="font-serif text-5xl md:text-7xl mb-8 tracking-tighter">
+            The Future Won't Wait. <br />
+            <span className="text-gradient-primary italic">Neither Should You.</span>
+          </h2>
+          <p className="text-g-400 text-xl mb-12 font-light">Join 50,000+ professionals using NextCI to outpace the AI revolution.</p>
+
+          <div className="glass-card p-12 relative overflow-hidden">
+            <div className="absolute inset-0 bg-gradient-to-br from-nci-primary/5 to-transparent pointer-events-none" />
+            <div className="relative z-10">
+              <h3 className="text-2xl font-bold mb-2">Calculate Your Risk Score</h3>
+              <p className="text-g-500 mb-8">Enter your current role to begin your intelligence report.</p>
+
+              <form onSubmit={handleAnalyze} className="flex flex-col sm:flex-row gap-4 max-w-2xl mx-auto">
+                <input
+                  id="job-title-input"
+                  type="text"
+                  value={jobTitle}
+                  onChange={(e) => setJobTitle(e.target.value)}
+                  placeholder="e.g. Senior Product Manager"
+                  className="flex-1 bg-white/5 border border-white/10 rounded-xl px-6 py-4 text-white focus:outline-none focus:border-nci-primary transition-colors"
+                />
+                <button
+                  type="submit"
+                  disabled={!jobTitle.trim() || isAnalyzing}
+                  className="px-10 py-4 bg-nci-primary text-white font-bold rounded-xl transition-all hover:shadow-glow-blue disabled:opacity-50"
+                >
+                  {isAnalyzing ? 'Analyzing...' : 'Analyze Now'}
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Simple Footer */}
+      <footer className="py-12 border-t border-nci-border text-center">
+        <div className="mb-6 opacity-60 grayscale hover:grayscale-0 transition-all inline-block">
+          <Logo size="sm" />
+        </div>
+        <p className="text-g-600 text-xs tracking-widest uppercase">© 2026 Next Career Intelligence. All rights reserved.</p>
+      </footer>
     </div>
   );
 }
