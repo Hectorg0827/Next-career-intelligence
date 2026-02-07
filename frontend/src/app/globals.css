@@ -6,7 +6,8 @@
   :root {
     /* Clean, Professional Palette (Stripe-like) */
     --background: 0 0% 100%;
-    --foreground: 222 47% 11%; /* Dark Blue-Black for text */
+    --foreground: 222 47% 11%;
+    /* Dark Blue-Black for text */
 
     --card: 0 0% 100%;
     --card-foreground: 222 47% 11%;
@@ -14,14 +15,17 @@
     --popover: 0 0% 100%;
     --popover-foreground: 222 47% 11%;
 
-    --primary: 221 83% 53%; /* Trusted Blue */
+    --primary: 221 83% 53%;
+    /* Trusted Blue */
     --primary-foreground: 210 40% 98%;
 
-    --secondary: 210 40% 96.1%; /* Subtle Gray for buttons */
+    --secondary: 210 40% 96.1%;
+    /* Subtle Gray for buttons */
     --secondary-foreground: 222 47% 11%;
 
     --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%; /* Proper Gray for subtext */
+    --muted-foreground: 215.4 16.3% 46.9%;
+    /* Proper Gray for subtext */
 
     --accent: 210 40% 96.1%;
     --accent-foreground: 222 47% 11%;
@@ -29,7 +33,8 @@
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
 
-    --border: 214.3 31.8% 91.4%; /* Crisp, light borders */
+    --border: 214.3 31.8% 91.4%;
+    /* Crisp, light borders */
     --input: 214.3 31.8% 91.4%;
     --ring: 221 83% 53%;
 
@@ -63,21 +68,25 @@
   * {
     @apply border-border;
   }
+
   body {
     @apply bg-background text-foreground antialiased;
   }
 }
 
-/* Remove the "Glass" effect and replace with "Clean Card" */
-.glass-panel, .glass-card {
-  @apply bg-white border border-slate-200 shadow-sm rounded-xl transition-all duration-200;
+/* Glass Effect - Clear & Premium */
+.glass-panel,
+.glass-card {
+  @apply bg-white/5 backdrop-blur-md border border-white/10 shadow-lg rounded-2xl transition-all duration-300;
 }
 
-.glass-panel:hover, .glass-card:hover {
-  @apply shadow-md border-slate-300;
+.glass-panel:hover,
+.glass-card:hover {
+  @apply bg-white/10 border-white/20 shadow-xl transform -translate-y-1;
 }
 
-/* Override dark mode for cards */
-.dark .glass-panel, .dark .glass-card {
-  @apply bg-slate-900 border-slate-800;
+/* Dark mode specific adjustments if needed, though the above works well for dark themes */
+.dark .glass-panel,
+.dark .glass-card {
+  @apply bg-black/40 border-white/10;
 }

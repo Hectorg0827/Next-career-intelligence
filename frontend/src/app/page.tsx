@@ -159,15 +159,15 @@ export default function Home() {
       </div>
 
       {/* Data Section */}
-      <section className="py-32 px-6">
+      <section className="py-40 px-6">
         <div className="container mx-auto max-w-6xl">
-          <div className="text-center mb-20">
+          <div className="text-center mb-24">
             <span className="text-nci-primary font-bold uppercase tracking-[0.2em] text-xs mb-4 block">The Global Shift</span>
             <h2 className="font-serif text-5xl md:text-6xl mb-6">Data-Driven Career Protection</h2>
             <p className="text-g-400 text-lg max-w-2xl mx-auto font-light">We aggregate labor market data to give you the most accurate career forecast available.</p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-8">
+          <div className="grid md:grid-cols-3 gap-10">
             {[
               { val: '300', label: 'Million Jobs Exposed', sub: 'Roles vulnerable to automation by 2030.' },
               { val: '97', label: 'Million New Roles', sub: 'Opportunities emerging for AI careers.' },
@@ -176,7 +176,7 @@ export default function Home() {
               <motion.div
                 key={i}
                 whileHover={{ y: -5 }}
-                className="glass-card p-8 border-white/5 hover:border-nci-primary/30 transition-colors"
+                className="glass-card p-10 flex flex-col items-center text-center border-t border-white/10"
               >
                 <div className="font-serif text-6xl font-bold mb-4">{stat.val}</div>
                 <div className="text-nci-primary font-bold mb-3">{stat.label}</div>
