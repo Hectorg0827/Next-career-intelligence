@@ -57,14 +57,14 @@ export default function HowItWorksSection() {
         </div>
 
         {/* Steps Grid */}
-        <div className="grid md:grid-cols-3 gap-4 mb-12 md:items-stretch">
+        <div className="grid md:grid-cols-3 gap-8 mb-12 md:items-stretch">
           {steps.map((step, index) => (
             <div
               key={index}
               className="group relative animate-fade-in flex"
               style={{ animationDelay: `${index * 150}ms` }}
             >
-              <div className={`relative glass-card border-l-[3px] ${step.borderColor} p-8 transition-all duration-300 hover:-translate-y-1 flex-1`}>
+              <div className={`relative p-8 transition-all duration-300 hover:-translate-y-1 flex-1 border-l-[3px] ${step.borderColor}`}>
                 {/* Step Number */}
                 <div className={`absolute top-6 right-6 ${step.bgGlow} w-10 h-10 rounded-lg flex items-center justify-center font-bold font-mono text-sm ${step.color}`}>
                   {step.number}
@@ -72,7 +72,7 @@ export default function HowItWorksSection() {
 
                 {/* Icon */}
                 <div className={`w-14 h-14 ${step.bgGlow} rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform`}>
-                  <step.icon className={`w-7 h-7 ${step.color}`} strokeWidth={2} />
+                  <step.icon className={`w-7 h-7 ${step.color}`} strokeWidth={1.5} />
                 </div>
 
                 {/* Content */}

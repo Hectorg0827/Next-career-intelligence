@@ -97,7 +97,7 @@ export default function Home() {
         style={{ backgroundImage: 'linear-gradient(rgba(74,76,94,1) 1px, transparent 1px), linear-gradient(90deg, rgba(74,76,94,1) 1px, transparent 1px)', backgroundSize: '60px 60px' }} />
 
       {/* Hero */}
-      <main id="main-content" className="relative z-10 pt-32 pb-20 max-w-[1200px] mx-auto px-4 sm:px-8">
+      <main id="main-content" className="relative z-10 pt-36 pb-24 max-w-[1200px] mx-auto px-4 sm:px-8">
         {/* Subscriber Quick Access */}
         {!isLoading && hasPremiumAccess && (
           <motion.div className="mb-10" variants={fadeInUpVariants} initial="initial" animate="animate">
@@ -148,12 +148,12 @@ export default function Home() {
             </h1>
 
             {/* Subheadline */}
-            <p style={makeFade(0.3)} className="text-[17px] leading-relaxed text-g-400 max-w-[460px] mb-9 font-light">
+            <p style={makeFade(0.3)} className="text-[17px] leading-[1.75] text-g-400 max-w-[460px] mb-10 font-light">
               Real-time market valuation, AI displacement analysis, and intelligent career matching — powered by data from 2.3M+ job postings.
             </p>
 
             {/* Search Form */}
-            <form onSubmit={handleAnalyze} style={makeFade(0.35)} className="mb-8" role="search" aria-label="Career analysis search">
+            <form onSubmit={handleAnalyze} style={makeFade(0.35)} className="mb-10" role="search" aria-label="Career analysis search">
               <div className="glass-card flex flex-col sm:flex-row gap-3 p-3">
                 <input
                   type="text"
@@ -212,23 +212,23 @@ export default function Home() {
 
           {/* Right Column - Preview Card */}
           <div style={makeFade(0.35)} className="hidden lg:block">
-            <div className="glass-card overflow-hidden shadow-glass-xl">
+            <div className="overflow-hidden rounded-2xl shadow-glass-xl" style={{ background: 'rgba(26,29,33,0.65)', border: '1px solid rgba(255,255,255,0.08)', backdropFilter: 'blur(16px)' }}>
               {/* Browser dots */}
-              <div className="h-10 border-b border-nci-border bg-nci-bg/60 flex items-center px-3.5 gap-1.5">
+              <div className="h-10 border-b border-white/[0.06] flex items-center px-3.5 gap-1.5" style={{ background: 'rgba(15,17,21,0.5)' }}>
                 <div className="w-2.5 h-2.5 rounded-full bg-nci-red/40" />
                 <div className="w-2.5 h-2.5 rounded-full bg-nci-amber/40" />
                 <div className="w-2.5 h-2.5 rounded-full bg-nci-accent/40" />
                 <span className="ml-3 text-[11px] text-g-600 font-mono">nextci.net/dashboard</span>
               </div>
-              <div className="p-5">
-                <div className="flex justify-between items-center mb-4">
+              <div className="p-6">
+                <div className="flex justify-between items-center mb-5">
                   <div>
                     <div className="text-[13px] font-semibold text-white">Market Value Pulse</div>
-                    <div className="text-[11px] text-g-500">Real-time estimation</div>
+                    <div className="text-[11px] text-g-500 mt-0.5">Real-time estimation</div>
                   </div>
                   <span className="text-[11px] font-semibold text-nci-accent bg-nci-accent-dim px-2.5 py-1 rounded-md">+31% Potential</span>
                 </div>
-                <div className="h-[140px]">
+                <div className="h-[150px]">
                   <ResponsiveContainer width="100%" height="100%">
                     <AreaChart data={marketPreviewData}>
                       <defs>
@@ -241,16 +241,16 @@ export default function Home() {
                     </AreaChart>
                   </ResponsiveContainer>
                 </div>
-                <div className="grid grid-cols-3 gap-2.5 mt-3">
-                  <div className="bg-white/[0.03] rounded-lg p-2.5">
+                <div className="grid grid-cols-3 gap-3 mt-4">
+                  <div className="bg-white/[0.04] rounded-lg p-3">
                     <div className="text-[10px] text-g-500 mb-1">Market Value</div>
                     <div className="text-base font-bold font-mono text-nci-accent">$185K</div>
                   </div>
-                  <div className="bg-white/[0.03] rounded-lg p-2.5">
+                  <div className="bg-white/[0.04] rounded-lg p-3">
                     <div className="text-[10px] text-g-500 mb-1">AI Risk</div>
                     <div className="text-base font-bold font-mono text-nci-accent">Low 18%</div>
                   </div>
-                  <div className="bg-white/[0.03] rounded-lg p-2.5">
+                  <div className="bg-white/[0.04] rounded-lg p-3">
                     <div className="text-[10px] text-g-500 mb-1">Top Match</div>
                     <div className="text-base font-bold font-mono text-nci-primary">96%</div>
                   </div>
@@ -261,7 +261,7 @@ export default function Home() {
         </div>
 
         {/* Ticker */}
-        <div className="mt-20 border-t border-b border-nci-border py-5 overflow-hidden">
+        <div className="mt-24 border-t border-b border-nci-border py-4 overflow-hidden">
           <div className="flex gap-12 animate-ticker-scroll whitespace-nowrap">
             {tickerItems.map((t, i) => (
               <span key={i} className="text-[13px] text-g-500 flex-shrink-0">{t}</span>

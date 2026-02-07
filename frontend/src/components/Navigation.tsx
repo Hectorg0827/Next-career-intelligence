@@ -43,16 +43,16 @@ export default function Navigation() {
   };
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 h-16 nav-glass">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16">
+    <nav className="fixed top-0 left-0 right-0 z-50 h-[72px] nav-glass">
+      <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-10">
+        <div className="flex justify-between items-center h-[72px]">
           {/* Logo */}
           <div className="flex-shrink-0">
             <Logo size="sm" linkTo="/" />
           </div>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center gap-2">
+          <div className="hidden md:flex items-center gap-1">
             {navItems.map((item) => {
               const isActive = pathname === item.href;
               const Icon = item.icon;
@@ -61,7 +61,7 @@ export default function Navigation() {
                 <Link
                   key={item.name}
                   href={item.href}
-                  className={`px-4 py-2 rounded-xl font-medium transition-all duration-200 flex items-center gap-2 text-[13px] group ${
+                  className={`px-5 py-2.5 rounded-xl font-medium transition-all duration-200 flex items-center gap-2 text-[13px] group ${
                     isActive
                       ? 'bg-nci-primary-dim text-nci-primary'
                       : 'text-g-400 hover:text-white hover:bg-white/5'
@@ -100,9 +100,10 @@ export default function Navigation() {
             ) : (
               <button
                 onClick={() => router.push('/login')}
-                className="px-5 py-2 rounded-xl bg-nci-primary text-white text-[13px] font-semibold shadow-glow-blue hover:bg-primary-600 transition-all duration-200"
+                className="px-6 py-2.5 rounded-full bg-nci-primary text-white text-[13px] font-semibold shadow-glow-blue hover:bg-primary-600 transition-all duration-200"
               >
-                Get Started →
+                Get Started
+                <span className="ml-1">→</span>
               </button>
             )}
           </div>

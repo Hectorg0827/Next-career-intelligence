@@ -68,16 +68,92 @@
   }
 }
 
-/* Remove the "Glass" effect and replace with "Clean Card" */
+/* Glass Card — dark translucent panels for the NCI dark theme */
 .glass-panel, .glass-card {
-  @apply bg-white border border-slate-200 shadow-sm rounded-xl transition-all duration-200;
+  background: rgba(26, 29, 33, 0.55);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 0.75rem;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  transition: all 0.2s ease;
 }
 
 .glass-panel:hover, .glass-card:hover {
-  @apply shadow-md border-slate-300;
+  border-color: rgba(255, 255, 255, 0.12);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
 }
 
-/* Override dark mode for cards */
-.dark .glass-panel, .dark .glass-card {
-  @apply bg-slate-900 border-slate-800;
+/* Nav glass — semi-transparent navbar */
+.nav-glass {
+  background: rgba(15, 17, 21, 0.8);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+
+/* Input inside glass cards */
+.input-glass {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 0.75rem;
+  color: #F0F1F5;
+  padding: 0.625rem 1rem;
+  transition: border-color 0.2s ease;
+}
+
+.input-glass::placeholder {
+  color: #6B6D80;
+}
+
+.input-glass:focus {
+  outline: none;
+  border-color: rgba(45, 127, 249, 0.5);
+}
+
+/* Glass divider */
+.glass-divider {
+  border-top: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+/* Text gradient */
+.text-gradient-primary {
+  background: linear-gradient(135deg, #2D7FF9, #00D2B6);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Skip to main content */
+.skip-to-main {
+  position: absolute;
+  top: -40px;
+  left: 0;
+  background: #2D7FF9;
+  color: white;
+  padding: 8px;
+  z-index: 100;
+}
+
+.skip-to-main:focus {
+  top: 0;
+}
+
+/* Fade-in animation */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fadeInUp 0.6s ease forwards;
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.4s ease forwards;
 }
