@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NextCI — Future-Proof Your Career with AI Intelligence</title>
+    <link rel="stylesheet" href="./src/style.css">
+</head>
+
+<body>
+
+    <nav class="glass">
+        <div class="container nav-inner">
+            <a href="/" class="logo display-font">Next<span>CI</span></a>
+            <div class="nav-links">
+                <a href="#data">Intelligence</a>
+                <a href="#tools">Platform</a>
+                <a href="#roadmap">Methodology</a>
+            </div>
+            <div class="nav-actions">
+                <a href="/login" class="btn btn-ghost">Sign In</a>
+                <a href="#funnel" class="btn btn-primary">Start Analysis</a>
+            </div>
+        </div>
+    </nav>
+
+    <main>
+        <!-- Hero Section -->
+        <section class="hero">
+            <div class="hero-bg">
+                <canvas id="heroCanvas"></canvas>
+            </div>
+            <div class="container hero-content">
+                <div class="hero-text">
+                    <div class="badge">AI Career Intelligence 2.0</div>
+                    <h1 class="reveal">The Future of Work is Already Here. <span class="gradient-text">Master It.</span>
+                    </h1>
+                    <p class="subtext reveal">AI is redefining 1.28B roles globally. Don't just watch it happen. Get
+                        your displacement risk score, identify skill gaps, and build your data-driven roadmap to the
+                        top.</p>
+                    <div class="cta-group reveal">
+                        <button class="btn btn-primary">Calculate My Risk — Free</button>
+                        <button class="btn btn-ghost">Watch Demo (60s)</button>
+                    </div>
+                </div>
+                <div class="hero-visual reveal">
+                    <div class="dashboard-preview glass">
+                        <img src="/Users/hectorgarcia/.gemini/antigravity/brain/db7f6053-d1ca-4590-bd52-e6919d182476/nextci_dashboard_mockup_1770496376961.png"
+                            alt="NextCI Dashboard" class="main-mockup">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Ticker Section -->
+        <div class="ticker-wrap">
+            <div class="ticker">
+                <div class="ticker-item"><strong>300M+</strong> Jobs impacted by 2030</div>
+                <span class="dot"></span>
+                <div class="ticker-item"><strong>44%</strong> Core skills disrupted</div>
+                <span class="dot"></span>
+                <div class="ticker-item"><strong>$15.7T</strong> AI Economic contribution</div>
+                <span class="dot"></span>
+                <div class="ticker-item"><strong>85%</strong> of 2030 jobs don't exist yet</div>
+                <!-- Double for loop -->
+                <span class="dot"></span>
+                <div class="ticker-item"><strong>300M+</strong> Jobs impacted by 2030</div>
+                <span class="dot"></span>
+                <div class="ticker-item"><strong>44%</strong> Core skills disrupted</div>
+                <span class="dot"></span>
+                <div class="ticker-item"><strong>$15.7T</strong> AI Economic contribution</div>
+                <span class="dot"></span>
+                <div class="ticker-item"><strong>85%</strong> of 2030 jobs don't exist yet</div>
+            </div>
+        </div>
+
+        <!-- Data Insights Section -->
+        <section id="data" class="data-insights">
+            <div class="container">
+                <div class="section-header align-center">
+                    <span class="tag">The Global Shift</span>
+                    <h2 class="display-font">Data-Driven Career Protection</h2>
+                    <p class="section-sub">We aggregate labor market data from the WEF, McKinsey, and LinkedIn to give
+                        you the most accurate career forecast available.</p>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="glass-card stat-item">
+                        <div class="stat-value" data-value="300">0</div>
+                        <div class="stat-label">Million Jobs Exposed</div>
+                        <p>Full-time roles vulnerable to automation by 2030.</p>
+                    </div>
+                    <div class="glass-card stat-item">
+                        <div class="stat-value" data-value="97">0</div>
+                        <div class="stat-label">Million New Roles</div>
+                        <p>Opportunities emerging for AI-adjacent careers.</p>
+                    </div>
+                    <div class="glass-card stat-item">
+                        <div class="stat-value" data-value="12">0</div>
+                        <div class="stat-label">Months to Upskill</div>
+                        <p>The critical window to future-proof your trajectory.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Platform Tools Section -->
+        <section id="tools" class="tools-showcase">
+            <div class="container">
+                <!-- Tool 1: Risk Gauge -->
+                <div class="tool-row reveal">
+                    <div class="tool-info">
+                        <span class="tool-tag">TOOL 01</span>
+                        <h3>AI Displacement Risk Engine</h3>
+                        <p>Understand exactly which parts of your current role are at risk. Our engine breaks down your
+                            job into 15+ core competencies and evaluates them against current AI capabilities.</p>
+                        <ul class="feature-list">
+                            <li>Task-level exposure analysis</li>
+                            <li>Industry benchmarking</li>
+                            <li>Real-time risk monitoring</li>
+                        </ul>
+                    </div>
+                    <div class="tool-preview glass">
+                        <img src="/Users/hectorgarcia/.gemini/antigravity/brain/db7f6053-d1ca-4590-bd52-e6919d182476/nextci_risk_meter_1770496391987.png"
+                            alt="Risk Meter Mockup">
+                    </div>
+                </div>
+
+                <!-- Tool 2: Skill Radar -->
+                <div class="tool-row reverse reveal">
+                    <div class="tool-info">
+                        <span class="tool-tag">TOOL 02</span>
+                        <h3>Skill Gap Analyzer</h3>
+                        <p>Define your path to mastery. Our radar analysis highlights the specific "human-centric"
+                            skills that AI cannot replicate, and maps them to your current expertise.</p>
+                        <ul class="feature-list">
+                            <li>6-dimensional competency radar</li>
+                            <li>Strategic upskilling priorities</li>
+                            <li>Personalized learning resources</li>
+                        </ul>
+                    </div>
+                    <div class="tool-preview glass">
+                        <div id="radarContainer" class="radar-placeholder">
+                            <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&q=80&w=800"
+                                alt="Skill Radar"
+                                style="opacity: 0.8; filter: hue-rotate(180deg) brightness(1.2); border-radius: 20px;">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tool 3: Smart Jobs -->
+                <div class="tool-row reveal">
+                    <div class="tool-info">
+                        <span class="tool-tag">TOOL 03</span>
+                        <h3>Smart Job Matching</h3>
+                        <p>Stop applying to the past. Find roles that are designed for the future. Our matching engine
+                            prioritizes AI-augmented roles with long-term stability.</p>
+                        <ul class="feature-list">
+                            <li>Future-proof stability scoring</li>
+                            <li>Hidden market intelligence</li>
+                            <li>Salary trajectory forecasting</li>
+                        </ul>
+                    </div>
+                    <div class="tool-preview glass-card">
+                        <div class="mock-job-list">
+                            <div class="job-item">
+                                <div class="job-score">98</div>
+                                <div class="job-details">
+                                    <h4>AI Operations Lead</h4>
+                                    <p>Stripe · $180k - $240k</p>
+                                </div>
+                            </div>
+                            <div class="job-item">
+                                <div class="job-score">94</div>
+                                <div class="job-details">
+                                    <h4>Automation Strategist</h4>
+                                    <p>Scale AI · $165k - $210k</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tool 4: AI Career Coach -->
+                <div class="tool-row reverse reveal">
+                    <div class="tool-info">
+                        <span class="tool-tag">TOOL 04</span>
+                        <h3>24/7 AI Career Coach</h3>
+                        <p>Never navigate a transition alone. Your dedicated AI advisor provides instant feedback on
+                            negotiations, resume pivots, and market shifts.</p>
+                        <ul class="feature-list">
+                            <li>Real-time market signal alerts</li>
+                            <li>Negotiation strategy simulations</li>
+                            <li>Context-aware career advice</li>
+                        </ul>
+                    </div>
+                    <div class="tool-preview glass chat-interface">
+                        <div class="chat-header"><span></span><span></span><span></span></div>
+                        <div class="chat-body">
+                            <div class="msg ai">I've analyzed the latest market update. Roles in your sector are
+                                shifting toward 'Hybrid Intelligence' models. Would you like to see the skills you need?
+                            </div>
+                            <div class="msg user">Yes, show me.</div>
+                        </div>
+                        <div class="chat-input-mock">Ask your coach anything...</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Funnel Section -->
+        <section id="funnel" class="cta-section">
+            <div class="container align-center">
+                <h2 class="display-font">The Future Won't Wait. <span class="gradient-text">Neither Should You.</span>
+                </h2>
+                <p class="section-sub">Join 50,000+ professionals using NextCI to outpace the AI revolution.</p>
+                <div class="funnel-box glass">
+                    <div class="funnel-step">
+                        <h3>Calculate Your Risk Score</h3>
+                        <p>Enter your role to get started</p>
+                        <div class="input-group">
+                            <input type="text" placeholder="e.g. Senior Product Manager">
+                            <button class="btn btn-primary">Analyze Now</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="glass">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <span class="display-font logo">Next<span>CI</span></span>
+                    <p>Navigating the intelligence age.</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 NextCI. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script type="module" src="./src/main.js"></script>
+</body>
+
+</html>
