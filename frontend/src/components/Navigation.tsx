@@ -35,33 +35,22 @@ export default function Navigation() {
   };
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 h-20 bg-nci-bg/80 backdrop-blur-xl border-b border-white/5">
+    <nav className="fixed top-0 left-0 right-0 z-50 h-20 bg-nci-bg/40 backdrop-blur-md">
       <div className="max-w-7xl mx-auto px-6 h-full flex items-center justify-between">
-        {/* Logo */}
-        <Logo size="sm" linkTo="/" className="hover:opacity-80 transition-opacity" />
-
-        {/* Action Buttons (Desktop) */}
-        <div className="hidden md:flex items-center gap-4">
-          <button
-            onClick={scrollToFunnel}
-            className="flex items-center gap-2 px-6 py-2.5 rounded-xl bg-nci-primary text-white text-[13px] font-bold shadow-glow-blue hover:scale-[1.02] transition-all"
-          >
-            <Sparkles className="w-4 h-4" />
-            Analyze My Career
-          </button>
-
+        {/* Action Buttons (Desktop) - Now on the Left */}
+        <div className="hidden md:flex items-center gap-6">
           {isAuthenticated ? (
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-4">
               <button
                 onClick={() => router.push('/dashboard')}
-                className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white text-[13px] font-bold hover:bg-white/10 transition-all"
+                className="flex items-center gap-2 px-0 py-2 text-white text-[13px] font-bold hover:text-nci-primary transition-all"
               >
                 <User className="w-4 h-4" />
                 Dashboard
               </button>
               <button
                 onClick={handleLogout}
-                className="p-2.5 rounded-xl bg-white/5 border border-white/10 text-g-400 hover:text-white hover:border-white/20 transition-all"
+                className="px-0 py-2 text-g-400 hover:text-white transition-all"
                 title="Logout"
               >
                 <LogOut className="w-4 h-4" />
@@ -70,13 +59,23 @@ export default function Navigation() {
           ) : (
             <button
               onClick={() => router.push('/login')}
-              className="flex items-center gap-2 px-6 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white text-[13px] font-bold hover:bg-white/10 transition-all"
+              className="px-0 py-2 text-white text-[13px] font-bold hover:text-nci-primary transition-all"
             >
-              <LogIn className="w-4 h-4" />
               Sign In / Up
             </button>
           )}
+
+          <button
+            onClick={scrollToFunnel}
+            className="flex items-center gap-2 px-6 py-2 rounded-full bg-nci-primary text-white text-[13px] font-bold shadow-glow-blue hover:scale-[1.05] transition-all"
+          >
+            <Sparkles className="w-4 h-4" />
+            Analyze My Career
+          </button>
         </div>
+
+        {/* Logo - Now on the Right */}
+        <Logo size="sm" linkTo="/" className="hover:opacity-80 transition-opacity" />
 
         {/* Mobile Menu Button */}
         <div className="md:hidden">
