@@ -77,6 +77,10 @@ export default function Home() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8 }}
             >
+              <div className="mb-10">
+                <Logo size="md" linkTo={undefined} className="opacity-90" />
+              </div>
+
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-nci-primary-dim border border-nci-primary/20 text-[11px] font-bold text-nci-primary uppercase tracking-widest mb-8">
                 <span className="w-1 h-1 rounded-full bg-nci-primary animate-pulse" />
                 AI Career Intelligence 2.0

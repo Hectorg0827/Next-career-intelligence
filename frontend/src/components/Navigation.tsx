@@ -74,9 +74,6 @@ export default function Navigation() {
           </button>
         </div>
 
-        {/* Logo - Now on the Right */}
-        <Logo size="sm" linkTo="/" className="hover:opacity-80 transition-opacity" />
-
         {/* Mobile Menu Button */}
         <div className="md:hidden">
           <button
