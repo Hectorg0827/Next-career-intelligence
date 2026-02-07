@@ -305,7 +305,7 @@ export default function Home() {
                     value={jobTitle}
                     onChange={(e) => setJobTitle(e.target.value)}
                     placeholder="e.g. Senior Product Manager"
-                    className="flex-1 bg-white/5 rounded-xl px-6 py-4 text-white focus:outline-none focus:ring-2 focus:ring-nci-primary/50 transition-all"
+                    className="glass-input flex-1 w-full"
                   />
                   <button
                     type="submit"

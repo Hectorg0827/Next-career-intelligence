@@ -110,7 +110,7 @@ export default function ResumeUpload({ onUploadStart, onUploadComplete, onError 
 
     return (
         <div
-            className={`relative group rounded-xl border-2 border-dashed transition-all duration-300 ${isDragOver
+            className={`glass-input relative group border-2 border-dashed transition-all duration-300 flex flex-col justify-center min-h-[200px] ${isDragOver
                 ? 'border-nci-primary bg-nci-primary/10'
                 : 'border-white/10 hover:border-white/20 hover:bg-white/5'
                 }`}
