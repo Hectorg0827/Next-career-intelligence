@@ -149,7 +149,7 @@ export default function Home() {
       </section>
 
       {/* Ticker */}
-      <div className="border-t border-b border-nci-border py-4 bg-nci-surface/30 backdrop-blur-sm overflow-hidden">
+      <div className="gradient-trim-y gradient-trim-top gradient-trim-bottom py-4 bg-nci-surface/30 backdrop-blur-sm overflow-hidden">
         <div className="flex gap-12 animate-ticker-scroll whitespace-nowrap px-4">
           {tickerItems.map((item, i) => (
             <div key={i} className="flex items-center gap-3 text-[13px] font-medium text-g-400">
@@ -225,11 +225,11 @@ export default function Home() {
                   { title: 'AI Operations Lead', co: 'Stripe', pay: '$180k - $240k', score: 98 },
                   { title: 'Automation Strategist', co: 'Scale AI', pay: '$165k - $210k', score: 94 }
                 ].map((job, i) => (
-                  <div key={i} className="flex items-center gap-6 p-4 rounded-xl bg-white/5">
-                    <div className="w-14 h-14 rounded-xl bg-nci-accent/10 flex items-center justify-center font-bold text-nci-accent text-xl">
+                  <div key={i} className="glass-card flex items-center gap-6 p-4">
+                    <div className="w-14 h-14 rounded-xl bg-nci-accent-dim flex items-center justify-center font-bold text-nci-accent text-xl">
                       {job.score}
                     </div>
-                    <div>
+                    <div className="relative z-10">
                       <h4 className="font-bold text-white">{job.title}</h4>
                       <p className="text-g-500 text-sm">{job.co} · {job.pay}</p>
                     </div>
@@ -272,16 +272,17 @@ export default function Home() {
               <p className="text-g-500 mb-8">Enter your current role or upload your resume to begin.</p>
 
               <div className="flex justify-center mb-12">
-                <div className="inline-flex bg-white/5 p-1 rounded-full border border-white/10">
+                <div className="inline-flex bg-white/5 p-1 rounded-full relative overflow-hidden group">
+                  <div className="absolute inset-0 bg-gradient-to-r from-nci-primary/20 via-nci-accent/20 to-nci-primary/20 opacity-50" />
                   <button
                     onClick={() => setShowUpload(false)}
-                    className={`px-8 py-3 rounded-full text-sm font-medium transition-all ${!showUpload ? 'bg-nci-primary text-white shadow-lg' : 'text-g-400 hover:text-white hover:bg-white/5'}`}
+                    className={`relative z-10 px-8 py-3 rounded-full text-sm font-medium transition-all ${!showUpload ? 'bg-nci-primary text-white shadow-lg' : 'text-g-400 hover:text-white hover:bg-white/5'}`}
                   >
                     Enter Job Title
                   </button>
                   <button
                     onClick={() => setShowUpload(true)}
-                    className={`px-8 py-3 rounded-full text-sm font-medium transition-all ${showUpload ? 'bg-nci-primary text-white shadow-lg' : 'text-g-400 hover:text-white hover:bg-white/5'}`}
+                    className={`relative z-10 px-8 py-3 rounded-full text-sm font-medium transition-all ${showUpload ? 'bg-nci-primary text-white shadow-lg' : 'text-g-400 hover:text-white hover:bg-white/5'}`}
                   >
                     Upload Resume
                   </button>
@@ -308,7 +309,7 @@ export default function Home() {
                       value={jobTitle}
                       onChange={(e) => setJobTitle(e.target.value)}
                       placeholder="e.g. Senior Product Manager"
-                      className="glass-input w-full h-[60px] text-lg"
+                      className="glass-input w-full h-[60px] text-lg px-6"
                     />
                     <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-g-500 group-focus-within:text-nci-primary transition-colors">
                       <User className="w-5 h-5" />
@@ -317,7 +318,7 @@ export default function Home() {
                   <button
                     type="submit"
                     disabled={!jobTitle.trim() || isAnalyzing}
-                    className="px-8 h-[60px] bg-nci-primary text-white font-bold rounded-xl transition-all hover:scale-105 hover:shadow-glow-blue disabled:opacity-50 whitespace-nowrap min-w-[160px]"
+                    className="px-8 h-[60px] bg-gradient-to-r from-nci-primary to-nci-primary/80 text-white font-bold rounded-xl transition-all hover:scale-105 hover:shadow-glow-blue disabled:opacity-50 whitespace-nowrap min-w-[160px]"
                   >
                     {isAnalyzing ? 'Analyzing...' : 'Analyze Now'}
                   </button>

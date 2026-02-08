@@ -74,29 +74,73 @@
   }
 }
 
-/* Glass Effect - Dark & Futuristic (Reference Image Style) */
+/* Glass Effect - Dark & Futuristic with Gradient Trims */
 .glass-card {
-  @apply bg-black/40 backdrop-blur-xl border border-white/10 shadow-2xl rounded-2xl transition-all duration-300 relative overflow-hidden;
+  @apply relative rounded-2xl overflow-hidden transition-all duration-300;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.01) 100%);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
 }
 
 .glass-card::before {
   content: '';
-  @apply absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 transition-opacity duration-300;
+  position: absolute;
+  inset: 0;
+  padding: 1px;
+  /* Border width */
+  border-radius: inherit;
+  background: linear-gradient(135deg, rgba(45, 127, 249, 0.3), rgba(0, 210, 182, 0.1), transparent 50%);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
   pointer-events: none;
 }
 
-.glass-card:hover::before {
-  @apply opacity-100;
-}
-
 .glass-card:hover {
-  @apply border-white/20 transform -translate-y-1 shadow-glow-blue;
+  @apply transform -translate-y-1;
+  box-shadow: 0 12px 40px -10px rgba(45, 127, 249, 0.2);
 }
 
-/* Darker, more distinct input for clarity */
+.glass-card:hover::before {
+  background: linear-gradient(135deg, rgba(45, 127, 249, 0.5), rgba(0, 210, 182, 0.3), transparent 70%);
+}
+
 .glass-input {
-  @apply bg-white/5 backdrop-blur-md border border-white/20 rounded-xl px-6 py-4 text-white placeholder:text-white/30 focus:outline-none focus:border-nci-primary/50 focus:bg-white/10 focus:shadow-glow-blue transition-all duration-300;
+  @apply relative rounded-xl transition-all duration-300;
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.glass-input:focus-within {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(45, 127, 249, 0.3);
+  box-shadow: 0 0 20px -5px rgba(45, 127, 249, 0.3);
+}
+
+/* Gradient Border Mask Utility */
+.gradient-trim {
+  position: relative;
+}
+
+.gradient-trim-y::before,
+.gradient-trim-y::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), rgba(45, 127, 249, 0.3), rgba(0, 210, 182, 0.3), rgba(255, 255, 255, 0.1), transparent);
+}
+
+.gradient-trim-top::before {
+  top: 0;
+}
+
+.gradient-trim-bottom::after {
+  bottom: 0;
 }
 
 /* Dark mode specific adjustments */
