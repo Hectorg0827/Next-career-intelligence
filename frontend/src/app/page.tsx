@@ -271,19 +271,21 @@ export default function Home() {
               <h3 className="text-2xl font-bold mb-2">Calculate Your Risk Score</h3>
               <p className="text-g-500 mb-8">Enter your current role or upload your resume to begin.</p>
 
-              <div className="flex justify-center gap-4 mb-8">
-                <button
-                  onClick={() => setShowUpload(false)}
-                  className={`px-6 py-2 rounded-full text-sm font-medium transition-all ${!showUpload ? 'bg-nci-primary text-white shadow-lg' : 'bg-white/5 text-g-400 hover:bg-white/10'}`}
-                >
-                  Enter Job Title
-                </button>
-                <button
-                  onClick={() => setShowUpload(true)}
-                  className={`px-6 py-2 rounded-full text-sm font-medium transition-all ${showUpload ? 'bg-nci-primary text-white shadow-lg' : 'bg-white/5 text-g-400 hover:bg-white/10'}`}
-                >
-                  Upload Resume
-                </button>
+              <div className="flex justify-center mb-12">
+                <div className="inline-flex bg-white/5 p-1 rounded-full border border-white/10">
+                  <button
+                    onClick={() => setShowUpload(false)}
+                    className={`px-8 py-3 rounded-full text-sm font-medium transition-all ${!showUpload ? 'bg-nci-primary text-white shadow-lg' : 'text-g-400 hover:text-white hover:bg-white/5'}`}
+                  >
+                    Enter Job Title
+                  </button>
+                  <button
+                    onClick={() => setShowUpload(true)}
+                    className={`px-8 py-3 rounded-full text-sm font-medium transition-all ${showUpload ? 'bg-nci-primary text-white shadow-lg' : 'text-g-400 hover:text-white hover:bg-white/5'}`}
+                  >
+                    Upload Resume
+                  </button>
+                </div>
               </div>
 
               {showUpload ? (
@@ -298,19 +300,24 @@ export default function Home() {
                   />
                 </div>
               ) : (
-                <form onSubmit={handleAnalyze} className="flex flex-col sm:flex-row gap-4 max-w-2xl mx-auto animate-in fade-in zoom-in duration-300">
-                  <input
-                    id="job-title-input"
-                    type="text"
-                    value={jobTitle}
-                    onChange={(e) => setJobTitle(e.target.value)}
-                    placeholder="e.g. Senior Product Manager"
-                    className="glass-input flex-1 w-full"
-                  />
+                <form onSubmit={handleAnalyze} className="flex flex-col sm:flex-row gap-6 max-w-3xl mx-auto animate-in fade-in zoom-in duration-300 items-center">
+                  <div className="flex-1 w-full relative group">
+                    <input
+                      id="job-title-input"
+                      type="text"
+                      value={jobTitle}
+                      onChange={(e) => setJobTitle(e.target.value)}
+                      placeholder="e.g. Senior Product Manager"
+                      className="glass-input w-full h-[60px] text-lg"
+                    />
+                    <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-g-500 group-focus-within:text-nci-primary transition-colors">
+                      <User className="w-5 h-5" />
+                    </div>
+                  </div>
                   <button
                     type="submit"
                     disabled={!jobTitle.trim() || isAnalyzing}
-                    className="px-10 py-4 bg-nci-primary text-white font-bold rounded-xl transition-all hover:shadow-glow-blue disabled:opacity-50"
+                    className="px-8 h-[60px] bg-nci-primary text-white font-bold rounded-xl transition-all hover:scale-105 hover:shadow-glow-blue disabled:opacity-50 whitespace-nowrap min-w-[160px]"
                   >
                     {isAnalyzing ? 'Analyzing...' : 'Analyze Now'}
                   </button>

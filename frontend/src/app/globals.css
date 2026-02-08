@@ -94,8 +94,9 @@
   @apply border-white/20 transform -translate-y-1 shadow-glow-blue/10;
 }
 
+/* Darker, more distinct input for clarity */
 .glass-input {
-  @apply bg-black/30 backdrop-blur-md border border-white/10 rounded-xl px-6 py-4 text-white placeholder:text-white/30 focus:outline-none focus:border-nci-primary/50 focus:bg-black/50 focus:shadow-glow-blue/20 transition-all duration-300;
+  @apply bg-white/5 backdrop-blur-md border border-white/20 rounded-xl px-6 py-4 text-white placeholder:text-white/30 focus:outline-none focus:border-nci-primary/50 focus:bg-white/10 focus:shadow-glow-blue/20 transition-all duration-300;
 }
 
 /* Dark mode specific adjustments */
