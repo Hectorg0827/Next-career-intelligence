@@ -42,7 +42,7 @@ export default function Footer() {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="relative mt-20 border-t border-nci-border bg-nci-bg">
+    <footer className="relative mt-20 border-t border-nci-border bg-nci-bg pb-24 md:pb-0">
       {/* Background Glow */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute bottom-0 left-1/4 w-[500px] h-[500px] rounded-full" style={{ background: 'radial-gradient(circle, rgba(45,127,249,0.08), transparent 70%)', filter: 'blur(100px)' }} />

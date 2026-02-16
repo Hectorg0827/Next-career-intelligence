@@ -60,32 +60,32 @@ export default function JobsPage() {
   return (
     <div className="min-h-screen gradient-dark-glass">
       {/* Glassmorphic Header */}
-      <div className="sticky top-0 z-50 glass-card border-b border-glass-line shadow-glass-lg rounded-none">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+      <div className="sticky top-20 z-40 glass-card border-b border-glass-line shadow-glass-lg rounded-none">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6">
           {/* Title Section */}
-          <div className="flex items-center justify-between mb-6">
-            <div className="flex items-center gap-4">
+          <div className="flex items-center justify-between mb-4 sm:mb-6">
+            <div className="flex items-center gap-3 sm:gap-4">
               <div className="relative">
                 <div className="absolute inset-0 bg-accent-500 rounded-2xl blur-lg opacity-60"></div>
-                <div className="relative p-3 bg-gradient-to-br from-accent-500 to-accent-400 rounded-2xl shadow-glass-md">
-                  <Briefcase className="h-7 w-7 text-white" />
+                <div className="relative p-2 sm:p-3 bg-gradient-to-br from-accent-500 to-accent-400 rounded-xl sm:rounded-2xl shadow-glass-md">
+                  <Briefcase className="h-5 w-5 sm:h-7 sm:w-7 text-white" />
                 </div>
               </div>
               <div>
-                <h1 className="text-3xl font-bold bg-gradient-to-r from-accent-500 to-accent-400 bg-clip-text text-transparent">
+                <h1 className="text-xl sm:text-3xl font-bold bg-gradient-to-r from-accent-500 to-accent-400 bg-clip-text text-transparent">
                   Job Marketplace
                 </h1>
-                <p className="text-sm text-ink-300 mt-1">AI-powered matching with risk analysis</p>
+                <p className="text-xs sm:text-sm text-ink-300 mt-0.5 sm:mt-1">AI-powered matching with risk analysis</p>
               </div>
             </div>
-            <div className="flex items-center gap-2 text-sm text-ink-300">
+            <div className="hidden sm:flex items-center gap-2 text-sm text-ink-300">
               <TrendingUp className="h-4 w-4 text-accent-400" />
               <span className="font-medium">{jobs.length} opportunities</span>
             </div>
           </div>
 
           {/* Premium Search Bar */}
-          <div className="flex gap-3">
+          <div className="flex gap-2 sm:gap-3">
             <div className="flex-1 relative group">
               <div className="absolute inset-0 bg-accent-500/20 rounded-2xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity"></div>
               <div className="relative glass-card overflow-hidden">
@@ -103,7 +103,7 @@ export default function JobsPage() {
 
             <button
               onClick={handleSearch}
-              className="primary-btn flex items-center gap-2"
+              className="primary-btn flex items-center gap-2 px-3 sm:px-4"
             >
               <Search className="h-5 w-5" />
               <span className="hidden sm:inline">Search</span>
@@ -111,12 +111,12 @@ export default function JobsPage() {
 
             <button
               onClick={() => setShowFilters(!showFilters)}
-              className="glass-card px-6 py-4 hover:bg-glass-edge transition-all"
+              className="glass-card px-3 sm:px-6 py-4 hover:bg-glass-edge transition-all flex-shrink-0"
             >
               <div className="flex items-center gap-2 text-white">
                 <Filter className="h-5 w-5" />
                 <span className="hidden sm:inline font-medium">Filters</span>
-                <ChevronDown className={`h-4 w-4 transition-transform ${showFilters ? 'rotate-180' : ''}`} />
+                <ChevronDown className={`hidden sm:block h-4 w-4 transition-transform ${showFilters ? 'rotate-180' : ''}`} />
               </div>
             </button>
           </div>

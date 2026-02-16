@@ -69,8 +69,10 @@
     @apply border-border;
   }
 
+  html,
   body {
     @apply bg-background text-foreground antialiased;
+    overflow-x: hidden;
   }
 }
 
@@ -141,6 +143,18 @@
 
 .gradient-trim-bottom::after {
   bottom: 0;
+}
+
+/* Navigation glass effect for BottomNav */
+.nav-glass {
+  background: rgba(15, 17, 21, 0.85);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+/* Safe area for notched devices (iPhone X+) */
+.safe-area-bottom {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
 }
 
 /* Dark mode specific adjustments */
