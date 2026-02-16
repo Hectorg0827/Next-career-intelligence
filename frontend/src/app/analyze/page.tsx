@@ -110,35 +110,35 @@ export default function AnalyzePage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-royal-navy via-royal-navy to-blue-900 py-12 px-4">
+    <div className="min-h-screen bg-gradient-to-br from-royal-navy via-royal-navy to-blue-900 pt-24 pb-12 px-4">
       {/* Micro-Win Notification */}
-      <MicroWin 
-        show={showMicroWin} 
-        message="Analysis Complete! Your career insights are ready." 
-        xp={50} 
+      <MicroWin
+        show={showMicroWin}
+        message="Analysis Complete! Your career insights are ready."
+        xp={50}
       />
-      
+
       <div className="max-w-4xl mx-auto">
         {/* Header */}
-        <div className="text-center mb-12">
+        <div className="text-center mb-8 sm:mb-12">
           {/* Free Preview Badge */}
           {!hasPremiumAccess && (
-            <div className="inline-flex items-center gap-2 px-4 py-2 bg-gold-primary/20 border border-gold-primary/40 rounded-full mb-6 animate-pulse-slow">
-              <Sparkles className="w-4 h-4 text-gold-primary" />
-              <span className="text-gold-primary text-sm font-semibold">Free Preview - Sign up to see full analysis</span>
+            <div className="inline-flex items-center gap-2 px-3 sm:px-4 py-2 bg-gold-primary/20 border border-gold-primary/40 rounded-full mb-4 sm:mb-6 animate-pulse-slow">
+              <Sparkles className="w-4 h-4 text-gold-primary flex-shrink-0" />
+              <span className="text-gold-primary text-xs sm:text-sm font-semibold">Free Preview - Sign up to see full analysis</span>
             </div>
           )}
-          
+
           <div className="flex items-center justify-center mb-4">
-            <Sparkles className="w-10 h-10 text-gold-primary mr-3 animate-pulse" />
-            <h1 className="text-4xl md:text-5xl font-bold text-white">
+            <Sparkles className="w-7 h-7 sm:w-10 sm:h-10 text-gold-primary mr-2 sm:mr-3 animate-pulse flex-shrink-0" />
+            <h1 className="text-2xl sm:text-4xl md:text-5xl font-bold text-white">
               Multi-Agent Analysis Report
             </h1>
           </div>
-          <p className="text-xl text-white/80">
+          <p className="text-base sm:text-xl text-white/80">
             for <span className="font-semibold text-gold-primary">{jobTitle}</span>
           </p>
-          <p className="text-sm text-white/60 mt-2">Powered by 9 AI agents working in harmony</p>
+          <p className="text-xs sm:text-sm text-white/60 mt-2">Powered by 9 AI agents working in harmony</p>
         </div>
 
         {/* Multi-Agent Analysis Cards */}
@@ -243,10 +243,10 @@ export default function AnalyzePage() {
         </div>
 
         {/* Social Share Section */}
-        <div className="mb-8 bg-gradient-to-r from-gold-primary/10 to-gold-accent/10 backdrop-blur-sm border border-gold-primary/20 rounded-2xl p-6">
+        <div className="mb-8 bg-gradient-to-r from-gold-primary/10 to-gold-accent/10 backdrop-blur-sm border border-gold-primary/20 rounded-2xl p-4 sm:p-6">
           <div className="text-center mb-4">
-            <h3 className="text-2xl font-bold text-white mb-2">🎉 Share Your Career Insights!</h3>
-            <p className="text-white/70">
+            <h3 className="text-xl sm:text-2xl font-bold text-white mb-2">Share Your Career Insights!</h3>
+            <p className="text-white/70 text-sm sm:text-base">
               Help your network discover career resilience. Share your results and earn free premium features!
             </p>
           </div>
