@@ -33,15 +33,19 @@ from app.api import (
     talent_graph,
     job_scraper,
     gdpr,
-    ai_agents,  # NEW: Phase 2 AI Agents
-    risk,  # NEW: Phase 3 AI Displacement Risk Engine
-    skills,  # NEW: Skills API for AI Coach 2.0
-    profile, # NEW: Profile API (Skills V2)
-    jobs_search,  # NEW: Phase 4 Job Search V2
-    job_matching,  # NEW: AI Job Matching Engine
-    applications,  # NEW: Application Tracking
-    recommendations,  # NEW: Real-time Recommendations
-    analytics,  # NEW: Analytics Dashboard
+    ai_agents,  # Phase 2 AI Agents
+    risk,  # Phase 3 AI Displacement Risk Engine
+    skills,  # Skills API for AI Coach 2.0
+    profile,  # Profile API (Skills V2)
+    jobs_search,  # Phase 4 Job Search V2
+    job_matching,  # AI Job Matching Engine
+    applications,  # Application Tracking
+    recommendations,  # Real-time Recommendations
+    analytics,  # Analytics Dashboard
+    sdr,  # Autonomous Candidate SDR Pipeline
+    negotiation,  # Enhanced Salary Negotiation Coach
+    retention,  # Post-Hire Compensation Monitoring
+    career_paths,  # Predictive Career Pathing
 )
 
 try:
@@ -355,6 +359,18 @@ app.include_router(job_scraper.router, tags=["Job Scraper"])
 
 # GDPR Compliance
 app.include_router(gdpr.router, tags=["GDPR Compliance"])
+
+# Autonomous Candidate SDR Pipeline
+app.include_router(sdr.router, prefix="/api", tags=["Autonomous SDR"])
+
+# Enhanced Salary Negotiation Coach
+app.include_router(negotiation.router, prefix="/api", tags=["Salary Negotiation Coach"])
+
+# Post-Hire Compensation Monitoring
+app.include_router(retention.router, prefix="/api", tags=["Post-Hire Retention"])
+
+# Predictive Career Pathing
+app.include_router(career_paths.router, prefix="/api", tags=["Career Paths"])
 
 
 # Performance monitoring endpoint

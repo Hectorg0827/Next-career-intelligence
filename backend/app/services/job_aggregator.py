@@ -297,15 +297,17 @@ class JobAggregatorService:
         """Run full scrape and store in DB"""
         from app.services.job_data_quality import JobDataQualityPipeline
         from app.db.supabase import get_supabase_client
-        
+        from app.services.capability_extractor import CapabilityExtractor
+
         pipeline = JobDataQualityPipeline()
         client = get_supabase_client()
+        capability_extractor = CapabilityExtractor()
         stats = {"scraped": 0, "inserted": 0, "updated": 0, "errors": 0, "skipped": 0}
-        
+
         try:
             jobs = await self.fetch_all_jobs()
             stats["scraped"] = len(jobs)
-            
+
             for job_data in jobs:
                 try:
                     # Validate
@@ -313,10 +315,20 @@ class JobAggregatorService:
                     if not is_valid:
                         stats["skipped"] += 1
                         continue
-                    
+
                     # Enrich
                     enriched_data = pipeline.enrich_job_data(validated_data)
-                    
+
+                    # Extract semantic capabilities from job description
+                    try:
+                        description = enriched_data.get("description") or ""
+                        title = enriched_data.get("title") or ""
+                        if description:
+                            capabilities = await capability_extractor.extract(description, title)
+                            enriched_data["capabilities"] = capabilities
+                    except Exception as cap_err:
+                        logger.warning(f"Capability extraction failed for '{enriched_data.get('title')}': {cap_err}")
+
                     # Insert/Update
                     external_id = enriched_data.get("external_id")
                     source = enriched_data.get("source")

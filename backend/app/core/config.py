@@ -42,6 +42,39 @@ class Settings(BaseSettings):
     ONET_PASSWORD: str = ""
     ONET_BASE_URL: str = "https://services.onetcenter.org/ws"
 
+    # Apify (Levels.fyi scraper for real salary data)
+    APIFY_API_TOKEN: str = ""
+
+    # BLS (Bureau of Labor Statistics OES API — free, register at bls.gov)
+    BLS_API_KEY: str = ""
+
+    # Adzuna Jobs API (free tier: 250 req/day — demand trends & job volume)
+    ADZUNA_APP_ID: str = ""
+    ADZUNA_API_KEY: str = ""
+
+    # TheirStack (technology stack by company — $99/mo)
+    THEIRSTACK_API_KEY: str = ""
+
+    # Lightcast / EMSI (enterprise labor market data — $500+/mo)
+    LIGHTCAST_CLIENT_ID: str = ""
+    LIGHTCAST_CLIENT_SECRET: str = ""
+
+    # NewsAPI (company research for SDR — free tier: 100 req/day)
+    NEWS_API_KEY: str = ""
+
+    # OpenAI (fallback provider when Gemini is rate-limited)
+    OPENAI_API_KEY: str = ""
+
+    # Salary data cache TTL (seconds)
+    SALARY_CACHE_TTL: int = 86400  # 24 hours
+
+    # Active labor market data provider (adzuna | onet | lightcast)
+    ACTIVE_LABOR_PROVIDER: str = "adzuna"
+
+    # SDR Configuration
+    SDR_MAX_APPLICATIONS_PER_WEEK: int = 10  # Hard cap across all users
+    SDR_DEFAULT_WEEKLY_QUOTA: int = 5        # Default per-user quota
+
     # Coursera API
     COURSERA_API_KEY: str = ""
     COURSERA_BASE_URL: str = "https://api.coursera.org/api"

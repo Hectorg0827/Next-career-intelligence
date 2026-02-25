@@ -215,25 +215,37 @@ export default function CareerRadarPage() {
           </DashboardCard>
 
           {/* Quick Actions */}
-          <DashboardCard 
-            title="Quick Actions" 
+          <DashboardCard
+            title="Quick Actions"
             icon={<Trophy className="h-5 w-5" />}
             gradient="from-gold-600 to-yellow-600"
           >
             <div className="space-y-2">
-              <button 
+              <button
                 onClick={() => router.push('/jobs/browse')}
                 className="w-full bg-gray-700 hover:bg-gray-600 text-white py-2 px-4 rounded-lg text-sm transition"
               >
                 Browse Jobs
               </button>
-              <button 
+              <button
                 onClick={() => router.push('/career-coach')}
                 className="w-full bg-gray-700 hover:bg-gray-600 text-white py-2 px-4 rounded-lg text-sm transition"
               >
                 Talk to AI Coach
               </button>
-              <button 
+              <button
+                onClick={() => router.push('/negotiation')}
+                className="w-full bg-green-800 hover:bg-green-700 text-white py-2 px-4 rounded-lg text-sm transition"
+              >
+                Salary Negotiation Coach
+              </button>
+              <button
+                onClick={() => router.push('/sdr')}
+                className="w-full bg-blue-800 hover:bg-blue-700 text-white py-2 px-4 rounded-lg text-sm transition"
+              >
+                Autonomous Job Search
+              </button>
+              <button
                 onClick={() => router.push('/settings')}
                 className="w-full bg-gray-700 hover:bg-gray-600 text-white py-2 px-4 rounded-lg text-sm transition"
               >
@@ -242,6 +254,103 @@ export default function CareerRadarPage() {
             </div>
           </DashboardCard>
         </div>
+
+        {/* Career Paths Section */}
+        <CareerPathsSection />
+      </div>
+    </div>
+  );
+}
+
+function CareerPathsSection() {
+  const [role, setRole] = useState('');
+  const [paths, setPaths] = useState<any>(null);
+  const [loading, setLoading] = useState(false);
+
+  const fetchPaths = async () => {
+    if (!role.trim()) return;
+    setLoading(true);
+    try {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}/api/career-paths/${encodeURIComponent(role)}`);
+      if (res.ok) setPaths(await res.json());
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="mt-8 bg-gray-800 rounded-xl border border-gray-700 overflow-hidden">
+      <div className="bg-gradient-to-r from-indigo-600 to-blue-600 px-4 py-3 flex items-center text-white">
+        <TrendingUp className="h-5 w-5" />
+        <h3 className="ml-2 font-semibold">Career Path Explorer</h3>
+      </div>
+      <div className="p-6">
+        <div className="flex gap-3 mb-6">
+          <input
+            value={role}
+            onChange={e => setRole(e.target.value)}
+            onKeyDown={e => e.key === 'Enter' && fetchPaths()}
+            placeholder="Enter your current role (e.g. Software Engineer)"
+            className="flex-1 bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-blue-500"
+          />
+          <button
+            onClick={fetchPaths}
+            disabled={loading || !role.trim()}
+            className="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 px-4 py-2 rounded-lg text-sm font-medium transition-colors"
+          >
+            {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Explore'}
+          </button>
+        </div>
+
+        {paths && (
+          <div>
+            <div className="grid grid-cols-2 gap-3 mb-4">
+              <div className="bg-gray-700/50 rounded-lg p-3 text-center">
+                <div className="text-sm text-gray-400 mb-1">10-Year Growth</div>
+                <div className="text-2xl font-bold text-green-400">+{paths.market_outlook?.['10yr_growth_pct']}%</div>
+              </div>
+              <div className="bg-gray-700/50 rounded-lg p-3 text-center">
+                <div className="text-sm text-gray-400 mb-1">Demand Level</div>
+                <div className="text-lg font-bold capitalize text-blue-400">{paths.market_outlook?.demand_level}</div>
+              </div>
+            </div>
+
+            {paths.common_transitions?.length > 0 && (
+              <div>
+                <h4 className="text-sm font-medium text-gray-400 mb-3">Common Next Roles</h4>
+                <div className="space-y-2">
+                  {paths.common_transitions.slice(0, 4).map((t: any, i: number) => (
+                    <div key={i} className="flex items-center justify-between bg-gray-700/30 rounded-lg p-3 text-sm">
+                      <span className="text-white">{t.to_role}</span>
+                      {t.target_salary_p50 && (
+                        <span className="text-green-400 text-xs">${t.target_salary_p50.toLocaleString()}</span>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {paths.key_skills_for_advancement?.length > 0 && (
+              <div className="mt-4">
+                <h4 className="text-sm font-medium text-gray-400 mb-2">Skills for Advancement</h4>
+                <div className="flex flex-wrap gap-2">
+                  {paths.key_skills_for_advancement.slice(0, 6).map((skill: string, i: number) => (
+                    <span key={i} className="bg-indigo-900/50 text-indigo-300 border border-indigo-700 rounded-full px-2.5 py-0.5 text-xs">
+                      {skill}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+
+        {!paths && !loading && (
+          <p className="text-gray-500 text-sm text-center py-4">
+            Enter your current role to see AI-powered career transition paths and market outlook.
+          </p>
+        )}
       </div>
     </div>
   );

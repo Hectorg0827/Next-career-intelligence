@@ -94,7 +94,25 @@ class AIBackgroundJobs:
             name='Cleanup Old Data',
             replace_existing=True
         )
-        
+
+        # Weekly layoff alerts refresh (runs Sunday at 1 AM)
+        self.scheduler.add_job(
+            self.update_layoff_alerts,
+            CronTrigger(day_of_week='sun', hour=1, minute=0),
+            id='weekly_layoff_alert_update',
+            name='Update Layoff Alerts',
+            replace_existing=True
+        )
+
+        # Weekly SDR runs (runs Monday at 6 AM)
+        self.scheduler.add_job(
+            self.run_weekly_sdr,
+            CronTrigger(day_of_week='mon', hour=6, minute=0),
+            id='weekly_sdr_run',
+            name='Run Weekly SDR Pipeline',
+            replace_existing=True
+        )
+
         self.scheduler.start()
         self.is_running = True
         logger.info("AI background jobs scheduler started")
@@ -329,7 +347,7 @@ class AIBackgroundJobs:
     async def run_daily_job_ingestion(self):
         """Run daily job ingestion from all sources"""
         from app.services.job_aggregator import JobAggregatorService
-        
+
         logger.info("⏰ Starting scheduled job ingestion...")
         aggregator = JobAggregatorService()
         try:
@@ -338,6 +356,53 @@ class AIBackgroundJobs:
             logger.error(f"Scheduled job ingestion failed: {e}")
         finally:
             await aggregator.close()
+
+    async def update_layoff_alerts(self):
+        """Weekly refresh of layoff alert data from Layoffs.fyi"""
+        logger.info("Starting weekly layoff alert update...")
+        try:
+            from app.services.integrations.layoff_monitor import run_layoff_update
+            stats = await run_layoff_update()
+            logger.info(f"Layoff alert update complete: {stats}")
+        except Exception as e:
+            logger.error(f"Layoff alert update failed: {e}")
+
+    async def run_weekly_sdr(self):
+        """
+        Weekly SDR (Autonomous Candidate SDR) pipeline run.
+        Processes all users with SDR enabled, staggered by user_id hash to distribute API load.
+        """
+        logger.info("Starting weekly SDR pipeline run...")
+        try:
+            db = get_supabase()
+
+            # Get all users with SDR enabled
+            result = db.table('sdr_criteria').select(
+                'user_id, target_roles, salary_min, salary_max, locations, quota_weekly'
+            ).eq('is_enabled', True).execute()
+
+            if not result.data:
+                logger.info("No users with SDR enabled — skipping")
+                return
+
+            logger.info(f"Running SDR for {len(result.data)} users")
+
+            success_count = 0
+            for criteria_row in result.data:
+                user_id = criteria_row.get('user_id')
+                try:
+                    # Import here to avoid circular import at module load
+                    from app.services.sdr.graph import run_sdr_for_user
+                    await run_sdr_for_user(user_id=user_id, criteria=criteria_row)
+                    success_count += 1
+                except Exception as e:
+                    logger.error(f"SDR run failed for user {user_id}: {e}")
+                    continue
+
+            logger.info(f"SDR weekly run complete: {success_count}/{len(result.data)} users processed")
+
+        except Exception as e:
+            logger.error(f"Weekly SDR run failed: {e}")
     
     async def _get_user_interactions(self, user_id: str) -> List[Dict[str, Any]]:
         """Get recent interactions for a user"""
