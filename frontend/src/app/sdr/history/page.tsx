@@ -24,12 +24,14 @@ export default function SDRHistoryPage() {
   const router = useRouter();
   const [runs, setRuns] = useState<SDRRun[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     if (!user) return;
     fetch(`${API_BASE}/api/sdr/history?user_id=${user.uid}`)
-      .then(r => r.json())
+      .then(r => r.ok ? r.json() : Promise.reject(r.status))
       .then(d => setRuns(d.runs || []))
+      .catch(() => setError('Could not load run history. Is the backend running?'))
       .finally(() => setLoading(false));
   }, [user]);
 
@@ -50,7 +52,13 @@ export default function SDRHistoryPage() {
 
         <h1 className="text-2xl font-bold mb-8">SDR Run History</h1>
 
-        {runs.length === 0 ? (
+        {error && (
+          <div className="bg-red-900/30 border border-red-700 rounded-xl p-4 mb-6 text-red-300 text-sm">
+            {error}
+          </div>
+        )}
+
+        {runs.length === 0 && !error ? (
           <div className="text-center py-16 text-gray-500">
             <Clock className="w-12 h-12 mx-auto mb-4 opacity-50" />
             <p>No SDR runs yet. Trigger your first run from the dashboard.</p>

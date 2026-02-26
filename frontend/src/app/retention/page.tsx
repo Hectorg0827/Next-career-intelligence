@@ -39,6 +39,8 @@ export default function RetentionPage() {
   const [startDate, setStartDate] = useState('');
   const [placing, setPlacing] = useState(false);
 
+  const [fetchError, setFetchError] = useState<string | null>(null);
+
   // Raise case state
   const [raiseCaseMode, setRaiseCaseMode] = useState(false);
   const [targetSalary, setTargetSalary] = useState('');
@@ -49,6 +51,7 @@ export default function RetentionPage() {
   const fetchCompensationData = async () => {
     if (!user) return;
     setLoading(true);
+    setFetchError(null);
     try {
       const [driftRes, pulseRes] = await Promise.allSettled([
         fetch(`${API_BASE}/api/retention/compensation?user_id=${user.uid}`),
@@ -61,6 +64,9 @@ export default function RetentionPage() {
       }
       if (pulseRes.status === 'fulfilled' && pulseRes.value.ok) {
         setPulse(await pulseRes.value.json());
+      }
+      if (driftRes.status === 'rejected' && pulseRes.status === 'rejected') {
+        setFetchError('Could not connect to the server. Is the backend running?');
       }
     } finally {
       setLoading(false);
@@ -141,6 +147,12 @@ export default function RetentionPage() {
             </div>
           </div>
         </div>
+
+        {fetchError && (
+          <div className="bg-red-900/30 border border-red-700 rounded-xl p-4 mb-6 text-red-300 text-sm">
+            {fetchError}
+          </div>
+        )}
 
         {!isPlaced && !loading && (
           <div className="bg-gray-800 rounded-xl border border-gray-700 p-6 mb-6">

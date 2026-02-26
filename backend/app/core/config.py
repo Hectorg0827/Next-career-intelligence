@@ -88,11 +88,6 @@ class Settings(BaseSettings):
     SENDGRID_FROM_EMAIL: str = "noreply@nextcareer.ai"
     SENDGRID_FROM_NAME: str = "NEXT Career Intelligence"
 
-    # Stripe Payment Processing
-    STRIPE_API_KEY: str = ""
-    STRIPE_SECRET_KEY: str = ""
-    STRIPE_WEBHOOK_SECRET: str = ""
-
     # Application URLs
     APP_URL: str = "http://localhost:3000"
     API_URL: str = "http://localhost:8000"
@@ -106,8 +101,8 @@ class Settings(BaseSettings):
         return [origin.strip() for origin in self.ALLOWED_ORIGINS.split(",")]
 
     # Stripe Payment Processing
-    STRIPE_API_KEY: str = ""
     STRIPE_SECRET_KEY: str = ""
+    STRIPE_API_KEY: str = ""  # Alias for STRIPE_SECRET_KEY, used by health check
     STRIPE_WEBHOOK_SECRET: str = ""
     STRIPE_PRICE_ID_PRO_MONTHLY: str = ""
     STRIPE_PRICE_ID_PRO_YEARLY: str = ""

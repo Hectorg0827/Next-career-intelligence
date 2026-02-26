@@ -29,6 +29,7 @@ export default function SDRDashboard() {
   const [status, setStatus] = useState<SDRStatus | null>(null);
   const [loading, setLoading] = useState(true);
   const [running, setRunning] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     if (!user) return;
@@ -38,9 +39,14 @@ export default function SDRDashboard() {
   const fetchStatus = async () => {
     try {
       const res = await fetch(`${API_BASE}/api/sdr/status?user_id=${user?.uid}`);
-      if (res.ok) setStatus(await res.json());
+      if (res.ok) {
+        setStatus(await res.json());
+        setError(null);
+      } else {
+        setError(`Failed to load SDR status (${res.status})`);
+      }
     } catch (e) {
-      console.error('Failed to fetch SDR status:', e);
+      setError('Could not connect to the server. Is the backend running?');
     } finally {
       setLoading(false);
     }
@@ -82,6 +88,13 @@ export default function SDRDashboard() {
             </div>
           </div>
         </div>
+
+        {/* Error banner */}
+        {error && (
+          <div className="bg-red-900/30 border border-red-700 rounded-xl p-4 mb-6 text-red-300 text-sm">
+            {error}
+          </div>
+        )}
 
         {/* Setup prompt if not configured */}
         {!status?.criteria_configured && (

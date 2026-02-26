@@ -154,17 +154,9 @@ async def compare_role_transition(current_role: str, target_role: str):
     salary delta, and difficulty estimate.
     """
     import asyncio
-
-    current_sal_task = asyncio.create_task(
-        __import__("app.services.integrations.salary_data_client", fromlist=["get_compensation"]).get_compensation(current_role)
-    )
-    target_sal_task = asyncio.create_task(
-        __import__("app.services.integrations.salary_data_client", fromlist=["get_compensation"]).get_compensation(target_role)
-    )
-    bridge_skills_task = asyncio.create_task(_get_skill_bridge(current_role, target_role))
+    from app.services.integrations.salary_data_client import get_compensation
 
     try:
-        from app.services.integrations.salary_data_client import get_compensation
         current_sal, target_sal, bridge_skills = await asyncio.gather(
             get_compensation(current_role),
             get_compensation(target_role),

@@ -37,6 +37,7 @@ export default function NegotiationPage() {
   const [analyzing, setAnalyzing] = useState(false);
   const [result, setResult] = useState<AnalysisResult | null>(null);
   const [activeTab, setActiveTab] = useState<'analysis' | 'script' | 'meso'>('analysis');
+  const [error, setError] = useState<string | null>(null);
 
   // Form state
   const [role, setRole] = useState('');
@@ -48,6 +49,7 @@ export default function NegotiationPage() {
   const analyze = async () => {
     if (!user || !role || !baseSalary) return;
     setAnalyzing(true);
+    setError(null);
     try {
       const res = await fetch(`${API_BASE}/api/negotiation/analyze-offer?user_id=${user.uid}`, {
         method: 'POST',
@@ -60,7 +62,14 @@ export default function NegotiationPage() {
           location,
         }),
       });
-      if (res.ok) setResult(await res.json());
+      if (res.ok) {
+        setResult(await res.json());
+      } else {
+        const err = await res.json().catch(() => ({}));
+        setError(err.detail || `Analysis failed (${res.status})`);
+      }
+    } catch (e) {
+      setError('Could not connect to the server. Is the backend running?');
     } finally {
       setAnalyzing(false);
     }
@@ -150,6 +159,13 @@ export default function NegotiationPage() {
                 {analyzing ? 'Analyzing...' : 'Analyze Offer'}
               </button>
             </div>
+
+            {/* Error display */}
+            {error && (
+              <div className="mt-3 bg-red-900/30 border border-red-700 rounded-lg p-3 text-red-300 text-sm">
+                {error}
+              </div>
+            )}
 
             {/* Quick Links */}
             <div className="mt-4 pt-4 border-t border-gray-700 space-y-2">

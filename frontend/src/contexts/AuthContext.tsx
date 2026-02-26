@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 
 // Types
 export interface User {
+  uid: string;       // Unique user identifier (derived from email for custom auth)
   email: string;
   name?: string;
   subscriptionTier: 'free' | 'premium' | 'enterprise';
@@ -169,6 +170,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       
       // For demo purposes, create a mock user
       const user: User = {
+        uid: email,
         email,
         subscriptionTier: email.includes('premium') ? 'premium' : 'free',
         lastLogin: new Date().toISOString(),
@@ -223,6 +225,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       // });
       
       const user: User = {
+        uid: email,
         email,
         name,
         subscriptionTier: 'free',
